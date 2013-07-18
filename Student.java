@@ -1,4 +1,4 @@
-public class SystemUnderTest {
+public class Student {
 	public int foo() {
 		return 4711;
 	}
