@@ -1,12 +1,15 @@
+import org.junit.*;
 import static org.junit.Assert.*;
 
-import org.junit.*;
-
-import de.cs.fau.i2.exercises.JUnitWithPoints;
-import static de.cs.fau.i2.exercises.JUnitWithPoints.*;
-
 @Exercises({ @Ex(exID = "GA4.6a", points = 7.5), @Ex(exID = "GA4.6b", points = 3.0) })
-public class TestTheSystemUnderTest extends JUnitWithPoints {
+public class TestTheSystemUnderTest {
+	// instead of explicitly coding the following rules here,
+	// your test class can also just extend the class JUnitWithPoints
+	@Rule
+	public final PointsLogger pointsLogger = new PointsLogger();
+	@ClassRule
+	public final static PointsSummary pointsSummary = new PointsSummary();
+
 	@Test
 	@Bonus(exID = "GA4.6a", bonus = 47.11)
 	public void testFooShouldReturn4711() { // OK

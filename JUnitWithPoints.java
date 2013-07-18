@@ -1,5 +1,3 @@
-package de.cs.fau.i2.exercises;
-
 import java.util.*;
 import java.io.*;
 import java.lang.annotation.*;
@@ -9,54 +7,61 @@ import org.junit.rules.*;
 import org.junit.runner.*;
 import org.junit.runners.model.*;
 
+// ******************** ANNOTATIONS **************************************** //
+@Inherited
+@Target(java.lang.annotation.ElementType.TYPE)
+@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@interface Exercises {
+	Ex[] value();
+}
+
+@Inherited
+@Target(java.lang.annotation.ElementType.TYPE)
+@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@interface Ex {
+	String exID();
+
+	double points();
+
+	String comment() default "<n.a.>";
+}
+
+// -------------------------------------------------------------------------------- //
+@Inherited
+@Target(java.lang.annotation.ElementType.METHOD)
+@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@interface Bonus {
+	String exID();
+
+	double bonus();
+
+	String comment() default "<n.a.>";
+}
+
+@Inherited
+@Target(java.lang.annotation.ElementType.METHOD)
+@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@interface Malus {
+	String exID();
+
+	double malus();
+
+	String comment() default "<n.a.>";
+}
+
+// ******************** RULES HELPER for pretty code **************************************** //
+final class PointsLogger extends JUnitWithPoints.PointsLogger {
+}
+
+final class PointsSummary extends JUnitWithPoints.PointsSummary {
+}
+
 public abstract class JUnitWithPoints {
 	// ******************** RULES **************************************** //
 	@Rule
 	public final PointsLogger pointsLogger = new PointsLogger();
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	// ******************** ANNOTATIONS **************************************** //
-	@Inherited
-	@Target(java.lang.annotation.ElementType.TYPE)
-	@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-	public static @interface Exercises {
-		Ex[] value();
-	}
-
-	@Inherited
-	@Target(java.lang.annotation.ElementType.TYPE)
-	@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-	public static @interface Ex {
-		String exID();
-
-		double points();
-
-		String comment() default "<n.a.>";
-	}
-
-	// -------------------------------------------------------------------------------- //
-	@Inherited
-	@Target(java.lang.annotation.ElementType.METHOD)
-	@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-	public static @interface Bonus {
-		String exID();
-
-		double bonus();
-
-		String comment() default "<n.a.>";
-	}
-
-	@Inherited
-	@Target(java.lang.annotation.ElementType.METHOD)
-	@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-	public static @interface Malus {
-		String exID();
-
-		double malus();
-
-		String comment() default "<n.a.>";
-	}
 
 	// ******************** BACKEND FUNCTIONALITY **************************************** //
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
@@ -111,7 +116,7 @@ public abstract class JUnitWithPoints {
 	}
 
 	// -------------------------------------------------------------------------------- //
-	public static final class PointsLogger extends TestWatcher {
+	protected static class PointsLogger extends TestWatcher {
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
 			Bonus bonusAnnotation = description.getAnnotation(Bonus.class);
@@ -153,9 +158,9 @@ public abstract class JUnitWithPoints {
 	}
 
 	// -------------------------------------------------------------------------------- //
-	public static final class PointsSummary extends ExternalResource {
+	protected static class PointsSummary extends ExternalResource {
 		@Override
-		public Statement apply(Statement base, Description description) {
+		public final Statement apply(Statement base, Description description) {
 			reportHashMap.clear();
 			exerciseHashMap.clear();
 			Exercises exercisesAnnotation = description.getAnnotation(Exercises.class);
