@@ -86,12 +86,12 @@ public abstract class JUnitWithPoints {
 		}
 
 		final String format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise) {
-			String result = "";
+			String result = "*";
 			if (bonus != null) {
 				if (throwable != null) {
-					result += String.format("%1$10.3f", 0.0);
+					result += String.format("%1$6.2f", 0.0);
 				} else {
-					result += String.format("%1$+10.3f", (pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise));
+					result += String.format("%1$+6.2f", (pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise));
 				}
 				result += " | " + bonus.comment();
 				result += " | " + description.getDisplayName();
@@ -103,9 +103,9 @@ public abstract class JUnitWithPoints {
 			}
 			if (malus != null) {
 				if (throwable != null) {
-					result += String.format("%1$+10.3f", -(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise));
+					result += String.format("%1$+6.2f", -(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise));
 				} else {
-					result += String.format("%1$10.3f", 0.0);
+					result += String.format("%1$6.2f", 0.0);
 				}
 				result += " | " + malus.comment();
 				result += " | " + description.getDisplayName();
@@ -198,22 +198,20 @@ public abstract class JUnitWithPoints {
 			for (String exerciseId : exerciseIds) {
 				Ex exercise = exerciseHashMap.get(exerciseId);
 				List<ReportEntry> reportPerExercise = reportHashMap.get(exerciseId);
-				summary += "========== START OF TEST RESULTS FOR EXERCISE \"" + exercise.exID() + "\" ==========" + "\n";
-				summary += "    POINTS | COMMENT | TEST CASE (jUnit method name + test class) | TEST RESULT (jUnit assertion)" + "\n";
-				summary += "  -----------------------------------------------------------------------------------------------" + "\n";
 				bonusDeclaredPerExercise = 0;
 				for (ReportEntry reportEntry : reportPerExercise) {
 					if (reportEntry.bonus != null) {
 						bonusDeclaredPerExercise += Math.abs(reportEntry.bonus.bonus());
 					}
 				}
+				String report = "";
 				pointsDeclaredPerExercise = exercise.points();
 				bonusAchievedPerExercise = 0;
 				for (ReportEntry reportEntry : reportPerExercise) {
 					Bonus bonus = reportEntry.bonus;
 					Malus malus = reportEntry.malus;
 					Throwable throwable = reportEntry.throwable;
-					summary += reportEntry.format(bonusDeclaredPerExercise, pointsDeclaredPerExercise) + "\n";
+					report += reportEntry.format(bonusDeclaredPerExercise, pointsDeclaredPerExercise) + "\n";
 					if (bonus != null && throwable == null) {
 						bonusAchievedPerExercise += Math.abs(bonus.bonus());
 					}
@@ -221,11 +219,10 @@ public abstract class JUnitWithPoints {
 						bonusAchievedPerExercise -= Math.abs(malus.malus());
 					}
 				}
-				summary += "  -----------------------------------------------------------------------------------------------" + "\n";
 				bonusAchievedPerExercise = Math.min(bonusDeclaredPerExercise, Math.max(0, bonusAchievedPerExercise));
 				pointsAchievedPerExercise = Math.ceil(pointsDeclaredPerExercise * 2 * bonusAchievedPerExercise / bonusDeclaredPerExercise) / 2;
-				summary += String.format(" >%1$6.1f", pointsAchievedPerExercise) + "\n";
-				summary += "========== END OF TEST RESULTS FOR EXERCISE \"" + exercise.exID() + "\" ==========" + "\n \n";
+				summary += exercise.exID() + String.format(" (%1$.1f points):", pointsAchievedPerExercise) + "\n";
+				summary += report + "\n";
 				pointsAchievedTotal += pointsAchievedPerExercise;
 			}
 			summary += "========== TOTAL SUMMARY: ==========" + "\n";

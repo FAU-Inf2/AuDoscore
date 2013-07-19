@@ -1,23 +1,13 @@
 points: 1.0
 
-========== START OF TEST RESULTS FOR EXERCISE "GA4.6a" ==========
-    POINTS | COMMENT | TEST CASE (jUnit method name + test class) | TEST RESULT (jUnit assertion)
-  -----------------------------------------------------------------------------------------------
-    +7.500 | <n.a.> | testFooShouldReturn4711(ExampleTestcase) | <passed>
-    -6.699 | Check if GA4.6a respects Blatt-00. | testFooBarShouldBeNice(ExampleTestcase) | org.junit.ComparisonFailure(see Blatt-00: Thou shalt not use packages. expected:<I am [nice].> but was:<I am [dangerous].>)
-  -----------------------------------------------------------------------------------------------
- >   1.0
-========== END OF TEST RESULTS FOR EXERCISE "GA4.6a" ==========
- 
-========== START OF TEST RESULTS FOR EXERCISE "GA4.6b" ==========
-    POINTS | COMMENT | TEST CASE (jUnit method name + test class) | TEST RESULT (jUnit assertion)
-  -----------------------------------------------------------------------------------------------
-     0.000 | Bar should return 0.815 here. | testBarShouldReturn0815(ExampleTestcase) | java.lang.AssertionError(Bar ist kaputt. expected:<0.815> but was:<4711.0815>)
-     0.000 | Check if GA4.6b respects Blatt-00... | testBazShouldBeNice(ExampleTestcase) | <passed>
-  -----------------------------------------------------------------------------------------------
- >   0.0
-========== END OF TEST RESULTS FOR EXERCISE "GA4.6b" ==========
- 
+GA4.6a (1.0 points):
+* +7.50 | <n.a.> | testFooShouldReturn4711(ExampleTestcase) | <passed>
+* -6.70 | Check if GA4.6a respects Blatt-00. | testFooBarShouldBeNice(ExampleTestcase) | org.junit.ComparisonFailure(see Blatt-00: Thou shalt not use packages. expected:<I am [nice].> but was:<I am [dangerous].>)
+
+GA4.6b (0.0 points):
+*  0.00 | Bar should return 0.815 here. | testBarShouldReturn0815(ExampleTestcase) | java.lang.AssertionError(Bar ist kaputt. expected:<0.815> but was:<4711.0815>)
+*  0.00 | Check if GA4.6b respects Blatt-00... | testBazShouldBeNice(ExampleTestcase) | <passed>
+
 ========== TOTAL SUMMARY: ==========
 TOTAL POINTS: 1.0
 ====================================
