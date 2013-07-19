@@ -130,6 +130,19 @@ public abstract class JUnitWithPoints {
 		}
 	}
 
+	private static final class ReportEntryComparator implements Comparator<ReportEntry> {
+		public int compare(ReportEntry r1, ReportEntry r2) {
+			if (r1 == null && r2 == null) return 0;
+			if (r1 == null) return -1;
+			if (r2 == null) return 1;
+			boolean t1 = r1.throwable == null;
+			boolean t2 = r2.throwable == null;
+			if (t1 == t2) return r1.description.getDisplayName().compareTo(r2.description.getDisplayName());
+			if (t1) return +1;
+			return -1;
+		}
+	}
+
 	// -------------------------------------------------------------------------------- //
 	protected static class PointsLogger extends TestWatcher {
 		@Override
@@ -212,6 +225,7 @@ public abstract class JUnitWithPoints {
 				}
 				Ex exercise = exerciseHashMap.get(exerciseId);
 				List<ReportEntry> reportPerExercise = reportHashMap.get(exerciseId);
+				Collections.sort(reportPerExercise, new ReportEntryComparator());
 				bonusDeclaredPerExercise = 0;
 				for (ReportEntry reportEntry : reportPerExercise) {
 					if (reportEntry.bonus != null) {
