@@ -1,7 +1,7 @@
 import org.junit.*;
 import static org.junit.Assert.*;
 
-@Exercises({ @Ex(exID = "GA4.6a", points = 7.5), @Ex(exID = "GA4.6b", points = 3.0) })
+@Exercises({ @Ex(exID = "GA4.6a", points = 12.5), @Ex(exID = "GA4.6b", points = 3.0) })
 public class ExampleTestcase {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints
