@@ -89,9 +89,9 @@ public abstract class JUnitWithPoints {
 			String result = "*";
 			if (bonus != null) {
 				if (throwable != null) {
-					result += String.format("%1$6.2f", 0.0);
+					result += String.format("%1$7.2f", 0.0);
 				} else {
-					result += String.format("%1$+6.2f", (pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise));
+					result += String.format("%1$+7.2f", (pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise));
 				}
 				result += " | " + bonus.comment();
 				result += " | " + description.getDisplayName();
@@ -103,9 +103,9 @@ public abstract class JUnitWithPoints {
 			}
 			if (malus != null) {
 				if (throwable != null) {
-					result += String.format("%1$+6.2f", -(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise));
+					result += String.format("%1$+7.2f", -(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise));
 				} else {
-					result += String.format("%1$6.2f", 0.0);
+					result += String.format("%1$7.2f", 0.0);
 				}
 				result += " | " + malus.comment();
 				result += " | " + description.getDisplayName();
