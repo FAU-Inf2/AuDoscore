@@ -71,6 +71,13 @@ public abstract class JUnitWithPoints {
 		Locale.setDefault(Locale.US);
 	}
 
+	private static String getShortDisplayName(Description d) {
+		String orig = d.getDisplayName();
+		int ix = orig.indexOf('(');
+		if (ix == -1) return orig;
+		return orig.substring(0, ix);
+	}
+
 	// -------------------------------------------------------------------------------- //
 	private static final class ReportEntry {
 		Description description;
@@ -86,33 +93,37 @@ public abstract class JUnitWithPoints {
 		}
 
 		final String format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise) {
-			String result = "*";
+			String result = "* ";
 			if (bonus != null) {
 				if (throwable != null) {
-					result += String.format("%1$7.2f", 0.0);
+					result += String.format("✗ %1$6.2f", 0.0);
 				} else {
-					result += String.format("%1$+7.2f", (pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise));
+					result += String.format("✓ %1$+6.2f", (pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise));
 				}
-				result += " | " + bonus.comment();
-				result += " | " + description.getDisplayName();
-				if (throwable != null) {
-					result += " | " + throwable.getClass().getName() + "(" + throwable.getLocalizedMessage() + ")";
+				result += " | ";
+				if (bonus.comment().equals("<n.a.>")) {
+					result += getShortDisplayName(description);
 				} else {
-					result += " | <passed>";
+					result += bonus.comment();
+				}
+				if (throwable != null) {
+					result += " | " + throwable.getClass().getSimpleName() + "(" + throwable.getLocalizedMessage() + ")";
 				}
 			}
 			if (malus != null) {
 				if (throwable != null) {
-					result += String.format("%1$+7.2f", -(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise));
+					result += String.format("✗ %1$+6.2f", -(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise));
 				} else {
-					result += String.format("%1$7.2f", 0.0);
+					result += String.format("✓ %1$6.2f", 0.0);
 				}
-				result += " | " + malus.comment();
-				result += " | " + description.getDisplayName();
-				if (throwable != null) {
-					result += " | " + throwable.getClass().getName() + "(" + throwable.getLocalizedMessage() + ")";
+				result += " | ";
+				if (malus.comment().equals("<n.a.>")) {
+					result += getShortDisplayName(description);
 				} else {
-					result += " | <passed>";
+					result += malus.comment();
+				}
+				if (throwable != null) {
+					result += " | " + throwable.getClass().getSimpleName() + "(" + throwable.getLocalizedMessage() + ")";
 				}
 			}
 			return result;
