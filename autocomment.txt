@@ -7,3 +7,7 @@ GA4.6a (1.5 points):
 GA4.6b (0.0 points):
 ✗   0.00 | Bar should return 0.815 here. | AssertionError(Bar ist kaputt. expected:<0.815> but was:<4711.0815>)
 ✓   0.00 | Check if GA4.6b respects Blatt-00...
+
+GA4.6c (0.0 points):
+✗   0.00 | IOOB-Test | ArrayIndexOutOfBoundsException(-1)
+✗   0.00 | NPE-Test | NullPointerException(null)

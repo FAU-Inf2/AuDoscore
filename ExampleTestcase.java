@@ -1,7 +1,7 @@
 import org.junit.*;
 import static org.junit.Assert.*;
 
-@Exercises({ @Ex(exID = "GA4.6a", points = 12.5), @Ex(exID = "GA4.6b", points = 3.0) })
+@Exercises({ @Ex(exID = "GA4.6a", points = 12.5), @Ex(exID = "GA4.6b", points = 3.0), @Ex(exID = "GA4.6c", points = 44) })
 public class ExampleTestcase {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints
@@ -36,5 +36,19 @@ public class ExampleTestcase {
 	public void testFooBarShouldBeNice() { // FAILS
 		Student sut = new Student();
 		assertEquals("see Blatt-00: Thou shalt not use packages.", "I am nice.", sut.foobar());
+	}
+
+	@Test
+	@Bonus(exID = "GA4.6c", bonus = 1, comment = "NPE-Test")
+	public void testNPE() {
+		String s = null;
+		s.toString();
+	}
+
+	@Test
+	@Bonus(exID = "GA4.6c", bonus = 1, comment = "IOOB-Test")
+	public void testIOOB() {
+		int a[] = new int[20];
+		a[21] = a[0] + a[-1];
 	}
 }
