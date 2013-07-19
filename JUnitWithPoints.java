@@ -92,6 +92,14 @@ public abstract class JUnitWithPoints {
 			this.throwable = throwable;
 		}
 
+		private String getStackTrace() {
+			if (throwable == null || throwable instanceof AssertionError) return "";
+			StackTraceElement st[] = throwable.getStackTrace();
+			if (st.length == 0) return "";
+			StackTraceElement ste = st[0]; // TODO: maybe search for student code here
+			return ": " + ste.getClassName() + "." + ste.getMethodName() + "(line " + ste.getLineNumber() + ")";
+		}
+
 		final String format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise) {
 			String result = "";
 			if (bonus != null) {
@@ -108,6 +116,7 @@ public abstract class JUnitWithPoints {
 				}
 				if (throwable != null) {
 					result += " | " + throwable.getClass().getSimpleName() + "(" + throwable.getLocalizedMessage() + ")";
+					result += getStackTrace();
 				}
 			}
 			if (malus != null) {
@@ -124,6 +133,7 @@ public abstract class JUnitWithPoints {
 				}
 				if (throwable != null) {
 					result += " | " + throwable.getClass().getSimpleName() + "(" + throwable.getLocalizedMessage() + ")";
+					result += getStackTrace();
 				}
 			}
 			return result;
