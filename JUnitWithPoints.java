@@ -67,6 +67,10 @@ public abstract class JUnitWithPoints {
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 	private static final HashMap<String, List<ReportEntry>> reportHashMap = new HashMap<>();
 
+	static {
+		Locale.setDefault(Locale.US);
+	}
+
 	// -------------------------------------------------------------------------------- //
 	private static final class ReportEntry {
 		Description description;

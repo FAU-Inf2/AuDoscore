@@ -1,21 +1,21 @@
-points: 1,0
+points: 1.0
 
 ========== START OF TEST RESULTS FOR EXERCISE "GA4.6a" ==========
     POINTS | COMMENT | TEST CASE (jUnit method name + test class) | TEST RESULT (jUnit assertion)
   -----------------------------------------------------------------------------------------------
-    -6,699 | Check if GA4.6a respects Blatt-00. | testFooBarShouldBeNice(TestTheSystemUnderTest) | org.junit.ComparisonFailure(see Blatt-00: Thou shalt not use packages. expected:<I am [nice].> but was:<I am [dangerous].>)
-    +7,500 | <n.a.> | testFooShouldReturn4711(TestTheSystemUnderTest) | <passed>
+    +7.500 | <n.a.> | testFooShouldReturn4711(ExampleTestcase) | <passed>
+    -6.699 | Check if GA4.6a respects Blatt-00. | testFooBarShouldBeNice(ExampleTestcase) | org.junit.ComparisonFailure(see Blatt-00: Thou shalt not use packages. expected:<I am [nice].> but was:<I am [dangerous].>)
   -----------------------------------------------------------------------------------------------
- >   1,0
+ >   1.0
 ========== END OF TEST RESULTS FOR EXERCISE "GA4.6a" ==========
  
 ========== START OF TEST RESULTS FOR EXERCISE "GA4.6b" ==========
     POINTS | COMMENT | TEST CASE (jUnit method name + test class) | TEST RESULT (jUnit assertion)
   -----------------------------------------------------------------------------------------------
-     0,000 | Check if GA4.6b respects Blatt-00... | testBazShouldBeNice(TestTheSystemUnderTest) | <passed>
-     0,000 | Bar should return 0.815 here. | testBarShouldReturn0815(TestTheSystemUnderTest) | java.lang.AssertionError(Bar ist kaputt. expected:<0.815> but was:<4711.0815>)
+     0.000 | Bar should return 0.815 here. | testBarShouldReturn0815(ExampleTestcase) | java.lang.AssertionError(Bar ist kaputt. expected:<0.815> but was:<4711.0815>)
+     0.000 | Check if GA4.6b respects Blatt-00... | testBazShouldBeNice(ExampleTestcase) | <passed>
   -----------------------------------------------------------------------------------------------
- >   0,0
+ >   0.0
 ========== END OF TEST RESULTS FOR EXERCISE "GA4.6b" ==========
  
 ========== TOTAL SUMMARY: ==========
