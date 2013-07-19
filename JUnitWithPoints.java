@@ -239,7 +239,7 @@ public abstract class JUnitWithPoints {
 				summary += report;
 				pointsAchievedTotal += pointsAchievedPerExercise;
 			}
-			summary = "points: " + String.format("%1$.1f", pointsAchievedTotal) + "\n\n" + summary;
+			summary = "Score: " + String.format("%1$.1f", pointsAchievedTotal) + "\n\n" + summary;
 			try {
 				try (FileWriter fileWriter = new FileWriter(new File(System.getProperty("user.dir"), "autocomment.txt"))) {
 					fileWriter.write(summary);

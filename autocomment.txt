@@ -1,4 +1,4 @@
-points: 1.5
+Score: 1.5
 
 GA4.6a (1.5 points):
 * ✓ +12.50 | testFooShouldReturn4711
