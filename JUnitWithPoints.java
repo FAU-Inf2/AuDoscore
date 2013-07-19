@@ -93,7 +93,7 @@ public abstract class JUnitWithPoints {
 		}
 
 		final String format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise) {
-			String result = "* ";
+			String result = "";
 			if (bonus != null) {
 				if (throwable != null) {
 					result += String.format("✗ %1$6.2f", 0.0);
