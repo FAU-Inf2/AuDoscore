@@ -196,6 +196,9 @@ public abstract class JUnitWithPoints {
 			String summary = "";
 			double pointsAchievedTotal = 0, bonusDeclaredPerExercise, bonusAchievedPerExercise, pointsDeclaredPerExercise, pointsAchievedPerExercise;
 			for (String exerciseId : exerciseIds) {
+				if (summary.length() > 0) {
+					summary += "\n";
+				}
 				Ex exercise = exerciseHashMap.get(exerciseId);
 				List<ReportEntry> reportPerExercise = reportHashMap.get(exerciseId);
 				bonusDeclaredPerExercise = 0;
@@ -222,12 +225,9 @@ public abstract class JUnitWithPoints {
 				bonusAchievedPerExercise = Math.min(bonusDeclaredPerExercise, Math.max(0, bonusAchievedPerExercise));
 				pointsAchievedPerExercise = Math.ceil(pointsDeclaredPerExercise * 2 * bonusAchievedPerExercise / bonusDeclaredPerExercise) / 2;
 				summary += exercise.exID() + String.format(" (%1$.1f points):", pointsAchievedPerExercise) + "\n";
-				summary += report + "\n";
+				summary += report;
 				pointsAchievedTotal += pointsAchievedPerExercise;
 			}
-			summary += "========== TOTAL SUMMARY: ==========" + "\n";
-			summary += "TOTAL POINTS: " + pointsAchievedTotal + "\n";
-			summary += "====================================" + "\n";
 			summary = "points: " + String.format("%1$.1f", pointsAchievedTotal) + "\n\n" + summary;
 			try {
 				try (FileWriter fileWriter = new FileWriter(new File(System.getProperty("user.dir"), "autocomment.txt"))) {
