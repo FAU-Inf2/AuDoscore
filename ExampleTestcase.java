@@ -39,6 +39,18 @@ public class ExampleTestcase {
 	}
 
 	@Test
+	@Malus(exID = "GA4.6c", malus = 1, comment = "NPE2-Test: if you know a variable is null, you should not access it later on!")
+	public void testNPE2() {
+		Student.getNull().toString();
+	}
+
+	@Test
+	@Bonus(exID = "GA4.6c", bonus = 1, comment = "NPE3-Test")
+	public void testNPE3() {
+		Student.doNull();
+	}
+
+	@Test
 	@Bonus(exID = "GA4.6c", bonus = 1, comment = "NPE-Test")
 	public void testNPE() {
 		String s = null;
@@ -50,5 +62,22 @@ public class ExampleTestcase {
 	public void testIOOB() {
 		int a[] = new int[20];
 		a[21] = a[0] + a[-1];
+	}
+
+	@Test
+	@Bonus(exID = "GA4.6c", bonus = 1, comment = "IOOB-Test")
+	public void testIOOB2() {
+		Student.ioob();
+	}
+
+	@Test
+	@Bonus(exID = "GA4.6c", bonus = 1, comment = "nix")
+	public void testNix() {
+	}
+
+	@Test
+	@Bonus(exID = "GA4.6c", bonus = 1, comment = "sof")
+	public void testSOF() {
+		Student.recur();
 	}
 }
