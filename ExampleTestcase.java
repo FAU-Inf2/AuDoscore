@@ -1,5 +1,11 @@
 import org.junit.*;
+import org.junit.rules.*;
 import static org.junit.Assert.*;
+import java.lang.reflect.*;
+import java.lang.*;
+import java.util.*;
+import asp.*;
+import tester.*;
 
 @Exercises({ @Ex(exID = "GA4.6a", points = 12.5), @Ex(exID = "GA4.6b", points = 3.0), @Ex(exID = "GA4.6c", points = 44) })
 public class ExampleTestcase {
@@ -9,6 +15,44 @@ public class ExampleTestcase {
 	public final PointsLogger pointsLogger = new PointsLogger();
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
+	@Rule public TestName testcaseName = new TestName();
+	
+	@Before
+	public void before() throws Exception{
+		String doReplace = System.getProperty("replace");
+		if(doReplace == null || !doReplace.equals("yes"))
+			return;
+		String mn = testcaseName.getMethodName();
+		Method m = getClass().getMethod(mn);
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		Factory.mClassMap = new HashMap<Class, Class>();
+		if(m.isAnnotationPresent(Replace.class)){
+			Map<String, SortedSet<String>> methsMap = new HashMap<String, SortedSet<String>>();
+			Replace r = m.getAnnotation(Replace.class);
+			for(int i=0; i<r.value().length; ++i){
+				int s = r.value()[i].indexOf('.');
+				String cln = r.value()[i].substring(0, s);
+
+				String regex = r.value()[i].substring(s+1);
+				
+				if(!methsMap.containsKey(cln))
+					methsMap.put(cln, new TreeSet<String>());
+				SortedSet<String> meths = methsMap.get(cln);
+
+				for(Method me : cl.loadClass(cln).getDeclaredMethods()){
+					if(me.getName().matches(regex)){
+						meths.add(me.getName());
+					}
+				}
+			}
+			for(Map.Entry<String, SortedSet<String>> e : methsMap.entrySet()){
+				String ncln = e.getKey();
+				for(String me : e.getValue())
+					ncln += "_" + me;
+				Factory.mClassMap.put(cl.loadClass(e.getKey()), cl.loadClass(ncln));
+			}
+		}
+	}
 
 	@Test
 	@Bonus(exID = "GA4.6a", bonus = 47.11)
