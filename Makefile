@@ -31,6 +31,7 @@ ExampleTestcase.class.aspect: lib/junitpoints.jar lib/aspectreplacer.jar Example
 	ajc -d replaced -1.7 -cp lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:. ExampleTestcase.java Student.java
 
 test2: ExampleTestcase.class.aspect
+	./createTest2.sh ExampleTestcase
 	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -Dreplace=yes org.junit.runner.JUnitCore ExampleTestcase
 
 result.json: ExampleTestcase.class ExampleTestcase.class.aspect

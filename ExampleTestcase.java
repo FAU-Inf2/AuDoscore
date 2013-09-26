@@ -85,6 +85,7 @@ public class ExampleTestcase {
 	}
 
 	@Test
+	@Replace({"Student.foo"})
 	@Bonus(exID = "GA4.6b", bonus = 47.11, comment = "Bar should return 0.815 here.")
 	public void testBarShouldReturn0815() { // FAILS
 		Student sut = new Student();
@@ -92,6 +93,7 @@ public class ExampleTestcase {
 	}
 
 	@Test
+	@Replace({"Student.baz"})
 	@Malus(exID = "GA4.6b", malus = 8, comment = "Check if GA4.6b respects Blatt-00...")
 	public void testBazShouldBeNice() { // OK
 		Student sut = new Student();
