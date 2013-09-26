@@ -56,9 +56,11 @@ public class JUnitPointsMerger {
 	}
 
 	public static void main(String[] args) {
+		String inputFile = (args.length == 2) ? args[0] : "result.json";
+		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
 		JSONParser parser = new JSONParser();
 		try {
-			JSONObject obj  = (JSONObject) parser.parse(new FileReader("result.json")); // FIXME: make this configurable
+			JSONObject obj  = (JSONObject) parser.parse(new FileReader(inputFile));
 			JSONObject vanilla = (JSONObject) obj.get("vanilla");
 			JSONArray vanillaex = (JSONArray) vanilla.get("exercises");
 			JSONObject replaced = (JSONObject) obj.get("replaced");
@@ -81,7 +83,7 @@ public class JUnitPointsMerger {
 				}
 			}
 			summary = "Score: " + String.format("%1$.1f\n", points) + summary;
-			File file = new File("mergedcomment.txt"); // FIXME: make this configurable
+			File file = new File(outputFile);
 			if (!file.exists()) {
 				file.createNewFile();
 			}

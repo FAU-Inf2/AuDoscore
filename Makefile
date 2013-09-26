@@ -61,6 +61,6 @@ result.json: $(TESTCLASS) $(TESTCLASSASPECT)
 	echo "}" >> result.json
 
 mergedcomment.txt: result.json lib/junitpoints.jar
-	java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar JUnitPointsMerger
+	java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar JUnitPointsMerger result.json mergedcomment.txt
 
 .PHONY: lib/parser.jar
