@@ -2,6 +2,7 @@ all: lib/junitpoints.jar
 
 clean:
 	rm -rf build
+	rm -rf replaced
 	rm -f *.class
 	rm -f lib/junitpoints.jar
 
@@ -21,7 +22,7 @@ test: ExampleTestcase.class
 	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. org.junit.runner.JUnitCore ExampleTestcase
 
 ExampleTestcase.class.aspect: lib/junitpoints.jar ExampleTestcase.java Student.java
-	ajc -1.7 -cp lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:. ExampleTestcase.java asp/AllocFactoryAspect.java tester/Factory.java Student.java
+	ajc -d replaced -1.7 -cp lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:. ExampleTestcase.java asp/AllocFactoryAspect.java tester/Factory.java Student.java
 
 test2: ExampleTestcase.class.aspect
-	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:. -Dreplace=yes org.junit.runner.JUnitCore ExampleTestcase
+	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:replaced -Dreplace=yes org.junit.runner.JUnitCore ExampleTestcase
