@@ -166,7 +166,7 @@ public abstract class JUnitWithPoints {
 			if (r2 == null) return 1;
 			boolean t1 = r1.throwable == null;
 			boolean t2 = r2.throwable == null;
-			if (t1 == t2) return r1.description.getDisplayName().compareTo(r2.description.getDisplayName());
+			if (true || t1 == t2) return r1.description.getDisplayName().compareTo(r2.description.getDisplayName());
 			if (t1) return +1;
 			return -1;
 		}
