@@ -114,7 +114,7 @@ public class ExampleTestcase {
 	}
 
 	@Test
-	@Replace({"Student.getNull"})
+	@Replace({"Student.doNull"})
 	@Bonus(exID = "GA4.6c", bonus = 1, comment = "NPE3-Test")
 	public void testNPE3() {
 		(new Student()).doNull();

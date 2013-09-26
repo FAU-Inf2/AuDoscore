@@ -35,7 +35,8 @@ test2: $(TESTCLASSASPECT)
 	./createTest2.sh $(TEST)
 	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -Dreplace=yes org.junit.runner.JUnitCore $(TEST)
 
-result.json: $(TESTCALSS) $(TESTCLASSASPECT)
+result.json: $(TESTCLASS) $(TESTCLASSASPECT)
+	./createTest2.sh $(TEST)
 	echo "{ \"vanilla\" : " > result.json
 	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) 2>> result.json || /bin/true
 	echo ", \"replaced\" : " >> result.json
