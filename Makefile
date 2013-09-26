@@ -11,8 +11,8 @@ build:
 	rm -rf build
 	mkdir -p build
 
-build/JUnitWithPoints.class: build JUnitWithPoints.java Replace.java ReadReplace.java
-	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. JUnitWithPoints.java Replace.java ReadReplace.java
+build/JUnitWithPoints.class: build JUnitWithPoints.java Replace.java JUnitPointsMerger.java ReadReplace.java
+	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. JUnitWithPoints.java Replace.java JUnitPointsMerger.java ReadReplace.java
 
 lib/junitpoints.jar: build/JUnitWithPoints.class
 	jar cvf lib/junitpoints.jar -C build .
@@ -40,3 +40,5 @@ result.json: ExampleTestcase.class ExampleTestcase.class.aspect
 	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore ExampleTestcase 2>> result.json || /bin/true
 	echo "}" >> result.json
 
+mergedcomment.txt: result.json lib/junitpoints.jar
+	java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar JUnitPointsMerger
