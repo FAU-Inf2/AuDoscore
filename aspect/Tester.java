@@ -34,6 +34,7 @@ class A_m0 extends A{
 	}
 }
 
+/*
 class C extends A{
 	int x = 5;
 	int m0(){
@@ -46,6 +47,7 @@ class C_m0 extends C{
 		C.super.m0();
 	}
 }
+*/
 
 class B{
 	int m0(){
@@ -148,6 +150,7 @@ public class Tester{
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Factory.mClassMap = new HashMap<Class, Class>();
 		if(m.isAnnotationPresent(Replace.class)){
+			Map<String, SortedSet<String>> methsMap = new HashMap<String, SortedSet<String>>();
 			Replace r = m.getAnnotation(Replace.class);
 			for(int i=0; i<r.value().length; ++i){
 				int s = r.value()[i].indexOf('.');
@@ -155,19 +158,21 @@ public class Tester{
 
 				String regex = r.value()[i].substring(s+1);
 				
-				ArrayList<String> meths = new ArrayList<String>();
+				if(!methsMap.containsKey(cln))
+					methsMap.put(cln, new TreeSet<String>());
+				SortedSet<String> meths = methsMap.get(cln);
+
 				for(Method me : cl.loadClass(cln).getDeclaredMethods()){
 					if(me.getName().matches(regex)){
 						meths.add(me.getName());
 					}
 				}
-
-				Collections.sort(meths);
-
-				String ncln = cln;
-				for(String me : meths)
+			}
+			for(Map.Entry<String, SortedSet<String>> e : methsMap.entrySet()){
+				String ncln = e.getKey();
+				for(String me : e.getValue())
 					ncln += "_" + me;
-				Factory.mClassMap.put(cl.loadClass(cln), cl.loadClass(ncln));
+				Factory.mClassMap.put(cl.loadClass(e.getKey()), cl.loadClass(ncln));
 			}
 		}
 	}
