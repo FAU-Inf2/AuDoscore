@@ -21,6 +21,7 @@
 	</target>
 	<target name="clean">
 		<delete dir="bin"/>
+		<delete file="parser.jar"/>
 	</target>
 	<target depends="clean" name="cleanall"/>
 	<target depends="build-subprojects,build-project" name="build"/>
@@ -31,6 +32,12 @@
 			<src path="src"/>
 			<classpath refid="Parser.classpath"/>
 		</javac>
+		<jar destfile="parser.jar">
+			<fileset dir="bin"/>
+			<manifest>
+				<attribute name="Main-Class" value="parser.Mixer"/>
+			</manifest>
+		</jar>
 	</target>
 	<target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
 </project>
