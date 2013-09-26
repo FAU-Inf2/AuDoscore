@@ -32,3 +32,11 @@ ExampleTestcase.class.aspect: lib/junitpoints.jar lib/aspectreplacer.jar Example
 
 test2: ExampleTestcase.class.aspect
 	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -Dreplace=yes org.junit.runner.JUnitCore ExampleTestcase
+
+result.json: ExampleTestcase.class ExampleTestcase.class.aspect
+	echo "{ \"vanilla\" : " > result.json
+	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore ExampleTestcase 2>> result.json || /bin/true
+	echo ", \"replaced\" : " >> result.json
+	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore ExampleTestcase 2>> result.json || /bin/true
+	echo "}" >> result.json
+
