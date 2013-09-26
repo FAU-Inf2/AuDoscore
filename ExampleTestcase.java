@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import java.lang.reflect.*;
 import java.lang.*;
 import java.util.*;
+import java.io.*;
 import asp.*;
 import tester.*;
 
@@ -16,9 +17,24 @@ public class ExampleTestcase {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 	@Rule public TestName testcaseName = new TestName();
-	
+
+	private PrintStream saveOut;
+	private PrintStream saveErr;
+
 	@Before
 	public void before() throws Exception{
+		saveOut = System.out;
+		saveErr = System.err;
+		System.setOut(new PrintStream(new OutputStream() {
+			public void write(int i) {
+			}
+		}));
+
+		System.setErr(new PrintStream(new OutputStream() {
+			public void write(int i) {
+			}
+		}));
+
 		String doReplace = System.getProperty("replace");
 		if(doReplace == null || !doReplace.equals("yes"))
 			return;
@@ -52,6 +68,12 @@ public class ExampleTestcase {
 				Factory.mClassMap.put(cl.loadClass(e.getKey()), cl.loadClass(ncln));
 			}
 		}
+	}
+	
+	@After
+	public void after() throws Exception{
+		System.setOut(saveOut);
+		System.setErr(saveErr);
 	}
 
 	@Test
