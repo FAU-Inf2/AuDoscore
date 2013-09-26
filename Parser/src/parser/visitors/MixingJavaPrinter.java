@@ -31,7 +31,7 @@ public class MixingJavaPrinter extends EnlightenedJavaPrinter {
 						TokenAndHistory tah[] = {new TokenAndHistory(new JavaToken(BasicJavaToken.IDENTIFIER, newName))};
 
 						node.name = new BastNameIdent(tah, newName);
-						tah = new TokenAndHistory[]{new TokenAndHistory(new JavaToken(BasicJavaToken.IDENTIFIER, " " + superClass + " "))};
+						tah = new TokenAndHistory[]{new TokenAndHistory(new JavaToken(BasicJavaToken.IDENTIFIER, " extends " + superClass + " "))};
 						node.extendedClass = new BastClassType(tah, new BastNameIdent(null, " " + superClass + " "), null, null);
 						super.visit(node);
 						// FIXME: this assumes no relevant inner or sibling classes!
