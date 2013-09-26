@@ -20,7 +20,7 @@ public class Student {
 	}
 
 	public static String doNull() {
-		return getNull().toString();
+		return "";
 	}
 
 	public static void recur() {

@@ -23,12 +23,13 @@ ExampleTestcase.class: lib/junitpoints.jar ExampleTestcase.java Student.java
 test: ExampleTestcase.class
 	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. org.junit.runner.JUnitCore ExampleTestcase
 
-lib/aspectreplacer.jar: build asp/AllocFactoryAspect.java tester/Factory.java
-	ajc -d build -1.7 -cp lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:. asp/AllocFactoryAspect.java tester/Factory.java	
-	jar cvf lib/aspectreplacer.jar -C build .
+#lib/aspectreplacer.jar: build asp/AllocFactoryAspect.java tester/Factory.java
+#	ajc -Xreweavable -d build -1.7 -cp lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:. asp/AllocFactoryAspect.java tester/Factory.java
+#	#jar cvf lib/aspectreplacer.jar -C . asp tester
 
-ExampleTestcase.class.aspect: lib/junitpoints.jar lib/aspectreplacer.jar ExampleTestcase.java Student.java
-	ajc -d replaced -1.7 -cp lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:. ExampleTestcase.java Student.java
+ExampleTestcase.class.aspect: lib/junitpoints.jar ExampleTestcase.java Student.java
+	#ajc -Xreweavable -d replaced -1.7 -cp lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:. ExampleTestcase.java Student.java
+	ajc -Xreweavable -d replaced -1.7 -cp lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:. ExampleTestcase.java Student.java tester/Factory.java asp/AllocFactoryAspect.java
 
 test2: ExampleTestcase.class.aspect
 	./createTest2.sh ExampleTestcase

@@ -38,7 +38,7 @@ public class ReadReplace{
 					System.out.print("java -jar lib/parser.jar cleanroom/" + e.getKey() + ".java " + e.getKey());
 					for(String me : e.getValue())
 						System.out.print(" " + me);
-					System.out.println("; mv cleanroom/" + e.getKey() + ".java.pretty ./" + ncln + ".java");
+					System.out.println("; mv cleanroom/" + e.getKey() + ".java.pretty mixed/" + ncln + ".java\n");
 				}
 			}
 		}

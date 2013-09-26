@@ -3,11 +3,21 @@ import java.util.*;
 import java.lang.reflect.*;
 public class Factory{
 	public static Map<Class, Class> mClassMap;
+	public static Map<String, SortedSet<String>> mMethsMap;
 	
 	public static boolean isKnown(Class c){
 		if(mClassMap == null)
 			return false;
 		return mClassMap.containsKey(c);
+	}
+	
+	public static boolean isKnown(String c, String m){
+		if(mMethsMap == null)
+			return false;
+		SortedSet<String> meths = mMethsMap.get(c);
+		if(meths == null)
+			return false;
+		return meths.contains(m);
 	}
 
 	static Object getInstance(Class c, Object... o) {

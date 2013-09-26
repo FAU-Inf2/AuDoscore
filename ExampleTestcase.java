@@ -42,8 +42,8 @@ public class ExampleTestcase {
 		Method m = getClass().getMethod(mn);
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Factory.mClassMap = new HashMap<Class, Class>();
+		Factory.mMethsMap = new HashMap<String, SortedSet<String>>();
 		if(m.isAnnotationPresent(Replace.class)){
-			Map<String, SortedSet<String>> methsMap = new HashMap<String, SortedSet<String>>();
 			Replace r = m.getAnnotation(Replace.class);
 			for(int i=0; i<r.value().length; ++i){
 				int s = r.value()[i].indexOf('.');
@@ -51,9 +51,9 @@ public class ExampleTestcase {
 
 				String regex = r.value()[i].substring(s+1);
 				
-				if(!methsMap.containsKey(cln))
-					methsMap.put(cln, new TreeSet<String>());
-				SortedSet<String> meths = methsMap.get(cln);
+				if(!Factory.mMethsMap.containsKey(cln))
+					Factory.mMethsMap.put(cln, new TreeSet<String>());
+				SortedSet<String> meths = Factory.mMethsMap.get(cln);
 
 				for(Method me : cl.loadClass(cln).getDeclaredMethods()){
 					if(me.getName().matches(regex)){
@@ -61,7 +61,7 @@ public class ExampleTestcase {
 					}
 				}
 			}
-			for(Map.Entry<String, SortedSet<String>> e : methsMap.entrySet()){
+			for(Map.Entry<String, SortedSet<String>> e : Factory.mMethsMap.entrySet()){
 				String ncln = e.getKey();
 				for(String me : e.getValue())
 					ncln += "_" + me;
@@ -114,9 +114,10 @@ public class ExampleTestcase {
 	}
 
 	@Test
+	@Replace({"Student.getNull"})
 	@Bonus(exID = "GA4.6c", bonus = 1, comment = "NPE3-Test")
 	public void testNPE3() {
-		Student.doNull();
+		(new Student()).doNull();
 	}
 
 	@Test

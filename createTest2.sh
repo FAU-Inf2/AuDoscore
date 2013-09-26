@@ -1,8 +1,13 @@
 #!/bin/bash
 
-list=`java -cp lib/junitpoints.jar:. ReadReplace $1 | sort | uniq`
+set -e
+set -x
+
+mkdir -p mixed
+list=`java -cp lib/junitpoints.jar:replaced:lib/aspectjrt.jar ReadReplace $1 | sort | uniq`
 echo "$list" > list;
 source list;
 rm list;
-li=`echo $list | awk '{ print $NF}'`
-javac $li
+echo "$list"
+li=`echo "$list" | awk '{ print $NF}'`
+javac -cp replaced -d replaced $li
