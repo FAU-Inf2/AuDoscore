@@ -3,18 +3,35 @@ include var.mk
 TESTCLASSASPECT = $(TEST:=.class.aspect)
 TESTCLASS = $(TEST:=.class)
 TESTSOURCE = $(TEST:=.java)
-all: lib/junitpoints.jar
+all: lib/junitpoints.jar lib/parser.jar
 
 clean:
 	rm -rf build
 	rm -rf replaced
 	rm -f *.class
 	rm -f lib/junitpoints.jar
-	rm -f lib/aspectreplacer.jar
+	rm -f lib/parser.jar
+	rm -f mergedcomment.txt
+	rm -f result.json
+	ant -f Parser/build.xml clean
 
 build:
 	rm -rf build
 	mkdir -p build
+
+lib/parser.jar:
+	ant -f Parser/build.xml
+	cp Parser/parser.jar lib/
+
+compile: lib/junitpoints.jar lib/parser.jar $(TESTCLASS) $(TESTCLASSASPECT)
+	./createTest2.sh $(TEST)
+
+run:
+	echo "{ \"vanilla\" : " 1>&2
+	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	echo ", \"replaced\" : " 1>&2
+	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	echo "}" 1>&2
 
 build/JUnitWithPoints.class: build JUnitWithPoints.java Replace.java JUnitPointsMerger.java ReadReplace.java
 	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. JUnitWithPoints.java Replace.java JUnitPointsMerger.java ReadReplace.java
@@ -45,3 +62,5 @@ result.json: $(TESTCLASS) $(TESTCLASSASPECT)
 
 mergedcomment.txt: result.json lib/junitpoints.jar
 	java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar JUnitPointsMerger
+
+.PHONY: lib/parser.jar
