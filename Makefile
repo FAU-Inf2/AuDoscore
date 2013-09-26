@@ -1,3 +1,8 @@
+include var.mk
+
+TESTCLASSASPECT = $(TEST:=.class.aspect)
+TESTCLASS = $(TEST:=.class)
+TESTSOURCE = $(TEST:=.java)
 all: lib/junitpoints.jar
 
 clean:
@@ -17,29 +22,24 @@ build/JUnitWithPoints.class: build JUnitWithPoints.java Replace.java JUnitPoints
 lib/junitpoints.jar: build/JUnitWithPoints.class
 	jar cvf lib/junitpoints.jar -C build .
 
-ExampleTestcase.class: lib/junitpoints.jar ExampleTestcase.java Student.java
-	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. ExampleTestcase.java Student.java
+$(TESTCLASS): lib/junitpoints.jar $(TESTSOURCE) $(STUDENTSOURCE)
+	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE)
 
-test: ExampleTestcase.class
-	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. org.junit.runner.JUnitCore ExampleTestcase
+test: $(TESTCLASS)
+	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. org.junit.runner.JUnitCore $(TEST)
 
-#lib/aspectreplacer.jar: build asp/AllocFactoryAspect.java tester/Factory.java
-#	ajc -Xreweavable -d build -1.7 -cp lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:. asp/AllocFactoryAspect.java tester/Factory.java
-#	#jar cvf lib/aspectreplacer.jar -C . asp tester
+$(TESTCLASSASPECT): lib/junitpoints.jar $(TESTSOURCE) $(STUDENTSOURCE) 
+	ajc -Xreweavable -d replaced -1.7 -cp lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE) tester/Factory.java asp/AllocFactoryAspect.java
 
-ExampleTestcase.class.aspect: lib/junitpoints.jar ExampleTestcase.java Student.java
-	#ajc -Xreweavable -d replaced -1.7 -cp lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:. ExampleTestcase.java Student.java
-	ajc -Xreweavable -d replaced -1.7 -cp lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:. ExampleTestcase.java Student.java tester/Factory.java asp/AllocFactoryAspect.java
+test2: $(TESTCLASSASPECT) 
+	./createTest2.sh $(TEST)
+	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -Dreplace=yes org.junit.runner.JUnitCore $(TEST)
 
-test2: ExampleTestcase.class.aspect
-	./createTest2.sh ExampleTestcase
-	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -Dreplace=yes org.junit.runner.JUnitCore ExampleTestcase
-
-result.json: ExampleTestcase.class ExampleTestcase.class.aspect
+result.json: $(TESTCALSS) $(TESTCLASSASPECT)
 	echo "{ \"vanilla\" : " > result.json
-	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore ExampleTestcase 2>> result.json || /bin/true
+	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) 2>> result.json || /bin/true
 	echo ", \"replaced\" : " >> result.json
-	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore ExampleTestcase 2>> result.json || /bin/true
+	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) 2>> result.json || /bin/true
 	echo "}" >> result.json
 
 mergedcomment.txt: result.json lib/junitpoints.jar
