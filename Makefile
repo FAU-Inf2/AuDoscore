@@ -11,8 +11,8 @@ build:
 	rm -rf build
 	mkdir -p build
 
-build/JUnitWithPoints.class: build JUnitWithPoints.java Replace.java
-	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. JUnitWithPoints.java Replace.java
+build/JUnitWithPoints.class: build JUnitWithPoints.java Replace.java ReadReplace.java
+	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. JUnitWithPoints.java Replace.java ReadReplace.java
 
 lib/junitpoints.jar: build/JUnitWithPoints.class
 	jar cvf lib/junitpoints.jar -C build .
