@@ -293,12 +293,16 @@ public abstract class JUnitWithPoints {
 			jsonsummary.put("exercises", jsonexercises);
 			summary = "Score: " + String.format("%1$.1f", pointsAchievedTotal) + "\n\n" + summary;
 			jsonsummary.put("score", String.format("%1$.1f", pointsAchievedTotal));
-			try {
-				try (FileWriter fileWriter = new FileWriter(new File(System.getProperty("user.dir"), "autocomment.txt"))) {
-					fileWriter.write(summary);
-				}
-			} catch (Throwable t) {
+			if (System.getProperty("json") != null && System.getProperty("json").equals("yes")) {
 				System.err.println(jsonsummary);
+			} else {
+				try {
+					try (FileWriter fileWriter = new FileWriter(new File(System.getProperty("user.dir"), "autocomment.txt"))) {
+						fileWriter.write(summary);
+					}
+				} catch (Throwable t) {
+					System.err.println(summary);
+				}
 			}
 		}
 	}
