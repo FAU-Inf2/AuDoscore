@@ -78,6 +78,7 @@ public class ExampleTestcase {
 
 	@Test
 	@Bonus(exID = "GA4.6a", bonus = 47.11)
+	@Replace({"Student.foo"})
 	public void testFooShouldReturn4711() { // OK
 		Student sut = new Student();
 		assertEquals("Foo ist kaputt.", 4711, sut.foo());
