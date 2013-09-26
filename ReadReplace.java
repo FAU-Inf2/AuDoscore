@@ -35,10 +35,10 @@ public class ReadReplace{
 					String ncln = e.getKey();
 					for(String me : e.getValue())
 						ncln += "_" + me;
-					System.out.print("java -jar lib/parser.jar cleanroom/" + e.getKey() + ".java " + e.getKey() + ".java");
+					System.out.print("java -jar lib/parser.jar cleanroom/" + e.getKey() + ".java " + e.getKey());
 					for(String me : e.getValue())
 						System.out.print(" " + me);
-					System.out.println(" > " + ncln + ".java");
+					System.out.println("; mv cleanroom/" + e.getKey() + ".java.pretty ./" + ncln + ".java");
 				}
 			}
 		}
