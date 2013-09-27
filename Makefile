@@ -19,25 +19,31 @@ build:
 	rm -rf build
 	mkdir -p build
 
-lib/parser.jar:
-	ant -f Parser/build.xml
-	cp Parser/parser.jar lib/
+compile-stage0:
+	javac $(STUDENTSOURCE)	
 
-compile: lib/junitpoints.jar lib/parser.jar $(TESTCLASS) $(TESTCLASSASPECT)
+compile-stage1: lib/junitpoints.jar lib/parser.jar $(TESTCLASS)
+
+compile-stage2: lib/junitpoints.jar lib/parser.jar $(TESTCLASS) $(TESTCLASSASPECT)
 	./createTest2.sh $(TEST)
 
-run:
+compile: compile-stage$(STAGE)
+
+run-stage0:
+	echo "alles gut"
+
+run-stage1:
+	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+
+run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
 	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo ", \"replaced\" : " 1>&2
 	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo "}" 1>&2
 
-build/JUnitWithPoints.class: build JUnitWithPoints.java Replace.java JUnitPointsMerger.java ReadReplace.java
-	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. JUnitWithPoints.java Replace.java JUnitPointsMerger.java ReadReplace.java
+run: run-stage$(STAGE)
 
-lib/junitpoints.jar: build/JUnitWithPoints.class
-	jar cvf lib/junitpoints.jar -C build .
 
 $(TESTCLASS): lib/junitpoints.jar $(TESTSOURCE) $(STUDENTSOURCE)
 	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE)
