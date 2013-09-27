@@ -8,6 +8,7 @@ all: lib/junitpoints.jar lib/parser.jar
 clean:
 	rm -rf build
 	rm -rf replaced
+	rm -rf mixed
 	rm -f *.class
 	rm -f lib/junitpoints.jar
 	rm -f lib/parser.jar
