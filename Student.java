@@ -1,5 +1,5 @@
 public class Student {
-	public int foo() {
+	public int foogrr() {
 		return 4711;
 	}
 

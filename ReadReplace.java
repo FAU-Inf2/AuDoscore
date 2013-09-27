@@ -33,6 +33,8 @@ public class ReadReplace{
 				}
 				for(Map.Entry<String, SortedSet<String>> e : methsMap.entrySet()){
 					String ncln = e.getKey();
+					if(e.getValue().size() == 0)
+						continue;
 					for(String me : e.getValue())
 						ncln += "_" + me;
 					System.out.print("java -jar lib/parser.jar cleanroom/" + e.getKey() + ".java " + e.getKey());
