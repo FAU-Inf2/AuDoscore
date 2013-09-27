@@ -10,4 +10,6 @@ source list;
 rm list;
 echo "$list"
 li=`echo "$list" | awk '{ print $NF}'`
-javac -cp replaced -d replaced $li
+if [ "x$li" != "x" ]; then
+	javac -cp replaced -d replaced $li
+fi
