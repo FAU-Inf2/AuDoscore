@@ -1,0 +1,7 @@
+Score: 9.5
+
+GA4.6a (9.5 points):
+✓  +3.13 | testFooShouldReturn4711[0]
+✓  +3.13 | testFooShouldReturn4711[1]
+✗   0.00 | testFooShouldReturn4711[2] | AssertionError(null)
+✓  +3.13 | testFooShouldReturn4711[3]
