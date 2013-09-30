@@ -4,13 +4,38 @@ import org.json.simple.*;
 import org.json.simple.parser.*;
 
 public class JUnitPointsMerger {
+	private static final class SingleReport {
+		boolean success;
+		String description;
+		String message;
+	}
+
+	private static final class SingleReportComparator implements Comparator<SingleReport> {
+		public int compare(SingleReport r1, SingleReport r2) {
+			if (r1 == null && r2 == null) return 0;
+			if (r1 == null) return -1;
+			if (r2 == null) return 1;
+			boolean t1 = r1.success;
+			boolean t2 = r2.success;
+			if (t1 == t2) {
+				if (r1.description.compareTo(r2.description) == 0) {
+					return r1.message.compareTo(r2.message);
+				}
+				return r1.description.compareTo(r2.description);
+			}
+			if (t1) return +1;
+			return -1;
+		}
+	}
+
 	static {
 		Locale.setDefault(Locale.US);
 	}
+
 	private static String summary = "";
 	private static double points = 0;
 	private static void merge(JSONObject rex, JSONObject vex) { // merges two exercises
-		String localSummary = "";
+		ArrayList<SingleReport> reps = new ArrayList<>();
 		double localpoints = 0;
 		JSONArray rextests = (JSONArray) rex.get("tests");
 		JSONArray vextests = (JSONArray) vex.get("tests");
@@ -23,6 +48,7 @@ public class JUnitPointsMerger {
 			for (int j = 0; !found && j < rextests.size(); j++) {
 				JSONObject rextest = (JSONObject) rextests.get(i);
 				if (rextest.get("id").equals(vextest.get("id"))) {
+					String localSummary = "";
 					found = true;
 					JSONObject usedresult = null;
 					if ((Boolean) vextest.get("success") || !((Boolean) rextest.get("success"))) {
@@ -41,6 +67,12 @@ public class JUnitPointsMerger {
 						localSummary += " | " + (String) error;
 					}
 					localSummary += "\n";
+
+					SingleReport r = new SingleReport();
+					r.success = ((Boolean) usedresult.get("success"));
+					r.message = localSummary;
+					r.description = (String)rextest.get("id");
+					reps.add(r);
 				}
 			}
 			if (!found) {
@@ -52,7 +84,10 @@ public class JUnitPointsMerger {
 		points += localpoints;
 		summary += "\n" + (String) vex.get("name");
 		summary += String.format(" (%1$.1f points):", localpoints) + "\n";
-		summary += localSummary;
+		Collections.sort(reps, new SingleReportComparator());
+		for (SingleReport r : reps) {
+			summary += r.message;
+		}
 	}
 
 	public static void main(String[] args) {
