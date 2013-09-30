@@ -1,6 +1,6 @@
 public class Student {
-	public int foogrr() {
-		return 4711;
+	public int foo() {
+		return 4711 + 1;
 	}
 
 	public double bar() {
