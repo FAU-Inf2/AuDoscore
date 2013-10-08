@@ -1,5 +1,6 @@
 package parser.visitors;
 import parser.bast.nodes.*;
+import parser.bast.general.*;
 import parser.bast.type.*;
 import parser.odin.*;
 import java.util.*;
@@ -10,6 +11,7 @@ public class MixingJavaPrinter extends EnlightenedJavaPrinter {
 	public ArrayList<String> keep;
 	public String superClass;
 	public boolean inMethod = false;
+	public String newName;
 
 	public MixingJavaPrinter(String superClass, ArrayList<String> keep) {
 		this.superClass = superClass;
@@ -24,7 +26,7 @@ public class MixingJavaPrinter extends EnlightenedJavaPrinter {
 					BastTypeQualifier m = (BastTypeQualifier) modifier;
 					if (m.type == BastTypeQualifier.TYPE_PUBLIC) {
 						// TODO: looks ugly, ask Georg for a better way
-						String newName = " " + superClass;
+						newName = " " + superClass;
 						for (String s : keep) {
 							newName += "_" + s;
 						}
@@ -78,6 +80,16 @@ public class MixingJavaPrinter extends EnlightenedJavaPrinter {
 
 				lastIdentifiers.clear();
 				if (node.decl!=null){
+					if (node.decl instanceof BastIdentDeclarator) {
+						BastIdentDeclarator bid = (BastIdentDeclarator) node.decl;
+						if (bid.identifier instanceof BastNameIdent) {
+							BastNameIdent bni = (BastNameIdent) bid.identifier;
+							if (bni.info instanceof BastInfo) {
+								BastInfo bi = (BastInfo) bni.info;
+								bi.tokens[0].token.data = new StringBuilder(newName);
+							}
+						}
+					}
 					node.decl.accept(this);
 				}
 				if (node.exceptions != null) {
