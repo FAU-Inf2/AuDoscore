@@ -135,8 +135,8 @@ public class MixingJavaPrinter extends EnlightenedJavaPrinter {
 	@Override
 	synchronized public void visit(BastIdentDeclarator node){
 		if (node.identifier != null && node.identifier instanceof BastNameIdent) {
-				BastNameIdent id = (BastNameIdent) node.identifier;
-				lastIdentifiers.add(id.getName());
+			BastNameIdent id = (BastNameIdent) node.identifier;
+			lastIdentifiers.add(id.getName());
 		}
 		super.visit(node);
 	}
