@@ -33,6 +33,12 @@ public class Student {
 	}
 
 	public Student(int x) {
-		System.out.println(x);
+		System.out.println(x + Unimportant.unimportant());
+	}
+}
+
+class Unimportant {
+	public static String unimportant() {
+		return "unimp";
 	}
 }

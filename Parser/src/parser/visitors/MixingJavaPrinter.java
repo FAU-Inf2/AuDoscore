@@ -12,6 +12,7 @@ public class MixingJavaPrinter extends EnlightenedJavaPrinter {
 	public String superClass;
 	public boolean inMethod = false;
 	public String newName;
+	public boolean dontTouch = true;
 
 	public MixingJavaPrinter(String superClass, ArrayList<String> keep) {
 		this.superClass = superClass;
@@ -35,17 +36,27 @@ public class MixingJavaPrinter extends EnlightenedJavaPrinter {
 						node.name = new BastNameIdent(tah, newName);
 						tah = new TokenAndHistory[]{new TokenAndHistory(new JavaToken(BasicJavaToken.IDENTIFIER, " extends " + superClass + " { "))};
 						node.extendedClass = new BastClassType(tah, new BastNameIdent(null, " " + superClass + " "), null, null);
+						dontTouch = false;
 						super.visit(node);
-						// FIXME: this assumes no relevant inner or sibling classes!
-						// all non-public classes are thrown away
+						dontTouch = true;
+					} else {
+						// non-public class, don't touch
+						super.visit(node);
 					}
 				}
 			}
+		} else {
+			// non-public class, don't touch
+			super.visit(node);
 		}
 	}
 
 	@Override
 	public void visit(BastFunction node) {
+		if (dontTouch) {
+			super.visit(node);
+			return;
+		}
 		inMethod = true;
 		boolean thisFirst = first;
 		first = false;
