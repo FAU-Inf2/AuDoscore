@@ -51,6 +51,12 @@ import org.json.simple.*;
 	String comment() default "<n.a.>";
 }
 
+@Inherited
+@Target(java.lang.annotation.ElementType.METHOD)
+@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@interface MainCase {
+}
+
 // ******************** RULES HELPER for pretty code **************************************** //
 final class PointsLogger extends JUnitWithPoints.PointsLogger {
 }
@@ -176,6 +182,13 @@ public abstract class JUnitWithPoints {
 	protected static class PointsLogger extends TestWatcher {
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
+			if (System.getProperty("main") != null && System.getProperty("main").equals("yes")) {
+				MainCase maincase = description.getAnnotation(MainCase.class);
+				if (maincase == null) {
+					// ignore testcase result FIXME: write own runner that runs only the relevant tests
+					return;
+				}
+			}
 			Bonus bonusAnnotation = description.getAnnotation(Bonus.class);
 			Malus malusAnnotation = description.getAnnotation(Malus.class);
 			if (bonusAnnotation == null && malusAnnotation == null) {

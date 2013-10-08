@@ -77,6 +77,7 @@ public class ExampleTestcase {
 	}
 
 	@Test
+	@MainCase
 	@Bonus(exID = "GA4.6a", bonus = 47.11)
 	@Replace({"Student.foo"})
 	public void testFooShouldReturn4711() { // correct in both
