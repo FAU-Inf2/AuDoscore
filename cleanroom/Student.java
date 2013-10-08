@@ -3,7 +3,7 @@ public class Student {
 	int __cleanVariable = 0;
 
 	public int foo() {
-		return 4711 + __cleanVariable;
+		return 4711 + __cleanVariable + testVariable;
 	}
 
 	public double bar() {
@@ -15,7 +15,7 @@ public class Student {
 	}
 
 	public String foobar() {
-		return "I am dangerous.";
+		return "I am dangerous." + Unimportant.Unimportant();
 	}
 
 	public static Object getNull() {
@@ -36,6 +36,9 @@ public class Student {
 	}
 
 	public Student(int x) {
+		System.out.println(x + Unimportant.unimportant());
+		System.out.println(x + Unimportant.unimportant());
+		System.out.println(x + Unimportant.unimportant());
 		System.out.println(x + Unimportant.unimportant());
 	}
 }
