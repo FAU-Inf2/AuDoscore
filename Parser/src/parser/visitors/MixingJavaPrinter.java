@@ -26,15 +26,18 @@ public class MixingJavaPrinter extends EnlightenedJavaPrinter {
 				if (modifier instanceof BastTypeQualifier) {
 					BastTypeQualifier m = (BastTypeQualifier) modifier;
 					if (m.type == BastTypeQualifier.TYPE_PUBLIC) {
-						// TODO: looks ugly, ask Georg for a better way
 						newName = " " + superClass;
 						for (String s : keep) {
 							newName += "_" + s;
 						}
 						TokenAndHistory tah[] = {new TokenAndHistory(new JavaToken(BasicJavaToken.IDENTIFIER, newName))};
-
 						node.name = new BastNameIdent(tah, newName);
-						tah = new TokenAndHistory[]{new TokenAndHistory(new JavaToken(BasicJavaToken.IDENTIFIER, " extends " + superClass + " { "))};
+						JavaToken tmp = new JavaToken(BasicJavaToken.EXTENDS,"extends");
+						tmp.whiteSpace.append(" ");
+						node.info.tokens[1] = new TokenAndHistory(tmp);
+						tmp = new JavaToken(BasicJavaToken.IDENTIFIER,superClass);
+						tmp.whiteSpace.append(" ");
+						tah = new TokenAndHistory[]{new TokenAndHistory(tmp)};
 						node.extendedClass = new BastClassType(tah, new BastNameIdent(null, " " + superClass + " "), null, null);
 						dontTouch = false;
 						super.visit(node);
@@ -61,7 +64,7 @@ public class MixingJavaPrinter extends EnlightenedJavaPrinter {
 		boolean thisFirst = first;
 		first = false;
 
-		if (node.decl == null) { // can this happen?
+		if (node.decl == null) { // won't happen if the syntax is correct 
 			super.visit(node);
 		} else {
 			boolean isConstructor = (node.returnType == null);
