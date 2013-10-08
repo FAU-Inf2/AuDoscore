@@ -1,4 +1,6 @@
 public class Student {
+	int testVariable = 0;
+
 	public int foo() {
 		return 4711 + 1;
 	}

@@ -1,10 +1,13 @@
 public class Student {
+	int testVariable = 0;
+	int __cleanVariable = 0;
+
 	public int foo() {
-		return 4711;
+		return 4711 + __cleanVariable;
 	}
 
 	public double bar() {
-		return 4711.0815;
+		return 4711.0815 + testVariable;
 	}
 
 	public String baz() {
