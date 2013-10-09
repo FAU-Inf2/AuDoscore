@@ -5,8 +5,8 @@ import java.lang.reflect.*;
 public class ReadReplace{
 	public static void main(String args[]) throws Exception{
 		if(args.length != 1){
-			System.out.println("class argument");
-			System.exit(1);
+			System.err.println("missing class argument");
+			System.exit(-1);
 		}
 		String tcln = args[0];
 		ClassLoader cl = ClassLoader.getSystemClassLoader();

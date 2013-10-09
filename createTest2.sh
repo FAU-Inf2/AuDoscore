@@ -2,6 +2,7 @@
 
 set -e
 set -x
+set -o pipefail
 
 mkdir -p mixed
 list=`java -cp lib/junitpoints.jar:replaced:lib/aspectjrt.jar ReadReplace $1 | sort | uniq`
