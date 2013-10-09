@@ -1,0 +1,30 @@
+===============================
+Änderungen an "ExampleTestcase"
+-------------------------------
+
++ import org.junit.experimental.categories.Category;
+[...]
++	@Category(MainTest.class)
+-//	@MainCase
+
+===============================
+Ausführung
+-------------------------------
+
+## ALLE Tests ##
+java -cp ../lib/json-simple-1.1.1.jar:/Mounts/LOCAL/LOCAL/Programme/eclipse/plugins/org.junit_4.11.0.v201303080030/junit.jar:/Mounts/LOCAL/LOCAL/Programme/eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar:/Mounts/LOCAL/LOCAL/Programme/eclipse/plugins/org.aspectj.runtime_1.7.3.20130613144500-a.jar:../lib/junitpoints.jar:. org.junit.runner.JUnitCore ExampleTestcase
+
+## NUR "Main-Tests" ##
+java -cp ../lib/json-simple-1.1.1.jar:/Mounts/LOCAL/LOCAL/Programme/eclipse/plugins/org.junit_4.11.0.v201303080030/junit.jar:/Mounts/LOCAL/LOCAL/Programme/eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar:/Mounts/LOCAL/LOCAL/Programme/eclipse/plugins/org.aspectj.runtime_1.7.3.20130613144500-a.jar:../lib/junitpoints.jar:. org.junit.runner.JUnitCore MainTestSuite
+
+## KEINE "Main-Tests" ##
+java -cp ../lib/json-simple-1.1.1.jar:/Mounts/LOCAL/LOCAL/Programme/eclipse/plugins/org.junit_4.11.0.v201303080030/junit.jar:/Mounts/LOCAL/LOCAL/Programme/eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar:/Mounts/LOCAL/LOCAL/Programme/eclipse/plugins/org.aspectj.runtime_1.7.3.20130613144500-a.jar:../lib/junitpoints.jar:. org.junit.runner.JUnitCore NonMainTestSuite
+
+===============================
+Anpassungen & zu beachten!
+-------------------------------
+Namen der Kategorie ("MainTest") bzw. der beiden Suiten ("MainTestSuite" / "NonMainTestSuite") frei wählbar => muss nur konsistent sein.
+
+ACHTUNG: Klasse mit Testfällen (hier: "ExampleTestcase") muss explizit als Teil der obigen beiden Suiten benannt werden:
+@SuiteClasses(ExampleTestcase.class)
+	=> geht das vllt. auch besser?!?
