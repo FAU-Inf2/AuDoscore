@@ -77,7 +77,6 @@ public class ExampleTestcase {
 	}
 
 	@Test
-	@MainCase
 	@Bonus(exID = "GA4.6a", bonus = 47.11)
 	@Replace({"Student.foo"})
 	public void testFooShouldReturn4711() { // correct in both
@@ -87,6 +86,7 @@ public class ExampleTestcase {
 	@Test
 	@Bonus(exID = "GA4.6a", bonus = 47.11)
 	@Replace({"Student.foo"})
+	@SecretCase
 	public void testFooShouldReturn4711_2() { // correct in student
 		assertEquals("Foo ist kaputt.", (new Student()).foo(), 4712);
 	}
@@ -94,6 +94,7 @@ public class ExampleTestcase {
 	@Test
 	@Bonus(exID = "GA4.6a", bonus = 47.11)
 	@Replace({"Student.foo"})
+	@SecretCase
 	public void testFooShouldReturn4711_3() { // correct in both
 		assertEquals("Foo ist kaputt.", (new Student()).foo(), (new Student()).foo());
 	}
@@ -101,6 +102,7 @@ public class ExampleTestcase {
 	@Test
 	@Bonus(exID = "GA4.6a", bonus = 47.11)
 	@Replace({"Student.foo"})
+	@SecretCase
 	public void testFooShouldReturn4711_4() { // wrong in both
 		assertEquals("Foo ist kaputt.", 23, 42);
 	}
@@ -108,6 +110,7 @@ public class ExampleTestcase {
 	@Test
 	@Bonus(exID = "GA4.6a", bonus = 4.11)
 	@Replace({"Student.foo"})
+	@SecretCase
 	public void testFooShouldReturn4711_5() { // correct in clean
 		assertEquals("Foo ist kaputt.", 4711, (new Student()).foo());
 	}

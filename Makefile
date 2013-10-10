@@ -50,7 +50,10 @@ lib/parser.jar:
 compile-stage0:
 	javac $(STUDENTSOURCE)	
 
-compile-stage1: $(TESTCLASS)
+compile-stage1:
+	sed -iorig -e 's/@SecretCase/@Ignore/' $(TEST).java
+	make $(TESTCLASS)
+	mv $(TEST).javaorig $(TEST).java
 
 compile-stage2: $(TESTCLASS) $(TESTCLASSASPECT)
 	./createTest2.sh $(TEST)
