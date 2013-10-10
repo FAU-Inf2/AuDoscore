@@ -90,7 +90,7 @@ public class JUnitPointsMerger {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		String inputFile = (args.length == 2) ? args[0] : "result.json";
 		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
 		JSONParser parser = new JSONParser();
@@ -128,6 +128,8 @@ public class JUnitPointsMerger {
 			bw.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("invalid json");
+			throw e;
 		}
 	}
 }
