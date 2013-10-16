@@ -181,6 +181,14 @@ public abstract class JUnitWithPoints {
 	// -------------------------------------------------------------------------------- //
 	protected static class PointsLogger extends TestWatcher {
 		@Override
+		protected void starting(Description description) {
+			Test testAnnotation = description.getAnnotation(Test.class);
+			if (testAnnotation.timeout() == 0) {
+				throw new AnnotationFormatError("WARNING - found test case without TIMEOUT in @Test annotation: [" + description.getDisplayName() + "]");
+			}
+		}
+
+		@Override
 		protected final void failed(Throwable throwable, Description description) {
 			Bonus bonusAnnotation = description.getAnnotation(Bonus.class);
 			Malus malusAnnotation = description.getAnnotation(Malus.class);
