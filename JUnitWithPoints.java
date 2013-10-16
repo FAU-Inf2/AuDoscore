@@ -74,6 +74,7 @@ public abstract class JUnitWithPoints {
 	// ******************** BACKEND FUNCTIONALITY **************************************** //
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 	private static final HashMap<String, List<ReportEntry>> reportHashMap = new HashMap<>();
+	private static long timeoutSum = 0;
 
 	static {
 		Locale.setDefault(Locale.US);
@@ -186,6 +187,7 @@ public abstract class JUnitWithPoints {
 			if (testAnnotation.timeout() == 0) {
 				throw new AnnotationFormatError("WARNING - found test case without TIMEOUT in @Test annotation: [" + description.getDisplayName() + "]");
 			}
+			timeoutSum += testAnnotation.timeout();
 		}
 
 		@Override
@@ -253,6 +255,9 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		protected final void after() {
+			if (timeoutSum > 60_000) {
+				throw new AnnotationFormatError("WARNING - total timeout sum is too high for \"Tobis judge hosts\": [" + timeoutSum + "ms]");
+			}
 			for (String exerciseId : exerciseHashMap.keySet()) {
 				if (!reportHashMap.containsKey(exerciseId)) {
 					throw new AnnotationFormatError("WARNING - found exercise points declaration for exercise without test case: [" + exerciseId + "]");
