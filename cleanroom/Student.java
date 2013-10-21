@@ -35,6 +35,9 @@ public class Student {
 		a[a.length + 32]++;
 	}
 
+	public Student() {
+	}
+
 	public Student(int x) {
 		System.out.println(x + Unimportant.unimportant());
 		System.out.println(x + Unimportant.unimportant());

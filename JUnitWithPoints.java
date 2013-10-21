@@ -9,6 +9,10 @@ import org.junit.runners.model.*;
 
 import org.json.simple.*;
 
+import java.lang.reflect.*;
+import asp.*;
+import tester.*;
+
 // ******************** ANNOTATIONS **************************************** //
 @Inherited
 @Target(java.lang.annotation.ElementType.TYPE)
@@ -181,17 +185,73 @@ public abstract class JUnitWithPoints {
 
 	// -------------------------------------------------------------------------------- //
 	protected static class PointsLogger extends TestWatcher {
+
+		private PrintStream saveOut;
+		private PrintStream saveErr;
+
 		@Override
 		protected void starting(Description description) {
-			Test testAnnotation = description.getAnnotation(Test.class);
-			if (testAnnotation.timeout() == 0) {
-				throw new AnnotationFormatError("WARNING - found test case without TIMEOUT in @Test annotation: [" + description.getDisplayName() + "]");
+			try {
+				Test testAnnotation = description.getAnnotation(Test.class);
+				if (testAnnotation.timeout() == 0) {
+					throw new AnnotationFormatError("WARNING - found test case without TIMEOUT in @Test annotation: [" + description.getDisplayName() + "]");
+				}
+				timeoutSum += testAnnotation.timeout();
+
+				saveOut = System.out;
+				saveErr = System.err;
+
+				System.setOut(new PrintStream(new OutputStream() {
+					public void write(int i) {
+					}
+				}));
+
+				System.setErr(new PrintStream(new OutputStream() {
+					public void write(int i) {
+					}
+				}));
+
+				String doReplace = System.getProperty("replace");
+				if(doReplace == null || !doReplace.equals("yes"))
+					return;
+				ClassLoader cl = ClassLoader.getSystemClassLoader();
+				Factory.mClassMap = new HashMap<Class, Class>();
+				Factory.mMethsMap = new HashMap<String, SortedSet<String>>();
+				if(description.getAnnotation(Replace.class) != null) {
+					Replace r = description.getAnnotation(Replace.class);
+					for(int i=0; i<r.value().length; ++i){
+						int s = r.value()[i].indexOf('.');
+						String cln = r.value()[i].substring(0, s);
+
+						String regex = r.value()[i].substring(s+1);
+						
+						if(!Factory.mMethsMap.containsKey(cln))
+							Factory.mMethsMap.put(cln, new TreeSet<String>());
+						SortedSet<String> meths = Factory.mMethsMap.get(cln);
+
+						for(Method me : cl.loadClass(cln).getDeclaredMethods()){
+							if(me.getName().matches(regex)){
+								meths.add(me.getName());
+							}
+						}
+					}
+					for(Map.Entry<String, SortedSet<String>> e : Factory.mMethsMap.entrySet()){
+						String ncln = e.getKey();
+						for(String me : e.getValue())
+							ncln += "_" + me;
+						Factory.mClassMap.put(cl.loadClass(e.getKey()), cl.loadClass(ncln));
+					}
+				}
+			} catch (Exception e) {
+				throw new AnnotationFormatError(e.getMessage());
 			}
-			timeoutSum += testAnnotation.timeout();
 		}
 
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
+			System.setOut(saveOut);
+			System.setErr(saveErr);
+
 			Bonus bonusAnnotation = description.getAnnotation(Bonus.class);
 			Malus malusAnnotation = description.getAnnotation(Malus.class);
 			if (bonusAnnotation == null && malusAnnotation == null) {
