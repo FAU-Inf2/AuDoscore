@@ -134,7 +134,7 @@ public class MixingJavaPrinter extends EnlightenedJavaPrinter {
 				if (keep.contains(meth)) {
 					super.visit(node);
 				} else if (thisFirst) {
-					buffer.append(" {\n");
+					buffer.append(" \n");
 				}
 			}
 		}
