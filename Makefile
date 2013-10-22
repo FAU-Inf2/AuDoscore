@@ -12,7 +12,7 @@ all:
 	echo -e "\n\n\033[1;31mcompiling student code with main-tests\033[0m\n\n"
 	make compile-stage1
 	echo -e "\n\n\033[1;31mrunning student code with main-tests\033[0m\n\n"
-	make run-stage1 | grep -v "^$$" | tail -1 | grep "OK ("
+	make run-stage1 | grep -v "^$$" | tail -2 | grep "OK ("
 	echo -e "\n\n\033[1;31mcompiling student code with all tests (vanilla and replaced)\033[0m\n\n"
 	make compile-stage2
 	echo -e "\n\n\033[1;31mrunning student code with all tests (vanilla and replaced)\033[0m\n\n"
