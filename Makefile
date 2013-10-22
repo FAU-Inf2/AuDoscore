@@ -81,6 +81,6 @@ $(TESTCLASS): $(TESTSOURCE) $(STUDENTSOURCE)
 	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE)
 
 $(TESTCLASSASPECT): $(TESTSOURCE) $(STUDENTSOURCE) 
-	ajc -Xreweavable -d replaced -1.7 -cp lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACES) tester/Factory.java asp/AllocFactoryAspect.java
+	CLASSPATH="lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectjtools.jar:." java org.aspectj.tools.ajc.Main -Xreweavable -1.7 -d replaced $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACES) tester/Factory.java asp/AllocFactoryAspect.java
 
 .PHONY: lib/parser.jar
