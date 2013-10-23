@@ -39,8 +39,8 @@ build:
 
 prepare: lib/junitpoints.jar lib/parser.jar
 
-lib/junitpoints.jar: build JUnitWithPoints.java Replace.java JUnitPointsMerger.java ReadReplace.java
-	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. JUnitWithPoints.java Replace.java JUnitPointsMerger.java ReadReplace.java
+lib/junitpoints.jar: build JUnitWithPoints.java Replace.java JUnitPointsMerger.java ReadReplace.java ReadForbidden.java
+	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. JUnitWithPoints.java Replace.java JUnitPointsMerger.java ReadReplace.java ReadForbidden.java
 	jar cvf lib/junitpoints.jar -C build .
 
 lib/parser.jar:

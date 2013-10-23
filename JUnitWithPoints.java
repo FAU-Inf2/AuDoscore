@@ -32,6 +32,13 @@ import tester.*;
 	String comment() default "<n.a.>";
 }
 
+@Inherited
+@Target(java.lang.annotation.ElementType.TYPE)
+@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@interface Forbidden {
+	String[] value();
+}
+
 // -------------------------------------------------------------------------------- //
 @Inherited
 @Target(java.lang.annotation.ElementType.METHOD)
