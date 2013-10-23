@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 
 public class ReadForbidden {
 	public static void main(String args[]) throws Exception {
-		if(args.length != 1) {
+		if (args.length == 0) {
 			System.err.println("missing class argument");
 			System.exit(-1);
 		}
