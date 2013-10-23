@@ -9,18 +9,21 @@ public class ReadForbidden {
 			System.err.println("missing class argument");
 			System.exit(-1);
 		}
-		String tcln = args[0];
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
-		Class newClass = cl.loadClass(tcln);
-		Forbidden forbidden = (Forbidden) newClass.getAnnotation(Forbidden.class);
 
 		String grep = "egrep '(java/lang/ClassLoader|java\\.lang\\.ClassLoader|java/lang/reflect|java\\.lang\\.reflect";
-		for (String s : forbidden.value()) {
-			String escape = s.replaceAll("\\.", "\\\\.");
-			grep += "|" + escape;
-			escape = s.replaceAll("\\.", "/");
-			grep += "|" + escape;
+
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		for (String tcln : args) {
+			Class newClass = cl.loadClass(tcln);
+			Forbidden forbidden = (Forbidden) newClass.getAnnotation(Forbidden.class);
+			for (String s : forbidden.value()) {
+				String escape = s.replaceAll("\\.", "\\\\.");
+				grep += "|" + escape;
+				escape = s.replaceAll("\\.", "/");
+				grep += "|" + escape;
+			}
 		}
+
 		grep += ")'";
 		System.out.println(grep);
 	}
