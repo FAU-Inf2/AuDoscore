@@ -16,6 +16,7 @@ public class ReadForbidden {
 		for (String tcln : args) {
 			Class newClass = cl.loadClass(tcln);
 			Forbidden forbidden = (Forbidden) newClass.getAnnotation(Forbidden.class);
+			if (forbidden == null) continue;
 			for (String s : forbidden.value()) {
 				String escape = s.replaceAll("\\.", "\\\\.");
 				grep += "|" + escape;

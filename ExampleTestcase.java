@@ -9,7 +9,7 @@ import asp.*;
 import tester.*;
 
 @Exercises({ @Ex(exID = "GA4.6a", points = 12.5)})
-@Forbidden({"java.util.", "java.math.BigInteger"})
+//@Forbidden({"java.util.", "java.math.BigInteger"})
 public class ExampleTestcase {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints
