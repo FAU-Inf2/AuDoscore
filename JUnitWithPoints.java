@@ -372,6 +372,7 @@ public abstract class JUnitWithPoints {
 				summary += exercise.exID() + String.format(" (%1$.1f points):", pointsAchievedPerExercise) + "\n";
 				summary += report;
 				pointsAchievedTotal += pointsAchievedPerExercise;
+				jsonexercise.put("possiblePts", ((Double) exercise.points()).toString());
 				jsonexercise.put("name", exercise.exID());
 				jsonexercise.put("score", String.format("%1$.1f", pointsAchievedPerExercise));
 				jsonexercises.add(jsonexercise);
