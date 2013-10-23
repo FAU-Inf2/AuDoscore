@@ -132,7 +132,7 @@ public abstract class JUnitWithPoints {
 				} else {
 					result += String.format("✓ %1$+6.2f", (pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise));
 					jsontest.put("success", (Boolean) (true));
-					jsontest.put("score", String.format("%1$.2f", (pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise)));
+					jsontest.put("score", ((Double)(pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise)).toString());
 				}
 				result += " | ";
 				if (bonus.comment().equals("<n.a.>")) {
@@ -152,7 +152,7 @@ public abstract class JUnitWithPoints {
 				if (throwable != null) {
 					result += String.format("✗ %1$+6.2f", -(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise));
 					jsontest.put("success", (Boolean) (false));
-					jsontest.put("score", String.format("%1$.2f", -(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise)));
+					jsontest.put("score", ((Double)(-(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise))).toString());
 				} else {
 					result += String.format("✓ %1$6.2f", 0.0);
 					jsontest.put("success", (Boolean) (true));
