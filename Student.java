@@ -1,5 +1,6 @@
 public class Student {
 	int testVariable = 0;
+//	ClassLoader l;
 
 	public int foo() {
 		return 4711 + 1;

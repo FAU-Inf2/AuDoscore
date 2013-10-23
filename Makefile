@@ -3,6 +3,7 @@ include var.mk
 TESTCLASSASPECT = $(TEST:=.class.aspect)
 TESTCLASS = $(TEST:=.class)
 TESTSOURCE = $(TEST:=.java)
+STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
 
 all:
 	make prepare
@@ -54,6 +55,10 @@ compile-stage1:
 	sed -iorig -e 's/@SecretCase/@Ignore/' $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).javaorig $(TEST).java; /bin/false; )
 	mv $(TEST).javaorig $(TEST).java
+	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
+	chmod +x forbidden
+	! ( javap -c $(STUDENTCLASS) | ./forbidden )
+	rm forbidden
 
 compile-stage2: $(TESTCLASS) $(TESTCLASSASPECT)
 	./createTest2.sh $(TEST)
