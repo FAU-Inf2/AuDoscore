@@ -52,7 +52,7 @@ compile-stage0:
 
 compile-stage1:
 	sed -iorig -e 's/@SecretCase/@Ignore/' $(TEST).java
-	make -B $(TESTCLASS)
+	make -B $(TESTCLASS) || ( mv $(TEST).javaorig $(TEST).java; /bin/false; )
 	mv $(TEST).javaorig $(TEST).java
 
 compile-stage2: $(TESTCLASS) $(TESTCLASSASPECT)
