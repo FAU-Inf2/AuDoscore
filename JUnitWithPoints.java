@@ -131,6 +131,40 @@ public abstract class JUnitWithPoints {
 			String result = "";
 			JSONObject jsontest = new JSONObject();
 			jsontest.put("id", getShortDisplayName(description));
+			if (bonus != null && malus != null) {
+				if (throwable != null) {
+					result += String.format("✗ %1$+6.2f", -(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise));
+					jsontest.put("success", (Boolean) (false));
+					jsontest.put("score", ((Double)(-(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise))).toString());
+					result += " | ";
+					if (malus.comment().equals("<n.a.>")) {
+						jsontest.put("desc", getShortDisplayName(description));
+						result += getShortDisplayName(description);
+					} else {
+						jsontest.put("desc", malus.comment());
+						result += malus.comment();
+					}
+				} else {
+					result += String.format("✓ %1$+6.2f", (pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise));
+					jsontest.put("success", (Boolean) (true));
+					jsontest.put("score", ((Double)(pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise)).toString());
+					result += " | ";
+					if (bonus.comment().equals("<n.a.>")) {
+						jsontest.put("desc", getShortDisplayName(description));
+						result += getShortDisplayName(description);
+					} else {
+						jsontest.put("desc", bonus.comment());
+						result += bonus.comment();
+					}
+				}
+				if (throwable != null) {
+					result += " | " + throwable.getClass().getSimpleName() + "(" + throwable.getLocalizedMessage() + ")";
+					result += getStackTrace();
+					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
+				}
+				tests.add(jsontest);
+				return result;
+			}
 			if (bonus != null) {
 				if (throwable != null) {
 					result += String.format("✗ %1$6.2f", 0.0);
@@ -154,6 +188,8 @@ public abstract class JUnitWithPoints {
 					result += getStackTrace();
 					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 				}
+				tests.add(jsontest);
+				return result;
 			}
 			if (malus != null) {
 				if (throwable != null) {
@@ -178,8 +214,9 @@ public abstract class JUnitWithPoints {
 					result += getStackTrace();
 					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 				}
+				tests.add(jsontest);
+				return result;
 			}
-			tests.add(jsontest);
 			return result;
 		}
 	}
@@ -283,18 +320,22 @@ public abstract class JUnitWithPoints {
 			} else if (malusAnnotation != null && malusAnnotation.malus() == 0) {
 				throw new AnnotationFormatError("WARNING - found test case with illegal malus value in MALUS annotation: [" + description.getDisplayName() + "]");
 			} else {
-				if (bonusAnnotation != null) {
-					if (!reportHashMap.containsKey(bonusAnnotation.exID())) {
-						reportHashMap.put(bonusAnnotation.exID(), new ArrayList<ReportEntry>());
+				String exID = null;
+				if (bonusAnnotation != null && malusAnnotation != null) {
+					if (!bonusAnnotation.exID().equals(malusAnnotation.exID())){
+						throw new AnnotationFormatError("WARNING - found test case with different exercise id in MALUS/BONUS annotations: [" + description.getDisplayName() + "]");
 					}
-					reportHashMap.get(bonusAnnotation.exID()).add(new ReportEntry(description, bonusAnnotation, null, throwable));
+				}
+				if (bonusAnnotation != null) {
+					exID = bonusAnnotation.exID();
 				}
 				if (malusAnnotation != null) {
-					if (!reportHashMap.containsKey(malusAnnotation.exID())) {
-						reportHashMap.put(malusAnnotation.exID(), new ArrayList<ReportEntry>());
-					}
-					reportHashMap.get(malusAnnotation.exID()).add(new ReportEntry(description, null, malusAnnotation, throwable));
+					exID = malusAnnotation.exID();
 				}
+				if (!reportHashMap.containsKey(exID)) {
+					reportHashMap.put(exID, new ArrayList<ReportEntry>());
+				}
+				reportHashMap.get(exID).add(new ReportEntry(description, bonusAnnotation, malusAnnotation, throwable));
 			}
 		}
 
