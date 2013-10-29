@@ -57,7 +57,7 @@ compile-stage1:
 	mv $(TEST).javaorig $(TEST).java
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
-	! ( javap -c $(STUDENTCLASS) | ./forbidden )
+	! ( javap -p -c $(STUDENTCLASS) | ./forbidden )
 	rm forbidden
 
 compile-stage2: $(TESTCLASS) $(TESTCLASSASPECT)
