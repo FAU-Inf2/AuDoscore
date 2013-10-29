@@ -39,6 +39,13 @@ import tester.*;
 	String[] value();
 }
 
+@Inherited
+@Target(java.lang.annotation.ElementType.TYPE)
+@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@interface NotForbidden {
+	String[] value();
+}
+
 // -------------------------------------------------------------------------------- //
 @Inherited
 @Target(java.lang.annotation.ElementType.METHOD)

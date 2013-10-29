@@ -1,0 +1,64 @@
+Required and Available Annotations:
+
+@Exercises    
+  Required: Yes
+  Position: Testcase class
+  Arguments: Array of @Ex-Annotations
+  Semantics: Contains a list of @Ex annotations; see @Ex
+
+@Ex
+  Required: Yes
+  Position: Argument to @Exercises annotation
+  Arguments: exID: String
+             points: Double
+             comment: String, default "<n.a.>"
+  Semantics: for every exercise that students get points for,
+             create an unique @Ex annotation with an unique exID 
+             and the correct amount of points.
+
+@Forbidden
+  Required: No
+  Position: Testcase class
+  Arguments: Array of Strings
+  Semantics: Arguments are interpreted as prefixes of forbidden classes/methods/etc.
+             See also @NotForbidden
+
+@NotForbidden
+  Required: No
+  Position: Testcase class
+  Arguments: Array of Strings
+  Semantics: Arguments are interpreted as prefixes of not forbidden classes/methods/etc. 
+             This takes precedence over @Forbidden.
+             See also @Forbidden
+
+@Bonus
+  Required: Sort of, see also @Malus
+  Position: single testcase
+  Arguments: exID: String
+             bonus: float
+             comment: String, default "<n.a.>"
+  Semantics: ???
+
+@Malus
+  Required: Sort of, see also @Bonus
+  Position: single testcase
+  Arguments: exID: String
+             bonus: float
+             comment: String, default "<n.a.>"
+  Semantics: ???
+
+@Replace
+  Required: No
+  Position: single testcase
+  Arguments: Array of Strings
+  Semantics: The strings refer to methods in the Student's code.
+             For this testcase, all methods metioned in the @Replace annotation
+             will be replaced with their cleanroom counterparts.
+
+@SecretCase
+  Required: No, but see Semantics
+  Position: single testcase
+  Arguments: None
+  Semantics: A secret testcase will not be shown to the students before submission deadline.
+             Note that there should be a secret and a non-secret testcase for every exID/@Ex
+
