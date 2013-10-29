@@ -37,15 +37,17 @@ Required and Available Annotations:
   Arguments: exID: String
              bonus: float
              comment: String, default "<n.a.>"
-  Semantics: ???
+  Semantics: Student will get bonus / sum(bonus) * Ex.points points for passing this testcase.
+             comment with points earned will be shown in EST comment
 
 @Malus
   Required: Sort of, see also @Bonus
   Position: single testcase
   Arguments: exID: String
-             bonus: float
+             malus: float
              comment: String, default "<n.a.>"
-  Semantics: ???
+  Semantics: Student will loose malus / sum(bonus) * Ex.points points for not passing this testcase
+             comment with points lost will be shown in EST comment
 
 @Replace
   Required: No
@@ -59,6 +61,6 @@ Required and Available Annotations:
   Required: No, but see Semantics
   Position: single testcase
   Arguments: None
-  Semantics: A secret testcase will not be shown to the students before submission deadline.
+  Semantics: A secret testcase result will not be shown to the students before submission deadline.
              Note that there should be a secret and a non-secret testcase for every exID/@Ex
 
