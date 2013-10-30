@@ -20,20 +20,16 @@ public class ReadForbidden {
 			Forbidden forbidden = (Forbidden) newClass.getAnnotation(Forbidden.class);
 			if (forbidden == null) continue;
 			for (String s : forbidden.value()) {
-				String escape = s.replaceAll("\\.", "\\\\.");
-				grep += "|" + escape;
-				escape = s.replaceAll("\\.", "/");
+				String escape = s.replaceAll("\\.", "(\\\\.|/)");
 				grep += "|" + escape;
 			}
 			NotForbidden notforbidden = (NotForbidden) newClass.getAnnotation(NotForbidden.class);
 			if (notforbidden == null) continue;
 			for (String s : notforbidden.value()) {
 				hasNotForbidden = true;
-				String escape = s.replaceAll("\\.", "\\\\.");
+				String escape = s.replaceAll("\\.", "(\\\\.|/)");
 				grep2 += sep + escape;
 				sep = "|";
-				escape = s.replaceAll("\\.", "/");
-				grep2 += sep + escape;
 			}
 		}
 
