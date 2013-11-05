@@ -15,7 +15,7 @@ public class Student {
 	}
 
 	public String foobar() {
-		return "I am dangerous." + Unimportant.Unimportant();
+		return "I am dangerous.";
 	}
 
 	public static Object getNull() {
@@ -26,8 +26,12 @@ public class Student {
 		return "";
 	}
 
-	public static void recur() {
-		recur();
+	public static void recur(int i) {
+		recur(i - 1);
+	}
+	
+	public static void recur(int i, double d) {
+		recur(i - 1);
 	}
 
 	public static void ioob() {
@@ -39,15 +43,6 @@ public class Student {
 	}
 
 	public Student(int x) {
-		System.out.println(x + Unimportant.unimportant());
-		System.out.println(x + Unimportant.unimportant());
-		System.out.println(x + Unimportant.unimportant());
-		System.out.println(x + Unimportant.unimportant());
 	}
 }
 
-class Unimportant {
-	public static String unimportant() {
-		return "unimp";
-	}
-}

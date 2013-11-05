@@ -30,8 +30,12 @@ public class Student {
 		return getNull().toString();
 	}
 
-	public static void recur() {
-		recur();
+	public static void recur(int i) {
+		recur(i+1);
+	}
+	
+	public static void wtf(int d) {
+		recur(+1);
 	}
 
 	public static void ioob() {

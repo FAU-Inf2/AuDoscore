@@ -40,8 +40,8 @@ build:
 
 prepare: lib/junitpoints.jar lib/parser.jar
 
-lib/junitpoints.jar: build JUnitWithPoints.java Replace.java JUnitPointsMerger.java ReadReplace.java ReadForbidden.java
-	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. JUnitWithPoints.java Replace.java JUnitPointsMerger.java ReadReplace.java ReadForbidden.java
+lib/junitpoints.jar: build JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java
+	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java
 	jar cvf lib/junitpoints.jar -C build .
 
 lib/parser.jar:
@@ -86,6 +86,8 @@ $(TESTCLASS): $(TESTSOURCE) $(STUDENTSOURCE)
 	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE)
 
 $(TESTCLASSASPECT): $(TESTSOURCE) $(STUDENTSOURCE) 
-	CLASSPATH="lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectjtools.jar:." java org.aspectj.tools.ajc.Main -Xreweavable -1.7 -d replaced $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACES) tester/Factory.java asp/AllocFactoryAspect.java
+	cp asp/AllocFactoryAspect.java.orig asp/AllocFactoryAspect.java
+	java -cp lib/junitpoints.jar:replaced:lib/aspectjrt.jar:. tester.ReadReplace $(TEST) 2>> asp/AllocFactoryAspect.java
+	CLASSPATH="lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectjtools.jar:." java org.aspectj.tools.ajc.Main -Xreweavable -1.7 -d replaced $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACES) tester/Factory.java tester/ReadReplace.java asp/AllocFactoryAspect.java
 
 .PHONY: lib/parser.jar
