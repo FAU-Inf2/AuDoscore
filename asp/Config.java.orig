@@ -4,10 +4,10 @@ import java.lang.reflect.*;
 import tester.*;
 
 public class Config{
-	public static void setReplace(java.lang.reflect.Method m){
-		String sig = ReadReplace.getSig(m);
+	public static void setReplace(Method oldm, Method newm){
+		String sig = ReadReplace.getSig(oldm);
 		int index = replacedMap.get(sig);
-		replacedMethods[index] = m;
+		replacedMethods[index] = newm;
 	}
 	public static void clearReplace(){
 		for(int i=0; i<replacedMethods.length; ++i){

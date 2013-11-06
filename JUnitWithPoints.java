@@ -262,10 +262,13 @@ public abstract class JUnitWithPoints {
 					}
 				}));
 
+
 				String doReplace = System.getProperty("replace");
 				if(doReplace == null || !doReplace.equals("yes"))
 					return;
 				ClassLoader cl = ClassLoader.getSystemClassLoader();
+				cl.loadClass("asp.Config").getMethod("clearReplace").invoke(null);
+				Method setReplace = cl.loadClass("asp.Config").getMethod("setReplace", Method.class, Method.class);
 				Factory.mClassMap = new HashMap<Class, Class>();
 				Factory.mMethsMap = new HashMap<String, SortedSet<String>>();
 				if(description.getAnnotation(Replace.class) != null) {
@@ -291,6 +294,19 @@ public abstract class JUnitWithPoints {
 						for(String me : e.getValue())
 							ncln += "_" + me;
 						Factory.mClassMap.put(cl.loadClass(e.getKey()), cl.loadClass(ncln));
+					}
+
+					for(int i=0; i<r.value().length; ++i){
+						int s = r.value()[i].indexOf('.');
+						String cln = r.value()[i].substring(0, s);
+
+						String regex = r.value()[i].substring(s+1);
+						
+						for(Method me : cl.loadClass(cln).getDeclaredMethods()){
+							if(me.getName().matches(regex)){
+								setReplace.invoke(null, me, Factory.mClassMap.get(cl.loadClass(cln)).getMethod(me.getName(), me.getParameterTypes()));
+							}
+						}
 					}
 				}
 			} catch (Exception e) {
