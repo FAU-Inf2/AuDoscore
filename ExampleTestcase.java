@@ -6,7 +6,6 @@ import java.lang.*;
 import java.util.*;
 import java.io.*;
 import asp.*;
-import tester.*;
 
 @Exercises({ @Ex(exID = "GA4.6a", points = 12.5)})
 @Forbidden({"java.util.", "java.math.BigInteger"})

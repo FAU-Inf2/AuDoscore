@@ -53,7 +53,7 @@ compile-stage0:
 
 compile-stage1:
 	cp $(TEST).java $(TEST).java.orig
-	( echo "import org.junit.*;" ; cat $(TEST).java.orig ) > $(TEST).java
+	( echo "import org.junit.*;\n import tester.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
 	sed -i -e 's/@SecretCase/@Ignore/' $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
