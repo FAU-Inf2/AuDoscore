@@ -11,7 +11,10 @@ public class ReadReplace{
 		for(Class p : m.getParameterTypes()){
 			sig +=  p.getName() + ", ";
 		}
-		return sig.substring(0, sig.length()-2) + ")";
+		if(m.getParameterTypes().length > 0){
+			sig = sig.substring(0, sig.length()-2);
+		}
+		return sig + ")";
 	}
 	public static void main(String args[]) throws Exception{
 		if(args.length != 1){
