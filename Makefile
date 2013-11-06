@@ -89,7 +89,8 @@ $(TESTCLASS): $(TESTSOURCE) $(STUDENTSOURCE)
 
 $(TESTCLASSASPECT): $(TESTSOURCE) $(STUDENTSOURCE) 
 	cp asp/AllocFactoryAspect.java.orig asp/AllocFactoryAspect.java
+	cp asp/Config.java.orig asp/Config.java
 	java -cp lib/junitpoints.jar:replaced:lib/aspectjrt.jar:. tester.ReadReplace $(TEST) 2>> asp/AllocFactoryAspect.java
-	CLASSPATH="lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectjtools.jar:." java org.aspectj.tools.ajc.Main -Xreweavable -1.7 -d replaced $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACES) tester/Factory.java tester/ReadReplace.java asp/AllocFactoryAspect.java
+	CLASSPATH="lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectjtools.jar:." java org.aspectj.tools.ajc.Main -Xreweavable -1.7 -d replaced $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACES) tester/Factory.java tester/ReadReplace.java asp/AllocFactoryAspect.java asp/Config.java
 
 .PHONY: lib/parser.jar

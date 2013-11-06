@@ -1,5 +1,6 @@
 package tester;
 
+import java.io.*;
 import java.util.*;
 import java.lang.*;
 import java.lang.reflect.*;
@@ -58,10 +59,11 @@ public class ReadReplace{
 			}
 		}
 
-		String array = "static Method replacedMethods[] = new Method[" + liste.size() + "];\n";
-		array += "static Map<String, Integer> replacedMap = new HashMap<String, Integer>();\nstatic {\n";
+		PrintWriter configOut = new PrintWriter(new FileWriter("asp/Config.java", true));
+		configOut.println("static Method replacedMethods[] = new Method[" + liste.size() + "];");
+		configOut.println("static Map<String, Integer> replacedMap = new HashMap<String, Integer>();\nstatic {");
 		for(int i=0; i<liste.size(); ++i){
-			array += "replacedMap.put(\""+liste.get(i)+"\","+i+");\n";
+			configOut.println("replacedMap.put(\""+liste.get(i)+"\","+i+");");
 			System.err.println("pointcut callStatic"+i+"(): call(public static * " + liste.get(i) + ");");
 			System.err.println("Object around() : callStatic"+i+"() {");
 			System.err.println("if(replacedMethods["+i+"] == null)");
@@ -74,7 +76,8 @@ public class ReadReplace{
 			System.err.println("	return proceed();");
 			System.err.println("}");
 		}
-		array += "}\n";
-		System.err.print(array + "}\n");
+		configOut.println("}}");
+		configOut.close();
+		System.err.print("}\n");
 	}
 }
