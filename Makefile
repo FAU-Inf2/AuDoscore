@@ -52,12 +52,11 @@ compile-stage0:
 	javac $(STUDENTSOURCE)	
 
 compile-stage1:
-	echo "import org.junit.*;" > $(TEST).header
-	cat $(TEST).java > $(TEST).noheader
-	cat $(TEST).header $(TEST).noheader > $(TEST).java
-	sed -iorig -e 's/@SecretCase/@Ignore/' $(TEST).java
-	make -B $(TESTCLASS) || ( mv $(TEST).javaorig $(TEST).java; /bin/false; )
-	mv $(TEST).javaorig $(TEST).java
+	cp $(TEST).java $(TEST).java.orig
+	( echo "import org.junit.*;" ; cat $(TEST).java.orig ) > $(TEST).java
+	sed -i -e 's/@SecretCase/@Ignore/' $(TEST).java
+	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	mv $(TEST).java.orig $(TEST).java
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
 	! ( javap -p -c $(STUDENTCLASS) | ./forbidden )
