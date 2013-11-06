@@ -63,8 +63,9 @@ compile-stage1:
 	rm forbidden
 
 compile-stage2: $(TESTCLASS) $(TESTCLASSASPECT)
-	./createTest2.sh $(TEST)
-	make -B $(TESTCLASS)
+	./createTest2.sh $(TEST) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	mv $(TEST).java.orig $(TEST).java
 
 compile: compile-stage$(STAGE)
 
@@ -88,9 +89,11 @@ $(TESTCLASS): $(TESTSOURCE) $(STUDENTSOURCE)
 	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE)
 
 $(TESTCLASSASPECT): $(TESTSOURCE) $(STUDENTSOURCE) 
+	cp $(TEST).java $(TEST).java.orig
+	( echo "import org.junit.*;\n import tester.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
 	cp asp/AllocFactoryAspect.java.orig asp/AllocFactoryAspect.java
 	cp asp/Config.java.orig asp/Config.java
-	java -cp lib/junitpoints.jar:replaced:lib/aspectjrt.jar:. tester.ReadReplace $(TEST) 2>> asp/AllocFactoryAspect.java
-	CLASSPATH="lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectjtools.jar:." java org.aspectj.tools.ajc.Main -Xreweavable -1.7 -d replaced $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACES) tester/Factory.java tester/ReadReplace.java asp/AllocFactoryAspect.java asp/Config.java
+	java -cp lib/junitpoints.jar:replaced:lib/aspectjrt.jar:. tester.ReadReplace $(TEST) 2>> asp/AllocFactoryAspect.java || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	CLASSPATH="lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectjtools.jar:." java org.aspectj.tools.ajc.Main -Xreweavable -1.7 -d replaced $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACES) tester/Factory.java tester/ReadReplace.java tester/Replace.java asp/AllocFactoryAspect.java asp/Config.java || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 
 .PHONY: lib/parser.jar

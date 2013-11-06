@@ -39,7 +39,7 @@ function checkexit {
 }
 
 function checkAnnotationFormatError {
-	$file=$1; shift
+	file=$1; shift
 	grep -q "^java.lang.annotation.AnnotationFormatError" $file
 	if [ $? -eq 0 ]; then
 		err "testcase format wrong:"
@@ -135,7 +135,11 @@ popd > /dev/null
 
 if [ "x${interfaces}" != "x" ]; then
 	info "- copy interfaces"
-	pushd ../skeleton > /dev/null || die "failed"
+	if [ -r ../interfaces ]; then
+		pushd ../interfaces > /dev/null || die "failed"
+	else
+		pushd ../skeleton > /dev/null || die "failed"
+	fi
 	cp ${interfaces} "${testdir}"/ || die "failed"
 	popd > /dev/null
 fi
