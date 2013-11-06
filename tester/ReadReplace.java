@@ -24,7 +24,7 @@ public class ReadReplace{
 		String tcln = args[0];
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Class c = cl.loadClass(tcln);
-		List<String> liste = new ArrayList<String>();
+		Set<String> liste = new TreeSet<String>();
 		for(Method meth : c.getMethods()){
 			if(meth.isAnnotationPresent(Replace.class)){
 				Map<String, SortedSet<String>> methsMap = new HashMap<String, SortedSet<String>>();
@@ -65,9 +65,10 @@ public class ReadReplace{
 		PrintWriter configOut = new PrintWriter(new FileWriter("asp/Config.java", true));
 		configOut.println("static Method replacedMethods[] = new Method[" + liste.size() + "];");
 		configOut.println("static Map<String, Integer> replacedMap = new HashMap<String, Integer>();\nstatic {");
-		for(int i=0; i<liste.size(); ++i){
-			configOut.println("replacedMap.put(\""+liste.get(i)+"\","+i+");");
-			System.err.println("pointcut callStatic"+i+"(): call(public static * " + liste.get(i) + ");");
+		int i = 0;
+		for(String elem : liste) {
+			configOut.println("replacedMap.put(\""+elem+"\","+i+");");
+			System.err.println("pointcut callStatic"+i+"(): call(public static * " + elem + ");");
 			System.err.println("Object around() : callStatic"+i+"() {");
 			System.err.println("if(replacedMethods["+i+"] == null)");
 			System.err.println("	proceed();");
@@ -78,6 +79,7 @@ public class ReadReplace{
 			System.err.println("	}");
 			System.err.println("	return proceed();");
 			System.err.println("}");
+			i++;
 		}
 		configOut.println("}}");
 		configOut.close();
