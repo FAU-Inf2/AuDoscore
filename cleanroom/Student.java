@@ -27,11 +27,13 @@ public class Student {
 	}
 
 	public static void recur(int i) {
-		recur(i - 1);
+		if(i > 0)
+			recur(i-1);
 	}
 	
 	public static void recur(int i, double d) {
-		recur(i - 1);
+		if(i > 0)
+			recur(i-1);
 	}
 
 	public static void ioob() {
