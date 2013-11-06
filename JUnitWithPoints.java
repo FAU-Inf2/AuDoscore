@@ -262,7 +262,6 @@ public abstract class JUnitWithPoints {
 					}
 				}));
 
-
 				String doReplace = System.getProperty("replace");
 				if(doReplace == null || !doReplace.equals("yes"))
 					return;
@@ -303,6 +302,8 @@ public abstract class JUnitWithPoints {
 						String regex = r.value()[i].substring(s+1);
 						
 						for(Method me : cl.loadClass(cln).getDeclaredMethods()){
+							if((me.getModifiers() & Modifier.STATIC) == 0)
+								continue;
 							if(me.getName().matches(regex)){
 								setReplace.invoke(null, me, Factory.mClassMap.get(cl.loadClass(cln)).getMethod(me.getName(), me.getParameterTypes()));
 							}
