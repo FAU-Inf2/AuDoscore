@@ -34,6 +34,10 @@ clean:
 	rm -f result.json
 	ant -f Parser/build.xml clean
 
+
+miniclean:
+	rm -f *.class */*.class
+
 build:
 	rm -rf build
 	mkdir -p build
@@ -51,7 +55,7 @@ lib/parser.jar:
 compile-stage0:
 	javac $(STUDENTSOURCE)	
 
-compile-stage1:
+compile-stage1: miniclean
 	cp $(TEST).java $(TEST).java.orig
 	( echo "import org.junit.*;\n import tester.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
 	sed -i -e 's/@SecretCase/@Ignore/' $(TEST).java
@@ -62,7 +66,11 @@ compile-stage1:
 	! ( javap -p -c $(STUDENTCLASS) | ./forbidden )
 	rm forbidden
 
-compile-stage2: $(TESTCLASS) $(TESTCLASSASPECT)
+compile-stage2: miniclean
+	cp $(TEST).java $(TEST).java.orig
+	( echo "import org.junit.*;\n import tester.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
+	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	make -B $(TESTCLASSASPECT) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	./createTest2.sh $(TEST) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
@@ -86,8 +94,6 @@ run: run-stage$(STAGE)
 
 
 $(TESTCLASS): $(TESTSOURCE) $(STUDENTSOURCE)
-	cp $(TEST).java $(TEST).java.orig
-	( echo "import org.junit.*;\n import tester.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
 	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 
 $(TESTCLASSASPECT): $(TESTSOURCE) $(STUDENTSOURCE) 
