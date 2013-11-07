@@ -94,12 +94,12 @@ run: run-stage$(STAGE)
 
 
 $(TESTCLASS): $(TESTSOURCE) $(STUDENTSOURCE)
-	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE)
 
 $(TESTCLASSASPECT): $(TESTSOURCE) $(STUDENTSOURCE) 
 	cp asp/AllocFactoryAspect.java.orig asp/AllocFactoryAspect.java
 	cp asp/Config.java.orig asp/Config.java
-	java -cp lib/junitpoints.jar:replaced:lib/aspectjrt.jar:. tester.ReadReplace $(TEST) 2>> asp/AllocFactoryAspect.java || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
-	CLASSPATH="lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectjtools.jar:." java org.aspectj.tools.ajc.Main -Xreweavable -1.7 -d replaced $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACES) tester/Factory.java tester/ReadReplace.java tester/Replace.java asp/AllocFactoryAspect.java asp/Config.java || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	java -cp lib/junitpoints.jar:replaced:lib/aspectjrt.jar:. tester.ReadReplace $(TEST)
+	CLASSPATH="lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectjtools.jar:." java org.aspectj.tools.ajc.Main -Xreweavable -1.7 -d replaced $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACES) tester/Factory.java tester/ReadReplace.java tester/Replace.java asp/AllocFactoryAspect.java asp/Config.java
 
 .PHONY: lib/parser.jar

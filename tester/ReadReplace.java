@@ -66,26 +66,29 @@ public class ReadReplace{
 		configOut.println("static Method replacedMethods[] = new Method[" + liste.size() + "];");
 		configOut.println("static Map<String, Integer> replacedMap = new HashMap<String, Integer>();\nstatic {");
 		int i = 0;
+
+		PrintWriter aspectOut = new PrintWriter(new FileWriter("asp/AllocFactoryAspect.java"));
 		for(String elem : liste) {
 			configOut.println("replacedMap.put(\""+elem+"\","+i+");");
-			System.err.println("pointcut callStatic"+i+"(): call(public static * " + elem + ");");
-			System.err.println("Object around() : callStatic"+i+"() {");
-			System.err.println("if(replacedMethods["+i+"] == null)");
-			System.err.println("	return proceed();");
-			System.err.println("else");
-			System.err.println("	try {");
-			System.err.println("		return replacedMethods["+i+"].invoke(null, thisJoinPoint.getArgs());");
-			System.err.println("	} catch (InvocationTargetException e){");
-			System.err.println("	        throw new RuntimeException(e.getTargetException());");
-			System.err.println("	} catch (IllegalAccessException|IllegalArgumentException e){");
-			System.err.println("            e.printStackTrace();");
-			System.err.println("            throw new java.lang.annotation.AnnotationFormatError(\"internal error while invoking method\");");
-			System.err.println("	}");
-			System.err.println("}");
+			aspectOut.println("pointcut callStatic"+i+"(): call(public static * " + elem + ");");
+			aspectOut.println("Object around() : callStatic"+i+"() {");
+			aspectOut.println("if(replacedMethods["+i+"] == null)");
+			aspectOut.println("	return proceed();");
+			aspectOut.println("else");
+			aspectOut.println("	try {");
+			aspectOut.println("		return replacedMethods["+i+"].invoke(null, thisJoinPoint.getArgs());");
+			aspectOut.println("	} catch (InvocationTargetException e){");
+			aspectOut.println("	        throw new RuntimeException(e.getTargetException());");
+			aspectOut.println("	} catch (IllegalAccessException|IllegalArgumentException e){");
+			aspectOut.println("            e.printStackTrace();");
+			aspectOut.println("            throw new java.lang.annotation.AnnotationFormatError(\"internal error while invoking method\");");
+			aspectOut.println("	}");
+			aspectOut.println("}");
 			i++;
 		}
 		configOut.println("}}");
 		configOut.close();
-		System.err.print("}\n");
+		aspectOut.println("}\n");
+		aspectOut.close();
 	}
 }
