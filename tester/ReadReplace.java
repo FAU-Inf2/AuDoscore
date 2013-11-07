@@ -67,7 +67,7 @@ public class ReadReplace{
 		configOut.println("static Map<String, Integer> replacedMap = new HashMap<String, Integer>();\nstatic {");
 		int i = 0;
 
-		PrintWriter aspectOut = new PrintWriter(new FileWriter("asp/AllocFactoryAspect.java"));
+		PrintWriter aspectOut = new PrintWriter(new FileWriter("asp/AllocFactoryAspect.java", true));
 		for(String elem : liste) {
 			configOut.println("replacedMap.put(\""+elem+"\","+i+");");
 			aspectOut.println("pointcut callStatic"+i+"(): call(public static * " + elem + ");");
