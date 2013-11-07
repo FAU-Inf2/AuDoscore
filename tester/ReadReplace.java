@@ -9,7 +9,7 @@ public class ReadReplace{
 	public static String getSig(Method m){
 		String sig = m.getDeclaringClass().getName() + "." + m.getName() + "(";
 		for(Class p : m.getParameterTypes()){
-			sig +=  p.getName() + ", ";
+			sig +=  p.getSimpleName() + ", ";
 		}
 		if(m.getParameterTypes().length > 0){
 			sig = sig.substring(0, sig.length()-2);
