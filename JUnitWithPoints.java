@@ -265,8 +265,10 @@ public abstract class JUnitWithPoints {
 				String doReplace = System.getProperty("replace");
 				if(doReplace == null || !doReplace.equals("yes"))
 					return;
+
 				ClassLoader cl = ClassLoader.getSystemClassLoader();
 				cl.loadClass("asp.Config").getMethod("clearReplace").invoke(null);
+
 				Method setReplace = cl.loadClass("asp.Config").getMethod("setReplace", Method.class, Method.class);
 				Factory.mClassMap = new HashMap<Class, Class>();
 				Factory.mMethsMap = new HashMap<String, SortedSet<String>>();
