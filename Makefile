@@ -86,11 +86,11 @@ run: run-stage$(STAGE)
 
 
 $(TESTCLASS): $(TESTSOURCE) $(STUDENTSOURCE)
-	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE)
-
-$(TESTCLASSASPECT): $(TESTSOURCE) $(STUDENTSOURCE) 
 	cp $(TEST).java $(TEST).java.orig
 	( echo "import org.junit.*;\n import tester.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
+	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+
+$(TESTCLASSASPECT): $(TESTSOURCE) $(STUDENTSOURCE) 
 	cp asp/AllocFactoryAspect.java.orig asp/AllocFactoryAspect.java
 	cp asp/Config.java.orig asp/Config.java
 	java -cp lib/junitpoints.jar:replaced:lib/aspectjrt.jar:. tester.ReadReplace $(TEST) 2>> asp/AllocFactoryAspect.java || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
