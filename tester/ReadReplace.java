@@ -71,13 +71,16 @@ public class ReadReplace{
 			System.err.println("pointcut callStatic"+i+"(): call(public static * " + elem + ");");
 			System.err.println("Object around() : callStatic"+i+"() {");
 			System.err.println("if(replacedMethods["+i+"] == null)");
-			System.err.println("	proceed();");
+			System.err.println("	return proceed();");
 			System.err.println("else");
 			System.err.println("	try {");
 			System.err.println("		return replacedMethods["+i+"].invoke(null, thisJoinPoint.getArgs());");
-			System.err.println("	} catch (Exception e){");
+			System.err.println("	} catch (InvocationTargetException e){");
+			System.err.println("	        throw new RuntimeException(e.getTargetException());");
+			System.err.println("	} catch (IllegalAccessException|IllegalArgumentException e){");
+			System.err.println("            e.printStackTrace();");
+			System.err.println("            throw new java.lang.annotation.AnnotationFormatError(\"internal error while invoking method\");");
 			System.err.println("	}");
-			System.err.println("	return proceed();");
 			System.err.println("}");
 			i++;
 		}
