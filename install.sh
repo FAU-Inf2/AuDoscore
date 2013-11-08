@@ -8,7 +8,7 @@ set -x
 set -e
 
 # first delete everything unwanted
-find . -type f | grep -v -F -f ${scriptdir}/files_to_install | xargs rm -f
+find . -type f | grep -v -F -x -f ${scriptdir}/files_to_install | xargs rm -f
 
 for f in `cat ${scriptdir}/files_to_install`; do
 	# create dir
