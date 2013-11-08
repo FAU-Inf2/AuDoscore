@@ -1,0 +1,15 @@
+./asp/Config.java.orig
+./asp/AllocFactoryAspect.java.orig
+./asp/Dummy.java
+./lib/junit.jar
+./lib/junitpoints.jar
+./lib/json-simple-1.1.1.jar
+./lib/parser.jar
+./lib/aspectjtools.jar
+./lib/aspectjrt.jar
+./tester/Replace.java
+./tester/ReadReplace.java
+./tester/Factory.java
+./Makefile
+./test.sh
+./createTest2.sh
