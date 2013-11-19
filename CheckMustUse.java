@@ -5,6 +5,8 @@ import java.lang.annotation.*;
 import org.json.simple.*;
 import org.json.simple.parser.*;
 
+// TODO: pfad zu python-skript oder zu den zu checkenden klassen sollte konfigurierbar sein!
+
 public class CheckMustUse {
 	
 	/**
@@ -16,6 +18,7 @@ public class CheckMustUse {
 	 */
 	public static int execStuff(String[] cmd) {
 		try {
+			//System.err.println("exec'ing " + Arrays.toString(cmd));
 			Process proc = Runtime.getRuntime().exec(cmd);
 			proc.getInputStream().close();
 			proc.getErrorStream().close();
@@ -23,6 +26,7 @@ public class CheckMustUse {
 			return proc.exitValue();
 		} catch (Exception e) {
 			System.exit(1);
+			return 0;
         }
 	}
 
@@ -47,7 +51,7 @@ public class CheckMustUse {
 		}
 
 		public check(MustNotUse mu) {
-			this(mu.classname(), mu.methods(), mu.usable(), mu.malus(), mu.exID());
+			this(mu.classname(), mu.methods(), mu.notUsable(), mu.malus(), mu.exID());
 			this.mustNotFind = true;
 		}
 
@@ -56,13 +60,13 @@ public class CheckMustUse {
 			for(String methodRE : methods) {
 				for(String tocheckRE: tocheck) {
 					String[] cmd = {
-						"isAccessedInFunction.py",
+						"./isAccessedInFunction.py",
 						classname + ".class",
 						methodRE,
 						tocheckRE
 					};
 					int ret = execStuff(cmd);
-					if(!mustNotFind && ret == 0 || mustNotFind && ret != 1) {
+					if(!mustNotFind && ret == 0 || mustNotFind && ret == 1) {
 						// nothing to do
 					} else {
 						JSONObject x = new JSONObject ();
@@ -88,16 +92,17 @@ public class CheckMustUse {
 		ArrayList<check> ch = new ArrayList<>();
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		for (String tcln : args) {
+			System.err.println("loading class " + tcln);
 			Class newClass = cl.loadClass(tcln);
-			MustUse mux = (MustUse) newClass.getAnnotation(MustUse.class);
-			if (mux != null) {
+			UsageRestriction ur = (UsageRestriction) newClass.getAnnotation(UsageRestriction.class);
+			for(MustUse mux : ur.mustUse()) {
 				ch.add(new check(mux));
 			}
-			MustNotUse mnux = (MustNotUse) newClass.getAnnotation(MustNotUse.class);
-			if (mnux != null) {
-				ch.add(new check(mux));
+			for(MustNotUse mnux : ur.mustNotUse()){
+				ch.add(new check(mnux));
 			}
 		}
+		//System.err.println(ch.size() + " checks");
 		JSONArray xx = new JSONArray();
 		for(check c : ch) {
 			List<JSONObject> jo = c.runCheck();
