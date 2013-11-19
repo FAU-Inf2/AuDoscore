@@ -32,20 +32,22 @@ public class CheckMustUse {
 		String [] tocheck;
 		int malus;
 		boolean mustNotFind;
-		public check(String classname, String[] methods, String[] tocheck, int malus) {
+		String exID;
+		public check(String classname, String[] methods, String[] tocheck, int malus, String exID) {
 			this.classname = classname;
 			this.methods = methods;
 			this.tocheck = tocheck;
 			this.malus = malus;
+			this.exID = exID;
 			this.mustNotFind = false;
 		}
 
 		public check(MustUse mu) {
-			this(mu.classname(), mu.methods(), mu.usable(), mu.malus());
+			this(mu.classname(), mu.methods(), mu.usable(), mu.malus(), mu.exID());
 		}
 
 		public check(MustNotUse mu) {
-			this(mu.classname(), mu.methods(), mu.usable(), mu.malus());
+			this(mu.classname(), mu.methods(), mu.usable(), mu.malus(), mu.exID());
 			this.mustNotFind = true;
 		}
 
@@ -68,6 +70,7 @@ public class CheckMustUse {
 						x.put("classname", classname);
 						x.put("method", methodRE);
 						x.put("tocheck", tocheckRE);
+						x.put("exID", exID);
 						x.put("error", mustNotFind ? "access not found" : "access found");
 						rv.add(x);
 					}
