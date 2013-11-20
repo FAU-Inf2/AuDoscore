@@ -74,7 +74,8 @@ public class CheckMustUse {
 						x.put("classname", classname);
 						x.put("method", methodRE);
 						x.put("tocheck", tocheckRE);
-						x.put("exID", exID);
+						x.put("id", exID);
+						x.put("desc", classname + "." + methodRE + " : access of " +  tocheckRE + ( mustNotFind ? " found" : " not found"));
 						x.put("error", mustNotFind ? "access found" : "access not found");
 						rv.add(x);
 					}

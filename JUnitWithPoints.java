@@ -8,6 +8,7 @@ import org.junit.runner.*;
 import org.junit.runners.model.*;
 
 import org.json.simple.*;
+import org.json.simple.parser.*;
 
 import java.lang.reflect.*;
 import asp.*;
@@ -400,11 +401,35 @@ public abstract class JUnitWithPoints {
 			String[] exerciseIds = reportHashMap.keySet().toArray(new String[0]);
 			Arrays.sort(exerciseIds);
 			String summary = "";
+			HashMap<String, List<JSONObject>> previousDeductions = new HashMap<>();
 			JSONObject jsonsummary = new JSONObject();
 			JSONArray jsonexercises = new JSONArray();
-			double pointsAchievedTotal = 0, bonusDeclaredPerExercise, bonusAchievedPerExercise, pointsDeclaredPerExercise, pointsAchievedPerExercise;
+			double pointsAchievedTotal = 0;
+			String tmpstr = System.getProperty("MustUseDeductionJSON");
+			// get deducted points from json environment variable
+			if(tmpstr != null) {
+				try {
+					JSONObject tmp = (JSONObject) new JSONParser().parse(tmpstr);
+					if(tmp.containsKey("deductions")) {
+						JSONArray a = (JSONArray) tmp.get("deductions");
+						for(Object oo : a) {
+							JSONObject jo = (JSONObject) oo;
+							if(jo.containsKey("id")) {
+								String id = (String) jo.get("id");
+								if(!previousDeductions.containsKey(id))
+									previousDeductions.put(id, new ArrayList<JSONObject>());
+								previousDeductions.get(id).add(jo);
+							}
+						}
+					}
+				} catch(ParseException | ClassCastException e) {
+					// do nothing
+				}
+			}
 			for (String exerciseId : exerciseIds) {
+				double bonusDeclaredPerExercise, bonusAchievedPerExercise, pointsDeclaredPerExercise, pointsAchievedPerExercise;
 				JSONObject jsonexercise = new JSONObject();
+				List<JSONObject> prevDeductOnThisExercise = previousDeductions.get(exerciseId);
 				if (summary.length() > 0) {
 					summary += "\n";
 				}
@@ -419,6 +444,12 @@ public abstract class JUnitWithPoints {
 				}
 				String report = "";
 				pointsDeclaredPerExercise = exercise.points();
+				if(prevDeductOnThisExercise != null) for(JSONObject deduct : prevDeductOnThisExercise) {
+					pointsDeclaredPerExercise -= (Integer) deduct.get("malus");
+					report += "  " + (String) deduct.get("desc");
+				}
+				if(pointsDeclaredPerExercise <= 0)
+					pointsDeclaredPerExercise = 0;
 				bonusAchievedPerExercise = 0;
 				JSONArray jsontests = new JSONArray();
 				for (ReportEntry reportEntry : reportPerExercise) {
@@ -442,6 +473,8 @@ public abstract class JUnitWithPoints {
 				jsonexercise.put("possiblePts", ((Double) exercise.points()).toString());
 				jsonexercise.put("name", exercise.exID());
 				jsonexercise.put("score", String.format("%1$.1f", pointsAchievedPerExercise));
+				if(prevDeductOnThisExercise != null) 
+					jsonexercise.put("pre-deductions", prevDeductOnThisExercise);
 				jsonexercises.add(jsonexercise);
 			}
 			jsonsummary.put("exercises", jsonexercises);

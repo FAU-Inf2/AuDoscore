@@ -44,8 +44,10 @@ build:
 
 prepare: lib/junitpoints.jar lib/parser.jar
 
-lib/junitpoints.jar: build JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java
-	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java
+SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java CheckMustUse.java tester/MustUse.java tester/MustNotUse.java tester/UsageRestriction.java
+
+lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
+	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. $(SRCJUNITPOINTSJAR)
 	jar cvf lib/junitpoints.jar -C build .
 
 lib/parser.jar:
@@ -65,6 +67,7 @@ compile-stage1: miniclean
 	chmod +x forbidden
 	! ( javap -p -c $(STUDENTCLASS) | ./forbidden )
 	rm forbidden
+	java -cp lib/json-simple-1.1.1.jar:lib/junitpoints.jar:. CheckMustUse $(TEST) > checkMustUse.report
 
 compile-stage2: miniclean
 	cp $(TEST).java $(TEST).java.orig
@@ -81,13 +84,18 @@ run-stage0:
 	echo "alles gut"
 
 run-stage1:
-	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. \
+	   -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
-	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. \
+	   -DMustUseDeductionJSON='$(shell cat checkMustUse.report )' \
+	   -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo ", \"replaced\" : " 1>&2
-	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced \
+	   -DMustUseDeductionJSON=$(shell cat checkMustUse.report ) \
+	   -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo "}" 1>&2
 
 run: run-stage$(STAGE)
