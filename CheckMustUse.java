@@ -75,7 +75,7 @@ public class CheckMustUse {
 						x.put("method", methodRE);
 						x.put("tocheck", tocheckRE);
 						x.put("exID", exID);
-						x.put("error", mustNotFind ? "access not found" : "access found");
+						x.put("error", mustNotFind ? "access found" : "access not found");
 						rv.add(x);
 					}
 				}
@@ -95,6 +95,7 @@ public class CheckMustUse {
 			System.err.println("loading class " + tcln);
 			Class newClass = cl.loadClass(tcln);
 			UsageRestriction ur = (UsageRestriction) newClass.getAnnotation(UsageRestriction.class);
+			if(ur == null) continue;
 			for(MustUse mux : ur.mustUse()) {
 				ch.add(new check(mux));
 			}
