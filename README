@@ -64,3 +64,56 @@ Required and Available Annotations:
   Semantics: A secret testcase result will not be shown to the students before submission deadline.
              Note that there should be a secret and a non-secret testcase for every exID/@Ex
 
+@UsageRestriction
+  Required: No
+  Position: Testcase Class
+  Arguments: mustUse: optional array of @MustUse-Annotations
+             mustNotUse: optional array of @MustNotUse-Annotations
+  Semantics: Wrapper for all needed Restrictions; see Semantics of @MustUse, @MustNotUse
+
+@MustUse
+  Required: No
+  Position: Inside argument list of @UsageRestriction-Annotation
+  Arguments: classname: String
+             methods: Array of String
+             usable: Array of String
+             malus: double
+             exID: String
+             comment: String, optional
+             error: String, optional
+
+  Semantics: When writing this annotation, _PLEASE_ read the output of
+             javap on your implementation first, and learn how to
+             write regular expressions.
+
+             The class named 'classname' is decompiled using javap.
+             'methods' and 'usable' contain Regular Expressions matched
+             against the method prototypes and field/method usage
+             comments in the output of javap.  For every Regex in
+             'usable', it is checked that every method matching one of
+             the regexes in 'methods' to contain at least one field
+             access or method call that matches said regex from
+             'usable'.  If this is not the case, 'malus' points are
+             deducted from the exercise specified in 'exID', with
+             'comment' and 'error' appearing in the student's error
+             report (if specified).
+
+             Again: To properly write Regular expressions, _PLEASE_
+             _DO_ read the output of javap -c -p EXAMPLECLASS
+
+@MustNotUse
+  Required: No
+  Position: Inside argument list of @UsageRestriction-Annotation
+  Arguments: classname: String
+             methods: Array of String
+             notUsable: Array of String
+             malus: double
+             exID: String
+             comment: String, optional
+             error: String, optional
+  Semantics: See @MustUse, except that it is checked that the matching
+             methods do not contain any of the field accesses or
+             method calls matching a regex in notUsable.
+
+             To properly write Regular expressions, _PLEASE_ _DO_ read
+             the output of javap -c -p EXAMPLECLASS
