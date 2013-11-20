@@ -5,6 +5,6 @@ public @interface MustUse {
 	String classname();
 	String[] methods();
 	String[] usable();
-	int malus();
+	double malus();
 	String exID();
 }

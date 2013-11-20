@@ -35,10 +35,10 @@ public class CheckMustUse {
 		String classname;
 		String [] methods;
 		String [] tocheck;
-		int malus;
+		double malus;
 		boolean mustNotFind;
 		String exID;
-		public check(String classname, String[] methods, String[] tocheck, int malus, String exID) {
+		public check(String classname, String[] methods, String[] tocheck, double malus, String exID) {
 			this.classname = classname;
 			this.methods = methods;
 			this.tocheck = tocheck;
