@@ -25,6 +25,7 @@ public class CheckMustUse {
 			proc.waitFor();
 			return proc.exitValue();
 		} catch (Exception e) {
+			System.err.println(e.toString());
 			System.exit(1);
 			return 0;
         }
@@ -70,13 +71,14 @@ public class CheckMustUse {
 						// nothing to do
 					} else {
 						JSONObject x = new JSONObject ();
-						x.put("malus", malus);
+						x.put("score", (new Double(-malus)).toString());
 						x.put("classname", classname);
 						x.put("method", methodRE);
 						x.put("tocheck", tocheckRE);
 						x.put("id", exID);
 						x.put("desc", classname + "." + methodRE + " : access of " +  tocheckRE + ( mustNotFind ? " found" : " not found"));
 						x.put("error", mustNotFind ? "access found" : "access not found");
+						x.put("success", (Boolean) (false));
 						rv.add(x);
 					}
 				}

@@ -444,12 +444,6 @@ public abstract class JUnitWithPoints {
 				}
 				String report = "";
 				pointsDeclaredPerExercise = exercise.points();
-				if(prevDeductOnThisExercise != null) for(JSONObject deduct : prevDeductOnThisExercise) {
-					pointsDeclaredPerExercise -= (Integer) deduct.get("malus");
-					report += "  " + (String) deduct.get("desc");
-				}
-				if(pointsDeclaredPerExercise <= 0)
-					pointsDeclaredPerExercise = 0;
 				bonusAchievedPerExercise = 0;
 				JSONArray jsontests = new JSONArray();
 				for (ReportEntry reportEntry : reportPerExercise) {
@@ -464,6 +458,11 @@ public abstract class JUnitWithPoints {
 						bonusAchievedPerExercise -= Math.abs(malus.malus());
 					}
 				}
+				if(prevDeductOnThisExercise != null) {
+					for (JSONObject jo : prevDeductOnThisExercise) {
+						jsontests.add(jo);
+					}
+				}
 				jsonexercise.put("tests", jsontests);
 				bonusAchievedPerExercise = Math.min(bonusDeclaredPerExercise, Math.max(0, bonusAchievedPerExercise));
 				pointsAchievedPerExercise = Math.ceil(pointsDeclaredPerExercise * 2 * bonusAchievedPerExercise / bonusDeclaredPerExercise) / 2;
@@ -473,8 +472,6 @@ public abstract class JUnitWithPoints {
 				jsonexercise.put("possiblePts", ((Double) exercise.points()).toString());
 				jsonexercise.put("name", exercise.exID());
 				jsonexercise.put("score", String.format("%1$.1f", pointsAchievedPerExercise));
-				if(prevDeductOnThisExercise != null) 
-					jsonexercise.put("pre-deductions", prevDeductOnThisExercise);
 				jsonexercises.add(jsonexercise);
 			}
 			jsonsummary.put("exercises", jsonexercises);

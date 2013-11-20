@@ -94,7 +94,7 @@ run-stage2:
 	   -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo ", \"replaced\" : " 1>&2
 	java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced \
-	   -DMustUseDeductionJSON=$(shell cat checkMustUse.report ) \
+	   -DMustUseDeductionJSON='$(shell cat checkMustUse.report )' \
 	   -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo "}" 1>&2
 
