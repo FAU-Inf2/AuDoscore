@@ -32,27 +32,32 @@ public class CheckMustUse {
 	}
 
 	private static class check {
+		public static int counter = 0;
 		String classname;
 		String [] methods;
 		String [] tocheck;
 		double malus;
 		boolean mustNotFind;
 		String exID;
-		public check(String classname, String[] methods, String[] tocheck, double malus, String exID) {
+		String comment;
+		String error;
+		public check(String classname, String[] methods, String[] tocheck, double malus, String exID, String comment, String error) {
 			this.classname = classname;
 			this.methods = methods;
 			this.tocheck = tocheck;
 			this.malus = malus;
 			this.exID = exID;
 			this.mustNotFind = false;
+			this.comment = comment;
+			this.error = error;
 		}
 
 		public check(MustUse mu) {
-			this(mu.classname(), mu.methods(), mu.usable(), mu.malus(), mu.exID());
+			this(mu.classname(), mu.methods(), mu.usable(), mu.malus(), mu.exID(), mu.comment(), mu.error());
 		}
 
 		public check(MustNotUse mu) {
-			this(mu.classname(), mu.methods(), mu.notUsable(), mu.malus(), mu.exID());
+			this(mu.classname(), mu.methods(), mu.notUsable(), mu.malus(), mu.exID(), mu.comment(), mu.error());
 			this.mustNotFind = true;
 		}
 
@@ -75,9 +80,19 @@ public class CheckMustUse {
 						x.put("classname", classname);
 						x.put("method", methodRE);
 						x.put("tocheck", tocheckRE);
-						x.put("id", exID);
-						x.put("desc", classname + "." + methodRE + " : access of " +  tocheckRE + ( mustNotFind ? " found" : " not found"));
-						x.put("error", mustNotFind ? "access found" : "access not found");
+						x.put("id", "checkmustuse" + counter);
+						counter++;
+						x.put("exid", exID);
+						if (!comment.equals("")) {
+							x.put("desc", comment);
+						} else {
+							x.put("desc", classname + "." + methodRE + " : access of " +  tocheckRE + ( mustNotFind ? " found" : " not found"));
+						}
+						if (!error.equals("")) {
+							x.put("error", error);
+						} else {
+							x.put("error", mustNotFind ? "access found" : "access not found");
+						}
 						x.put("success", (Boolean) (false));
 						rv.add(x);
 					}

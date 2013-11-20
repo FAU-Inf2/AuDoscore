@@ -7,4 +7,6 @@ public @interface MustUse {
 	String[] usable();
 	double malus();
 	String exID();
+	String comment() default "";
+	String error() default "";
 }

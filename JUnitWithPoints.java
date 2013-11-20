@@ -414,8 +414,8 @@ public abstract class JUnitWithPoints {
 						JSONArray a = (JSONArray) tmp.get("deductions");
 						for(Object oo : a) {
 							JSONObject jo = (JSONObject) oo;
-							if(jo.containsKey("id")) {
-								String id = (String) jo.get("id");
+							if(jo.containsKey("exid")) {
+								String id = (String) jo.get("exid");
 								if(!previousDeductions.containsKey(id))
 									previousDeductions.put(id, new ArrayList<JSONObject>());
 								previousDeductions.get(id).add(jo);
