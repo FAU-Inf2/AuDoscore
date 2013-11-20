@@ -26,7 +26,8 @@ foundWantedFunction = False
 foundWantedStringInWantedFunction = False
 for line in iter(proc.stdout.readline,''):
     if not insideWantedFunction:
-        if functionRE.search(line):
+        if len(line) >= 3 and line[0:2] == '  ' and line[2] != ' ' \
+                and functionRE.search(line):
             insideWantedFunction = True
             foundWantedFunction = True
     else:
