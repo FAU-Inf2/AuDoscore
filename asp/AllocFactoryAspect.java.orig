@@ -17,13 +17,3 @@ public aspect AllocFactoryAspect{
 			return proceed();
 		return o;
 	}
-}
-
-}
-
-}
-
-}
-
-}
-
