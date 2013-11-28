@@ -29,10 +29,8 @@ clean:
 	rm -rf mixed
 	rm -f *.class
 	rm -f lib/junitpoints.jar
-	rm -f lib/parser.jar
 	rm -f mergedcomment.txt
 	rm -f result.json
-	ant -f Parser/build.xml clean
 
 
 miniclean:
@@ -42,17 +40,13 @@ build:
 	rm -rf build
 	mkdir -p build
 
-prepare: lib/junitpoints.jar lib/parser.jar
+prepare: lib/junitpoints.jar
 
 SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java CheckMustUse.java tester/MustUse.java tester/MustNotUse.java tester/UsageRestriction.java
 
 lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. $(SRCJUNITPOINTSJAR)
 	jar cvf lib/junitpoints.jar -C build .
-
-lib/parser.jar:
-	ant -f Parser/build.xml
-	cp Parser/parser.jar lib/
 
 compile-stage0:
 	javac $(STUDENTSOURCE)	
@@ -109,5 +103,3 @@ $(TESTCLASSASPECT): $(TESTSOURCE) $(STUDENTSOURCE)
 	cp asp/Config.java.orig asp/Config.java
 	java -cp lib/junitpoints.jar:replaced:lib/aspectjrt.jar:. tester.ReadReplace $(TEST)
 	CLASSPATH="lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectjtools.jar:." java org.aspectj.tools.ajc.Main -Xreweavable -1.7 -d replaced $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACES) tester/Factory.java tester/ReadReplace.java tester/Replace.java asp/AllocFactoryAspect.java asp/Config.java
-
-.PHONY: lib/parser.jar
