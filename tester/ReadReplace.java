@@ -34,7 +34,7 @@ public class ReadReplace{
 					String cln;
 					String regex;
 					if(s != -1){
-						cln = = r.value()[i];
+						cln = r.value()[i];
 						regex = ".*";
 					}else{
 						cln = r.value()[i].substring(0, s);
