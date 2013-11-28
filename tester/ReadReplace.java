@@ -31,9 +31,15 @@ public class ReadReplace{
 				Replace r = meth.getAnnotation(Replace.class);
 				for(int i=0; i<r.value().length; ++i){
 					int s = r.value()[i].indexOf('.');
-					String cln = r.value()[i].substring(0, s);
-
-					String regex = r.value()[i].substring(s+1);
+					String cln;
+					String regex;
+					if(s != -1){
+						cln = = r.value()[i];
+						regex = ".*";
+					}else{
+						cln = r.value()[i].substring(0, s);
+						regex = r.value()[i].substring(s+1);
+					}
 
 					if(!methsMap.containsKey(cln))
 						methsMap.put(cln, new TreeSet<String>());
