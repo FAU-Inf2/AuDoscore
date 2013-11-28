@@ -1,7 +1,10 @@
+import java.util.Set;
+
 public class Student {
 	int testVariable = 0;
 //	ClassLoader l;
 	private int fooo;
+	Set<Object> set;
 
 	public int foo() {
 		return 4711 + 1;
