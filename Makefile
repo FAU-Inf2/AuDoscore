@@ -42,10 +42,10 @@ build:
 
 prepare: lib/junitpoints.jar
 
-SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java CheckMustUse.java tester/MustUse.java tester/MustNotUse.java tester/UsageRestriction.java
+SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java CheckMustUse.java tester/MustUse.java tester/MustNotUse.java tester/UsageRestriction.java ReplaceMixer.java
 
 lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
-	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. $(SRCJUNITPOINTSJAR)
+	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/tools.jar:. $(SRCJUNITPOINTSJAR)
 	jar cvf lib/junitpoints.jar -C build .
 
 compile-stage0:
