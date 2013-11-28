@@ -289,10 +289,11 @@ public abstract class JUnitWithPoints {
 					Class<?> c = defineClass(name, b, 0, b.length);
 					System.err.println("defined " + name);
 					resolveClass(c);
+					System.err.println("resolved " + name);
 					return c;
 				} catch (IOException e) {
-					System.err.println("cought IOexception");
-					e.printStackTrace();
+					System.err.println("caught IOexception");
+					//e.printStackTrace();
 					return null;
 				}
 			}
@@ -315,7 +316,7 @@ public abstract class JUnitWithPoints {
 					return getClass(name);
 				}*/
 				Class<?> clazz = getClass(name);
-				if (clazz == null) return super.loadClass(name);
+				if (clazz == null || true) return super.loadClass(name);
 				return clazz;
 			}
 
@@ -354,6 +355,51 @@ public abstract class JUnitWithPoints {
 		}
 
 		@Override
+		public final Statement apply(Statement base, Description description) {
+			String doReplace = System.getProperty("replace");
+			System.err.println("DOREPLACE = " + doReplace);
+			if ((doReplace != null && !doReplace.equals(""))) {
+				if(description.getAnnotation(Replace.class) != null) {
+					Replace r = description.getAnnotation(Replace.class);
+					Map<String, SortedSet<String>> mMethsMap = new TreeMap<>();
+					for(int i=0; i<r.value().length; ++i){
+						int s = r.value()[i].indexOf('.');
+						String cln = r.value()[i].substring(0, s);
+
+						String regex = r.value()[i].substring(s+1);
+
+						if(!mMethsMap.containsKey(cln))
+							mMethsMap.put(cln, new TreeSet<String>());
+						SortedSet<String> meths = mMethsMap.get(cln);
+
+						try {
+							for(Method me : Class.forName(cln).getDeclaredMethods()){
+								if(me.getName().matches(regex)){
+									meths.add(me.getName());
+								}
+							}
+						} catch (ClassNotFoundException e) {
+							throw new AnnotationFormatError("Cannot replace unknown class: " + cln);
+						}
+					}
+					String ncln = "";
+					for(Map.Entry<String, SortedSet<String>> e : mMethsMap.entrySet()){
+						ncln += "@" + e.getKey();
+						for(String me : e.getValue())
+							ncln += "#" + me;
+					}
+					System.err.println("comp " + ncln + " " + doReplace);
+					if (!doReplace.equals(ncln)) {
+						base = new MyStatement();
+					}
+				} else {
+					base = new MyStatement();
+				}
+			}
+			return super.apply(base, description);
+		}
+
+		@Override
 		protected void starting(Description description) {
 			try {
 				Test testAnnotation = description.getAnnotation(Test.class);
@@ -378,7 +424,7 @@ public abstract class JUnitWithPoints {
 				*/
 
 				String doReplace = System.getProperty("replace");
-				if(doReplace == null || !doReplace.equals("yes"))
+				if(doReplace == null || doReplace.equals(""))
 					return;
 
 				ClassLoader cl = ClassLoader.getSystemClassLoader();
@@ -513,7 +559,10 @@ public abstract class JUnitWithPoints {
 			}
 			for (String exerciseId : exerciseHashMap.keySet()) {
 				if (!reportHashMap.containsKey(exerciseId)) {
-					throw new AnnotationFormatError("WARNING - found exercise points declaration for exercise without test case: [" + exerciseId + "]");
+					String doReplace = System.getProperty("replace");
+					if (doReplace == null || doReplace.equals("")) {
+						throw new AnnotationFormatError("WARNING - found exercise points declaration for exercise without test case: [" + exerciseId + "]");
+					}
 				}
 			}
 			String[] exerciseIds = reportHashMap.keySet().toArray(new String[0]);
@@ -621,5 +670,11 @@ public abstract class JUnitWithPoints {
 				}
 			}
 		}
+	}
+}
+
+class MyStatement extends Statement {
+	public void evaluate() {
+		throw new org.junit.internal.AssumptionViolatedException("yeah");
 	}
 }

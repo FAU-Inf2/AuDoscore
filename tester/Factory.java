@@ -34,6 +34,7 @@ public class Factory{
 	@SuppressWarnings("unchecked")
 	public static Object getInstance(Class c, Class paramt[], Object paramo[]) {
 		try{
+			System.err.println("map: " + c);
 			if(mClassMap == null)
 				return null;
 			if(mClassMap.containsKey(c))
@@ -42,11 +43,16 @@ public class Factory{
 				return null;
 
 			Constructor[] cons = c.getDeclaredConstructors();
+			Constructor defaultCons = null;
 			for(int i=0; i<cons.length; ++i){
+				 System.err.println("cons " + i + ", " + cons[i]);
 				cons[i].setAccessible(true);
+				if (cons[i].getParameterTypes().length == 0) {
+					defaultCons = cons[i];
+				}
 			}
 			if(paramt.length == 0){
-				return cons[0].newInstance();
+				return defaultCons.newInstance();
 			}
 			Constructor con = c.getConstructor(paramt);
 			con.setAccessible(true);

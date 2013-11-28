@@ -1,4 +1,7 @@
 import org.junit.*;
+ import tester.*;
+
+import org.junit.*;
 import org.junit.rules.*;
 import static org.junit.Assert.*;
 import java.lang.reflect.*;
@@ -7,6 +10,7 @@ import java.util.*;
 import java.io.*;
 import asp.*;
 
+/*
 @UsageRestriction(
    mustUse = {
 	   @MustUse(classname="Student", methods={"recur\\(int\\)"}, usable={"// Method recur:\\(I\\)V"}, malus=1, exID="GA4.6a"), // shall succeed
@@ -18,6 +22,7 @@ import asp.*;
 	   @MustNotUse(classname="Student", methods={"recur\\(int, double\\)"}, notUsable={"// Method recur:\\(ID\\)V"}, malus=2, exID="GA4.6a")  // shall not succeed
    }
 )
+*/
 @Exercises({ @Ex(exID = "GA4.6a", points = 12.5)})
 @Forbidden({"java.util.", "java.math.BigInteger"})
 @NotForbidden({"java.util.HashMap", "java.util.LinkedList"})
@@ -29,6 +34,7 @@ public class ExampleTestcase {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
+	/*
 	@Test(timeout=100)
 	@Bonus(exID = "GA4.6a", bonus = 47.11)
 	@Replace({"Student.foo"})
@@ -59,12 +65,21 @@ public class ExampleTestcase {
 	public void testFooShouldReturn4711_4() { // wrong in both
 		assertEquals("Foo ist kaputt.", 23, 42);
 	}
+	*/
 
-	@Test(timeout=100)
+	@Test(timeout=10002)
 	@Bonus(exID = "GA4.6a", bonus = 4.11)
-	@Replace({"Student.foo", "Student.bar"})
+	@Replace({"Student.foo"})
 	@SecretCase
 	public void testFooShouldReturn4711_5() { // correct in clean
+		assertEquals("Foo ist kaputt.", 4711, (new Student()).foo());
+	}
+
+	@Test(timeout=10200)
+	@Bonus(exID = "GA4.6a", bonus = 4.11)
+	@Replace({"Student.bar"})
+	@SecretCase
+	public void testFooShouldReturn4711_6() { // correct in clean
 		assertEquals("Foo ist kaputt.", 4711, (new Student()).foo());
 	}
 
