@@ -11,6 +11,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.ElementKind;
 import javax.tools.*;
 import com.sun.source.util.Trees;
+import com.sun.source.util.TreePath;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.*;
 import com.sun.tools.javac.util.*;
@@ -55,14 +56,21 @@ public class ReplaceMixer extends AbstractProcessor {
 				if (each.getKind() == ElementKind.CLASS) {
 					JCTree tree = (JCTree) trees.getTree(each);
 					tree.accept(new Merger());
+
+					TreePath path = trees.getPath(each);
+					java.util.List imports = path.getCompilationUnit().getImports();
+					for (Object o : imports) {
+						System.out.println(o);
+					}
+
 					if (!first) {
-						System.err.println(tree);
+						System.out.println(tree);
 					}
 					first = false;
 				}
 			}
 		}
-		return false ;
+		return false;
 	}
 
 	private boolean isReplace(String method) {
