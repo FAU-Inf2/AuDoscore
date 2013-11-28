@@ -65,7 +65,7 @@ public class ReadReplace{
 					System.out.print("cat cleanroom/orig_" + e.getKey() + ".java >> cleanroom/" + e.getKey() + ".java;");
 					System.out.print("mkdir -p " + ncln + "; ");
 					System.out.print("javac -cp .:lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -Areplaces=" + ncln + " -proc:only -processor ReplaceMixer cleanroom/" + e.getKey() + ".java " + e.getKey() + ".java > " + ncln + "/" + e.getKey() + ".java; ");
-					System.out.print("javac -cp replaced -d " + ncln + " -sourcepath " + ncln + " " + e.getKey() + ".java;");
+					System.out.print("javac -cp replaced -d " + ncln + " -sourcepath " + ncln + " " + ncln + "/" + e.getKey() + ".java;");
 					System.out.println("mv cleanroom/orig_" + e.getKey() + ".java cleanroom/" + e.getKey() + ".java;");
 				}
 			}

@@ -278,16 +278,20 @@ public abstract class JUnitWithPoints {
 				// and we have to convert it into the .class file name
 				// like javablogging/package/ClassToLoad.class
 				String file = prefix + name.replace('.', File.separatorChar) + ".class";
+				System.err.println("LOAD " + file);
 				byte[] b = null;
 				try {
 					// This loads the byte code data from the file
 					b = loadClassData(file);
 					// defineClass is inherited from the ClassLoader class
 					// and converts the byte array into a Class
+					System.err.println("defining " + name);
 					Class<?> c = defineClass(name, b, 0, b.length);
+					System.err.println("defined " + name);
 					resolveClass(c);
 					return c;
 				} catch (IOException e) {
+					System.err.println("cought IOexception");
 					e.printStackTrace();
 					return null;
 				}
@@ -305,13 +309,14 @@ public abstract class JUnitWithPoints {
 			 *            Full class name
 			 */
 			@Override
-			public Class<?> loadClass(String name)
-			throws ClassNotFoundException {
-			System.out.println("loading class '" + name + "'");
-			if (name.startsWith("A") || name.startsWith("Cl")) {
-				return getClass(name);
-			}
-			return super.loadClass(name);
+			public Class<?> loadClass(String name) throws ClassNotFoundException {
+				System.out.println("loading class '" + name + "'");
+				/*if (name.startsWith("A") || name.startsWith("Cl")) {
+					return getClass(name);
+				}*/
+				Class<?> clazz = getClass(name);
+				if (clazz == null) return super.loadClass(name);
+				return clazz;
 			}
 
 			/**
@@ -325,16 +330,25 @@ public abstract class JUnitWithPoints {
 			 *               was some problem reading the file
 			 */
 			private byte[] loadClassData(String name) throws IOException {
+				byte buff[] = null;
+				//try {
 				// Opening the file
-				System.out.println("loading " + name);
+				System.out.println("2loading " + name);
+				InputStream stream = new FileInputStream(name);
+				/*
 				InputStream stream = getClass().getClassLoader()
 					.getResourceAsStream(name);
+					*/
 				int size = stream.available();
-				byte buff[] = new byte[size];
+				buff = new byte[size];
 				DataInputStream in = new DataInputStream(stream);
 				// Reading the binary data
 				in.readFully(buff);
 				in.close();
+				//} catch(Exception e) {
+				//	e.printStackTrace();
+				//	System.err.println("WTF" + e);
+				//}
 				return buff;
 			}
 		}
@@ -351,6 +365,7 @@ public abstract class JUnitWithPoints {
 				saveOut = System.out;
 				saveErr = System.err;
 
+				/*
 				System.setOut(new PrintStream(new OutputStream() {
 					public void write(int i) {
 					}
@@ -360,6 +375,7 @@ public abstract class JUnitWithPoints {
 					public void write(int i) {
 					}
 				}));
+				*/
 
 				String doReplace = System.getProperty("replace");
 				if(doReplace == null || !doReplace.equals("yes"))
@@ -394,8 +410,9 @@ public abstract class JUnitWithPoints {
 					for(Map.Entry<String, SortedSet<String>> e : Factory.mMethsMap.entrySet()){
 						String ncln = e.getKey();
 						for(String me : e.getValue())
-							ncln += "_" + me;
+							ncln += "#" + me;
 						rcl.setPrefix(ncln);
+						System.err.println("---> " + e.getKey() + ", " + ncln);
 						Factory.mClassMap.put(cl.loadClass(e.getKey()), rcl.loadClass(e.getKey()));
 					}
 
