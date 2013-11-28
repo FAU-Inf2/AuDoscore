@@ -60,10 +60,13 @@ public class ReadReplace{
 						continue;
 					for(String me : e.getValue())
 						ncln += "#" + me;
-					// FIXME: put cleanroom into package System.out.print("cp " . e.getKey()
+					System.out.print("cp cleanroom/" + e.getKey() + ".java cleanroom/orig_" + e.getKey() + ".java;");
+					System.out.print("/bin/echo -e \"package cleanroom;\" > cleanroom/" + e.getKey() + ".java;");
+					System.out.print("cat cleanroom/orig_" + e.getKey() + ".java >> cleanroom/" + e.getKey() + ".java;");
 					System.out.print("mkdir -p " + ncln + "; ");
 					System.out.print("javac -cp .:lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -Areplaces=" + ncln + " -proc:only -processor ReplaceMixer cleanroom/" + e.getKey() + ".java " + e.getKey() + ".java > " + ncln + "/" + e.getKey() + ".java; ");
-					System.out.println("javac -cp replaced -d " + ncln + " -sourcepath " + ncln + " " + e.getKey() + ".java");
+					System.out.print("javac -cp replaced -d " + ncln + " -sourcepath " + ncln + " " + e.getKey() + ".java;");
+					System.out.println("mv cleanroom/orig_" + e.getKey() + ".java cleanroom/" + e.getKey() + ".java;");
 				}
 			}
 		}
