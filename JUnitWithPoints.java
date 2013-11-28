@@ -246,40 +246,9 @@ public abstract class JUnitWithPoints {
 			String doReplace = System.getProperty("replace");
 			System.err.println("DOREPLACE = " + doReplace);
 			if ((doReplace != null && !doReplace.equals(""))) {
-				if(description.getAnnotation(Replace.class) != null) {
-					Replace r = description.getAnnotation(Replace.class);
-					Map<String, SortedSet<String>> mMethsMap = new TreeMap<>();
-					for(int i=0; i<r.value().length; ++i){
-						int s = r.value()[i].indexOf('.');
-						String cln = r.value()[i].substring(0, s);
-
-						String regex = r.value()[i].substring(s+1);
-
-						if(!mMethsMap.containsKey(cln))
-							mMethsMap.put(cln, new TreeSet<String>());
-						SortedSet<String> meths = mMethsMap.get(cln);
-
-						try {
-							for(Method me : Class.forName(cln).getDeclaredMethods()){
-								if(me.getName().matches(regex)){
-									meths.add(me.getName());
-								}
-							}
-						} catch (ClassNotFoundException e) {
-							throw new AnnotationFormatError("Cannot replace unknown class: " + cln);
-						}
-					}
-					String ncln = "";
-					for(Map.Entry<String, SortedSet<String>> e : mMethsMap.entrySet()){
-						ncln += "@" + e.getKey();
-						for(String me : e.getValue())
-							ncln += "#" + me;
-					}
-					System.err.println("comp " + ncln + " " + doReplace);
-					if (!doReplace.equals(ncln)) {
-						base = new MyStatement();
-					}
-				} else {
+				String ncln = ReadReplace.getCanonicalReplacement(description);
+				System.err.println("comp " + ncln + " " + doReplace);
+				if (!doReplace.equals(ncln)) {
 					base = new MyStatement();
 				}
 			}

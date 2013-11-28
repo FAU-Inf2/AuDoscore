@@ -5,6 +5,7 @@ public class Student {
 //	ClassLoader l;
 	private int fooo;
 	Set<Object> set;
+	Student2 stud2;
 
 	public int foo() {
 		return 4711 + 1;
