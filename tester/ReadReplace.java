@@ -33,7 +33,7 @@ public class ReadReplace{
 					int s = r.value()[i].indexOf('.');
 					String cln;
 					String regex;
-					if(s != -1){
+					if(s == -1){
 						cln = r.value()[i];
 						regex = ".*";
 					}else{
