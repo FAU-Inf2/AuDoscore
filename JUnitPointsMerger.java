@@ -34,50 +34,56 @@ public class JUnitPointsMerger {
 
 	private static String summary = "";
 	private static double points = 0;
-	private static void merge(JSONObject rex, JSONObject vex) { // merges two exercises
+	private static void merge(ArrayList<JSONObject> rexs, JSONObject vex) { // merges two exercises
 		ArrayList<SingleReport> reps = new ArrayList<>();
 		double localpoints = 0;
-		JSONArray rextests = (JSONArray) rex.get("tests");
 		JSONArray vextests = (JSONArray) vex.get("tests");
-		if (rextests.size() != vextests.size()) {
-			throw new RuntimeException("vanilla and replaced do have different number of tests for exercise " + rex.get("name"));
+		for (JSONObject rex : rexs) {
+			JSONArray rextests = (JSONArray) rex.get("tests");
+			if (rextests.size() != vextests.size()) {
+				throw new RuntimeException("vanilla and one of replaced do have different number of tests for exercise " + rex.get("name"));
+			}
 		}
 		for (int i = 0; i < vextests.size(); i++) {
 			JSONObject vextest = (JSONObject) vextests.get(i);
-			boolean found = false;
-			for (int j = 0; !found && j < rextests.size(); j++) {
-				JSONObject rextest = (JSONObject) rextests.get(i);
-				if (rextest.get("id").equals(vextest.get("id"))) {
-					String localSummary = "";
-					found = true;
-					JSONObject usedresult = null;
-					if ((Boolean) vextest.get("success") || !((Boolean) rextest.get("success"))) {
-						usedresult = vextest;
-					} else {
-						usedresult = rextest;
+			JSONObject usedresult = vextest;
+			for (JSONObject rexIt : rexs) {
+				boolean found = false;
+				JSONArray rextests = (JSONArray) rexIt.get("tests");
+				for (int j = 0; !found && j < rextests.size(); j++) {
+					JSONObject rextest = (JSONObject) rextests.get(i);
+					if (rextest.get("id").equals(vextest.get("id"))) {
+						if ((Boolean) rextest.get("success")) {
+							usedresult = rextest;
+						}
+						found = true;
 					}
-					double localscore = Double.parseDouble((String) usedresult.get("score"));
-					localpoints += localscore;
-					localSummary += ((Boolean) usedresult.get("success")) ? "✓" : "✗";
-
-					localSummary += String.format(" %1$6.2f", localscore) + " | ";
-					localSummary += (String) usedresult.get("desc");
-					Object error = usedresult.get("error");
-					if (error != null) {
-						localSummary += " | " + (String) error;
-					}
-					localSummary += "\n";
-
-					SingleReport r = new SingleReport();
-					r.success = ((Boolean) usedresult.get("success"));
-					r.message = localSummary;
-					r.description = (String)rextest.get("id");
-					reps.add(r);
+				}
+				if (!found) {
+					throw new RuntimeException("could not find " + vextest.get("id") + " in replaced tests");
 				}
 			}
-			if (!found) {
-				throw new RuntimeException("could not find " + vextest.get("id") + " in replaced tests");
+			String localSummary = "";
+			if ((Boolean) vextest.get("success")) {
+				usedresult = vextest;
 			}
+			double localscore = Double.parseDouble((String) usedresult.get("score"));
+			localpoints += localscore;
+			localSummary += ((Boolean) usedresult.get("success")) ? "✓" : "✗";
+
+			localSummary += String.format(" %1$6.2f", localscore) + " | ";
+			localSummary += (String) usedresult.get("desc");
+			Object error = usedresult.get("error");
+			if (error != null) {
+				localSummary += " | " + (String) error;
+			}
+			localSummary += "\n";
+
+			SingleReport r = new SingleReport();
+			r.success = ((Boolean) usedresult.get("success"));
+			r.message = localSummary;
+			r.description = (String)usedresult.get("id");
+			reps.add(r);
 		}
 		localpoints = Math.max(0., localpoints);
 		localpoints = Math.ceil(2. * localpoints) / 2; // round up to half points
@@ -99,24 +105,30 @@ public class JUnitPointsMerger {
 			JSONObject obj  = (JSONObject) parser.parse(new FileReader(inputFile));
 			JSONObject vanilla = (JSONObject) obj.get("vanilla");
 			JSONArray vanillaex = (JSONArray) vanilla.get("exercises");
-			JSONObject replaced = (JSONObject) obj.get("replaced");
-			JSONArray replacedex = (JSONArray) replaced.get("exercises");
-			if (vanillaex.size() != replacedex.size()) {
-				throw new RuntimeException("vanilla and replaced do have different number of exercises");
-			}
+			JSONArray replaceds = (JSONArray) obj.get("replaced");
+
 			for (int i = 0; i < vanillaex.size(); i++) {
 				JSONObject vex = (JSONObject) vanillaex.get(i);
-				boolean found = false;
-				for (int j = 0; !found && j < replacedex.size(); j++) {
-					JSONObject rex = (JSONObject) replacedex.get(j);
-					if (rex.get("name").equals(vex.get("name"))) {
-						found = true;
-						merge(rex,vex);
+				ArrayList<JSONObject> rexs = new ArrayList<>();
+				for (int k = 0; k < replaceds.size(); k++) {
+					JSONObject replaced = (JSONObject) replaceds.get(k);
+					JSONArray replacedex = (JSONArray) replaced.get("exercises");
+					if (vanillaex.size() != replacedex.size()) {
+						throw new RuntimeException("vanilla and replaced #" + k + " do have different number of exercises");
+					}
+					boolean found = false;
+					for (int j = 0; !found && j < replacedex.size(); j++) {
+						JSONObject rex = (JSONObject) replacedex.get(j);
+						if (rex.get("name").equals(vex.get("name"))) {
+							found = true;
+							rexs.add(rex);
+						}
+					}
+					if (!found) {
+						throw new RuntimeException("could not find " + vex.get("name") + " in replaced exercises #" + k);
 					}
 				}
-				if (!found) {
-					throw new RuntimeException("could not find " + vex.get("name") + " in replaced exercises");
-				}
+				merge(rexs,vex);
 			}
 			summary = "Score: " + String.format("%1$.1f\n", points) + summary;
 			File file = new File(outputFile);
