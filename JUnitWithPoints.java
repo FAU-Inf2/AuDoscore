@@ -474,6 +474,6 @@ public abstract class JUnitWithPoints {
 
 class MyStatement extends Statement {
 	public void evaluate() {
-		throw new org.junit.internal.AssumptionViolatedException("yeah");
+		Assert.fail("this test case is not executed at all; ignoring it would make the point proportions incorrect -> FAIL!");
 	}
 }
