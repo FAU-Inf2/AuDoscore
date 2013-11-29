@@ -88,7 +88,7 @@ public class ReadReplace{
 		for (String s : set) {
 			String FIXME = "FIXME";
 			String classpath = s.substring(1).replaceAll("@", ":");
-			System.out.println("java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":.  -Dreplace=" + s + " -Djson=yes org.junit.runner.JUnitCore " + tcln);
+			System.out.println("java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":.  -Dreplace=" + s + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || /bin/echo");
 		}
 	}
 

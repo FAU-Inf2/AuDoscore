@@ -82,13 +82,10 @@ run-stage1:
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
 	java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. \
-	   -DMustUseDeductionJSON='$(shell cat checkMustUse.report )' \
 	   -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo ", \"replaced\" : " 1>&2
-	# FIXME: loop over all replacements
-	#java -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced \
-	#   -DMustUseDeductionJSON='$(shell cat checkMustUse.report )' \
-	#   -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(TEST) > loop.sh	
+	bash ./loop.sh
 	echo "}" 1>&2
 
 run: run-stage$(STAGE)

@@ -244,10 +244,8 @@ public abstract class JUnitWithPoints {
 		@Override
 		public final Statement apply(Statement base, Description description) {
 			String doReplace = System.getProperty("replace");
-			System.err.println("DOREPLACE = " + doReplace);
 			if ((doReplace != null && !doReplace.equals(""))) {
 				String ncln = ReadReplace.getCanonicalReplacement(description);
-				System.err.println("comp " + ncln + " " + doReplace);
 				if (!doReplace.equals(ncln)) {
 					base = new MyStatement();
 				}
