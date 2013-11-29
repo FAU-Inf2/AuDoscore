@@ -57,6 +57,9 @@ public class ReadReplace{
 						meths.add(me.getName());
 					}
 				}
+				if ("<init>".matches(regex)) {
+					meths.add("<init>");
+				}
 			} catch (ClassNotFoundException e) {
 				throw new AnnotationFormatError("Cannot replace unknown class: " + cln);
 			}
@@ -89,8 +92,8 @@ public class ReadReplace{
 		System.out.println("java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + "--THIS-WILL-NEVER-HAPPEN" + ":.  -Dreplace=" + "--THIS-WILL-NEVER-HAPPEN" + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || /bin/echo");
 		for (String s : set) {
 			System.out.println("echo \",\" 1>&2");
-			String classpath = s.substring(1).replaceAll("@", ":");
-			System.out.println("java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":.  -Dreplace=" + s + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || /bin/echo");
+			String classpath = s.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
+			System.out.println("java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":.  -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || /bin/echo");
 		}
 		System.out.println("echo \"]\" 1>&2");
 	}
@@ -116,7 +119,7 @@ public class ReadReplace{
 					if(e.getValue().size() == 0)
 						continue;
 					for(String me : e.getValue())
-						ncln += "#" + me;
+						ncln += "#" + me.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
 					System.out.print("cp cleanroom/" + e.getKey() + ".java cleanroom/orig_" + e.getKey() + ".java;");
 					System.out.print("/bin/echo -e \"package cleanroom;\" > cleanroom/" + e.getKey() + ".java;");
 					System.out.print("cat cleanroom/orig_" + e.getKey() + ".java >> cleanroom/" + e.getKey() + ".java;");
