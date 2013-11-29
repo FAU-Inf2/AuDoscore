@@ -86,13 +86,9 @@ public class ReadReplace{
 		}
 
 		System.out.println("echo \"[\" 1>&2");
-		boolean first = true;
+		System.out.println("java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + "--THIS-WILL-NEVER-HAPPEN" + ":.  -Dreplace=" + "--THIS-WILL-NEVER-HAPPEN" + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || /bin/echo");
 		for (String s : set) {
-			if (first) {
-				first = false;
-			} else {
-				System.out.println("echo \",\" 1>&2");
-			}
+			System.out.println("echo \",\" 1>&2");
 			String classpath = s.substring(1).replaceAll("@", ":");
 			System.out.println("java -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":.  -Dreplace=" + s + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || /bin/echo");
 		}
