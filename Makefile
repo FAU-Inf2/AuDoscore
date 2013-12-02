@@ -44,8 +44,10 @@ build:
 
 prepare: lib/junitpoints.jar lib/parser.jar
 
-lib/junitpoints.jar: build JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java
-	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java
+SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java CheckMustUse.java tester/MustUse.java tester/MustNotUse.java tester/UsageRestriction.java
+
+lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
+	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:. $(SRCJUNITPOINTSJAR)
 	jar cvf lib/junitpoints.jar -C build .
 
 lib/parser.jar:
@@ -57,7 +59,7 @@ compile-stage0:
 
 compile-stage1: miniclean
 	cp $(TEST).java $(TEST).java.orig
-	( echo "import org.junit.*;\n import tester.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
+	( /bin/echo -e "import org.junit.*;\n import tester.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
 	sed -i -e 's/@SecretCase/@Ignore/' $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
@@ -68,7 +70,7 @@ compile-stage1: miniclean
 
 compile-stage2: miniclean
 	cp $(TEST).java $(TEST).java.orig
-	( echo "import org.junit.*;\n import tester.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
+	( /bin/echo -e "import org.junit.*;\n import tester.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	make -B $(TESTCLASSASPECT) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	./createTest2.sh $(TEST) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
@@ -85,9 +87,9 @@ run-stage1:
 
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
-	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -DMustUseDeductionJSON='$(shell cat checkMustUse.report )' -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo ", \"replaced\" : " 1>&2
-	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -DMustUseDeductionJSON='$(shell cat checkMustUse.report )' -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo "}" 1>&2
 
 run: run-stage$(STAGE)
