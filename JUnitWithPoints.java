@@ -508,8 +508,22 @@ public abstract class JUnitWithPoints {
 			double pointsAchievedTotal = 0;
 			String tmpstr = System.getProperty("MustUseDeductionJSON");
 			// get deducted points from json environment variable
-			if(tmpstr != null) {
+			if(tmpstr != null && tmpstr.equals("yes")) {
 				try {
+					try {
+						BufferedReader br = new BufferedReader(new FileReader("checkMustUse.report"));
+						StringBuilder sb = new StringBuilder();
+						String line = br.readLine();
+
+						while (line != null) {
+							sb.append(line);
+							sb.append('\n');
+							line = br.readLine();
+						}
+						tmpstr = sb.toString();
+					} catch (Exception e) {
+						System.err.println("Something with Jakobs JSON went horribly wrong.");
+					}
 					JSONObject tmp = (JSONObject) new JSONParser().parse(tmpstr);
 					if(tmp.containsKey("deductions")) {
 						JSONArray a = (JSONArray) tmp.get("deductions");

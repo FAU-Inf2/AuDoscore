@@ -4,7 +4,6 @@ TESTCLASSASPECT = $(TEST:=.class.aspect)
 TESTCLASS = $(TEST:=.class)
 TESTSOURCE = $(TEST:=.java)
 STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
-DEDUCTJSON:=$(shell /bin/cat checkMustUse.report )
 
 all:
 	make prepare
@@ -89,9 +88,9 @@ run-stage1:
 
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
-	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -DMustUseDeductionJSON='$(DEDUCTJSON)' -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -DMustUseDeductionJSON=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo ", \"replaced\" : " 1>&2
-	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -DMustUseDeductionJSON='$(DEDUCTJSON)' -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -DMustUseDeductionJSON=yes -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo "}" 1>&2
 
 run: run-stage$(STAGE)
