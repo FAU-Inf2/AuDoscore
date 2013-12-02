@@ -59,7 +59,7 @@ compile-stage0:
 
 compile-stage1: miniclean
 	cp $(TEST).java $(TEST).java.orig
-	( /bin/echo -e "import org.junit.*;\n import tester.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
+	( /bin/echo -e "import org.junit.*;\n import tester.*;\n" ; /bin/cat $(TEST).java.orig ) > $(TEST).java
 	sed -i -e 's/@SecretCase/@Ignore/' $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
@@ -70,7 +70,7 @@ compile-stage1: miniclean
 
 compile-stage2: miniclean
 	cp $(TEST).java $(TEST).java.orig
-	( /bin/echo -e "import org.junit.*;\n import tester.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
+	( /bin/echo -e "import org.junit.*;\n import tester.*;\n" ; /bin/cat $(TEST).java.orig ) > $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	make -B $(TESTCLASSASPECT) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	./createTest2.sh $(TEST) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
@@ -87,9 +87,9 @@ run-stage1:
 
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
-	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -DMustUseDeductionJSON='$(shell cat checkMustUse.report )' -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -DMustUseDeductionJSON='$(shell /bin/cat checkMustUse.report )' -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo ", \"replaced\" : " 1>&2
-	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -DMustUseDeductionJSON='$(shell cat checkMustUse.report )' -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/aspectjrt.jar:lib/junit.jar:lib/junitpoints.jar:lib/aspectreplacer.jar:replaced -DMustUseDeductionJSON='$(shell /bin/cat checkMustUse.report )' -Dreplace=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo "}" 1>&2
 
 run: run-stage$(STAGE)
