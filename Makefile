@@ -83,7 +83,7 @@ run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
 	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -DMustUseDeductionJSON=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo ", \"replaced\" : " 1>&2
-	bash ./loop.sh
+	sh ./loop.sh
 	echo "}" 1>&2
 
 run: run-stage$(STAGE)
