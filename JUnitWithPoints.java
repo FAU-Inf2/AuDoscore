@@ -265,7 +265,6 @@ public abstract class JUnitWithPoints {
 				saveOut = System.out;
 				saveErr = System.err;
 
-				/*
 				System.setOut(new PrintStream(new OutputStream() {
 					public void write(int i) {
 					}
@@ -275,7 +274,13 @@ public abstract class JUnitWithPoints {
 					public void write(int i) {
 					}
 				}));
-				*/
+
+				System.gc();
+				Thread.sleep(50);
+				System.gc();
+				Thread.sleep(50);
+				System.gc();
+
 			} catch (Exception e) {
 				throw new AnnotationFormatError(e.getMessage());
 			}
