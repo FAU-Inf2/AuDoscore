@@ -137,6 +137,10 @@ public abstract class JUnitWithPoints {
 			}
 		}
 
+		protected double getPoints(double pts, double pointsDeclaredPerExercise, double bonusDeclaredPerExercise) {
+			return pointsDeclaredPerExercise * Math.abs(pts) / bonusDeclaredPerExercise;
+		}
+
 		final void format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise, JSONArray tests) {
 			JSONObject jsontest = new JSONObject();
 			jsontest.put("id", getShortDisplayName(description));
@@ -156,7 +160,7 @@ public abstract class JUnitWithPoints {
 				jsontest.put("desc", getComment(bonus.comment(), description));
 			}
 			if (bonus != null && throwable == null) {
-				jsontest.put("score", ((Double)(pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise)).toString());
+				jsontest.put("score", ((Double)getPoints(bonus.bonus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise).toString());
 			}
 			if (bonus != null && throwable != null) {
 				jsontest.put("score", "0.0");
@@ -169,7 +173,7 @@ public abstract class JUnitWithPoints {
 			}
 			if (malus != null && throwable != null) {
 				// in case of failure: overwrite bonus if avail
-				jsontest.put("score", ((Double)(-(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise))).toString());
+				jsontest.put("score", ((Double)(-getPoints(malus.malus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise).toString());
 				jsontest.put("desc", getComment(malus.comment(), description));
 			}
 
