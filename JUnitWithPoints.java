@@ -133,7 +133,7 @@ public abstract class JUnitWithPoints {
 			String result = "";
 			JSONObject jsontest = new JSONObject();
 			jsontest.put("id", getShortDisplayName(description));
-			if (throwable != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.REPLACE_IGNORE_MSG)) {
+			if (throwable != null && throwable.getLocalizedMessage() != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.REPLACE_IGNORE_MSG)) {
 				// FIXME maybe test for json
 				return "";
 			}
