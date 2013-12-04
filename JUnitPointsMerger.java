@@ -38,6 +38,8 @@ public class JUnitPointsMerger {
 		ArrayList<SingleReport> reps = new ArrayList<>();
 		double localpoints = 0;
 		JSONArray vextests = (JSONArray) vex.get("tests");
+		/*
+		FIXME: this is not longer true, try to create a better check soon ;-)
 		int cnt = 0;
 		for (JSONObject rex : rexs) {
 			cnt++;
@@ -46,6 +48,7 @@ public class JUnitPointsMerger {
 				throw new RuntimeException("vanilla and #" + cnt + " of replaced do have different number of tests (" + vextests.size() + " vs. " + rextests.size() + ") for exercise " + rex.get("name"));
 			}
 		}
+		*/
 		for (int i = 0; i < vextests.size(); i++) {
 			JSONObject vextest = (JSONObject) vextests.get(i);
 			JSONObject usedresult = vextest;
@@ -61,9 +64,11 @@ public class JUnitPointsMerger {
 						found = true;
 					}
 				}
+				/* FIXME: this is not longer true, see above
 				if (!found) {
 					throw new RuntimeException("could not find " + vextest.get("id") + " in replaced tests");
 				}
+				*/
 			}
 			String localSummary = "";
 			if ((Boolean) vextest.get("success")) {

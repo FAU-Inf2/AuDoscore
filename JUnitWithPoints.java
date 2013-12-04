@@ -89,6 +89,8 @@ public abstract class JUnitWithPoints {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
+	public final static String REPLACE_IGNORE_MSG = "this test case is not executed at all; ignoring it would make the point proportions incorrect -> FAIL!";
+
 	// ******************** BACKEND FUNCTIONALITY **************************************** //
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 	private static final HashMap<String, List<ReportEntry>> reportHashMap = new HashMap<>();
@@ -131,6 +133,10 @@ public abstract class JUnitWithPoints {
 			String result = "";
 			JSONObject jsontest = new JSONObject();
 			jsontest.put("id", getShortDisplayName(description));
+			if (throwable != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.REPLACE_IGNORE_MSG)) {
+				// FIXME maybe test for json
+				return "";
+			}
 			if (bonus != null && malus != null) {
 				if (throwable != null) {
 					result += String.format("✗ %1$+6.2f", -(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise));
@@ -478,6 +484,6 @@ public abstract class JUnitWithPoints {
 
 class MyStatement extends Statement {
 	public void evaluate() {
-		Assert.fail("this test case is not executed at all; ignoring it would make the point proportions incorrect -> FAIL!");
+		Assert.fail(JUnitWithPoints.REPLACE_IGNORE_MSG);
 	}
 }
