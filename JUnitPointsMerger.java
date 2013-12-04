@@ -38,10 +38,12 @@ public class JUnitPointsMerger {
 		ArrayList<SingleReport> reps = new ArrayList<>();
 		double localpoints = 0;
 		JSONArray vextests = (JSONArray) vex.get("tests");
+		int cnt = 0;
 		for (JSONObject rex : rexs) {
+			cnt++;
 			JSONArray rextests = (JSONArray) rex.get("tests");
 			if (rextests.size() != vextests.size()) {
-				throw new RuntimeException("vanilla and one of replaced do have different number of tests for exercise " + rex.get("name"));
+				throw new RuntimeException("vanilla and #" + cnt + " of replaced do have different number of tests (" + vextests.size() + " vs. " + rextests.size() + ") for exercise " + rex.get("name"));
 			}
 		}
 		for (int i = 0; i < vextests.size(); i++) {
