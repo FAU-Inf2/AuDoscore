@@ -62,6 +62,7 @@ compile-stage1: miniclean
 	rm forbidden
 
 compile-stage2: miniclean
+	./obfuscate
 	cp $(TEST).java $(TEST).java.orig
 	( /bin/echo -e "import org.junit.*;\n import tester.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )

@@ -7,3 +7,4 @@
 ./createTest2.sh
 ./isAccessedInFunction.py
 ./README
+./obfuscate

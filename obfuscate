@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export DATE=`date +%s`;
+export MD5=`md5sum cleanroom/*java | tail -1 | awk '{print $1;}'`;
+sed -i -e "s|__clean|__clean${MD5}${DATE}|g" cleanroom/*java
