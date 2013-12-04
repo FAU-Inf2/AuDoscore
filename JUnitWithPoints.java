@@ -129,101 +129,75 @@ public abstract class JUnitWithPoints {
 			return ": " + ste.getClassName() + "." + ste.getMethodName() + "(line " + ste.getLineNumber() + ")";
 		}
 
-		final String format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise, JSONArray tests) {
-			String result = "";
+		final void format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise, JSONArray tests) {
 			JSONObject jsontest = new JSONObject();
 			jsontest.put("id", getShortDisplayName(description));
 			if (throwable != null && throwable.getLocalizedMessage() != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.REPLACE_IGNORE_MSG)) {
 				// FIXME maybe test for json
-				return "";
+				return;
 			}
 			if (bonus != null && malus != null) {
 				if (throwable != null) {
-					result += String.format("✗ %1$+6.2f", -(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise));
 					jsontest.put("success", (Boolean) (false));
 					jsontest.put("score", ((Double)(-(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise))).toString());
-					result += " | ";
 					if (malus.comment().equals("<n.a.>")) {
 						jsontest.put("desc", getShortDisplayName(description));
-						result += getShortDisplayName(description);
 					} else {
 						jsontest.put("desc", malus.comment());
-						result += malus.comment();
 					}
 				} else {
-					result += String.format("✓ %1$+6.2f", (pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise));
 					jsontest.put("success", (Boolean) (true));
 					jsontest.put("score", ((Double)(pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise)).toString());
-					result += " | ";
 					if (bonus.comment().equals("<n.a.>")) {
 						jsontest.put("desc", getShortDisplayName(description));
-						result += getShortDisplayName(description);
 					} else {
 						jsontest.put("desc", bonus.comment());
-						result += bonus.comment();
 					}
 				}
 				if (throwable != null) {
-					result += " | " + throwable.getClass().getSimpleName() + "(" + throwable.getLocalizedMessage() + ")";
-					result += getStackTrace();
 					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 				}
 				tests.add(jsontest);
-				return result;
+				return;
 			}
 			if (bonus != null) {
 				if (throwable != null) {
-					result += String.format("✗ %1$6.2f", 0.0);
 					jsontest.put("success", (Boolean) (false));
 					jsontest.put("score", "0.0");
 				} else {
-					result += String.format("✓ %1$+6.2f", (pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise));
 					jsontest.put("success", (Boolean) (true));
 					jsontest.put("score", ((Double)(pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise)).toString());
 				}
-				result += " | ";
 				if (bonus.comment().equals("<n.a.>")) {
 					jsontest.put("desc", getShortDisplayName(description));
-					result += getShortDisplayName(description);
 				} else {
 					jsontest.put("desc", bonus.comment());
-					result += bonus.comment();
 				}
 				if (throwable != null) {
-					result += " | " + throwable.getClass().getSimpleName() + "(" + throwable.getLocalizedMessage() + ")";
-					result += getStackTrace();
 					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 				}
 				tests.add(jsontest);
-				return result;
+				return;
 			}
 			if (malus != null) {
 				if (throwable != null) {
-					result += String.format("✗ %1$+6.2f", -(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise));
 					jsontest.put("success", (Boolean) (false));
 					jsontest.put("score", ((Double)(-(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise))).toString());
 				} else {
-					result += String.format("✓ %1$6.2f", 0.0);
 					jsontest.put("success", (Boolean) (true));
 					jsontest.put("score", "0.0");
 				}
-				result += " | ";
 				if (malus.comment().equals("<n.a.>")) {
 					jsontest.put("desc", getShortDisplayName(description));
-					result += getShortDisplayName(description);
 				} else {
 					jsontest.put("desc", malus.comment());
-					result += malus.comment();
 				}
 				if (throwable != null) {
-					result += " | " + throwable.getClass().getSimpleName() + "(" + throwable.getLocalizedMessage() + ")";
-					result += getStackTrace();
 					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 				}
 				tests.add(jsontest);
-				return result;
+				return;
 			}
-			return result;
 		}
 	}
 
@@ -386,16 +360,12 @@ public abstract class JUnitWithPoints {
 			}
 			String[] exerciseIds = reportHashMap.keySet().toArray(new String[0]);
 			Arrays.sort(exerciseIds);
-			String summary = "";
 			JSONObject jsonsummary = new JSONObject();
 			JSONArray jsonexercises = new JSONArray();
 			double pointsAchievedTotal = 0;
 			for (String exerciseId : exerciseIds) {
 				double bonusDeclaredPerExercise, bonusAchievedPerExercise, pointsDeclaredPerExercise, pointsAchievedPerExercise;
 				JSONObject jsonexercise = new JSONObject();
-				if (summary.length() > 0) {
-					summary += "\n";
-				}
 				Ex exercise = exerciseHashMap.get(exerciseId);
 				List<ReportEntry> reportPerExercise = reportHashMap.get(exerciseId);
 				Collections.sort(reportPerExercise, new ReportEntryComparator());
@@ -405,7 +375,6 @@ public abstract class JUnitWithPoints {
 						bonusDeclaredPerExercise += Math.abs(reportEntry.bonus.bonus());
 					}
 				}
-				String report = "";
 				pointsDeclaredPerExercise = exercise.points();
 				bonusAchievedPerExercise = 0;
 				JSONArray jsontests = new JSONArray();
@@ -413,7 +382,6 @@ public abstract class JUnitWithPoints {
 					Bonus bonus = reportEntry.bonus;
 					Malus malus = reportEntry.malus;
 					Throwable throwable = reportEntry.throwable;
-					report += reportEntry.format(bonusDeclaredPerExercise, pointsDeclaredPerExercise, jsontests) + "\n";
 					if (bonus != null && throwable == null) {
 						bonusAchievedPerExercise += Math.abs(bonus.bonus());
 					}
@@ -424,8 +392,6 @@ public abstract class JUnitWithPoints {
 				jsonexercise.put("tests", jsontests);
 				bonusAchievedPerExercise = Math.min(bonusDeclaredPerExercise, Math.max(0, bonusAchievedPerExercise));
 				pointsAchievedPerExercise = Math.ceil(pointsDeclaredPerExercise * 2 * bonusAchievedPerExercise / bonusDeclaredPerExercise) / 2;
-				summary += exercise.exID() + String.format(" (%1$.1f points):", pointsAchievedPerExercise) + "\n";
-				summary += report;
 				pointsAchievedTotal += pointsAchievedPerExercise;
 				jsonexercise.put("possiblePts", ((Double) exercise.points()).toString());
 				jsonexercise.put("name", exercise.exID());
@@ -433,17 +399,16 @@ public abstract class JUnitWithPoints {
 				jsonexercises.add(jsonexercise);
 			}
 			jsonsummary.put("exercises", jsonexercises);
-			summary = "Score: " + String.format("%1$.1f", pointsAchievedTotal) + "\n\n" + summary;
 			jsonsummary.put("score", String.format("%1$.1f", pointsAchievedTotal));
 			if (System.getProperty("json") != null && System.getProperty("json").equals("yes")) {
 				System.err.println(jsonsummary);
 			} else {
 				try {
 					try (FileWriter fileWriter = new FileWriter(new File(System.getProperty("user.dir"), "autocomment.txt"))) {
-						fileWriter.write(summary);
+						fileWriter.write(jsonsummary.toString());
 					}
 				} catch (Throwable t) {
-					System.err.println(summary);
+					System.err.println(jsonsummary);
 				}
 			}
 		}
