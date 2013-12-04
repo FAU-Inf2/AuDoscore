@@ -129,6 +129,14 @@ public abstract class JUnitWithPoints {
 			return ": " + ste.getClassName() + "." + ste.getMethodName() + "(line " + ste.getLineNumber() + ")";
 		}
 
+		protected String getComment(String comment, Description description) {
+			if (comment.equals("<n.a.>")) {
+				return getShortDisplayName(description);
+			} else {
+				return comment;
+			}
+		}
+
 		final void format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise, JSONArray tests) {
 			JSONObject jsontest = new JSONObject();
 			jsontest.put("id", getShortDisplayName(description));
@@ -140,19 +148,11 @@ public abstract class JUnitWithPoints {
 				if (throwable != null) {
 					jsontest.put("success", (Boolean) (false));
 					jsontest.put("score", ((Double)(-(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise))).toString());
-					if (malus.comment().equals("<n.a.>")) {
-						jsontest.put("desc", getShortDisplayName(description));
-					} else {
-						jsontest.put("desc", malus.comment());
-					}
+					jsontest.put("desc", getComment(malus.comment(), description));
 				} else {
 					jsontest.put("success", (Boolean) (true));
 					jsontest.put("score", ((Double)(pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise)).toString());
-					if (bonus.comment().equals("<n.a.>")) {
-						jsontest.put("desc", getShortDisplayName(description));
-					} else {
-						jsontest.put("desc", bonus.comment());
-					}
+					jsontest.put("desc", getComment(bonus.comment(), description));
 				}
 				if (throwable != null) {
 					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
@@ -168,11 +168,7 @@ public abstract class JUnitWithPoints {
 					jsontest.put("success", (Boolean) (true));
 					jsontest.put("score", ((Double)(pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise)).toString());
 				}
-				if (bonus.comment().equals("<n.a.>")) {
-					jsontest.put("desc", getShortDisplayName(description));
-				} else {
-					jsontest.put("desc", bonus.comment());
-				}
+				jsontest.put("desc", getComment(bonus.comment(), description));
 				if (throwable != null) {
 					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 				}
@@ -187,11 +183,7 @@ public abstract class JUnitWithPoints {
 					jsontest.put("success", (Boolean) (true));
 					jsontest.put("score", "0.0");
 				}
-				if (malus.comment().equals("<n.a.>")) {
-					jsontest.put("desc", getShortDisplayName(description));
-				} else {
-					jsontest.put("desc", malus.comment());
-				}
+				jsontest.put("desc", getComment(malus.comment(), description));
 				if (throwable != null) {
 					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 				}
