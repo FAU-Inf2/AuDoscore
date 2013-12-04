@@ -142,41 +142,40 @@ public abstract class JUnitWithPoints {
 		}
 
 		final void format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise, JSONArray tests) {
-			JSONObject jsontest = new JSONObject();
-			jsontest.put("id", getShortDisplayName(description));
 			if (throwable != null && throwable.getLocalizedMessage() != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.REPLACE_IGNORE_MSG)) {
 				// FIXME maybe test for json
 				return;
 			}
 
-			if (throwable == null) {
-				jsontest.put("success", (Boolean) (true));
-			} else {
-				jsontest.put("success", (Boolean) (false));
-				jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
-			}
+			boolean success = (throwable == null);
+			String desc = null;
+			double score = 0;
 
 			if (bonus != null) {
-				jsontest.put("desc", getComment(bonus.comment(), description));
+				desc = getComment(bonus.comment(), description);
 			}
 			if (bonus != null && throwable == null) {
-				jsontest.put("score", ((Double)getPoints(bonus.bonus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise).toString());
-			}
-			if (bonus != null && throwable != null) {
-				jsontest.put("score", "0.0");
+				score = getPoints(bonus.bonus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
 			}
 			if (malus != null && throwable == null) {
-				if (bonus == null) { // only add result if nothing was added before
-					jsontest.put("score", "0.0");
-					jsontest.put("desc", getComment(malus.comment(), description));
+				if (bonus == null) { // only set comment if nothing was added before, points already default to zero
+					desc = getComment(malus.comment(), description);
 				}
 			}
 			if (malus != null && throwable != null) {
-				// in case of failure: overwrite bonus if avail
-				jsontest.put("score", ((Double)(-getPoints(malus.malus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise).toString());
-				jsontest.put("desc", getComment(malus.comment(), description));
+				// in case of failure: overwrite bonus
+				score = -getPoints(malus.malus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
+				desc = getComment(malus.comment(), description);
 			}
 
+			JSONObject jsontest = new JSONObject();
+			jsontest.put("id", getShortDisplayName(description));
+			jsontest.put("success", (Boolean) (success));
+			jsontest.put("desc", desc);
+			jsontest.put("score", ((Double) score).toString());
+			if (!success) {
+				jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
+			}
 			tests.add(jsontest);
 		}
 	}
