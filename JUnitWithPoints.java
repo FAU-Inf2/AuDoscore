@@ -141,10 +141,9 @@ public abstract class JUnitWithPoints {
 			return pointsDeclaredPerExercise * Math.abs(pts) / bonusDeclaredPerExercise;
 		}
 
-		final void format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise, JSONArray tests) {
+		final JSONObject format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise) {
 			if (throwable != null && throwable.getLocalizedMessage() != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.REPLACE_IGNORE_MSG)) {
-				// FIXME maybe test for json
-				return;
+				return null;
 			}
 
 			boolean success = (throwable == null);
@@ -176,7 +175,7 @@ public abstract class JUnitWithPoints {
 			if (!success) {
 				jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 			}
-			tests.add(jsontest);
+			return jsontest;
 		}
 	}
 
@@ -361,6 +360,10 @@ public abstract class JUnitWithPoints {
 					Bonus bonus = reportEntry.bonus;
 					Malus malus = reportEntry.malus;
 					Throwable throwable = reportEntry.throwable;
+					JSONObject json = reportEntry.format(bonusDeclaredPerExercise, pointsDeclaredPerExercise);
+					if (json != null) {
+						jsontests.add(json);
+					}
 					if (bonus != null && throwable == null) {
 						bonusAchievedPerExercise += Math.abs(bonus.bonus());
 					}
