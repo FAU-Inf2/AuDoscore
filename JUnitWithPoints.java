@@ -246,14 +246,21 @@ public abstract class JUnitWithPoints {
 		private PrintStream saveOut;
 		private PrintStream saveErr;
 
-		@Override
-		public final Statement apply(Statement base, Description description) {
+		protected boolean isIgnoredCase(Description description) {
 			String doReplace = System.getProperty("replace");
 			if ((doReplace != null && !doReplace.equals(""))) {
 				String ncln = ReadReplace.getCanonicalReplacement(description);
 				if (!doReplace.equals(ncln)) {
-					base = new MyStatement();
+					return true;
 				}
+			}
+			return false;
+		}
+
+		@Override
+		public final Statement apply(Statement base, Description description) {
+			if (isIgnoredCase(description)) {
+				base = new MyStatement();
 			}
 			return super.apply(base, description);
 		}
@@ -280,11 +287,14 @@ public abstract class JUnitWithPoints {
 					}
 				}));
 
-				System.gc();
-				Thread.sleep(50);
-				System.gc();
-				Thread.sleep(50);
-				System.gc();
+				if (!isIgnoredCase(description)) {
+					System.gc();
+					Thread.sleep(50);
+					System.gc();
+					Thread.sleep(50);
+					System.gc();
+				}
+
 
 			} catch (Exception e) {
 				throw new AnnotationFormatError(e.getMessage());
