@@ -149,13 +149,11 @@ public abstract class JUnitWithPoints {
 					jsontest.put("success", (Boolean) (false));
 					jsontest.put("score", ((Double)(-(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise))).toString());
 					jsontest.put("desc", getComment(malus.comment(), description));
+					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 				} else {
 					jsontest.put("success", (Boolean) (true));
 					jsontest.put("score", ((Double)(pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise)).toString());
 					jsontest.put("desc", getComment(bonus.comment(), description));
-				}
-				if (throwable != null) {
-					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 				}
 				tests.add(jsontest);
 				return;
@@ -164,14 +162,12 @@ public abstract class JUnitWithPoints {
 				if (throwable != null) {
 					jsontest.put("success", (Boolean) (false));
 					jsontest.put("score", "0.0");
+					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 				} else {
 					jsontest.put("success", (Boolean) (true));
 					jsontest.put("score", ((Double)(pointsDeclaredPerExercise * Math.abs(bonus.bonus()) / bonusDeclaredPerExercise)).toString());
 				}
 				jsontest.put("desc", getComment(bonus.comment(), description));
-				if (throwable != null) {
-					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
-				}
 				tests.add(jsontest);
 				return;
 			}
@@ -179,14 +175,12 @@ public abstract class JUnitWithPoints {
 				if (throwable != null) {
 					jsontest.put("success", (Boolean) (false));
 					jsontest.put("score", ((Double)(-(pointsDeclaredPerExercise * Math.abs(malus.malus()) / bonusDeclaredPerExercise))).toString());
+					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 				} else {
 					jsontest.put("success", (Boolean) (true));
 					jsontest.put("score", "0.0");
 				}
 				jsontest.put("desc", getComment(malus.comment(), description));
-				if (throwable != null) {
-					jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
-				}
 				tests.add(jsontest);
 				return;
 			}
