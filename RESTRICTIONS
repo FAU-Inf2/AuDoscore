@@ -3,5 +3,4 @@ Student + Cleanroom:
 - DON'T make anything final or private unless you know what you are doing
 
 Cleanroom:
-- DON'T use super in the cleanroom, studens may use super in their solutions
-- DON'T replace constructors, use init-methods instead
+- not aware of any special rule at the moment
