@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# FIXME: this is a dirty workaround for NOrberts exercise
+mkdir -p cleanroom
+touch cleanroom/ThisDummyFileWillNeverBeSubmittedViaEST.java
+
 export DATE=`date +%s`;
-export MD5=`md5sum cleanroom/*java | tail -1 | awk '{print $1;}'`;
+export MD5=`md5sum lib/*jar cleanroom/*java | tail -1 | awk '{print $1;}'`;
 sed -i -e "s|__clean|__clean${MD5}${DATE}|g" cleanroom/*java
