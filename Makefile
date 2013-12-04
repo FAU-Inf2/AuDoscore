@@ -68,7 +68,6 @@ compile-stage2: miniclean
 	./createTest2.sh $(TEST) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
-	java -cp lib/json-simple-1.1.1.jar:lib/junitpoints.jar:. CheckMustUse $(TEST) > checkMustUse.report
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(TEST) > loop.sh	
 
 compile: compile-stage$(STAGE)
@@ -81,7 +80,7 @@ run-stage1:
 
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
-	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -DMustUseDeductionJSON=yes -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	echo ", \"replaced\" : " 1>&2
 	sh ./loop.sh
 	echo "}" 1>&2
