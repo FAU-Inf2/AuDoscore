@@ -10,19 +10,6 @@ import java.util.*;
 import java.io.*;
 import asp.*;
 
-/*
-@UsageRestriction(
-   mustUse = {
-	   @MustUse(classname="Student", methods={"recur\\(int\\)"}, usable={"// Method recur:\\(I\\)V"}, malus=1, exID="GA4.6a"), // shall succeed
-	   @MustUse(classname="Student", methods={"recur\\(int\\)"}, usable={"// Field testVariable:I"}, malus=1, exID="GA4.6a") // shall not succeed
-   },
-   mustNotUse={
-	   @MustNotUse(classname="Student", methods={"recur\\(int, double\\)"}, notUsable={"// Field testVariable:I"}, malus=2, exID="GA4.6a"), // shall succeed
-	   @MustNotUse(classname="Student", methods={"recur\\(int, double\\)"}, notUsable={"// Method recur:\\(I\\)V"}, malus=2, exID="GA4.6a"),  // shall succeed
-	   @MustNotUse(classname="Student", methods={"recur\\(int, double\\)"}, notUsable={"// Method recur:\\(ID\\)V"}, malus=2, exID="GA4.6a")  // shall not succeed
-   }
-)
-*/
 @Exercises({ @Ex(exID = "GA4.6a", points = 12.5)})
 @Forbidden({"java.util.", "java.math.BigInteger"})
 @NotForbidden({"java.util.HashMap", "java.util.LinkedList"})

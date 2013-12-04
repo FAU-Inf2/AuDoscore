@@ -387,49 +387,12 @@ public abstract class JUnitWithPoints {
 			String[] exerciseIds = reportHashMap.keySet().toArray(new String[0]);
 			Arrays.sort(exerciseIds);
 			String summary = "";
-			HashMap<String, List<JSONObject>> previousDeductions = new HashMap<>();
 			JSONObject jsonsummary = new JSONObject();
 			JSONArray jsonexercises = new JSONArray();
 			double pointsAchievedTotal = 0;
-			String tmpstr = System.getProperty("MustUseDeductionJSON");
-			// get deducted points from json environment variable
-			if(tmpstr != null && tmpstr.equals("yes")) {
-				try {
-					try {
-						BufferedReader br = new BufferedReader(new FileReader("checkMustUse.report"));
-						StringBuilder sb = new StringBuilder();
-						String line = br.readLine();
-
-						while (line != null) {
-							sb.append(line);
-							sb.append('\n');
-							line = br.readLine();
-						}
-						tmpstr = sb.toString();
-					} catch (Exception e) {
-						System.err.println("Something with Jakobs JSON went horribly wrong.");
-					}
-					JSONObject tmp = (JSONObject) new JSONParser().parse(tmpstr);
-					if(tmp.containsKey("deductions")) {
-						JSONArray a = (JSONArray) tmp.get("deductions");
-						for(Object oo : a) {
-							JSONObject jo = (JSONObject) oo;
-							if(jo.containsKey("exid")) {
-								String id = (String) jo.get("exid");
-								if(!previousDeductions.containsKey(id))
-									previousDeductions.put(id, new ArrayList<JSONObject>());
-								previousDeductions.get(id).add(jo);
-							}
-						}
-					}
-				} catch(ParseException | ClassCastException e) {
-					// do nothing
-				}
-			}
 			for (String exerciseId : exerciseIds) {
 				double bonusDeclaredPerExercise, bonusAchievedPerExercise, pointsDeclaredPerExercise, pointsAchievedPerExercise;
 				JSONObject jsonexercise = new JSONObject();
-				List<JSONObject> prevDeductOnThisExercise = previousDeductions.get(exerciseId);
 				if (summary.length() > 0) {
 					summary += "\n";
 				}
@@ -456,11 +419,6 @@ public abstract class JUnitWithPoints {
 					}
 					if (malus != null && throwable != null) {
 						bonusAchievedPerExercise -= Math.abs(malus.malus());
-					}
-				}
-				if(prevDeductOnThisExercise != null) {
-					for (JSONObject jo : prevDeductOnThisExercise) {
-						jsontests.add(jo);
 					}
 				}
 				jsonexercise.put("tests", jsontests);
