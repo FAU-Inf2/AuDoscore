@@ -56,7 +56,7 @@ public class JUnitPointsMerger {
 				boolean found = false;
 				JSONArray rextests = (JSONArray) rexIt.get("tests");
 				for (int j = 0; !found && j < rextests.size(); j++) {
-					JSONObject rextest = (JSONObject) rextests.get(i);
+					JSONObject rextest = (JSONObject) rextests.get(j);
 					if (rextest.get("id").equals(vextest.get("id"))) {
 						if ((Boolean) rextest.get("success")) {
 							usedresult = rextest;
