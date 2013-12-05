@@ -153,15 +153,15 @@ public abstract class JUnitWithPoints {
 			if (bonus != null) {
 				desc = getComment(bonus.comment(), description);
 			}
-			if (bonus != null && throwable == null) {
+			if (bonus != null && success) {
 				score = getPoints(bonus.bonus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
 			}
-			if (malus != null && throwable == null) {
+			if (malus != null && success) {
 				if (bonus == null) { // only set comment if nothing was added before, points already default to zero
 					desc = getComment(malus.comment(), description);
 				}
 			}
-			if (malus != null && throwable != null) {
+			if (malus != null && !success) {
 				// in case of failure: overwrite bonus
 				score = -getPoints(malus.malus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
 				desc = getComment(malus.comment(), description);
