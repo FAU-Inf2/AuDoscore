@@ -4,7 +4,5 @@
 ./lib/tools.jar
 ./Makefile
 ./test.sh
-./createTest2.sh
-./isAccessedInFunction.py
 ./README
 ./obfuscate
