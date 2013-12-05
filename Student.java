@@ -4,7 +4,6 @@ public class Student {
 	int testVariable = 0;
 //	ClassLoader l;
 	private int fooo;
-	Set<Object> set;
 	Student2 stud2;
 
 	public int foo() {

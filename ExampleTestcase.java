@@ -21,7 +21,6 @@ public class ExampleTestcase {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	/*
 	@Test(timeout=100)
 	@Bonus(exID = "GA4.6a", bonus = 47.11)
 	@Replace({"Student.foo"})
@@ -52,7 +51,6 @@ public class ExampleTestcase {
 	public void testFooShouldReturn4711_4() { // wrong in both
 		assertEquals("Foo ist kaputt.", 23, 42);
 	}
-	*/
 
 	@Test(timeout=10002)
 	@Bonus(exID = "GA4.6a", bonus = 4.11)
