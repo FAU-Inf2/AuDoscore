@@ -6,21 +6,7 @@ STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
 
 all:
 	make prepare
-	make compile-stage0
-	echo -e "\n\n\033[1;31mcompiling student code without tests\033[0m\n\n"
-	make run-stage0
-	echo -e "\n\n\033[1;31mcompiling student code with main-tests\033[0m\n\n"
-	make compile-stage1
-	echo -e "\n\n\033[1;31mrunning student code with main-tests\033[0m\n\n"
-	make run-stage1 | grep -v "^$$" | tail -2 | grep "OK ("
-	echo -e "\n\n\033[1;31mcompiling student code with all tests (vanilla and replaced)\033[0m\n\n"
-	make compile-stage2
-	echo -e "\n\n\033[1;31mrunning student code with all tests (vanilla and replaced)\033[0m\n\n"
-	make run-stage2 2> result.json
-	echo -e "\n\n\033[1;31mmerging results of vanilla and replaced\033[0m\n\n"
-	java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar JUnitPointsMerger result.json mergedcomment.txt
-	cat mergedcomment.txt
-	rm mergedcomment.txt result.json
+	./test.sh $(TEST) $(STUDENTSOURCE) -- $(INTERFACES) -- cleanroom
 
 clean:
 	rm -rf build
@@ -28,9 +14,6 @@ clean:
 	rm -rf mixed
 	rm -f *.class
 	rm -f lib/junitpoints.jar
-	rm -f mergedcomment.txt
-	rm -f result.json
-
 
 miniclean:
 	rm -f *.class */*.class
