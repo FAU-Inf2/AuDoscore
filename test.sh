@@ -58,19 +58,24 @@ if [ $# -lt 2 ]; then
 fi
 
 testclass=$1; shift
-studentsource=$1; shift
+testclass=$(basename $testclass ".java")
+arg=$1; shift
+arg=$(basename $arg)
+studentsource=$arg
 
 while [ $# -gt 0 ] && [ "x$1" != "x--" ]; do
-	studentsource="${studentsource} $1"
-	shift
+	arg=$1; shift
+	arg=$(basename $arg)
+	studentsource="${studentsource} $arg"
 done
 
 shift || true # throw -- away if exists
 
 interfaces=""
 while [ $# -gt 0 ] && [ "x$1" != "x--" ]; do
-	interfaces="${interfaces} $1"
-	shift
+	arg=$1; shift
+	arg=$(basename $arg)
+	interfaces="${interfaces} $arg"
 done
 
 shift || true # throw -- away if exists
