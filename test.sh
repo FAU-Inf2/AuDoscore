@@ -109,13 +109,14 @@ testdir="${callerdir}/test.$$"
 mkdir "$testdir" || die "failed to create test dir test.$$"
 cd "$testdir" > /dev/null 2> /dev/null
 
+# must be first step
+info "- copy/install test infrastructure"
+${scriptdir}/install.sh || die "failed"
+
 info "- write var.mk"
 echo "STUDENTSOURCE = ${studentsource}" > var.mk
 echo "TEST = ${testclass}" >> var.mk
 echo "INTERFACES = ${interfaces}" >> var.mk
-
-info "- copy test infrastructure"
-cp -r ${scriptdir}/* . || die "failed"
 
 info "- copy student sources"
 pushd ../${undertestdir} > /dev/null || die "failed"
