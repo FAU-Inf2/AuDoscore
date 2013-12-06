@@ -1,5 +1,5 @@
 import org.junit.*;
- import tester.*;
+import tester.*;
 
 import org.junit.*;
 import org.junit.rules.*;
@@ -8,7 +8,6 @@ import java.lang.reflect.*;
 import java.lang.*;
 import java.util.*;
 import java.io.*;
-import asp.*;
 
 @Exercises({ @Ex(exID = "GA4.6a", points = 12.5)})
 @Forbidden({"java.util.", "java.math.BigInteger"})
