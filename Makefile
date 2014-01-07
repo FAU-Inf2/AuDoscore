@@ -51,6 +51,12 @@ compile-stage2: miniclean
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mkdir -p mixed || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(TEST) > compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	if [ "x$(INTERFACES)" -ne "x" ]; then \
+		for i in $(INTERFACES); do \
+			/bin/echo -e "package cleanroom;\n" > cleanroom/$i; \
+			cat $i >> cleanroom/$i; \
+		done; \
+	fi
 	sh ./compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
