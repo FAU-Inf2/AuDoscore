@@ -31,7 +31,9 @@ public class ReplaceMixer extends AbstractProcessor {
 
 	private HashMap<String, JCTree> cleanMethods = new HashMap<>();
 	private HashMap<String, JCTree> cleanFields = new HashMap<>();
-	private boolean first = true;
+	private boolean first = true; // student vs. cleanroom
+	private boolean isPublic = true;
+	private int classLevel;
 
 	public String[] replaces = null;
 
@@ -54,6 +56,7 @@ public class ReplaceMixer extends AbstractProcessor {
 			Set<? extends Element> elements = roundEnv.getRootElements();
 			for (Element each : elements) {
 				if (each.getKind() == ElementKind.CLASS) {
+					classLevel = 0;
 					JCTree tree = (JCTree) trees.getTree(each);
 					tree.accept(new Merger());
 
@@ -107,6 +110,9 @@ public class ReplaceMixer extends AbstractProcessor {
 		public void visitMethodDef(JCMethodDecl tree) {
 			super.visitMethodDef(tree);
 
+			if (classLevel != 1) return;
+			if (!isPublic) return;
+
 			ArrayList<String> types = new ArrayList<>();
 			for (JCVariableDecl decl : tree.params) {
 				types.add(decl.vartype.toString());
@@ -130,10 +136,26 @@ public class ReplaceMixer extends AbstractProcessor {
 
 		@Override
 		public void visitClassDef(JCClassDecl tree) {
+			JCModifiers mods = tree.getModifiers();
+			boolean oldPublic = isPublic;
+			isPublic = mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC);
+			System.err.println("class " + tree.name + " ispub " + isPublic);
 			insideBlock = false;
+			classLevel++;
+			if (classLevel > 1) {
+				System.err.println("found inner class: " + tree.name);
+			}
 			super.visitClassDef(tree);
+			classLevel--;
+			isPublic = oldPublic;
+
+			System.err.println("class " + tree.name + ", " + first + ", " + classLevel + ", " + isPublic);
 
 			if (first) return;
+			if (classLevel >= 1) return;
+			if (!mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC)) return;
+
+			System.err.println("I am here");
 
 			for (Map.Entry<String, JCTree> entry : cleanMethods.entrySet()) {
 				System.err.println("appending cleanroom method: " + entry.getKey());
