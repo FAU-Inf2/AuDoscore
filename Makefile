@@ -57,7 +57,7 @@ compile-stage2: miniclean
 			cat $i >> cleanroom/$i; \
 		done; \
 	fi
-	sh ./compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	sh -e ./compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(TEST) > loop.sh	
