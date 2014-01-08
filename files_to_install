@@ -6,3 +6,5 @@
 ./test.sh
 ./README
 ./obfuscate
+./install.sh
+./files_to_install
