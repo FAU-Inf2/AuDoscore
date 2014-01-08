@@ -163,7 +163,7 @@ checkexit $? "\nstudent result: ✘\n" /tmp/comp1.$$
 info "- testing"
 ( make run-stage1 ) > /tmp/run1.$$ 2>&1
 checkexit $? "\ninternal error\n" /tmp/run1.$$
-cat /tmp/run1.$$ | grep -v "^$$" | tail -2 | grep "OK ("
+cat /tmp/run1.$$ | grep -v "^$$" | grep -v "^make" | tail -2 | grep "OK ("
 if [ $? -ne 0 ]; then
 	err "failed:"
 	cat /tmp/run1.$$
