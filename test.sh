@@ -116,7 +116,7 @@ cd "$testdir" > /dev/null 2> /dev/null
 
 # must be first step
 info "- copy/install test infrastructure"
-${scriptdir}/install.sh || die "failed"
+${scriptdir}/install.sh > /dev/null 2> /dev/null || die "failed"
 
 info "- write var.mk"
 echo "STUDENTSOURCE = ${studentsource}" > var.mk
