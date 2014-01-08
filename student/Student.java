@@ -24,7 +24,7 @@ public class Student {
 	}
 
 	public static Object getNull() {
-		java.util.LinkedList<Integer> ll = new java.util.LinkedList<>();
+//		java.util.LinkedList<Integer> ll = new java.util.LinkedList<>();
 		return null;
 	}
 

@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 public class Student {
 	int testVariable = 0;
 	int __cleanVariable = 0;
-	ArrayList<String> __cleanList;
 
 	public int foo() {
 		return 4711 + __cleanVariable + testVariable;
