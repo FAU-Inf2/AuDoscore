@@ -3,10 +3,12 @@ import java.lang.*;
 import java.math.BigDecimal;
 public class Student {
 	int testVariable = 0;
-	int __cleanVariable = 0;
+	int __cleanVariable = 1;
 
 	public int foo() {
-		return 4711 + __cleanVariable + testVariable;
+		int ret = 4711 + testVariable;
+		__cleanIteratorClass iterator = new __cleanIteratorClass();
+		return ret + iterator.getCleanVar();
 	}
 
 	public double bar() {
@@ -48,6 +50,12 @@ public class Student {
 	}
 
 	public Student(int x) {
+	}
+
+	private class __cleanIteratorClass {
+		public int getCleanVar() {
+			return __cleanVariable - 23;
+		}
 	}
 }
 
