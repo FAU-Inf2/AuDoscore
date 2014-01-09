@@ -33,10 +33,9 @@ public class ReplaceMixer extends AbstractProcessor {
 	private HashMap<String, JCTree> cleanMethods = new HashMap<>();
 	private HashMap<String, JCTree> cleanInnerClasses = new HashMap<>();
 	private HashMap<String, JCTree> cleanFields = new HashMap<>();
-	private boolean first = true; // student vs. cleanroom
 	private boolean isPublic = true;
 	private boolean imported = false;
-	private boolean isCleanroom = true;
+	private boolean isCleanroom;
 	private int classLevel;
 
 	public String[] replaces = null;
@@ -59,6 +58,13 @@ public class ReplaceMixer extends AbstractProcessor {
 		if (!roundEnv.processingOver()) {
 			Set<? extends Element> elements = roundEnv.getRootElements();
 			for (Element each : elements) {
+				Element encl = each.getEnclosingElement();
+				if (encl != null) {
+					// check if inside package cleanroom
+					isCleanroom = encl.getSimpleName().toString().equals("cleanroom");
+				} else {
+					isCleanroom = false;
+				}
 				if (each.getKind() == ElementKind.CLASS) {
 					classLevel = 0;
 					JCTree tree = (JCTree) trees.getTree(each);
@@ -74,20 +80,16 @@ public class ReplaceMixer extends AbstractProcessor {
 						}
 					}
 
-					if (!first) {
+					if (!isCleanroom) {
 						System.out.println(tree);
+						// even with -proc:only the javac does some semantic checking
+						// to avoid that (we compile the generated files anyway in the next step), exit in a clean way
+						System.exit(0);
 					}
-					first = false;
 				}
 			}
 		}
-		if (!isCleanroom) {
-			// even with -proc:only the javac does some semantic checking
-			// to avoid that (we compile the generated files anyway in the next step), exit in a clean way
-			System.exit(0);
-		}
-		isCleanroom = false;
-		return true;
+		return false;
 	}
 
 	private boolean isReplace(String method) {
@@ -115,7 +117,7 @@ public class ReplaceMixer extends AbstractProcessor {
 			if (insideBlock) return;
 
 			String name = tree.name.toString();
-			if (first && name.startsWith("__clean")) {
+			if (isCleanroom && name.startsWith("__clean")) {
 				cleanFields.put(name, tree);
 			}
 		}
@@ -132,7 +134,7 @@ public class ReplaceMixer extends AbstractProcessor {
 				types.add(decl.vartype.toString());
 			}
 			String name = tree.name.toString() + ": " +  Arrays.toString(types.toArray());
-			if (first) {
+			if (isCleanroom) {
 				cleanMethods.put(name, tree);
 			} else {
 				if (cleanMethods.get(name) != null) {
@@ -163,14 +165,22 @@ public class ReplaceMixer extends AbstractProcessor {
 			classLevel--;
 			isPublic = oldPublic;
 
-			System.err.println("class " + tree.name + ", " + first + ", " + classLevel + ", " + isPublic);
+			System.err.println("class " + tree.name + ", " + isCleanroom + ", " + classLevel + ", " + isPublic);
 
-			if (first && classLevel >= 1) {
+			if (isCleanroom && classLevel >= 1) {
+				// remember additional inner classes of cleanroom
+				// those will be added later in student's public class
 				cleanInnerClasses.put(tree.name.toString(), tree);
 			}
-			if (first) return;
-			if (classLevel >= 1) return;
-			if (!mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC)) return;
+
+			// only add methods, fields and inner classes in
+			// outer
+			// public class
+			// of student
+			if (classLevel >= 1) return; // no outer class
+			if (!mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC)) return; // no public class
+			if (isCleanroom) return; // no student class
+
 
 			for (Map.Entry<String, JCTree> entry : cleanMethods.entrySet()) {
 				System.err.println("appending cleanroom method: " + entry.getKey());
