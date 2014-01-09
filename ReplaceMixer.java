@@ -2,6 +2,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Collections;
 import java.util.ArrayList;
 import javax.annotation.processing.*;
@@ -30,10 +31,12 @@ public class ReplaceMixer extends AbstractProcessor {
 	private JavacElements elements;
 
 	private HashMap<String, JCTree> cleanMethods = new HashMap<>();
+	private HashMap<String, JCTree> cleanInnerClasses = new HashMap<>();
 	private HashMap<String, JCTree> cleanFields = new HashMap<>();
 	private boolean first = true; // student vs. cleanroom
 	private boolean isPublic = true;
 	private boolean imported = false;
+	private boolean isCleanroom = true;
 	private int classLevel;
 
 	public String[] replaces = null;
@@ -78,7 +81,13 @@ public class ReplaceMixer extends AbstractProcessor {
 				}
 			}
 		}
-		return false;
+		if (!isCleanroom) {
+			// even with -proc:only the javac does some semantic checking
+			// to avoid that (we compile the generated files anyway in the next step), exit in a clean way
+			System.exit(0);
+		}
+		isCleanroom = false;
+		return true;
 	}
 
 	private boolean isReplace(String method) {
@@ -156,11 +165,12 @@ public class ReplaceMixer extends AbstractProcessor {
 
 			System.err.println("class " + tree.name + ", " + first + ", " + classLevel + ", " + isPublic);
 
+			if (first && classLevel >= 1) {
+				cleanInnerClasses.put(tree.name.toString(), tree);
+			}
 			if (first) return;
 			if (classLevel >= 1) return;
 			if (!mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC)) return;
-
-			System.err.println("I am here");
 
 			for (Map.Entry<String, JCTree> entry : cleanMethods.entrySet()) {
 				System.err.println("appending cleanroom method: " + entry.getKey());
@@ -169,6 +179,11 @@ public class ReplaceMixer extends AbstractProcessor {
 
 			for (Map.Entry<String, JCTree> entry : cleanFields.entrySet()) {
 				System.err.println("appending cleanroom field: " + entry.getKey());
+				tree.defs = tree.defs.append(entry.getValue());
+			}
+
+			for (Map.Entry<String, JCTree> entry : cleanInnerClasses.entrySet()) {
+				System.err.println("appending cleanroom inner classes: " + entry.getKey());
 				tree.defs = tree.defs.append(entry.getValue());
 			}
 
