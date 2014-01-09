@@ -26,6 +26,7 @@ import javax.lang.model.util.Elements;
 @SupportedOptions("replaces")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class ReplaceMixer extends AbstractProcessor {
+	public final String CLEAN_PREFIX = "__clean";
 	private Trees trees;
 	private TreeMaker make;
 	private JavacElements elements;
@@ -117,7 +118,7 @@ public class ReplaceMixer extends AbstractProcessor {
 			if (insideBlock) return;
 
 			String name = tree.name.toString();
-			if (isCleanroom && name.startsWith("__clean")) {
+			if (isCleanroom && name.startsWith(CLEAN_PREFIX)) {
 				cleanFields.put(name, tree);
 			}
 		}
@@ -174,7 +175,7 @@ public class ReplaceMixer extends AbstractProcessor {
 
 			System.err.println("class " + tree.name + ", " + isCleanroom + ", " + classLevel + ", " + isPublic);
 
-			if (isCleanroom && classLevel >= 1 && tree.name.toString().startsWith("__clean")) {
+			if (isCleanroom && classLevel >= 1 && tree.name.toString().startsWith(CLEAN_PREFIX)) {
 				// remember additional inner classes of cleanroom
 				// those will be added later in student's public class
 				cleanInnerClasses.put(tree.name.toString(), tree);
