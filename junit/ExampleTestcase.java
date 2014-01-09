@@ -67,4 +67,12 @@ public class ExampleTestcase {
 		assertEquals("Foo ist kaputt.", 4711, (new Student()).foo());
 	}
 
+	@Test(timeout=10002)
+	@Bonus(exID = "GA4.6a", bonus = 4.11)
+	@Replace({"Student.foo"})
+	@SecretCase
+	public void testFooShouldReturn4712() { // correct in clean
+		assertEquals("Foo ist kaputt.", 4712, (new Student()).foo());
+	}
+
 }
