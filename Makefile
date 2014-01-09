@@ -6,7 +6,7 @@ STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
 
 all:
 	make prepare
-	./test.sh $(TEST) $(STUDENTSOURCE) -- $(INTERFACES) -- cleanroom
+	./test.sh $(TEST) $(STUDENTSOURCE) -- $(INTERFACES) -- student
 
 clean:
 	rm -rf build
