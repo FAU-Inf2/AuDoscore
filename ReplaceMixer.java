@@ -150,6 +150,13 @@ public class ReplaceMixer extends AbstractProcessor {
 			}
 		}
 
+		private List<JCTree> appendAll(List<JCTree> list, Map<String, JCTree> cleanObjects) {
+			for (Map.Entry<String, JCTree> entry : cleanObjects.entrySet()) {
+				list = list.append(entry.getValue());
+			}
+			return list;
+		}
+
 		@Override
 		public void visitClassDef(JCClassDecl tree) {
 			JCModifiers mods = tree.getModifiers();
@@ -181,22 +188,9 @@ public class ReplaceMixer extends AbstractProcessor {
 			if (!mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC)) return; // no public class
 			if (isCleanroom) return; // no student class
 
-
-			for (Map.Entry<String, JCTree> entry : cleanMethods.entrySet()) {
-				System.err.println("appending cleanroom method: " + entry.getKey());
-				tree.defs = tree.defs.append(entry.getValue());
-			}
-
-			for (Map.Entry<String, JCTree> entry : cleanFields.entrySet()) {
-				System.err.println("appending cleanroom field: " + entry.getKey());
-				tree.defs = tree.defs.append(entry.getValue());
-			}
-
-			for (Map.Entry<String, JCTree> entry : cleanInnerClasses.entrySet()) {
-				System.err.println("appending cleanroom inner classes: " + entry.getKey());
-				tree.defs = tree.defs.append(entry.getValue());
-			}
-
+			tree.defs = appendAll(tree.defs, cleanMethods);
+			tree.defs = appendAll(tree.defs, cleanFields);
+			tree.defs = appendAll(tree.defs, cleanInnerClasses);
 			
 			result = tree;
 		}
