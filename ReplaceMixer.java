@@ -174,7 +174,7 @@ public class ReplaceMixer extends AbstractProcessor {
 
 			System.err.println("class " + tree.name + ", " + isCleanroom + ", " + classLevel + ", " + isPublic);
 
-			if (isCleanroom && classLevel >= 1) {
+			if (isCleanroom && classLevel >= 1 && tree.name.toString().startsWith("__clean")) {
 				// remember additional inner classes of cleanroom
 				// those will be added later in student's public class
 				cleanInnerClasses.put(tree.name.toString(), tree);
