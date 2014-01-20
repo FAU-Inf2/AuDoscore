@@ -96,7 +96,7 @@ public class ReplaceMixer extends AbstractProcessor {
 	private boolean isReplace(String method) {
 		if (replaces == null) return false;
 		for (String s : replaces) {
-			if (method.startsWith(s)) return true;
+			if (method.startsWith(s + "(")) return true;
 		}
 		return false;
 	}
