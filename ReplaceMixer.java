@@ -83,11 +83,13 @@ public class ReplaceMixer extends AbstractProcessor {
 
 					if (!isCleanroom) {
 						System.out.println(tree);
-						// even with -proc:only the javac does some semantic checking
-						// to avoid that (we compile the generated files anyway in the next step), exit in a clean way
-						System.exit(0);
 					}
 				}
+			}
+			if (!isCleanroom) {
+				// even with -proc:only the javac does some semantic checking
+				// to avoid that (we compile the generated files anyway in the next step), exit in a clean way
+				System.exit(0);
 			}
 		}
 		return false;
