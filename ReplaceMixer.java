@@ -164,6 +164,10 @@ public class ReplaceMixer extends AbstractProcessor {
 			boolean oldPublic = isPublic;
 			isPublic = mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC);
 			System.err.println("class " + tree.name + " ispub " + isPublic);
+			if (isCleanroom && !isPublic && !tree.name.toString().startsWith(CLEAN_PREFIX)) {
+				System.err.println("non-public class in cleanroom must be prefixed with " + CLEAN_PREFIX);
+				System.exit(-1);
+			}
 			insideBlock = false;
 			classLevel++;
 			if (classLevel > 1) {
