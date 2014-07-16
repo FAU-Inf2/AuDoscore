@@ -1,6 +1,6 @@
 What is AuDoscore?
 =======
-AuDoscore is an extension of JUnit that is used to evaluate programming exercises.
+AuDoscore is an extension of JUnit that is used to evaluate Java programming exercises.
 
 We use AuDoscore in our algorithm and data structure course in combination with
 [DOMjudge](http://www.domjudge.org) to automate evaluation of student's
