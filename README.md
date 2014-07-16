@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/FAU-Inf2/AuDoscore.svg?branch=master)](https://travis-ci.org/FAU-Inf2/AuDoscore)
+
 What is AuDoscore?
 =======
 AuDoscore is an extension of JUnit that is used to evaluate Java programming exercises.
