@@ -8,4 +8,4 @@
 ./obfuscate
 ./install.sh
 ./files_to_install
-./HGREV
+./GITREV

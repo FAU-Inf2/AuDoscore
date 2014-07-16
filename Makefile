@@ -22,10 +22,10 @@ build:
 	rm -rf build
 	mkdir -p build
 
-prepare: updatehgrev lib/junitpoints.jar
+prepare: updategitrev lib/junitpoints.jar
 
-updatehgrev:
-	hg id --debug -n -r . > HGREV
+updategitrev:
+	git rev-parse HEAD > GITREV
 
 SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java
 
