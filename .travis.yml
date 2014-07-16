@@ -1,0 +1,4 @@
+language: java
+  - openjdk7
+  - oraclejdk7
+script: make
