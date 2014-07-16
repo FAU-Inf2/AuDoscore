@@ -1,65 +1,21 @@
-Required and Available Annotations:
+What is AuDoscore?
+=======
+AuDoscore is an extension of JUnit that is used to evaluate programming exercises.
 
-@Exercises    
-  Required: Yes
-  Position: Testcase class
-  Arguments: Array of @Ex-Annotations
-  Semantics: Contains a list of @Ex annotations; see @Ex
+We use AuDoscore in our algorithm and data structure course in combination with
+[DOMjudge](http://www.domjudge.org) to automate evaluation of student's
+submissions.
 
-@Ex
-  Required: Yes
-  Position: Argument to @Exercises annotation
-  Arguments: exID: String
-             points: Double
-             comment: String, default "<n.a.>"
-  Semantics: for every exercise that students get points for,
-             create an unique @Ex annotation with an unique exID 
-             and the correct amount of points.
+Available Annotations
+=======
 
-@Forbidden
-  Required: No
-  Position: Testcase class
-  Arguments: Array of Strings
-  Semantics: Arguments are interpreted as prefixes of forbidden classes/methods/etc.
-             See also @NotForbidden
-
-@NotForbidden
-  Required: No
-  Position: Testcase class
-  Arguments: Array of Strings
-  Semantics: Arguments are interpreted as prefixes of not forbidden classes/methods/etc. 
-             This takes precedence over @Forbidden.
-             See also @Forbidden
-
-@Bonus
-  Required: Sort of, see also @Malus
-  Position: single testcase
-  Arguments: exID: String
-             bonus: float
-             comment: String, default "<n.a.>"
-  Semantics: Student will get bonus / sum(bonus) * Ex.points points for passing this testcase.
-             comment with points earned will be shown in EST comment
-
-@Malus
-  Required: Sort of, see also @Bonus
-  Position: single testcase
-  Arguments: exID: String
-             malus: float
-             comment: String, default "<n.a.>"
-  Semantics: Student will loose malus / sum(bonus) * Ex.points points for not passing this testcase
-             comment with points lost will be shown in EST comment
-
-@Replace
-  Required: No
-  Position: single testcase
-  Arguments: Array of Strings
-  Semantics: The strings refer to methods in the Student's code.
-             For this testcase, all methods metioned in the @Replace annotation
-             will be replaced with their cleanroom counterparts.
-
-@SecretCase
-  Required: No, but see Semantics
-  Position: single testcase
-  Arguments: None
-  Semantics: A secret testcase result will not be shown to the students before submission deadline.
-             Note that there should be a secret and a non-secret testcase for every exID/@Ex
+| Annotation | Required | Position | Arguments | Semantics |
+|------------|:--------:|----------|-----------|-----------|
+| `@Exercises` | Yes    | class level | Array of `@Ex` annotations | contains a list of `@Ex` annotations; see `@Ex` |
+| `@Ex` | Yes | element in `@Exercises` list | `exId`: String, `points`: Double, `comment`: String, defaults to `<n.a.>` | for every (sub)exercise, create an `@Ex` annotation with unique `exID` |
+| `@Forbidden` | No | class level | Array of Strings | Arguments are interpreted as prefixes of forbidden classes/methods/etc., see also `@NotForbidden` |
+| `@NotForbidden` | No | class level | Array of Strings | Arguments are interpreted as prefixes of allowed classes/methods/etc., these take precedence over `@Forbidden`; see also `@Forbidden` |
+| `@Bonus` | sort of | test case level | `exId`: String, `bonus`: Double, `comment`: String, defaults to method name | Student earns `bonus` / sum(`bonus`) * `Ex.points` points for passing this test case |
+| `@Malus` | sort of | test case level | `exId`: String, `malus`: Double, `comment`: String, defaults to method name | Student looses `malus` / sum(`bonus`) * `Ex.points` points for *not* passing this test case |
+| `@Replace` | No | test case level | Array of Strings | Strings refer to methods in the student's code. For this test case, all methods mentioned in the `@Replace` annotation will be replaced with their cleanroom counterparts. |
+| `@SecretCase` | No | test case level | None | Result will not be shown to the students before submission deadline. Note that there should be a secret and a non-secret test case for every `exID/@Ex` |
