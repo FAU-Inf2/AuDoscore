@@ -163,51 +163,51 @@ fi
 
 info "\nstage0 (student+interfaces only)"
 info "- compiling"
-( make compile-stage0 ) > comp0.$$ 2>&1
-checkexit $? "\nstudent result: ☠\n" comp0.$$
+( make compile-stage0 ) > comp0 2>&1
+checkexit $? "\nstudent result: ☠\n" comp0
 
 info "\nstage1 (with public test case)"
 info "- compiling"
-( make compile-stage1 ) > comp1.$$ 2>&1
-checkexit $? "\nstudent result: ✘\n" comp1.$$
+( make compile-stage1 ) > comp1 2>&1
+checkexit $? "\nstudent result: ✘\n" comp1
 
 info "- testing"
-( make run-stage1 ) > run1.$$ 2>&1
-checkexit $? "\ninternal error\n" run1.$$
-cat run1.$$ | grep -v "^$$" | grep -v "^make" | tail -2 | grep "OK ("
+( make run-stage1 ) > run1 2>&1
+checkexit $? "\ninternal error\n" run1
+cat run1 | grep -v "^$$" | grep -v "^make" | tail -2 | grep "OK ("
 if [ $? -ne 0 ]; then
 	err "failed:"
-	cat run1.$$
+	cat run1
 	err "\nstudent result: !\n";
 else
 	info "\nstudent result: ✔\n";
 fi
 
-checkAnnotationFormatError run1.$$
+checkAnnotationFormatError run1
 
 info "\nstage2 (twice, with secret test cases and weaving)"
 info "- compiling"
-( make compile-stage2 ) > comp2.$$ 2>&1
-checkexit $? "\ninternal error\n" comp2.$$
+( make compile-stage2 ) > comp2 2>&1
+checkexit $? "\ninternal error\n" comp2
 
 info "- testing"
-( make run-stage2 ) > run2.out.$$ 2> run2.err.$$
+( make run-stage2 ) > run2.out 2> run2.err
 if [ $? -ne 0 ]; then
 	err "failed, stdout:"
-	cat run2.out.$$
+	cat run2.out
 	err "failed, stderr:"
-	cat run2.err$$
+	cat run2.err
 	die "\ninternal error\n";
 fi
 
-checkAnnotationFormatError run2.out.$$
+checkAnnotationFormatError run2.out
 
 info "  json:"
-cat run2.err.$$
+cat run2.err
 
 info "- merging"
-( java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar JUnitPointsMerger run2.err.$$ merged.$$ ) > merge.$$ 2>&1
-checkexit $? "\ninternal error\n" merge.$$
-cat merged.$$
+( java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar JUnitPointsMerger run2.err merged ) > merge 2>&1
+checkexit $? "\ninternal error\n" merge
+cat merged
 
 cleanexit
