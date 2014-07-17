@@ -13,9 +13,14 @@ function err {
 }
 
 function cleanexit {
-	# info "\ncleaning up"
-	# cd ${callerdir}
-	# rm -rf test.$$
+	cd ${callerdir}
+	if [ $keep -eq 0 ]; then
+		info "\ncleaning up"
+		rm -rf test.$$
+	else
+		info "keeping directory"
+		ln -sf test.$$ test.latest
+	fi
 	if [ $# -gt 0 ]; then
 		exit $1
 	fi
@@ -52,11 +57,17 @@ function checkAnnotationFormatError {
 
 if [ $# -lt 2 ]; then
 	err "no argument given"
-	info "usage: $0 <TESTCLASS> <STUDENTSOURCE1> ... <STUDENTSOURCEn> -- <INTERFACE1> ... <INTERFACEn> --";
+	info "usage: $0 [-k] <TESTCLASS> <STUDENTSOURCE1> ... <STUDENTSOURCEn> -- <INTERFACE1> ... <INTERFACEn> --";
 	info " e.g.: $0 ExampleTest Student.java -- PublicInterface.java -- undertest*"
+	info " -k: keep directory and create symlink test.latest"
 	exit -1
 fi
 
+keep=0
+if [ "x$1" == "x-k" ]; then
+	keep=1
+	shift
+fi
 testclass=$1; shift
 testclass=$(basename $testclass ".java")
 arg=$1; shift
