@@ -168,8 +168,8 @@ checkexit $? "\nstudent result: ☠\n" comp0
 
 info "\nstage1 (with public test case)"
 info "- compiling"
-( make compile-stage1 ) > comp1 2>&1
-checkexit $? "\nstudent result: ✘\n" comp1
+( make compile-stage1 ) > comp1.out 2> comp1.err
+checkexit $? "\nstudent result: ✘\n" comp1.err
 
 info "- testing"
 ( make run-stage1 ) > run1 2>&1

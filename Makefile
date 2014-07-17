@@ -44,7 +44,7 @@ compile-stage1: miniclean
 	mv $(TEST).java.orig $(TEST).java
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
-	! ( javap -p -c $(STUDENTCLASS) | ./forbidden )
+	! ( javap -p -c $(STUDENTCLASS) | ./forbidden 1>&2 )
 	rm forbidden
 
 compile-stage2: miniclean
