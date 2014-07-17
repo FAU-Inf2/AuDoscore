@@ -1,0 +1,7 @@
+*~
+*.sw?
+
+test.latest
+GITREV
+build
+lib/junitpoints.jar
