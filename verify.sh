@@ -3,19 +3,22 @@
 count=0
 failed=0
 start=`date +%s%N`
-failmsg=""
+failfile=$(tempfile)
  
 for i in tests/*; do
 	count=$((count + 1))
 	pushd $i > /dev/null 2> /dev/null
 	echo -n "?"
-	msg=$(../../verify_single.sh)
+	tmpfailfile=$(tempfile)
+	echo "* $i:" >> $tmpfailfile
+	../../verify_single.sh >> $tmpfailfile
 	if [ $? -eq 0 ]; then
 		echo -n -e "\b."
 	else
 		echo -n -e "\bE"
 		failed=$((failed+1))
-		failmsg="$failmsg $i:\n$msg"
+		cat $tmpfailfile >> $failfile
+		echo >> $failfile
 	fi
 	popd > /dev/null 2> /dev/null
 done
@@ -23,7 +26,8 @@ done
 end=`date +%s%N`
 echo -e "\n"
 
-echo -e $failmsg
+cat $failfile
+rm $failfile
 
 elapsed=`echo "scale=3; ($end - $start) / 1000000000" | bc`
 echo -e "\n$failed/$count test(s) failed | Time: $elapsed s"
