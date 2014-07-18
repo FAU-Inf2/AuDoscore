@@ -4,7 +4,7 @@
 
 error=0
 for i in expected/*; do
-	diff $i test.latest/$(basename "$i")
+	diff -u $i test.latest/$(basename "$i")
 	ec=$?
 	error=$((error|ec))
 done;
