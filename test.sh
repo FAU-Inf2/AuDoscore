@@ -172,9 +172,11 @@ info "- compiling"
 checkexit $? "\nstudent result: ✘\n" comp1.err
 
 info "- testing"
-( make run-stage1 ) > run1 2>&1
-checkexit $? "\ninternal error\n" run1
-cat run1 | grep -v "^$$" | grep -v "^make" | tail -2 | grep "OK ("
+( make run-stage1 ) > run1.out 2> run1.err
+ec=$?
+cat run1.out run1.err > run1
+checkexit $ec "\ninternal error\n" run1
+cat run1.out | grep -v "^$$" | grep -v "^make" | tail -2 | grep "OK ("
 if [ $? -ne 0 ]; then
 	err "failed:"
 	cat run1
