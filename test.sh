@@ -51,6 +51,8 @@ function checkAnnotationFormatError {
 		cat $file
 		err "\nSummary:\n";
 		cat $file | grep -B1 "^java.lang.annotation.AnnotationFormatError"
+		errfile=$(basename $file .out).err
+		cat $file | grep -B1 "^java.lang.annotation.AnnotationFormatError" >> $errfile
 		die "\ninternal error\n";
 	fi
 }
@@ -185,7 +187,7 @@ else
 	info "\nstudent result: ✔\n";
 fi
 
-checkAnnotationFormatError run1
+checkAnnotationFormatError run1.out
 
 info "\nstage2 (twice, with secret test cases and weaving)"
 info "- compiling"
