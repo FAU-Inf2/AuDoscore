@@ -8,6 +8,10 @@ all:
 	make prepare
 	./test.sh $(TEST) $(STUDENTSOURCE) -- $(INTERFACES) -- student
 
+verify:
+	make prepare
+	./verify.sh
+
 clean:
 	rm -rf build
 	rm -rf replaced
