@@ -371,6 +371,9 @@ public abstract class JUnitWithPoints {
 						bonusAchievedPerExercise -= Math.abs(malus.malus());
 					}
 				}
+				if (bonusDeclaredPerExercise <= 0) {
+					throw new AnnotationFormatError("Declare at least one Bonus case per exercise.");
+				}
 				jsonexercise.put("tests", jsontests);
 				bonusAchievedPerExercise = Math.min(bonusDeclaredPerExercise, Math.max(0, bonusAchievedPerExercise));
 				pointsAchievedPerExercise = Math.ceil(pointsDeclaredPerExercise * 2 * bonusAchievedPerExercise / bonusDeclaredPerExercise) / 2;
