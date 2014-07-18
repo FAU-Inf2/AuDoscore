@@ -326,7 +326,7 @@ public abstract class JUnitWithPoints {
 		@Override
 		protected final void after() {
 			if (timeoutSum > 60_000) {
-				throw new AnnotationFormatError("WARNING - total timeout sum is too high for \"Tobis judge hosts\": [" + timeoutSum + "ms]");
+				throw new AnnotationFormatError("WARNING - total timeout sum is too high, please reduce to max. 60000ms\": [" + timeoutSum + "ms]");
 			}
 			for (String exerciseId : exerciseHashMap.keySet()) {
 				if (!reportHashMap.containsKey(exerciseId)) {
