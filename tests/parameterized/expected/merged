@@ -1,0 +1,7 @@
+Score: 1.5
+
+GA4.6a (1.5 points):
+✗   0.00 | testFooShouldReturn4711[2] | AssertionError(test with runID = 8 fails)
+✓   0.50 | testFooShouldReturn4711[0]
+✓   0.50 | testFooShouldReturn4711[1]
+✓   0.50 | testFooShouldReturn4711[3]
