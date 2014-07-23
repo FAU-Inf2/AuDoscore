@@ -1,0 +1,2 @@
+       1: invokestatic  #2                  // Method java/lang/System.exit:(I)V
+make: *** [compile-stage1] Error 1

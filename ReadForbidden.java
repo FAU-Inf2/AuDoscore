@@ -10,7 +10,7 @@ public class ReadForbidden {
 			System.exit(-1);
 		}
 
-		String grep = "egrep '(java/lang/ClassLoader|java\\.lang\\.ClassLoader|java/lang/reflect|java\\.lang\\.reflect";
+		String grep = "egrep '(java/lang/ClassLoader|java\\.lang\\.ClassLoader|java/lang/reflect|java\\.lang\\.reflect|java/lang/System\\.exit";
 		String grep2 = "egrep -v '(";
 		String sep = "";
 		boolean hasNotForbidden = false;
