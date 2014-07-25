@@ -1,5 +1,5 @@
 Score: 0.0
 
 GA4.6a (0.0 points):
-✗   0.00 | stderr | Exception(test timed out after 300 milliseconds): sun.nio.cs.UTF_8.updatePositions(line 77)
-✗   0.00 | stdout | Exception(test timed out after 300 milliseconds): sun.nio.cs.StreamEncoder.write(line 117)
+✗   0.00 | stderr | Exception(test timed out after 300 milliseconds): ToTest.toTest(line 8)
+✗   0.00 | stdout | Exception(test timed out after 300 milliseconds): ToTest.toTest(line 6)

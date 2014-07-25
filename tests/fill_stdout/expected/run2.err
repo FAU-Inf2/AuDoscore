@@ -1,5 +1,5 @@
 { "vanilla" : 
-{"score":"0.0","exercises":[{"tests":[{"id":"stderr","desc":"stderr","error":"Exception(test timed out after 300 milliseconds): sun.nio.cs.UTF_8.updatePositions(line 77)","score":"0.0","success":false},{"id":"stdout","desc":"stdout","error":"Exception(test timed out after 300 milliseconds): sun.nio.cs.StreamEncoder.write(line 117)","score":"0.0","success":false}],"name":"GA4.6a","score":"0.0","possiblePts":"12.5"}]}
+{"score":"0.0","exercises":[{"tests":[{"id":"stderr","desc":"stderr","error":"Exception(test timed out after 300 milliseconds): ToTest.toTest(line 8)","score":"0.0","success":false},{"id":"stdout","desc":"stdout","error":"Exception(test timed out after 300 milliseconds): ToTest.toTest(line 6)","score":"0.0","success":false}],"name":"GA4.6a","score":"0.0","possiblePts":"12.5"}]}
 , "replaced" : 
 [
 {"score":"0.0","exercises":[{"tests":[],"name":"GA4.6a","score":"0.0","possiblePts":"12.5"}]}

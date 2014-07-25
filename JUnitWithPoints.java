@@ -126,6 +126,11 @@ public abstract class JUnitWithPoints {
 			StackTraceElement st[] = throwable.getStackTrace();
 			if (st.length == 0) return "";
 			StackTraceElement ste = st[0]; // TODO: maybe search for student code here
+			int i = 1;
+			while (ste.getClassName().indexOf('.') >= 0 && i < st.length) {
+				ste = st[i];
+				i++;
+			}
 			return ": " + ste.getClassName() + "." + ste.getMethodName() + "(line " + ste.getLineNumber() + ")";
 		}
 
