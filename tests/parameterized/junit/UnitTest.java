@@ -15,7 +15,7 @@ import org.junit.runners.*;
 import org.junit.runners.Parameterized.*;
 
 @RunWith(Parameterized.class)
-@Exercises({ @Ex(exID = "GA4.6a", points = 2)})
+@tester.annotations.Exercises({ @tester.annotations.Ex(exID = "GA4.6a", points = 2)})
 public class UnitTest {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints
@@ -38,7 +38,7 @@ public class UnitTest {
 	}
 
 	@Test(timeout = 1234)
-	@Bonus(exID = "GA4.6a", bonus = 5)
+	@tester.annotations.Bonus(exID = "GA4.6a", bonus = 5)
 	public void testFooShouldReturn4711() { // OK, except for single case
 		if (runID == 8) fail("test with runID = " + runID + " fails"); // fail intentionally
 		assertEquals("Foo ist kaputt.", 4711, 4711);

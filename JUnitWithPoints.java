@@ -12,68 +12,8 @@ import org.json.simple.parser.*;
 
 import java.lang.reflect.*;
 import tester.*;
+import tester.annotations.*;
 
-// ******************** ANNOTATIONS **************************************** //
-@Inherited
-@Target(java.lang.annotation.ElementType.TYPE)
-@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-@interface Exercises {
-	Ex[] value();
-}
-
-@Inherited
-@Target(java.lang.annotation.ElementType.TYPE)
-@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-@interface Ex {
-	String exID();
-
-	double points();
-
-	String comment() default "<n.a.>";
-}
-
-@Inherited
-@Target(java.lang.annotation.ElementType.TYPE)
-@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-@interface Forbidden {
-	String[] value();
-}
-
-@Inherited
-@Target(java.lang.annotation.ElementType.TYPE)
-@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-@interface NotForbidden {
-	String[] value();
-}
-
-// -------------------------------------------------------------------------------- //
-@Inherited
-@Target(java.lang.annotation.ElementType.METHOD)
-@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-@interface Bonus {
-	String exID();
-
-	double bonus();
-
-	String comment() default "<n.a.>";
-}
-
-@Inherited
-@Target(java.lang.annotation.ElementType.METHOD)
-@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-@interface Malus {
-	String exID();
-
-	double malus();
-
-	String comment() default "<n.a.>";
-}
-
-@Inherited
-@Target(java.lang.annotation.ElementType.METHOD)
-@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-@interface SecretCase {
-}
 
 // ******************** RULES HELPER for pretty code **************************************** //
 final class PointsLogger extends JUnitWithPoints.PointsLogger {

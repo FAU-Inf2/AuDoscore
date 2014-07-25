@@ -2,6 +2,7 @@ import java.util.*;
 import java.lang.*;
 import java.lang.reflect.*;
 import java.lang.annotation.*;
+import tester.annotations.*;
 
 public class ReadForbidden {
 	public static void main(String args[]) throws Exception {

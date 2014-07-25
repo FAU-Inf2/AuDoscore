@@ -31,7 +31,7 @@ prepare: updategitrev lib/junitpoints.jar
 updategitrev:
 	git rev-parse HEAD > GITREV
 
-SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java
+SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java tester/annotations/Bonus.java tester/annotations/Ex.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/Malus.java tester/annotations/NotForbidden.java tester/annotations/SecretCase.java
 
 lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/tools.jar:. $(SRCJUNITPOINTSJAR)
@@ -43,7 +43,7 @@ compile-stage0:
 compile-stage1: miniclean
 	cp $(TEST).java $(TEST).java.orig
 	( /bin/echo -e "import org.junit.*;\n import tester.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
-	sed -i -e 's/@SecretCase/@Ignore/' $(TEST).java
+	sed -i -e 's/@tester.annotations.SecretCase/@Ignore/' $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
