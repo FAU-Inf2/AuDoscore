@@ -1,0 +1,102 @@
+From 34638dc565a44f225de7009105f23d20929b1a8f Mon Sep 17 00:00:00 2001
+From: Robert Obermeier <obbi@u5b.de>
+Date: Sun, 3 Aug 2014 21:03:59 +0000
+Subject: [PATCH] AuDoScore changeset
+
+---
+ judge/judgedaemon.main.php |   20 +++++++++++---------
+ judge/runguard.c           |    3 +++
+ lib/www/auth.php           |    2 +-
+ 3 files changed, 15 insertions(+), 10 deletions(-)
+
+diff --git a/judge/judgedaemon.main.php b/judge/judgedaemon.main.php
+index 566faa0..9236cae 100644
+--- a/judge/judgedaemon.main.php
++++ b/judge/judgedaemon.main.php
+@@ -55,6 +55,7 @@ function request($url, $verb = 'GET', $data = '', $failonerror = true) {
+ 	curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+ 	curl_setopt($ch, CURLOPT_USERPWD, $restuser . ":" . $restpass);
+ 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
++	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 10);
+ 	if ( $verb == 'POST' ) {
+ 		curl_setopt($ch, CURLOPT_POST, TRUE);
+ 		if ( is_array($data) ) {
+@@ -87,8 +88,8 @@ function request($url, $verb = 'GET', $data = '', $failonerror = true) {
+ /**
+  * Retrieve a value from the configuration through the REST API.
+  */
+-function dbconfig_get_rest($name) {
+-	$res = request('config', 'GET', 'name=' . urlencode($name));
++function dbconfig_get_rest($name, $jid) {
++	$res = request('config', 'GET', 'name=' . urlencode($name) . '&jid=' . urlencode($jid));
+ 	$res = dj_json_decode($res);
+ 	return $res[$name];
+ }
+@@ -336,12 +337,13 @@ function judge($row)
+ 
+ 	// Set configuration variables for called programs
+ 	putenv('USE_CHROOT='        . (USE_CHROOT ? '1' : ''));
+-	putenv('COMPILETIME='       . dbconfig_get_rest('compile_time'));
+-	putenv('MEMLIMIT='          . dbconfig_get_rest('memory_limit'));
+-	putenv('COMPILEMEMLIMIT='   . dbconfig_get_rest('compile_memory'));
+-	putenv('COMPILEFILELIMIT='  . dbconfig_get_rest('compile_filesize'));
+-	putenv('FILELIMIT='         . dbconfig_get_rest('filesize_limit'));
+-	putenv('PROCLIMIT='         . dbconfig_get_rest('process_limit'));
++	putenv('COMPILETIME='       . dbconfig_get_rest('compile_time', $row['judgingid']));
++	putenv('MEMLIMIT='          . dbconfig_get_rest('memory_limit', $row['judgingid']));
++	putenv('COMPILEMEMLIMIT='   . dbconfig_get_rest('compile_memory', $row['judgingid']));
++	putenv('COMPILEFILELIMIT='  . dbconfig_get_rest('compile_filesize', $row['judgingid']));
++	putenv('FILELIMIT='         . dbconfig_get_rest('filesize_limit', $row['judgingid']));
++	putenv('PROCLIMIT='         . dbconfig_get_rest('process_limit', $row['judgingid']));
++	putenv('AUDOSCORE_PATH='    . dbconfig_get_rest('audoscore_path', $row['judgingid']));
+ 
+ 	$cpuset_opt = "";
+ 	if ( isset($options['daemonid']) ) $cpuset_opt = "-n ${options['daemonid']}";
+@@ -480,7 +482,7 @@ function judge($row)
+ 		// do the actual test-run
+ 		$hardtimelimit = $row['maxruntime'] +
+ 		                 overshoot_time($row['maxruntime'],
+-		                                dbconfig_get_rest('timelimit_overshoot'));
++		                                dbconfig_get_rest('timelimit_overshoot', $row['judgingid']));
+ 
+ 		$compare_runpath = fetch_executable($workdirpath, $row['compare'], $row['compare_md5sum']);
+ 		$run_runpath = fetch_executable($workdirpath, $row['run'], $row['run_md5sum']);
+diff --git a/judge/runguard.c b/judge/runguard.c
+index 2d613ab..527a2f1 100644
+--- a/judge/runguard.c
++++ b/judge/runguard.c
+@@ -621,15 +621,18 @@ void read_optarg_time(const char *desc, double *times)
+ void setrestrictions()
+ {
+ 	char *path;
++	char *audopath;
+ 	char  cwd[PATH_MAX+1];
+ 
+ 	struct rlimit lim;
+ 
+ 	/* Clear environment to prevent all kinds of security holes, save PATH */
+ 	path = getenv("PATH");
++	audopath = getenv("AUDOSCORE_PATH");
+ 	environ[0] = NULL;
+ 	/* FIXME: Clean path before setting it again? */
+ 	if ( path!=NULL ) setenv("PATH",path,1);
++	if ( audopath!=NULL ) setenv("AUDOSCORE_PATH", audopath, 1);
+ 
+ 	/* Set resource limits: must be root to raise hard limits.
+ 	   Note that limits can thus be raised from the systems defaults! */
+diff --git a/lib/www/auth.php b/lib/www/auth.php
+index 63111e8..a30e481 100644
+--- a/lib/www/auth.php
++++ b/lib/www/auth.php
+@@ -149,7 +149,7 @@ function show_loginpage()
+ Please supply your credentials below, or contact a staff member for assistance.
+ </p>
+ 
+-<form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post">
++<form method="post">
+ <input type="hidden" name="cmd" value="login" />
+ <table>
+ <tr><td><label for="login">Login:</label></td><td><input type="text" id="login" name="login" value="" size="15" maxlength="15" accesskey="l" autofocus /></td></tr>
+-- 
+1.7.10.4
+
