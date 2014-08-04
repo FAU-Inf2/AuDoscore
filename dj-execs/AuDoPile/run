@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e
+
+DEST="$1" ; shift
+MEMLIMIT="$1" ; shift
+MAINSOURCE="$1"
+
+unzip -D $MAINSOURCE
+
+SCRIPT=$(readlink -f "$0")
+
+cp -r $AUDOSCORE_PATH/lib .
+cp -r $AUDOSCORE_PATH/tester .
+cp -r $AUDOSCORE_PATH/Makefile .
+cp -r $AUDOSCORE_PATH/obfuscate .
+
+make compile
+
+cat > $DEST <<EOF
+#!/bin/sh
+
+set -e
+
+# Detect dirname and change dir to prevent class not found errors.
+if [ "\${0%/*}" != "\$0" ]; then
+        cd "\${0%/*}"
+fi
+
+make run
+
+EOF
+
+chmod a+x $DEST
+
+exit 0
