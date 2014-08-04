@@ -1,0 +1,11 @@
+#!/bin/sh 
+chmod a+x ./run
+
+if [ "\${0%/*}" != "\$0" ]; then
+        cd "\${0%/*}"
+fi
+
+cd $AUDOSCORE_PATH
+make prepare
+
+exit 0;

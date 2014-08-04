@@ -3,5 +3,5 @@
 
 test.latest
 GITREV
-build
+build/
 lib/junitpoints.jar
