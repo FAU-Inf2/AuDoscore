@@ -5,6 +5,7 @@
 error=0
 for i in `find expected/ -type f`; do
 	testfile=${i/expected/test.latest}
+	sed -i -e 's/Exception(test timed out after \([^ ]*\) milliseconds): [^"]*/TimeoutException after \1 ms/' $i
 	diff -u -I '^make' -I '^Makefile:' $i $testfile
 	ec=$?
 	error=$((error|ec))
