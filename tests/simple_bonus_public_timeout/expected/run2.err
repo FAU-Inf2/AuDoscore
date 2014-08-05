@@ -1,5 +1,5 @@
 { "vanilla" : 
-{"score":"0.0","exercises":[{"tests":[{"id":"test","desc":"test","error":"Exception(test timed out after 100 milliseconds): ToTest.toTest(line 3)","score":"0.0","success":false}],"name":"GA4.6a","score":"0.0","possiblePts":"12.5"}]}
+{"score":"0.0","exercises":[{"tests":[{"id":"test","desc":"test","error":"TimeoutException after 100 ms","score":"0.0","success":false}],"name":"GA4.6a","score":"0.0","possiblePts":"12.5"}]}
 , "replaced" : 
 [
 {"score":"0.0","exercises":[{"tests":[],"name":"GA4.6a","score":"0.0","possiblePts":"12.5"}]}
