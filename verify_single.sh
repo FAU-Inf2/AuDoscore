@@ -9,6 +9,9 @@ for i in `find expected/ -type f`; do
 	diff -u -I '^make' -I '^Makefile:' $i $testfile
 	ec=$?
 	error=$((error|ec))
+	if [[ $ec -ne 0 ]] && [[ -n "$REBUILD" ]]; then
+		cp $i $testfile
+	fi
 done;
 
 rm -rf $(readlink -f test.latest)
