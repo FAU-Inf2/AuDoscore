@@ -42,7 +42,6 @@ compile-stage0:
 
 compile-stage1: miniclean
 	cp $(TEST).java $(TEST).java.orig
-	( /bin/echo -e "import org.junit.*;\nimport tester.*;\nimport tester.annotations.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
 	sed -i -e 's/@tester.annotations.SecretCase/@Ignore/' $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
@@ -54,7 +53,6 @@ compile-stage1: miniclean
 compile-stage2: miniclean
 	./obfuscate
 	cp $(TEST).java $(TEST).java.orig
-	( /bin/echo -e "import org.junit.*;\nimport tester.*;\nimport tester.annotations.*;\n" ; cat $(TEST).java.orig ) > $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mkdir -p mixed || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(TEST) > compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
