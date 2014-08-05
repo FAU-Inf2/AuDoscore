@@ -5,12 +5,12 @@
 error=0
 for i in `find expected/ -type f`; do
 	testfile=${i/expected/test.latest}
-	sed -i -e 's/Exception(test timed out after \([^ ]*\) milliseconds): [^"]*/TimeoutException after \1 ms/' $i
+	sed -i -e 's/Exception(test timed out after \([^ ]*\) milliseconds): [^"]*/TimeoutException after \1 ms/g' $testfile
 	diff -u -I '^make' -I '^Makefile:' $i $testfile
 	ec=$?
 	error=$((error|ec))
 	if [[ $ec -ne 0 ]] && [[ -n "$REBUILD" ]]; then
-		cp $i $testfile
+		cp $testfile $i
 	fi
 done;
 
