@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export AUDOSCORE_SECURITY_TOKEN="2c976d0b02898e9eb05155806bb65973";
 ( ./run_test.sh ) > /dev/null 2> /dev/null
 
 error=0

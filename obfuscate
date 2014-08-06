@@ -4,6 +4,11 @@
 mkdir -p cleanroom
 touch cleanroom/ThisDummyFileWillNeverBeSubmittedViaEST.java
 
-export DATE=`date +%s`;
-export MD5=`md5sum lib/*jar cleanroom/*java | tail -1 | awk '{print $1;}'`;
-sed -i -e "s|__clean|__clean${MD5}${DATE}|g" cleanroom/*java
+if [ -n "$AUDOSCORE_SECURITY_TOKEN" ]; then
+	export TOKEN=${AUDOSCORE_SECURITY_TOKEN}
+else
+	export DATE=`date +%s`;
+	export MD5=`md5sum lib/*jar cleanroom/*java | tail -1 | awk '{print $1;}'`;
+	export TOKEN=${MD5}${DATE}
+fi
+sed -i -e "s|__clean|__clean${TOKEN}|g" cleanroom/*java
