@@ -50,7 +50,7 @@ EOF
 
 cat $PROGRAM | grep "^java.lang.annotation.AnnotationFormatError"
 if [ $? -ne 0 ]; then
-	java -cp "execdir/lib/junitpoints.jar:execdir/lib/json-simple-1.1.1.jar" JUnitPointsMerger program.err $DIFFOUT
+	LC_ALL=en_US.UTF-8 java -cp "execdir/lib/junitpoints.jar:execdir/lib/json-simple-1.1.1.jar" JUnitPointsMerger program.err $DIFFOUT
 
 	# Check result and write result file:
 	if [ $? -ne 0 ]; then
