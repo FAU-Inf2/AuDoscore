@@ -1,16 +1,30 @@
-From 34638dc565a44f225de7009105f23d20929b1a8f Mon Sep 17 00:00:00 2001
-From: Robert Obermeier <obbi@u5b.de>
-Date: Sun, 3 Aug 2014 21:03:59 +0000
-Subject: [PATCH] AuDoScore changeset
+From e148c49b10bde1bf36f3c947d90f77ad2ebead7f Mon Sep 17 00:00:00 2001
+From: Tobias Werth <werth@cs.fau.de>
+Date: Wed, 8 Oct 2014 13:36:45 +0200
+Subject: [PATCH 1/1] Patch to make AuDoscore work with DOMjudge.
 
 ---
+ judge/compile.sh           |    3 ++-
  judge/judgedaemon.main.php |   20 +++++++++++---------
- judge/runguard.c           |    3 +++
- lib/www/auth.php           |    2 +-
- 3 files changed, 15 insertions(+), 10 deletions(-)
+ judge/runguard.c           |    9 ++++++++-
+ 3 files changed, 21 insertions(+), 11 deletions(-)
 
+diff --git a/judge/compile.sh b/judge/compile.sh
+index 42f739c..44c8abf 100755
+--- a/judge/compile.sh
++++ b/judge/compile.sh
+@@ -125,7 +125,8 @@ logmsg $LOG_INFO "starting compile"
+ # the compiler writing to different filenames and deleting intermediate files.
+ exitcode=0
+ $GAINROOT $RUNGUARD ${DEBUG:+-v} $CPUSET_OPT -u "$RUNUSER" -m $SCRIPTMEMLIMIT \
+-	-t $SCRIPTTIMELIMIT -c -f $SCRIPTFILELIMIT -s $SCRIPTFILELIMIT -M "$WORKDIR/compile.meta" -- \
++	-t $SCRIPTTIMELIMIT -c -f $SCRIPTFILELIMIT -s $SCRIPTFILELIMIT -M "$WORKDIR/compile.meta" \
++	-A $AUDOSCORE_PATH -- \
+ 	"$COMPILE_SCRIPT" program "$MEMLIMIT" "$@" >"$WORKDIR/compile.tmp" 2>&1 || \
+ 	exitcode=$?
+ 
 diff --git a/judge/judgedaemon.main.php b/judge/judgedaemon.main.php
-index 566faa0..9236cae 100644
+index 716bcc5..2e2dc8e 100644
 --- a/judge/judgedaemon.main.php
 +++ b/judge/judgedaemon.main.php
 @@ -55,6 +55,7 @@ function request($url, $verb = 'GET', $data = '', $failonerror = true) {
@@ -21,7 +35,7 @@ index 566faa0..9236cae 100644
  	if ( $verb == 'POST' ) {
  		curl_setopt($ch, CURLOPT_POST, TRUE);
  		if ( is_array($data) ) {
-@@ -87,8 +88,8 @@ function request($url, $verb = 'GET', $data = '', $failonerror = true) {
+@@ -88,8 +89,8 @@ function request($url, $verb = 'GET', $data = '', $failonerror = true) {
  /**
   * Retrieve a value from the configuration through the REST API.
   */
@@ -32,27 +46,27 @@ index 566faa0..9236cae 100644
  	$res = dj_json_decode($res);
  	return $res[$name];
  }
-@@ -336,12 +337,13 @@ function judge($row)
+@@ -338,12 +339,13 @@ function judge($row)
  
  	// Set configuration variables for called programs
  	putenv('USE_CHROOT='        . (USE_CHROOT ? '1' : ''));
--	putenv('COMPILETIME='       . dbconfig_get_rest('compile_time'));
+-	putenv('SCRIPTTIMELIMIT='   . dbconfig_get_rest('script_timelimit'));
+-	putenv('SCRIPTMEMLIMIT='    . dbconfig_get_rest('script_memory_limit'));
+-	putenv('SCRIPTFILELIMIT='   . dbconfig_get_rest('script_filesize'));
 -	putenv('MEMLIMIT='          . dbconfig_get_rest('memory_limit'));
--	putenv('COMPILEMEMLIMIT='   . dbconfig_get_rest('compile_memory'));
--	putenv('COMPILEFILELIMIT='  . dbconfig_get_rest('compile_filesize'));
 -	putenv('FILELIMIT='         . dbconfig_get_rest('filesize_limit'));
 -	putenv('PROCLIMIT='         . dbconfig_get_rest('process_limit'));
-+	putenv('COMPILETIME='       . dbconfig_get_rest('compile_time', $row['judgingid']));
++	putenv('SCRIPTTIMELIMIT='   . dbconfig_get_rest('script_timelimit', $row['judgingid']));
++	putenv('SCRIPTMEMLIMIT='    . dbconfig_get_rest('script_memory_limit', $row['judgingid']));
++	putenv('SCRIPTFILELIMIT='   . dbconfig_get_rest('script_filesize', $row['judgingid']));
 +	putenv('MEMLIMIT='          . dbconfig_get_rest('memory_limit', $row['judgingid']));
-+	putenv('COMPILEMEMLIMIT='   . dbconfig_get_rest('compile_memory', $row['judgingid']));
-+	putenv('COMPILEFILELIMIT='  . dbconfig_get_rest('compile_filesize', $row['judgingid']));
 +	putenv('FILELIMIT='         . dbconfig_get_rest('filesize_limit', $row['judgingid']));
 +	putenv('PROCLIMIT='         . dbconfig_get_rest('process_limit', $row['judgingid']));
 +	putenv('AUDOSCORE_PATH='    . dbconfig_get_rest('audoscore_path', $row['judgingid']));
  
  	$cpuset_opt = "";
  	if ( isset($options['daemonid']) ) $cpuset_opt = "-n ${options['daemonid']}";
-@@ -480,7 +482,7 @@ function judge($row)
+@@ -484,7 +486,7 @@ function judge($row)
  		// do the actual test-run
  		$hardtimelimit = $row['maxruntime'] +
  		                 overshoot_time($row['maxruntime'],
@@ -62,10 +76,18 @@ index 566faa0..9236cae 100644
  		$compare_runpath = fetch_executable($workdirpath, $row['compare'], $row['compare_md5sum']);
  		$run_runpath = fetch_executable($workdirpath, $row['run'], $row['run_md5sum']);
 diff --git a/judge/runguard.c b/judge/runguard.c
-index 2d613ab..527a2f1 100644
+index 4592da7..364a659 100644
 --- a/judge/runguard.c
 +++ b/judge/runguard.c
-@@ -621,15 +621,18 @@ void read_optarg_time(const char *desc, double *times)
+@@ -169,6 +169,7 @@ struct timeval starttime, endtime;
+ struct tms startticks, endticks;
+ 
+ struct option const long_opts[] = {
++	{"audoscore_path",       required_argument, NULL,         'A'},
+ 	{"root",       required_argument, NULL,         'r'},
+ 	{"user",       required_argument, NULL,         'u'},
+ 	{"group",      required_argument, NULL,         'g'},
+@@ -623,15 +624,18 @@ void read_optarg_time(const char *desc, double *times)
  void setrestrictions()
  {
  	char *path;
@@ -84,19 +106,21 @@ index 2d613ab..527a2f1 100644
  
  	/* Set resource limits: must be root to raise hard limits.
  	   Note that limits can thus be raised from the systems defaults! */
-diff --git a/lib/www/auth.php b/lib/www/auth.php
-index 63111e8..a30e481 100644
---- a/lib/www/auth.php
-+++ b/lib/www/auth.php
-@@ -149,7 +149,7 @@ function show_loginpage()
- Please supply your credentials below, or contact a staff member for assistance.
- </p>
- 
--<form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post">
-+<form method="post">
- <input type="hidden" name="cmd" value="login" />
- <table>
- <tr><td><label for="login">Login:</label></td><td><input type="text" id="login" name="login" value="" size="15" maxlength="15" accesskey="l" autofocus /></td></tr>
+@@ -794,10 +798,13 @@ int main(int argc, char **argv)
+ 	be_verbose = be_quiet = 0;
+ 	show_help = show_version = 0;
+ 	opterr = 0;
+-	while ( (opt = getopt_long(argc,argv,"+r:u:g:t:C:m:f:p:P:co:e:s:M:vq",long_opts,(int *) 0))!=-1 ) {
++	while ( (opt = getopt_long(argc,argv,"+r:u:g:t:C:m:f:p:P:co:e:s:M:A:vq",long_opts,(int *) 0))!=-1 ) {
+ 		switch ( opt ) {
+ 		case 0:   /* long-only option */
+ 			break;
++		case 'A': /* AuDoscore path option */
++			setenv("AUDOSCORE_PATH", optarg, 1);
++			break;
+ 		case 'r': /* rootdir option */
+ 			use_root = 1;
+ 			rootdir = (char *) malloc(strlen(optarg)+2);
 -- 
-1.7.10.4
+1.7.9.5
 
