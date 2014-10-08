@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -x
 
 DEST="$1" ; shift
 MEMLIMIT="$1" ; shift
