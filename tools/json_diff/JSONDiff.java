@@ -155,7 +155,7 @@ public class JSONDiff {
 			Object obj2 = new JSONParser().parse(new FileReader(pathToJson2));
 
 			int equal = compare(obj1, obj2);
-			System.out.println(equal);
+			System.exit(equal);
 
 		} catch (FileNotFoundException e) {
 			System.err.println(e.getMessage());
