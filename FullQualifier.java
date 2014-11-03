@@ -95,7 +95,7 @@ class MyPretty extends com.sun.tools.javac.tree.Pretty {
 					print("org.junit.runner.");
 					break;
 				case "Parameters":
-					print("org.junit.runner.Parameterized.");
+					print("org.junit.runners.Parameterized.");
 					break;
 				case "Bonus":
 				case "Malus":
