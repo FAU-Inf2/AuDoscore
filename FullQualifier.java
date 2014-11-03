@@ -112,7 +112,11 @@ class MyPretty extends com.sun.tools.javac.tree.Pretty {
 			}
 			printExpr(tree.annotationType);
 			print("(");
-			printExprs(tree.args);
+			if (before.equals("RunWith") && tree.args.head.toString().equals("value = Parameterized.class")) {
+				print("value = org.junit.runners.Parameterized.class");
+			} else {
+				printExprs(tree.args);
+			}
 			print(")");
 		} catch (IOException e) {
 			throw new Error("something failed while pretty printing annotations: " + e);
