@@ -1,0 +1,8 @@
+{ "vanilla" : 
+{"score":"10.0","exercises":[{"tests":[ {"id":"test2","desc":"test2","error":"AssertionError(Should return 23 expected:<23> but was:<42>)","score":"-2.925531914893617","success":false}, {"desc":"test","id":"test","success":true,"score":"12.5"}
+],"name":"GA4.6a","score":"10.0","possiblePts":"12.5"}]}
+, "replaced" : 
+[
+{"score":"0.0","exercises":[{"tests":[],"name":"GA4.6a","possiblePts":"12.5","score":"0.0"}]}
+]
+}
