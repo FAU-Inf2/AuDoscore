@@ -8,13 +8,13 @@ for i in `find expected/ -type f`; do
 	testfile=${i/expected/test.latest}
 	sed -i -e 's/Exception(test timed out after \([^ ]*\) milliseconds): [^"]*/TimeoutException after \1 ms/g' $testfile
 	sed -i -e 's/StackOverflowError(): [^"]*/StackOverflowError()/g' $testfile
-	echo $i
-	if [[ "$i" == expected/run*.err ]]; then
-		java -cp ../../lib/junitpoints.jar:../../lib/json-simple-1.1.1.jar tools.json_diff.JSONDiff $i $testfile
-	else
-		diff -u -I '^make' -I '^Makefile:' $i $testfile
-	fi
+	diff -u -I '^make' -I '^Makefile:' $i $testfile
 	ec=$?
+	if [[ $ec -ne 0 ]] && [[ "$i" == expected/run*.err ]]; then
+		# in case of JSON, try to parse and compare as JSON
+		java -cp ../../lib/junitpoints.jar:../../lib/json-simple-1.1.1.jar tools.json_diff.JSONDiff $i $testfile
+		ec=$?
+	fi
 	error=$((error|ec))
 	if [[ $ec -ne 0 ]] && [[ -n "$REBUILD" ]]; then
 		cp $testfile $i
