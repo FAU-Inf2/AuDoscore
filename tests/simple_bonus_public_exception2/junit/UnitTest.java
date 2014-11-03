@@ -18,7 +18,7 @@ public class UnitTest {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=100)
+	@Test(timeout=200)
 	@tester.annotations.Bonus(exID = "GA4.6a", bonus = 47.11)
 	public void test() {
 		// FIXME: in real life, we would never write this that way!
