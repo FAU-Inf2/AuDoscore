@@ -51,7 +51,7 @@ public class FullQualifier extends AbstractProcessor {
 						TreePath path = trees.getPath(each);
 						java.util.List imports = path.getCompilationUnit().getImports();
 						for (Object o : imports) {
-							System.out.println(o);
+							System.out.print(o);
 						}
 					}
 

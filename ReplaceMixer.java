@@ -77,7 +77,7 @@ public class ReplaceMixer extends AbstractProcessor {
 						imported = true;
 						java.util.List imports = path.getCompilationUnit().getImports();
 						for (Object o : imports) {
-							System.out.println(o);
+							System.out.print(o);
 						}
 					}
 
