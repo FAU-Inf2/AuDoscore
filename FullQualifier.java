@@ -15,6 +15,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 import com.sun.source.util.Trees;
+import com.sun.source.util.TreePath;
 import com.sun.tools.javac.model.JavacElements;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
@@ -27,6 +28,8 @@ import com.sun.tools.javac.util.Context;
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class FullQualifier extends AbstractProcessor {
 	private Trees trees;
+	private boolean imported = false;
+
 	@Override
 	public synchronized void init(ProcessingEnvironment env) {
 		super.init(env);
@@ -43,6 +46,14 @@ public class FullQualifier extends AbstractProcessor {
 			for (Element each : elements) {
 				if (each.getKind() == ElementKind.CLASS) {
 					JCTree tree = (JCTree) trees.getTree(each);
+					if (!imported) { 
+						imported = true;
+						TreePath path = trees.getPath(each);
+						java.util.List imports = path.getCompilationUnit().getImports();
+						for (Object o : imports) {
+							System.out.println(o);
+						}
+					}
 
 					StringWriter s = new StringWriter();
 					try {
