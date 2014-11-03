@@ -35,7 +35,7 @@ public class ReplaceMixer extends AbstractProcessor {
 	private HashMap<String, JCTree> cleanInnerClasses = new HashMap<>();
 	private HashMap<String, JCTree> cleanFields = new HashMap<>();
 	private boolean isPublic = true;
-	private boolean imported = false;
+	private boolean imported[] = {false, false}; // cleanroom, student
 	private boolean isCleanroom;
 	private int classLevel;
 
@@ -72,9 +72,8 @@ public class ReplaceMixer extends AbstractProcessor {
 					tree.accept(new Merger());
 
 					TreePath path = trees.getPath(each);
-
-					if (!imported) { 
-						imported = true;
+					if (!imported[isCleanroom ? 0 : 1]) { 
+						imported[isCleanroom ? 0 : 1] = true;
 						java.util.List imports = path.getCompilationUnit().getImports();
 						for (Object o : imports) {
 							System.out.print(o);
