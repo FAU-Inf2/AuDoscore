@@ -1,3 +1,5 @@
+package tools.json_diff;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
