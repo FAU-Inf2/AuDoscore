@@ -8,7 +8,12 @@ for i in `find expected/ -type f`; do
 	testfile=${i/expected/test.latest}
 	sed -i -e 's/Exception(test timed out after \([^ ]*\) milliseconds): [^"]*/TimeoutException after \1 ms/g' $testfile
 	sed -i -e 's/StackOverflowError(): [^"]*/StackOverflowError()/g' $testfile
-	diff -u -I '^make' -I '^Makefile:' $i $testfile
+	echo $i
+	if [[ "$i" == expected/run*.err ]]; then
+		java -cp ../../lib/junitpoints.jar:../../lib/json-simple-1.1.1.jar tools.json_diff.JSONDiff $i $testfile
+	else
+		diff -u -I '^make' -I '^Makefile:' $i $testfile
+	fi
 	ec=$?
 	error=$((error|ec))
 	if [[ $ec -ne 0 ]] && [[ -n "$REBUILD" ]]; then
