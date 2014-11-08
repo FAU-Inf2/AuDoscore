@@ -1,4 +1,4 @@
-package tools.json_diff;
+package tools.jsondiff;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
