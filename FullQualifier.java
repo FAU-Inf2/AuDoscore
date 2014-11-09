@@ -99,6 +99,7 @@ class MyPretty extends com.sun.tools.javac.tree.Pretty {
 					break;
 				case "Bonus":
 				case "Malus":
+				case "Points":
 				case "SecretCase":
 				case "Ex":
 				case "Exercises":
