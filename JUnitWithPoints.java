@@ -364,7 +364,7 @@ public abstract class JUnitWithPoints {
 							bonusAchievedPerExercise += Math.abs(points.bonus());
 						}
 						if(points.malus() != -1 && throwable != null){
-							bonusAchievedPerExercise -= Math.abs(point.malus());
+							bonusAchievedPerExercise -= Math.abs(points.malus());
 						}
 					}
 				}
