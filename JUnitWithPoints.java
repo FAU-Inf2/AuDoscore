@@ -230,8 +230,11 @@ public abstract class JUnitWithPoints {
 			Bonus bonusAnnotation = description.getAnnotation(Bonus.class);
 			Malus malusAnnotation = description.getAnnotation(Malus.class);
 			Points pointsAnnotation = description.getAnnotation(Points.class);
-			if (bonusAnnotation == null && malusAnnotation == null && pointsAnnotation == null) {
-				throw new AnnotationFormatError("WARNING - found test case without BONUS, MALUS or POINTS annotation: [" + description.getDisplayName() + "]");
+			if (bonusAnnotation == null && malusAnnotation == null) {
+				if(pointsAnnotation == null){
+					throw new AnnotationFormatError("WARNING - found test case without BONUS, MALUS or POINTS annotation: [" + description.getDisplayName() + "]");
+				
+				}
 			} else if (bonusAnnotation != null && bonusAnnotation.exID().trim().length() == 0) {
 				throw new AnnotationFormatError("WARNING - found test case with empty exercise id in BONUS annotation: [" + description.getDisplayName() + "]");
 			} else if (bonusAnnotation != null && !exerciseHashMap.containsKey(bonusAnnotation.exID())) {
