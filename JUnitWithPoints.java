@@ -227,6 +227,7 @@ public abstract class JUnitWithPoints {
 
 			Bonus bonusAnnotation = description.getAnnotation(Bonus.class);
 			Malus malusAnnotation = description.getAnnotation(Malus.class);
+			Points pointsAnnotation = description.getAnnotation(Points.class);
 			if (bonusAnnotation == null && malusAnnotation == null) {
 				throw new AnnotationFormatError("WARNING - found test case without BONUS or MALUS annotation: [" + description.getDisplayName() + "]");
 			} else if (bonusAnnotation != null && bonusAnnotation.exID().trim().length() == 0) {
