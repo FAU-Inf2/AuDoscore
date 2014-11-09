@@ -228,8 +228,8 @@ public abstract class JUnitWithPoints {
 			Bonus bonusAnnotation = description.getAnnotation(Bonus.class);
 			Malus malusAnnotation = description.getAnnotation(Malus.class);
 			Points pointsAnnotation = description.getAnnotation(Points.class);
-			if (bonusAnnotation == null && malusAnnotation == null) {
-				throw new AnnotationFormatError("WARNING - found test case without BONUS or MALUS annotation: [" + description.getDisplayName() + "]");
+			if (bonusAnnotation == null && malusAnnotation == null && pointsAnnotation == null) {
+				throw new AnnotationFormatError("WARNING - found test case without BONUS, MALUS or POINTS annotation: [" + description.getDisplayName() + "]");
 			} else if (bonusAnnotation != null && bonusAnnotation.exID().trim().length() == 0) {
 				throw new AnnotationFormatError("WARNING - found test case with empty exercise id in BONUS annotation: [" + description.getDisplayName() + "]");
 			} else if (bonusAnnotation != null && !exerciseHashMap.containsKey(bonusAnnotation.exID())) {
@@ -242,6 +242,14 @@ public abstract class JUnitWithPoints {
 				throw new AnnotationFormatError("WARNING - found test case with non-declared exercise id in MALUS annotation: [" + description.getDisplayName() + "]");
 			} else if (malusAnnotation != null && malusAnnotation.malus() == 0) {
 				throw new AnnotationFormatError("WARNING - found test case with illegal malus value in MALUS annotation: [" + description.getDisplayName() + "]");
+			} else if (pointsAnnotation != null && pointsAnnotation.exID().trim().length() == 0) {
+				throw new AnnotationFormatError("WARNING - found test case with empty exercise id in POINTS annotation: [" + description.getDisplayName() + "]");
+			} else if (pointsAnnotation != null && !exerciseHashMap.containsKey(pointsAnnotation.exID())) {
+				throw new AnnotationFormatError("WARNING - found test case with non-declared exercise id in POINTS annotation: [" + description.getDisplayName() + "]");
+			} else if (pointsAnnotation != null && (pointsAnnotation.malus() == 0 || pointsAnnotation.bonus() == 0)) {
+				throw new AnnotationFormatError("WARNING - found test case with illegal malus value in POINTS annotation: [" + description.getDisplayName() + "]");
+			} else if (pointsAnnotation != null && (pointsAnnotation.malus() == -1 && pointsAnnotation.bonus() == -1)) {
+				throw new AnnotationFormatError("WARNING - found test case with no malus value and no bonus value in POINTS annotation: [" + description.getDisplayName() + "]");
 			} else {
 				String exID = null;
 				if (bonusAnnotation != null && malusAnnotation != null) {
