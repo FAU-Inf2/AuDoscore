@@ -53,12 +53,14 @@ public abstract class JUnitWithPoints {
 		Bonus bonus;
 		Malus malus;
 		Throwable throwable;
+		Points points;
 
-		private ReportEntry(Description description, Bonus bonus, Malus malus, Throwable throwable) {
+		private ReportEntry(Description description, Bonus bonus, Malus malus, Points points, Throwable throwable) {
 			this.description = description;
 			this.bonus = bonus;
 			this.malus = malus;
 			this.throwable = throwable;
+			this.points = points;
 		}
 
 		private String getStackTrace() {
