@@ -265,10 +265,13 @@ public abstract class JUnitWithPoints {
 				if (malusAnnotation != null) {
 					exID = malusAnnotation.exID();
 				}
+				if(pointsAnnotation != null){
+					exID = pointsAnnotation.exID();
+				}
 				if (!reportHashMap.containsKey(exID)) {
 					reportHashMap.put(exID, new ArrayList<ReportEntry>());
 				}
-				reportHashMap.get(exID).add(new ReportEntry(description, bonusAnnotation, malusAnnotation, throwable));
+				reportHashMap.get(exID).add(new ReportEntry(description, bonusAnnotation, malusAnnotation, pointsAnnotation, throwable));
 			}
 		}
 
