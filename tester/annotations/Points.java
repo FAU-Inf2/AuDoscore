@@ -8,8 +8,8 @@ import java.lang.annotation.*;
 public @interface Points {
 	String exID();
 
-	double bonus();
-	double malus();
+	double bonus() default -1;
+	double malus() default -1;
 
 	String comment() default "<n.a.>";
 }
