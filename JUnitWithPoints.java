@@ -122,7 +122,7 @@ public abstract class JUnitWithPoints {
 					score = getPoints(points.bonus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
 				}
 				if(points.malus() != -1 && success){
-					if(points.bonus() != -1){
+					if(points.bonus() == -1){
 						desc = getComment(points.malusComment(), description);
 					}
 				}
