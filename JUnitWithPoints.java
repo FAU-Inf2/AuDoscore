@@ -335,6 +335,10 @@ public abstract class JUnitWithPoints {
 				for (ReportEntry reportEntry : reportPerExercise) {
 					if (reportEntry.bonus != null) {
 						bonusDeclaredPerExercise += Math.abs(reportEntry.bonus.bonus());
+					}else if(reportEntry.points != null){
+						if(reportEntry.points.bonus() != -1){
+							bonusDeclaredPerExercise += Math.abs(reportEntry.points.bonus());
+						}
 					}
 				}
 				pointsDeclaredPerExercise = exercise.points();
@@ -343,6 +347,7 @@ public abstract class JUnitWithPoints {
 				for (ReportEntry reportEntry : reportPerExercise) {
 					Bonus bonus = reportEntry.bonus;
 					Malus malus = reportEntry.malus;
+					Points points = reportEntry.points;
 					Throwable throwable = reportEntry.throwable;
 					JSONObject json = reportEntry.format(bonusDeclaredPerExercise, pointsDeclaredPerExercise);
 					if (json != null) {
@@ -353,6 +358,14 @@ public abstract class JUnitWithPoints {
 					}
 					if (malus != null && throwable != null) {
 						bonusAchievedPerExercise -= Math.abs(malus.malus());
+					}
+					if(points != null){
+						if(points.bonus() != -1 && throwable == null){
+							bonusAchievedPerExercise += Math.abs(points.bonus());
+						}
+						if(points.malus() != -1 && throwable != null){
+							bonusAchievedPerExercise -= Math.abs(point.malus());
+						}
 					}
 				}
 				if (bonusDeclaredPerExercise <= 0) {
