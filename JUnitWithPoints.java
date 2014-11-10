@@ -268,7 +268,7 @@ public abstract class JUnitWithPoints {
 			} else if (pointsAnnotation != null && !exerciseHashMap.containsKey(pointsAnnotation.exID())) {
 				throw new AnnotationFormatError("WARNING - found test case with non-declared exercise id in POINTS annotation: [" + description.getDisplayName() + "]");
 			} else if (pointsAnnotation != null && (pointsAnnotation.malus() == 0 || pointsAnnotation.bonus() == 0)) {
-				throw new AnnotationFormatError("WARNING - found test case with illegal malus value in POINTS annotation: [" + description.getDisplayName() + "]");
+				throw new AnnotationFormatError("WARNING - found test case with illegal malus value or illegal bonus value in POINTS annotation: [" + description.getDisplayName() + "]");
 			} else if (pointsAnnotation != null && (pointsAnnotation.malus() == -1 && pointsAnnotation.bonus() == -1)) {
 				throw new AnnotationFormatError("WARNING - found test case with no malus value and no bonus value in POINTS annotation: [" + description.getDisplayName() + "]");
 			} else {
