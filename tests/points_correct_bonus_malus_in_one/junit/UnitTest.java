@@ -19,14 +19,14 @@ public class UnitTest {
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
 	@Test(timeout=100)
-	@tester.annotations.Points(exID = "GA4.6a", bonus = 47)
+	@tester.annotations.Points(exID = "GA4.6a", bonus = 47, malus = 11)
 	public void test() {
 		assertEquals("Should return 42", 42, ToTest.toTest());
 	}
 
 	@Test(timeout=100)
-	@tester.annotations.Points(exID = "GA4.6a", malus = 11)
+	@tester.annotations.Points(exID = "GA4.6a", bonus = 47, malus = 11)
 	public void test2() {
-		assertEquals("Should return 23", 23, ToTest.toTest2());
+		assertEquals("Should return 42", 42, ToTest.toTest());
 	}
 }
