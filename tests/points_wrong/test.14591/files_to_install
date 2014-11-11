@@ -1,0 +1,11 @@
+./lib/junit.jar
+./lib/junitpoints.jar
+./lib/json-simple-1.1.1.jar
+./lib/tools.jar
+./Makefile
+./test.sh
+./README.md
+./obfuscate
+./install.sh
+./files_to_install
+./GITREV
