@@ -1,0 +1,3 @@
+{"score":"5.0","exercises":[{"tests":[{"id":"test","desc":"test","error":"AssertionError(Should return 42 expected:<42> but was:<23>)","score"
+:"-1.4627659574468086","success":false},{"id":"test2","desc":"test2","score":"6.25","success":true}],"name":"GA4.6a","score":"5.0","possiblePt
+s":"12.5"}]}
