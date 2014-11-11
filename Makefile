@@ -44,7 +44,7 @@ compile-stage1: miniclean
 	cp $(TEST).java $(TEST).java.orig
 	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
 	mv $(TEST).java.tmp $(TEST).java
-	sed -i -e 's/@tester.annotations.SecretCase/@Ignore/' $(TEST).java
+	sed -i -e 's/@tester.annotations.SecretCase/@org.junit.Ignore/' $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
