@@ -11,7 +11,6 @@ public @interface Points {
 	double bonus() default -1;
 	double malus() default -1;
 
-	String bonusComment() default "<n.a.>";
-	String malusComment() default "<n.a.>";
+	String comment() default "<n.a.>";
 }
 

@@ -116,20 +116,20 @@ public abstract class JUnitWithPoints {
 
 			if(points != null){
 				if(points.bonus() != -1){
-					desc = getComment(points.bonusComment(), description);
+					desc = getComment(points.comment(), description);
 				}
 				if(points.bonus() != -1 && success){
 					score = getPoints(points.bonus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
 				}
 				if(points.malus() != -1 && success){
 					if(points.bonus() == -1){
-						desc = getComment(points.malusComment(), description);
+						desc = getComment(points.comment(), description);
 					}
 				}
 				if(points.malus() != -1 && !success){
 					// in case of failure: overwrite bonus
 					score = -getPoints(points.malus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
-					desc = getComment(points.malusComment(), description);
+					desc = getComment(points.comment(), description);
 				}
 			}
 			JSONObject jsontest = new JSONObject();
