@@ -42,6 +42,8 @@ compile-stage0:
 
 compile-stage1: miniclean
 	cp $(TEST).java $(TEST).java.orig
+#	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(TEST).java > $(TEST).java.tmp
+#	mv $(TEST).java.tmp $(TEST).java
 	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
 	mv $(TEST).java.tmp $(TEST).java
 	sed -i -e 's/@tester.annotations.SecretCase/@org.junit.Ignore/' $(TEST).java
@@ -55,6 +57,8 @@ compile-stage1: miniclean
 compile-stage2: miniclean
 	./obfuscate
 	cp $(TEST).java $(TEST).java.orig
+#	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(TEST).java > $(TEST).java.tmp
+#	mv $(TEST).java.tmp $(TEST).java
 	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
 	mv $(TEST).java.tmp $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
