@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Set;
+import java.util.HashSet;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -82,12 +83,24 @@ class PointsPretty extends com.sun.tools.javac.tree.Pretty {
 		super(out, sourceOutput);
 	}
 
-	private void printPoints(JCAnnotation tree) throws IOException{
-			print("@");
-			print("Points");
-			print("(");
-			printExprs(tree.args);
-			print(")");
+	private List<JCExpression> mergeAnnotation(JCAnnotation bonus, JCAnnotation malus) throws IOException{
+
+		List<JCExpression> args = bonus.args;
+		List<JCExpression> tmp = malus.args;
+		for(int i = 0; i < tmp.size();i++){
+			JCExpression ex = tmp.get(i);
+			if(!args.contains(ex)){
+				args = args.append(tmp.get(i));
+			}
+		}
+		return args;	
+	}
+	private void printPoints(List<JCExpression> args) throws IOException{
+		print("@");
+		print("Points");
+		print("(");
+		printExprs(args);
+		print(")");
 	}
 	public void visitModifiers(JCModifiers mods){
 		try{
@@ -105,16 +118,19 @@ class PointsPretty extends com.sun.tools.javac.tree.Pretty {
 				}else{		
 					printStat(l.head);
 					println();
-				//	align();	
+					//	align();	
 				}
 			}
 			if(bonus != null && malus != null){
-
+				List<JCExpression> args = mergeAnnotation(bonus,malus);
+				printPoints(args);
 			}else if(bonus != null){
-				printPoints(bonus);
+				printPoints(bonus.args);
 			}else if(malus != null){
-				printPoints(malus);
+				printPoints(malus.args);
 			}
+			println();
+			//	align();	
 
 			printFlags(mods.flags);
 		}catch (IOException e){
