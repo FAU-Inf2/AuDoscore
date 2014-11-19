@@ -88,9 +88,18 @@ class PointsPretty extends com.sun.tools.javac.tree.Pretty {
 		List<JCExpression> args = bonus.args;
 		List<JCExpression> tmp = malus.args;
 		for(int i = 0; i < tmp.size();i++){
-			JCExpression ex = tmp.get(i);
-			if(!args.contains(ex)){
-				args = args.append(tmp.get(i));
+			boolean equal = false;
+			JCExpression ex1 = tmp.get(i);
+			JCExpression ex2 = null;
+			for(int j = 0; j < args.size();j++){
+				ex2 = args.get(i);
+				if(ex1.toString().equals(ex2.toString())){
+					equal = true;
+					break;
+				}	
+			}
+			if(!equal){
+				args = args.append(ex1);
 			}
 		}
 		return args;	
@@ -118,7 +127,7 @@ class PointsPretty extends com.sun.tools.javac.tree.Pretty {
 				}else{		
 					printStat(l.head);
 					println();
-					//	align();	
+		//			align();	
 				}
 			}
 			if(bonus != null && malus != null){
@@ -130,7 +139,7 @@ class PointsPretty extends com.sun.tools.javac.tree.Pretty {
 				printPoints(malus.args);
 			}
 			println();
-			//	align();	
+		//	align();	
 
 			printFlags(mods.flags);
 		}catch (IOException e){
