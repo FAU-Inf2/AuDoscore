@@ -83,15 +83,15 @@ class PointsPretty extends com.sun.tools.javac.tree.Pretty {
 		super(out, sourceOutput);
 	}
 
-	private List<JCExpression> mergeAnnotation(JCAnnotation bonus, JCAnnotation malus) throws IOException{
+	private List<JCExpression> mergeAnnotations(JCAnnotation bonus, JCAnnotation malus) throws IOException{
 
-		List<JCExpression> args = bonus.args;
-		List<JCExpression> tmp = malus.args;
-		for(int i = 0; i < tmp.size();i++){
+		List<JCExpression> bonusArgs = bonus.args;
+		List<JCExpression> malusArgs = malus.args;
+		for(int i = 0; i < malusArgs.size();i++){
 			boolean equal = false;
-			JCExpression ex1 = tmp.get(i);
+			JCExpression ex1 = malusArgs.get(i);
 			JCExpression ex2 = null;
-			for(int j = 0; j < args.size();j++){
+			for(int j = 0; j < bonusArgs.size();j++){
 				ex2 = args.get(i);
 				if(ex1.toString().equals(ex2.toString())){
 					equal = true;
@@ -99,10 +99,10 @@ class PointsPretty extends com.sun.tools.javac.tree.Pretty {
 				}	
 			}
 			if(!equal){
-				args = args.append(ex1);
+				bonusArgs = bonusArgs.append(ex1);
 			}
 		}
-		return args;	
+		return bonusArgs;	
 	}
 	private void printPoints(List<JCExpression> args) throws IOException{
 		print("@");
@@ -127,11 +127,11 @@ class PointsPretty extends com.sun.tools.javac.tree.Pretty {
 				}else{		
 					printStat(l.head);
 					println();
-		//			align();	
+					//			align();	
 				}
 			}
 			if(bonus != null && malus != null){
-				List<JCExpression> args = mergeAnnotation(bonus,malus);
+				List<JCExpression> args = mergeAnnotations(bonus,malus);
 				printPoints(args);
 			}else if(bonus != null){
 				printPoints(bonus.args);
@@ -139,7 +139,7 @@ class PointsPretty extends com.sun.tools.javac.tree.Pretty {
 				printPoints(malus.args);
 			}
 			println();
-		//	align();	
+			//	align();	
 
 			printFlags(mods.flags);
 		}catch (IOException e){
