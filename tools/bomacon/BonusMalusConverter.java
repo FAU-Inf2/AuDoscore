@@ -92,7 +92,7 @@ class PointsPretty extends com.sun.tools.javac.tree.Pretty {
 			JCExpression ex1 = malusArgs.get(i);
 			JCExpression ex2 = null;
 			for(int j = 0; j < bonusArgs.size();j++){
-				ex2 = args.get(i);
+				ex2 = bonusArgs.get(i);
 				if(ex1.toString().equals(ex2.toString())){
 					equal = true;
 					break;
