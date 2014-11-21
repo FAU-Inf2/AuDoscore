@@ -143,7 +143,7 @@ class PointsPretty extends com.sun.tools.javac.tree.Pretty {
 
 			printFlags(mods.flags);
 		}catch (IOException e){
-			throw new Error(e);
+			throw new Error("something went wrong while converting BONUS/MALUS to POINTS annotation: " + e);
 		}
 
 
