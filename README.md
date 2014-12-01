@@ -21,7 +21,9 @@ Available Annotations
 | `@Malus` (deprecated, please use `@Points`) | sort of | test case level | `exId`: String, `malus`: Double, `comment`: String, defaults to method name | Student looses `malus` / sum(`bonus`) * `Ex.points` points for *not* passing this test case |
 | `@Replace` | No | test case level | Array of Strings | Strings refer to methods in the student's code. For this test case, all methods mentioned in the `@Replace` annotation will be replaced with their cleanroom counterparts. |
 | `@SecretCase` | No | test case level | None | Result will not be shown to the students before submission deadline. Note that there should be a secret and a non-secret test case for every `exID/@Ex` |
-| `@Points` (combination of `@Malus` and `@Bonus` ) | sort of | test case level | `exId`: String, `bonus`: Double, `malus`: Double, `comment`: String, defaults to method name | Student earns `bonus` / sum(`bonus`) * `Ex.points` points for passing this test case. Student looses `malus` / sum(`bonus`) * `Ex.points` points for *not* passing this test case |
+| `@Points` (combination of `@Malus` and `@Bonus` ) | sort of | test case level | `exId`: String, `bonus`: Double, `malus`: Double, `comment`: String, defaults to method name | Student earns `bonus` / sum(`bonus`) * `Ex.points` points for passing this test case -- 
+
+Student looses `malus` / sum(`bonus`) * `Ex.points` points for *not* passing this test case |
 
 License
 =======
