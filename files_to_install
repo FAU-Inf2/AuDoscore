@@ -2,6 +2,8 @@
 ./lib/junitpoints.jar
 ./lib/json-simple-1.1.1.jar
 ./lib/tools.jar
+./lib/jacocoagent.jar
+./lib/jacocoant.jar
 ./Makefile
 ./test.sh
 ./README.md
