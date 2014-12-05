@@ -4,6 +4,7 @@
 ./lib/tools.jar
 ./lib/jacocoagent.jar
 ./lib/jacocoant.jar
+./build.xml
 ./Makefile
 ./test.sh
 ./README.md
