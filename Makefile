@@ -92,7 +92,7 @@ run-stage0:
 run-stage1:
 ifeq ($(COCO),true)
 	java -javaagent:lib/jacocoagent.jar=destfile=jacoco1.exec -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
-	ant
+	ant -buildfile tools/report_task1.xml
 else
 	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 endif
@@ -101,7 +101,7 @@ run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
 ifeq ($(COCO),true)	
 	java -javaagent:lib/jacocoagent=destfile=jacoco2.exec -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
-	end
+	ant -buildfile tools/report_task1.xml
 else
 	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 endif
