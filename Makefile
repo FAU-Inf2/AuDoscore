@@ -3,13 +3,12 @@ include var.mk
 TESTCLASS = $(TEST:=.class)
 TESTSOURCE = $(TEST:=.java)
 STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
-COCO = false
 all:
 	make prepare
 	./test.sh $(TEST) $(STUDENTSOURCE) -- $(INTERFACES) -- student
 all-coco:
 	make prepare
-	export COCO true
+	export COCO=true
 	./test.sh $(TEST) $(STUDENTSOURCE) -- $(INTERFACES) -- student
 	
 verify:
@@ -18,7 +17,7 @@ verify:
 
 verify-coco:
 	make prepare
-	export COCO true
+	export COCO=true
 	./verify.sh
 	
 clean:
@@ -92,16 +91,16 @@ run-stage0:
 run-stage1:
 ifeq ($(COCO),true)
 	java -javaagent:lib/jacocoagent.jar -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
-	ant -buildfile tools/report_task1.xml
+	ant -buildfile tools/jacoco/report_task1.xml
 else
 	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 endif
 		
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
-ifeq ($(COCO),true)	
+ifeq ($(COCO),true)
 	java -javaagent:lib/jacocoagent -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
-	ant -buildfile tools/report_task1.xml
+	ant -buildfile tools/jacoco/report_task2.xml
 else
 	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 endif

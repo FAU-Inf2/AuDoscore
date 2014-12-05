@@ -2,10 +2,10 @@
 ./lib/junitpoints.jar
 ./lib/json-simple-1.1.1.jar
 ./lib/tools.jar
-./lib/jacocoagent.jar
-./lib/jacocoant.jar
-./tools/report_task1.xml
-./tools/report_task2.xml
+./tools/jacoco/jacocoagent.jar
+./tools/jacoco/jacocoant.jar
+./tools/jacoco/report_task1.xml
+./tools/jacoco/report_task2.xml
 ./Makefile
 ./test.sh
 ./README.md

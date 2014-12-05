@@ -1,15 +1,15 @@
 <project name="Test" xmlns:jacoco="antlib:org.jacoco.ant">
 
 <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
-<classpath path="lib/jacocoant.jar"/>
+<classpath path="jacocoant.jar"/>
 </taskdef>
 <jacoco:report>
 <executiondata>
-<file file="jacoco2.exec"/>
+<file file="jacoco1.exec"/>
 </executiondata>
-<html destdir="report2"/>
-<csv destfile="report2.csv" />
-<structure name="Stage2">
+<html destdir="report1"/>
+<csv destfile="report1.csv" />
+<structure name="Stage1">
 <classfiles>
 <fileset dir="."/>
 </classfiles>
