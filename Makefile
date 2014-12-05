@@ -3,15 +3,24 @@ include var.mk
 TESTCLASS = $(TEST:=.class)
 TESTSOURCE = $(TEST:=.java)
 STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
-
+COCO = false
 all:
 	make prepare
 	./test.sh $(TEST) $(STUDENTSOURCE) -- $(INTERFACES) -- student
-
+all-coco:
+	make prepare
+	export COCO true
+	./test.sh $(TEST) $(STUDENTSOURCE) -- $(INTERFACES) -- student
+	
 verify:
 	make prepare
 	./verify.sh
 
+verify-coco:
+	make prepare
+	export COCO true
+	./verify.sh
+	
 clean:
 	rm -rf build
 	rm -rf replaced
@@ -81,11 +90,19 @@ run-stage0:
 	echo "alles gut"
 
 run-stage1:
+ifeq ($(COCO),true)
+	java -javaagent:lib/jacocoagent.jar -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+else
 	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
-
+endif
+		
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
+ifeq ($(COCO),true)	
+	java -javaagent:lib/jacocoagent -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+else
 	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+endif
 	echo ", \"replaced\" : " 1>&2
 	sh ./loop.sh
 	echo "}" 1>&2
