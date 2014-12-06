@@ -6,20 +6,9 @@ STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
 all:
 	make prepare
 	./test.sh $(TEST) $(STUDENTSOURCE) -- $(INTERFACES) -- student
-all-coco:
-	make prepare
-	export COCO=true
-	./test.sh $(TEST) $(STUDENTSOURCE) -- $(INTERFACES) -- student
-	
 verify:
 	make prepare
 	./verify.sh
-
-verify-coco:
-	make prepare
-	export COCO=true
-	./verify.sh
-	
 clean:
 	rm -rf build
 	rm -rf replaced
