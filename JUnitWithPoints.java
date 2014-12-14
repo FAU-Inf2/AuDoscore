@@ -273,7 +273,21 @@ public abstract class JUnitWithPoints {
 		public final Statement apply(Statement base, Description description) {
 			reportHashMap.clear();
 			exerciseHashMap.clear();
-			Exercises exercisesAnnotation = description.getAnnotation(Exercises.class);
+			Exercises exercisesAnnotation;
+			String pubclassName = System.getProperty("pub");
+			if(pubclassName!= null){
+				Class pub;
+				try{
+					pub = Class.forName(pubclassName);
+				}catch (ClassNotFoundException cnfe){
+					throw new AnnotationFormatError("WARNING - pub class not found [" + description.getDisplayName() + "]");
+
+				}
+				exercisesAnnotation = (Exercises) pub.getAnnotation(Exercises.class);
+			}else{
+				exercisesAnnotation = description.getAnnotation(Exercises.class);
+
+			}
 			if (exercisesAnnotation == null || exercisesAnnotation.value().length == 0) {
 				throw new AnnotationFormatError("WARNING - found test set without exercise points declaration: [" + description.getDisplayName() + "]");
 			}
