@@ -157,7 +157,7 @@ popd > /dev/null
 info "- copy test sources"
 pushd ../junit > /dev/null || die "failed"
 cp ${testclass}.java "${testdir}"/ || die "failed"
-if [ "x$secretclass" != "x"]; then
+if [ "x$secretclass" != "x" ]; then
 	cp ${secretclass}.java "${testdir}"/ || die "failed"
 fi
 popd > /dev/null
