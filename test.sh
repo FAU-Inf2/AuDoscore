@@ -70,7 +70,7 @@ if [ "x$1" == "x-k" ]; then
 	keep=1
 	shift
 fi
-secretclass=0
+secretclass=
 if [ "x$1" == "x-s" ]; then
 	shift
 	secretclass=$1; shift
@@ -157,7 +157,9 @@ popd > /dev/null
 info "- copy test sources"
 pushd ../junit > /dev/null || die "failed"
 cp ${testclass}.java "${testdir}"/ || die "failed"
-cp ${secretclass}.java "${testdir}"/ || die "failed"
+if [ -n "$secretclass" ]; then
+	cp ${secretclass}.java "${testdir}"/ || die "failed"
+fi
 popd > /dev/null
 
 if [ "x${interfaces}" != "x" ]; then
