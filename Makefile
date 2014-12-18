@@ -3,6 +3,8 @@ include var.mk
 TESTCLASS = $(TEST:=.class)
 TESTSOURCE = $(TEST:=.java)
 STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
+SECRETCLASS = $(SECRETTEST:=.class)
+SECRETSOURCE = $(SECRETTEST:=.java)
 
 all:
 	make prepare
@@ -31,7 +33,7 @@ prepare: updategitrev lib/junitpoints.jar
 updategitrev:
 	git rev-parse HEAD > GITREV
 
-SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java tester/annotations/Bonus.java tester/annotations/Ex.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/Malus.java tester/annotations/NotForbidden.java tester/annotations/SecretCase.java tools/json_diff/JSONDiff.java FullQualifier.java
+SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java tester/annotations/Bonus.java tester/annotations/Ex.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/Malus.java tester/annotations/NotForbidden.java tester/annotations/SecretCase.java tester/annotations/SecretClass.java tools/json_diff/JSONDiff.java FullQualifier.java
 
 lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/tools.jar:. $(SRCJUNITPOINTSJAR)
@@ -70,6 +72,24 @@ compile-stage2: miniclean
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(TEST) > loop.sh	
+compile-stage2-secret:
+	./obfuscate
+	cp $(SECRETTEST).java $(SECRETTEST).java.orig
+	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(SECRETTEST).java > $(SECRETTEST).java.tmp
+	mv $(SECRETTEST).java.tmp $(SECRETTEST).java
+	make -B $(SECRETCLASS) || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
+	mkdir -p mixed || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
+	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(SECRETTEST) > compile2.sh || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
+	if [ "x$(INTERFACES)" != "x" ]; then \
+		for i in $(INTERFACES); do \
+			/bin/echo -e "package cleanroom;\n" > cleanroom/$$i; \
+			cat $$i >> cleanroom/$$i; \
+		done; \
+	fi
+	sh -e ./compile2.sh || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
+	make -B $(SECRETCLASS) || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
+	mv $(SECRETTEST).java.orig $(SECRETTEST).java
+	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(SECRETTEST) >> loop.sh	
 
 compile: compile-stage$(STAGE)
 
@@ -82,6 +102,9 @@ run-stage1:
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
 	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	if [ "x$(SECRETTEST)" != "x" ]; then \
+		java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes -Dpub=$(TEST) org.junit.runner.JUnitCore $(SECRETTEST) || echo; \
+	fi
 	echo ", \"replaced\" : " 1>&2
 	sh ./loop.sh
 	echo "}" 1>&2
@@ -91,3 +114,6 @@ run: run-stage$(STAGE)
 
 $(TESTCLASS): $(TESTSOURCE) $(STUDENTSOURCE)
 	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACES)
+
+$(SECRETCLASS): $(SECRETSOURCE) $(STUDENTSOURCE)
+	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(SECRETSOURCE) $(STUDENTSOURCE) $(INTERFACES)
