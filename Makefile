@@ -72,6 +72,7 @@ compile-stage2: miniclean
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(TEST) > loop.sh	
+
 compile-stage2-secret:
 	./obfuscate
 	cp $(SECRETTEST).java $(SECRETTEST).java.orig

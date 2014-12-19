@@ -275,15 +275,16 @@ public abstract class JUnitWithPoints {
 			exerciseHashMap.clear();
 			Exercises exercisesAnnotation;
 			String pubclassName = System.getProperty("pub");
+			Class pub;
+			ClassLoader cl = ClassLoder.getSystemClassLoader();
 			if(pubclassName!= null){
-				Class pub;
 				try{
-					pub = Class.forName(pubclassName);
+					pub = cl.loadClass(pubclassName);
+					exercisesAnnotation = (Exercises) pub.getAnnotation(Exercises.class);
 				}catch (ClassNotFoundException cnfe){
 					throw new AnnotationFormatError("WARNING - pub class not found [" + description.getDisplayName() + "]");
 
 				}
-				exercisesAnnotation = (Exercises) pub.getAnnotation(Exercises.class);
 			}else{
 				exercisesAnnotation = description.getAnnotation(Exercises.class);
 
