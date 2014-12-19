@@ -276,7 +276,7 @@ public abstract class JUnitWithPoints {
 			Exercises exercisesAnnotation;
 			String pubclassName = System.getProperty("pub");
 			Class pub;
-			ClassLoader cl = ClassLoder.getSystemClassLoader();
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			if(pubclassName!= null){
 				try{
 					pub = cl.loadClass(pubclassName);
