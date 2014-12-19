@@ -75,10 +75,9 @@ public class ReadReplace{
 		return "";
 	}
 
-	public static void loop(String args[]) throws Exception {
+	public static void loop(String tcln, String pubClass) throws Exception {
 		HashSet<String> set = new HashSet<>();
 
-		String tcln = args[1];
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Class c = cl.loadClass(tcln);
 		for(Method meth : c.getMethods()) {
@@ -89,11 +88,21 @@ public class ReadReplace{
 		}
 
 		System.out.println("echo \"[\" 1>&2");
-		System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + "--THIS-WILL-NEVER-HAPPEN" + ":.  -Dreplace=" + "--THIS-WILL-NEVER-HAPPEN" + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
+		if(!pubClass.equals("")){
+			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + "--THIS-WILL-NEVER-HAPPEN" + ":.  -Dreplace=" + "--THIS-WILL-NEVER-HAPPEN" + " -Djson=yes" + " Dpub=" +pubClass + " org.junit.runner.JUnitCore " + tcln + " || echo");
+		}else{
+			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + "--THIS-WILL-NEVER-HAPPEN" + ":.  -Dreplace=" + "--THIS-WILL-NEVER-HAPPEN" + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
+
+		}
 		for (String s : set) {
 			System.out.println("echo \",\" 1>&2");
 			String classpath = s.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
-			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":.  -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
+			if(!pubClass.equals("")){
+				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":.  -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes" + " Dpub="+pubClass + " org.junit.runner.JUnitCore " + tcln + " || echo");
+			}else{
+				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":.  -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
+
+			}
 		}
 		System.out.println("echo \"]\" 1>&2");
 	}
@@ -104,7 +113,13 @@ public class ReadReplace{
 			System.exit(-1);
 		}
 		if (args[0].equals("--loop")) {
-			loop(args);
+			String pubClass = "";
+			if(args[1].equals("--public")){
+				pubClass = args[2];
+				loop(args[3],pubClass);
+			}else{
+				loop(args[1],pubClass);
+			}
 			return;
 		}
 		String tcln = args[0];
