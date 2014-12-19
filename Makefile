@@ -71,7 +71,11 @@ compile-stage2: miniclean
 	sh -e ./compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(TEST) > loop.sh	
+	if [ "x$(SECRETTEST)" != "x" ]; then \
+		java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop --withSecret $(TEST) >> loop.sh; \
+	else\
+		java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(TEST) >> loop.sh; \
+	fi		
 
 compile-stage2-secret:
 	./obfuscate
@@ -102,9 +106,14 @@ run-stage1:
 
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
-	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 	if [ "x$(SECRETTEST)" != "x" ]; then \
+		echo "[" 1>&2 ; \
+		java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo; \
+		echo "," 1>&2; \
 		java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes -Dpub=$(TEST) org.junit.runner.JUnitCore $(SECRETTEST) || echo; \
+		echo "]" 1>&2 ; \
+	else \
+		java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo; \
 	fi
 	echo ", \"replaced\" : " 1>&2
 	sh ./loop.sh

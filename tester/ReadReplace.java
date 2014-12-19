@@ -11,6 +11,7 @@ import org.junit.runner.*;
 import org.junit.runners.model.*;
 
 public class ReadReplace{
+	static boolean pubWithSecret = false;
 	public static String getSig(Method m){
 		String sig = m.getDeclaringClass().getName() + "." + m.getName() + "(";
 		for(Class p : m.getParameterTypes()){
@@ -87,10 +88,11 @@ public class ReadReplace{
 			}
 		}
 
-		System.out.println("echo \"[\" 1>&2");
 		if(!pubClass.equals("")){
+		System.out.println("echo \",\" 1>&2");
 			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + "--THIS-WILL-NEVER-HAPPEN" + ":.  -Dreplace=" + "--THIS-WILL-NEVER-HAPPEN" + " -Djson=yes" + " -Dpub=" +pubClass + " org.junit.runner.JUnitCore " + tcln + " || echo");
 		}else{
+			System.out.println("echo \"[\" 1>&2");
 			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + "--THIS-WILL-NEVER-HAPPEN" + ":.  -Dreplace=" + "--THIS-WILL-NEVER-HAPPEN" + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
 
 		}
@@ -104,7 +106,9 @@ public class ReadReplace{
 
 			}
 		}
-		System.out.println("echo \"]\" 1>&2");
+		if(!pubWithSecret){
+			System.out.println("echo \"]\" 1>&2");
+		}
 	}
 
 	public static void main(String args[]) throws Exception{
@@ -117,8 +121,12 @@ public class ReadReplace{
 			if(args[1].equals("--public")){
 				pubClass = args[2];
 				loop(args[3],pubClass);
+			}else if(args[1].equals("--withSecret")){
+				pubWithSecret = true;
+				loop(args[2],pubClass);
 			}else{
 				loop(args[1],pubClass);
+			
 			}
 			return;
 		}
