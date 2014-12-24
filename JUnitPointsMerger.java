@@ -116,6 +116,7 @@ public class JUnitPointsMerger {
 		return (obj instanceof JSONArray);
 	}
 
+
 	private static void preparePointsCalc() {
 		exerciseHashMap.clear();
 		Exercises exercisesAnnotation;
@@ -146,10 +147,6 @@ public class JUnitPointsMerger {
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			try{
 				secret = cl.loadClass(System.getProperty("secret"));
-				exercisesAnnotation = (Exercises) secret.getAnnotations(Exercises.class);
-				for (Ex exercise : exercisesAnnotation.value()){
-					exerciseHashMap.put(exercise.exID(), exercise);
-				}
 				for (Method method : secret.getMethods()){
 					if (method.isAnnotationPresent(Bonus.class)){
 						Bonus bonus = (Bonus) method.getAnnotation(Bonus.class);
