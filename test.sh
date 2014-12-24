@@ -227,7 +227,7 @@ info "- merging"
 if [ "x$secretclass" != "x" ]; then
 	( java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar JUnitPointsMerger -Dpub=$testclass -Dsecret=$secretclass run2.err merged ) > merge 2>&1
 else
-	( java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar JUnitPointsMerger run2.err merged ) > merge 2>&1
+	( java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar:. -Dpub=$testclass JUnitPointsMerger run2.err merged ) > merge 2>&1
 
 fi
 

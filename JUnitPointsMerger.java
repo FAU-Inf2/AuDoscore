@@ -124,8 +124,8 @@ public class JUnitPointsMerger {
 				usedresult = vextest;
 			}
 
-			double localscore = Double.parseDouble((String) usedresult.get("score"));
-//			double localscore = getLocalPoint((Boolean) vextest.get("success"), (String) vextest.get("id"));
+//			double localscore = Double.parseDouble((String) usedresult.get("score"));
+			double localscore = getLocalPoint((Boolean) vextest.get("success"), (String) vextest.get("id"));
 			localpoints += localscore;
 			localSummary += ((Boolean) usedresult.get("success")) ? "✓" : "✗";
 
@@ -184,7 +184,7 @@ public class JUnitPointsMerger {
 					}
 				}
 			} catch (ClassNotFoundException cnfe){
-				throw new Error("WARNING - public test class not found");
+				throw new Error("WARNING - public test class not found: " + System.getProperty("pub"));
 			}
 		}
 
@@ -208,10 +208,9 @@ public class JUnitPointsMerger {
 		}
 	}
 	public static void main(String[] args) throws Exception {
-//		preparePointsCalc();
-
 		String inputFile = (args.length == 2) ? args[0] : "result.json";
 		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
+		preparePointsCalc();
 		JSONParser parser = new JSONParser();
 		try {
 			JSONObject obj  = (JSONObject) parser.parse(new FileReader(inputFile));
