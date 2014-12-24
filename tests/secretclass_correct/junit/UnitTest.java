@@ -24,4 +24,10 @@ public class UnitTest {
 		assertEquals("Should return 42", 42, ToTest.toTest());
 	}
 
+	@Test(timeout=100)
+	@tester.annotations.SecretCase
+	@tester.annotations.Bonus(exID = "GA4.6a", bonus = 23.00)
+	public void test2() {
+		assertEquals("Should return 23", 23, ToTest.toTest2());
+	}
 }

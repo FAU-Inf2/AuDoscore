@@ -10,6 +10,9 @@ public class JUnitPointsMerger {
 		String message;
 	}
 
+	private static Class pub = null;
+	private static Class secret = null;
+
 	private static final class SingleReportComparator implements Comparator<SingleReport> {
 		public int compare(SingleReport r1, SingleReport r2) {
 			if (r1 == null && r2 == null) return 0;
@@ -74,6 +77,7 @@ public class JUnitPointsMerger {
 			if ((Boolean) vextest.get("success")) {
 				usedresult = vextest;
 			}
+
 			double localscore = Double.parseDouble((String) usedresult.get("score"));
 			localpoints += localscore;
 			localSummary += ((Boolean) usedresult.get("success")) ? "✓" : "✗";
@@ -105,7 +109,34 @@ public class JUnitPointsMerger {
 		}
 	}
 
+	private static boolean isJSONArray(Object obj) {
+		return (obj instanceof JSONArray);
+	}
+
+
 	public static void main(String[] args) throws Exception {
+		// get -D param
+		if(System.getProperty("pub") != null){
+			// load public test
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			try{
+				pub = cl.loadClass(System.getProperty("pub"));
+			} catch (ClassNotFoundException cnfe){
+				throw new Error("WARNING - public test class not found");
+			}
+
+		}
+
+		if(System.getProperty("secret") != null){
+			//load secret test
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			try{
+				secret = cl.loadClass(System.getProperty("secret"));
+			} catch (ClassNotFoundException cnfe){
+				throw new Error("WARNING - secret test class not found");
+			}
+	
+		}
 		String inputFile = (args.length == 2) ? args[0] : "result.json";
 		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
 		JSONParser parser = new JSONParser();
