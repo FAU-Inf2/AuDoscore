@@ -38,6 +38,7 @@ public class JUnitPointsMerger {
 	private static Class pub = null;
 	private static Class secret = null;
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
+	private static final HashMap<String, Double> bonusPerExHashMap = new HashMap<>();
 
 	private static void merge(ArrayList<JSONObject> rexs, JSONObject vex) { // merges two exercises
 		ArrayList<SingleReport> reps = new ArrayList<>();
@@ -115,7 +116,6 @@ public class JUnitPointsMerger {
 		return (obj instanceof JSONArray);
 	}
 
-
 	private static void preparePointsCalc() {
 		exerciseHashMap.clear();
 		Exercises exercisesAnnotation;
@@ -128,6 +128,13 @@ public class JUnitPointsMerger {
 				exercisesAnnotation = (Exercises) pub.getAnnotations(Exercises.class);
 				for (Ex exercise : exercisesAnnotation.value()){
 					exerciseHashMap.put(exercise.exID(), exercise);
+				}
+				// get sum of bonus
+				for (Method method : pub.getMethods()){
+					if (method.isAnnotationPresent(Bonus.class)){
+						Bonus bonus = (Bonus) method.getAnnotation(Bonus.class);
+						bonusPerExHashMap.put(bonus.exID(),bonus.bonus());
+					}
 				}
 			} catch (ClassNotFoundException cnfe){
 				throw new Error("WARNING - public test class not found");
@@ -142,6 +149,12 @@ public class JUnitPointsMerger {
 				exercisesAnnotation = (Exercises) secret.getAnnotations(Exercises.class);
 				for (Ex exercise : exercisesAnnotation.value()){
 					exerciseHashMap.put(exercise.exID(), exercise);
+				}
+				for (Method method : secret.getMethods()){
+					if (method.isAnnotationPresent(Bonus.class)){
+						Bonus bonus = (Bonus) method.getAnnotation(Bonus.class);
+						bonusPerExHashMap.put(bonus.exID(),bonus.bonus());
+					}
 				}
 			} catch (ClassNotFoundException cnfe){
 				throw new Error("WARNING - secret test class not found");
