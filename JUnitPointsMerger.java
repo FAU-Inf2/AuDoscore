@@ -125,7 +125,7 @@ public class JUnitPointsMerger {
 			}
 
 //			double localscore = Double.parseDouble((String) usedresult.get("score"));
-			double localscore = getLocalPoint((Boolean) vextest.get("success"), (String) vextest.get("id"));
+			double localscore = getLocalPoint((Boolean) usedresult.get("success"), (String) usedresult.get("id"));
 			localpoints += localscore;
 			localSummary += ((Boolean) usedresult.get("success")) ? "✓" : "✗";
 
