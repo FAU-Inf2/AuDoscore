@@ -10,8 +10,6 @@ public class JUnitPointsMerger {
 		String message;
 	}
 
-	private static Class pub = null;
-	private static Class secret = null;
 
 	private static final class SingleReportComparator implements Comparator<SingleReport> {
 		public int compare(SingleReport r1, SingleReport r2) {
@@ -37,6 +35,10 @@ public class JUnitPointsMerger {
 
 	private static String summary = "";
 	private static double points = 0;
+	private static Class pub = null;
+	private static Class secret = null;
+	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
+
 	private static void merge(ArrayList<JSONObject> rexs, JSONObject vex) { // merges two exercises
 		ArrayList<SingleReport> reps = new ArrayList<>();
 		double localpoints = 0;
@@ -114,17 +116,22 @@ public class JUnitPointsMerger {
 	}
 
 
-	public static void main(String[] args) throws Exception {
+	private static void preparePointsCalc() {
+		exerciseHashMap.clear();
+		Exercises exercisesAnnotation;
 		// get -D param
 		if(System.getProperty("pub") != null){
 			// load public test
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			try{
 				pub = cl.loadClass(System.getProperty("pub"));
+				exercisesAnnotation = (Exercises) pub.getAnnotations(Exercises.class);
+				for (Ex exercise : exercisesAnnotation.value()){
+					exerciseHashMap.put(exercise.exID(), exercise);
+				}
 			} catch (ClassNotFoundException cnfe){
 				throw new Error("WARNING - public test class not found");
 			}
-
 		}
 
 		if(System.getProperty("secret") != null){
@@ -132,11 +139,19 @@ public class JUnitPointsMerger {
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			try{
 				secret = cl.loadClass(System.getProperty("secret"));
+				exercisesAnnotation = (Exercises) secret.getAnnotations(Exercises.class);
+				for (Ex exercise : exercisesAnnotation.value()){
+					exerciseHashMap.put(exercise.exID(), exercise);
+				}
 			} catch (ClassNotFoundException cnfe){
 				throw new Error("WARNING - secret test class not found");
 			}
 	
 		}
+	}
+	public static void main(String[] args) throws Exception {
+		preparePointsCalc();
+
 		String inputFile = (args.length == 2) ? args[0] : "result.json";
 		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
 		JSONParser parser = new JSONParser();
