@@ -147,7 +147,7 @@ public class JUnitPointsMerger {
 		localpoints = Math.max(0., localpoints);
 		localpoints = Math.ceil(2. * localpoints) / 2; // round up to half points
 //		localpoints = Math.min(localpoints, Double.parseDouble((String) vex.get("possiblePts")));
-		localpoints = Math.min(localpoints, Double.parseDouble(exerciseHashMap.get(vex.get("name").points())));
+		localpoints = Math.min(localpoints, exerciseHashMap.get(vex.get("name")).points());
 		points += localpoints;
 		summary += "\n" + (String) vex.get("name");
 		summary += String.format(" (%1$.1f points):", localpoints) + "\n";
