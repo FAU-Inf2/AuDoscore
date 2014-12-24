@@ -42,9 +42,44 @@ public class JUnitPointsMerger {
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 	private static final HashMap<String, Double> bonusPerExHashMap = new HashMap<>();
 
-	private static Double getLocalPoints(Boolean success, String id){
+
+	private static double getPoints(double pts, double pointsDeclaredPerExercise, double bonusDeclaredPerExercise) {
+		return pointsDeclaredPerExercise * Math.abs(pts) / bonusDeclaredPerExercise;
+	}
+
+	private static double getLocalPoint(Boolean success, String id){
 		// get Bonus and malus from method
 		
+		// search in secret an in public
+		Method method = null;
+		Bonus bonus = null;
+		Malus malus = null;
+		try{
+			method = pub.getMethod(id, null);
+			bonus = (Bonus) method.getAnnotation(Bonus.class);
+			malus = (Malus) method.getAnnotation(Malus.class);
+		} catch (NoSuchMethodException nsme){
+		//	throw new Error("WARNING - Method not found");
+		}
+		//try secret test class
+		if(secret != null && method == null){
+			try{
+				method = secret.getMethod(id, null);
+				bonus = (Bonus) method.getAnnotation(Bonus.class);
+				malus = (Malus) method.getAnnotation(Malus.class);
+			} catch (NoSuchMethodException nsme){
+				throw new Error("WARNING - Method not found");
+			}
+		}
+
+		double score = 0;
+		if (bonus != null && success){
+			score = getPoints(bonus.bonus(), exerciseHashMap.get(bonus.exID()).points(), bonusPerExHashMap.get(bonus.exID()));
+		}
+		if (malus != null && !success){
+			score = -getPoints(malus.malus(), exerciseHashMap.get(bonus.exID()).points(), bonusPerExHashMap.get(bonus.exID()));
+		}
+		return score;
 	}
 
 
@@ -89,8 +124,8 @@ public class JUnitPointsMerger {
 				usedresult = vextest;
 			}
 
-//			double localscore = Double.parseDouble((String) usedresult.get("score"));
-			double localscore = getLocalPoint((Boolean) vextest.get("success"), vextest.get("id"));
+			double localscore = Double.parseDouble((String) usedresult.get("score"));
+//			double localscore = getLocalPoint((Boolean) vextest.get("success"), (String) vextest.get("id"));
 			localpoints += localscore;
 			localSummary += ((Boolean) usedresult.get("success")) ? "✓" : "✗";
 
@@ -173,7 +208,7 @@ public class JUnitPointsMerger {
 		}
 	}
 	public static void main(String[] args) throws Exception {
-		preparePointsCalc();
+//		preparePointsCalc();
 
 		String inputFile = (args.length == 2) ? args[0] : "result.json";
 		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
