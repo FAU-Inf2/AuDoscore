@@ -42,6 +42,12 @@ public class JUnitPointsMerger {
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 	private static final HashMap<String, Double> bonusPerExHashMap = new HashMap<>();
 
+	private static Double getLocalPoints(Boolean success, String id){
+		// get Bonus and malus from method
+		
+	}
+
+
 	private static void merge(ArrayList<JSONObject> rexs, JSONObject vex) { // merges two exercises
 		ArrayList<SingleReport> reps = new ArrayList<>();
 		double localpoints = 0;
@@ -83,7 +89,8 @@ public class JUnitPointsMerger {
 				usedresult = vextest;
 			}
 
-			double localscore = Double.parseDouble((String) usedresult.get("score"));
+//			double localscore = Double.parseDouble((String) usedresult.get("score"));
+			double localscore = getLocalPoint((Boolean) vextest.get("success"), vextest.get("id"));
 			localpoints += localscore;
 			localSummary += ((Boolean) usedresult.get("success")) ? "✓" : "✗";
 
@@ -136,7 +143,9 @@ public class JUnitPointsMerger {
 				for (Method method : pub.getMethods()){
 					if (method.isAnnotationPresent(Bonus.class)){
 						Bonus bonus = (Bonus) method.getAnnotation(Bonus.class);
-						bonusPerExHashMap.put(bonus.exID(),bonus.bonus());
+						double bonusPts = bonusPerExHashMap.get(bonus.exID());
+						bonusPts+=bonus.bonus();
+						bonusPerExHashMap.put(bonus.exID(),bonusPts);
 					}
 				}
 			} catch (ClassNotFoundException cnfe){
@@ -152,7 +161,9 @@ public class JUnitPointsMerger {
 				for (Method method : secret.getMethods()){
 					if (method.isAnnotationPresent(Bonus.class)){
 						Bonus bonus = (Bonus) method.getAnnotation(Bonus.class);
-						bonusPerExHashMap.put(bonus.exID(),bonus.bonus());
+						double bonusPts = bonusPerExHashMap.get(bonus.exID());
+						bonusPts+=bonus.bonus();
+						bonusPerExHashMap.put(bonus.exID(),bonusPts);
 					}
 				}
 			} catch (ClassNotFoundException cnfe){
@@ -162,7 +173,7 @@ public class JUnitPointsMerger {
 		}
 	}
 	public static void main(String[] args) throws Exception {
-//		preparePointsCalc();
+		preparePointsCalc();
 
 		String inputFile = (args.length == 2) ? args[0] : "result.json";
 		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
