@@ -173,6 +173,7 @@ public class JUnitPointsMerger {
 				exercisesAnnotation = (Exercises) pub.getAnnotation(Exercises.class);
 				for (Ex exercise : exercisesAnnotation.value()){
 					exerciseHashMap.put(exercise.exID(), exercise);
+					bonusPerExHashMap.put(exercise.exID(),0.0);
 				}
 				// get sum of bonus
 				for (Method method : pub.getMethods()){
