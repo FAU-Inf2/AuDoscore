@@ -2,7 +2,9 @@ import java.io.*;
 import java.util.*;
 import org.json.simple.*;
 import org.json.simple.parser.*;
-
+import java.lang.annotation.*;
+import java.lang.reflect.*;
+import tester.annotations.*;
 public class JUnitPointsMerger {
 	private static final class SingleReport {
 		boolean success;
@@ -126,7 +128,7 @@ public class JUnitPointsMerger {
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			try{
 				pub = cl.loadClass(System.getProperty("pub"));
-				exercisesAnnotation = (Exercises) pub.getAnnotations(Exercises.class);
+				exercisesAnnotation = (Exercises) pub.getAnnotation(Exercises.class);
 				for (Ex exercise : exercisesAnnotation.value()){
 					exerciseHashMap.put(exercise.exID(), exercise);
 				}
@@ -160,7 +162,7 @@ public class JUnitPointsMerger {
 		}
 	}
 	public static void main(String[] args) throws Exception {
-		preparePointsCalc();
+//		preparePointsCalc();
 
 		String inputFile = (args.length == 2) ? args[0] : "result.json";
 		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
