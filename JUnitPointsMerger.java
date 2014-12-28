@@ -136,7 +136,6 @@ public class JUnitPointsMerger {
 				usedresult = vextest;
 			}
 
-//			double localscore = Double.parseDouble((String) usedresult.get("score"));
 			double localscore = getLocalPoint((Boolean) usedresult.get("success"), (String) usedresult.get("id"));
 			localpoints += localscore;
 			localSummary += ((Boolean) usedresult.get("success")) ? "✓" : "✗";
@@ -158,7 +157,6 @@ public class JUnitPointsMerger {
 		localpoints -= 0.00001; // XXX: subtract epsilon here
 		localpoints = Math.max(0., localpoints);
 		localpoints = Math.ceil(2. * localpoints) / 2; // round up to half points
-		localpoints = Math.min(localpoints, Double.parseDouble((String) vex.get("possiblePts")));
 		localpoints = Math.min(localpoints, exerciseHashMap.get(vex.get("name")).points());
 		points += localpoints;
 		summary += "\n" + (String) vex.get("name");
