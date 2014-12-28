@@ -54,7 +54,7 @@ public class JUnitPointsMerger {
 
 		// for parameterized
 		// split name of method
-		if(rawId.contains("[")){
+		if(id.contains("[")){
 			String[] parts = rawId.split("\\[");
 			System.out.println(parts[0]);
 			id = parts[0];
@@ -86,7 +86,6 @@ public class JUnitPointsMerger {
 		double score = 0;
 		if (bonus != null && success){
 			score = getPoints(bonus.bonus(), exerciseHashMap.get(bonus.exID()).points(), bonusPerExHashMap.get(bonus.exID()));
-			System.out.println("[DEBUG]: " + score);
 		}
 		if (malus != null && !success){
 			score = -getPoints(malus.malus(), exerciseHashMap.get(bonus.exID()).points(), bonusPerExHashMap.get(bonus.exID()));
@@ -192,26 +191,40 @@ public class JUnitPointsMerger {
 						Bonus bonus = (Bonus) method.getAnnotation(Bonus.class);
 						double bonusPts = bonusPerExHashMap.get(bonus.exID());
 
+
 						// for parameterized tests
 						// count how often method was executed
+						JSONArray tests = null;
 						int counter = 0;
 						for(int i = 0; i < vanillaex.size(); i++) {
 							JSONObject ex = (JSONObject )vanillaex.get(i);
 							String name = (String) ex.get("name");
 							if(name.equals(bonus.exID())){
-								JSONArray tests = (JSONArray) ex.get("tests");
+								tests = (JSONArray) ex.get("tests");
 								for(int j = 0; j < tests.size(); j++){
 									JSONObject test = (JSONObject) tests.get(j);
 									String id = (String) test.get("id");
-									if(id.contains(method.getName())){
+									if(id.contains(method.getName() + "[")){
 										counter++;				
 									}
 								}
 								break;
 							}
 						}
+						if(counter == 0){
+							counter = 1;
+						}else{
+							for(int j = 0; j < tests.size(); j++){
+								JSONObject test = (JSONObject) tests.get(j);
+								String id = (String) test.get("id");
+								if(id.contains(method.getName())){
+									counter++;
+									break;
+								}
+							}
+						}
+
 						bonusPts+=counter*bonus.bonus();
-						System.out.println("[DEBUG]:" + bonusPts);
 						bonusPerExHashMap.put(bonus.exID(),bonusPts);
 					}
 				}
