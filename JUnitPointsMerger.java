@@ -47,10 +47,19 @@ public class JUnitPointsMerger {
 		return pointsDeclaredPerExercise * Math.abs(pts) / bonusDeclaredPerExercise;
 	}
 
-	private static double getLocalPoint(Boolean success, String id){
+	private static double getLocalPoint(Boolean success, String rawId){
 		// get Bonus and malus from method
-		
+		String id = rawId;	
 		// search in secret an in public
+
+		// for parameterized
+		// split name of method
+		if(rawId.contains("[")){
+			String[] parts = rawId.split("\\[");
+			System.out.println(parts[0]);
+			id = parts[0];
+		}
+
 		Method method = null;
 		Bonus bonus = null;
 		Malus malus = null;
@@ -59,7 +68,7 @@ public class JUnitPointsMerger {
 			bonus = (Bonus) method.getAnnotation(Bonus.class);
 			malus = (Malus) method.getAnnotation(Malus.class);
 		} catch (NoSuchMethodException nsme){
-		//	throw new Error("WARNING - Method not found");
+			//throw new Error("WARNING - Method not found");
 		}
 		//try secret test class
 		if(secret != null && method == null){
@@ -70,11 +79,14 @@ public class JUnitPointsMerger {
 			} catch (NoSuchMethodException nsme){
 				throw new Error("WARNING - Method not found");
 			}
+		}else if(secret == null && method == null){
+			throw new Error("WARNING - Method not found");
 		}
 
 		double score = 0;
 		if (bonus != null && success){
 			score = getPoints(bonus.bonus(), exerciseHashMap.get(bonus.exID()).points(), bonusPerExHashMap.get(bonus.exID()));
+			System.out.println("[DEBUG]: " + score);
 		}
 		if (malus != null && !success){
 			score = -getPoints(malus.malus(), exerciseHashMap.get(bonus.exID()).points(), bonusPerExHashMap.get(bonus.exID()));
@@ -146,7 +158,7 @@ public class JUnitPointsMerger {
 		localpoints -= 0.00001; // XXX: subtract epsilon here
 		localpoints = Math.max(0., localpoints);
 		localpoints = Math.ceil(2. * localpoints) / 2; // round up to half points
-//		localpoints = Math.min(localpoints, Double.parseDouble((String) vex.get("possiblePts")));
+		localpoints = Math.min(localpoints, Double.parseDouble((String) vex.get("possiblePts")));
 		localpoints = Math.min(localpoints, exerciseHashMap.get(vex.get("name")).points());
 		points += localpoints;
 		summary += "\n" + (String) vex.get("name");
@@ -162,7 +174,7 @@ public class JUnitPointsMerger {
 	}
 
 
-	private static void preparePointsCalc() {
+	private static void preparePointsCalc(JSONArray vanillaex) {
 		exerciseHashMap.clear();
 		Exercises exercisesAnnotation;
 		// get -D param
@@ -181,7 +193,27 @@ public class JUnitPointsMerger {
 					if (method.isAnnotationPresent(Bonus.class)){
 						Bonus bonus = (Bonus) method.getAnnotation(Bonus.class);
 						double bonusPts = bonusPerExHashMap.get(bonus.exID());
-						bonusPts+=bonus.bonus();
+
+						// for parameterized tests
+						// count how often method was executed
+						int counter = 0;
+						for(int i = 0; i < vanillaex.size(); i++) {
+							JSONObject ex = (JSONObject )vanillaex.get(i);
+							String name = (String) ex.get("name");
+							if(name.equals(bonus.exID())){
+								JSONArray tests = (JSONArray) ex.get("tests");
+								for(int j = 0; j < tests.size(); j++){
+									JSONObject test = (JSONObject) tests.get(j);
+									String id = (String) test.get("id");
+									if(id.contains(method.getName())){
+										counter++;				
+									}
+								}
+								break;
+							}
+						}
+						bonusPts+=counter*bonus.bonus();
+						System.out.println("[DEBUG]:" + bonusPts);
 						bonusPerExHashMap.put(bonus.exID(),bonusPts);
 					}
 				}
@@ -212,12 +244,12 @@ public class JUnitPointsMerger {
 	public static void main(String[] args) throws Exception {
 		String inputFile = (args.length == 2) ? args[0] : "result.json";
 		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
-		preparePointsCalc();
 		JSONParser parser = new JSONParser();
 		try {
 			JSONObject obj  = (JSONObject) parser.parse(new FileReader(inputFile));
 			JSONObject vanilla = (JSONObject) obj.get("vanilla");
 			JSONArray vanillaex = (JSONArray) vanilla.get("exercises");
+			preparePointsCalc(vanillaex);
 			JSONArray replaceds = (JSONArray) obj.get("replaced");
 
 			for (int i = 0; i < vanillaex.size(); i++) {
