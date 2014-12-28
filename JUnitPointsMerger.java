@@ -88,7 +88,7 @@ public class JUnitPointsMerger {
 			score = getPoints(bonus.bonus(), exerciseHashMap.get(bonus.exID()).points(), bonusPerExHashMap.get(bonus.exID()));
 		}
 		if (malus != null && !success){
-			score = -getPoints(malus.malus(), exerciseHashMap.get(malus.exID()).points(), bonusPerExHashMap.get(bonus.exID()));
+			score = -getPoints(malus.malus(), exerciseHashMap.get(malus.exID()).points(), bonusPerExHashMap.get(malus.exID()));
 		}
 		return score;
 	}
