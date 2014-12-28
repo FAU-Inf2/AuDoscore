@@ -88,7 +88,7 @@ public class JUnitPointsMerger {
 			score = getPoints(bonus.bonus(), exerciseHashMap.get(bonus.exID()).points(), bonusPerExHashMap.get(bonus.exID()));
 		}
 		if (malus != null && !success){
-			score = -getPoints(malus.malus(), exerciseHashMap.get(bonus.exID()).points(), bonusPerExHashMap.get(bonus.exID()));
+			score = -getPoints(malus.malus(), exerciseHashMap.get(malus.exID()).points(), bonusPerExHashMap.get(bonus.exID()));
 		}
 		return score;
 	}
@@ -217,7 +217,7 @@ public class JUnitPointsMerger {
 							for(int j = 0; j < tests.size(); j++){
 								JSONObject test = (JSONObject) tests.get(j);
 								String id = (String) test.get("id");
-								if(id.contains(method.getName())){
+								if(id.equals(method.getName())){
 									counter++;
 									break;
 								}
