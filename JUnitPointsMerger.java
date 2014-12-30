@@ -252,13 +252,43 @@ public class JUnitPointsMerger {
 	
 		}
 	}
+
+	private static JSONObject mergeVanilla(JSONArray rawVanilla) {
+		JSONObject v1 = (JSONObject) rawVanilla.get(0);
+		JSONObject v2 = (JSONObject) rawVanilla.get(1);
+		JSONArray vanillaex1 = (JSONArray) v1.get("exercises");
+		JSONArray vanillaex2 = (JSONArray) v2.get("exercises");
+
+		for(int i = 0; i <  vanillaex1.size() ; i++) {
+			JSONObject vex1 = (JSONObject) vanillaex1.get(i);
+			for(int j = 0; j < vanillaex2.size();i++){
+				JSONObject vex2 = (JSONObject) vanillaex2.get(i);
+				if(vex1.get("name").equals(vex2.get("name"))){
+					JSONArray tests = (JSONArray) vex1.get("tests");
+					tests.addAll((JSONArray) vex2.get("tests"));
+					vanillaex2.remove(vex2);
+				}
+			}
+		}
+		
+		return v1;
+	}
 	public static void main(String[] args) throws Exception {
 		String inputFile = (args.length == 2) ? args[0] : "result.json";
 		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
 		JSONParser parser = new JSONParser();
 		try {
 			JSONObject obj  = (JSONObject) parser.parse(new FileReader(inputFile));
-			JSONObject vanilla = (JSONObject) obj.get("vanilla");
+			Object rawVanilla = obj.get("vanilla");
+			JSONObject vanilla = null;
+			if(isJSONArray(rawVanilla)){
+				// merge
+				vanilla = mergeVanilla((JSONArray) rawVanilla);
+			
+			}else{
+				vanilla = (JSONObject) rawVanilla;
+
+			}
 			JSONArray vanillaex = (JSONArray) vanilla.get("exercises");
 			preparePointsCalc(vanillaex);
 			JSONArray replaceds = (JSONArray) obj.get("replaced");
