@@ -167,6 +167,14 @@ public abstract class JUnitWithPoints {
 		@Override
 		protected void starting(Description description) {
 			try {
+				Class tc = description.getTestClass();
+				SecretClass st = (SecretClass) tc.getAnnotation(SecretClass.class);
+				Replace r = description.getAnnotation(Replace.class);
+				if(st == null && r != null){
+					// @Replace in a public test
+					throw new AnnotationFormatError("WARNING - found test case with REPLACE in a public test file: [" + description.getDisplayName() + "]");
+				}
+
 				Test testAnnotation = description.getAnnotation(Test.class);
 				if (testAnnotation.timeout() == 0) {
 					throw new AnnotationFormatError("WARNING - found test case without TIMEOUT in @Test annotation: [" + description.getDisplayName() + "]");
