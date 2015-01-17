@@ -9,6 +9,7 @@ import java.lang.*;
 import java.util.*;
 import java.io.*;
 
+@SecretClass
 public class SecretTest {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints
