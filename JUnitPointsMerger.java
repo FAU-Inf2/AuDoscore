@@ -262,8 +262,8 @@ public class JUnitPointsMerger {
 
 		for(int i = 0; i <  vanillaex1.size() ; i++) {
 			JSONObject vex1 = (JSONObject) vanillaex1.get(i);
-			for(int j = 0; j < vanillaex2.size();i++){
-				JSONObject vex2 = (JSONObject) vanillaex2.get(i);
+			for(int j = 0; j < vanillaex2.size();j++){
+				JSONObject vex2 = (JSONObject) vanillaex2.get(j);
 				if(vex1.get("name").equals(vex2.get("name"))){
 					JSONArray tests = (JSONArray) vex1.get("tests");
 					tests.addAll((JSONArray) vex2.get("tests"));
