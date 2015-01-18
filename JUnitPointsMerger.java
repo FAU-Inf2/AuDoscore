@@ -171,6 +171,41 @@ public class JUnitPointsMerger {
 		return (obj instanceof JSONArray);
 	}
 
+	private static int getExecAmount(String methodName, JSONArray vanillaex, String bonusExID) {
+						JSONArray tests = null;
+						int counter = 0;
+						for(int i = 0; i < vanillaex.size(); i++) {
+							JSONObject ex = (JSONObject) vanillaex.get(i);
+							String name = (String) ex.get("name");
+							if(name.equals(bonusExID)){
+								tests = (JSONArray) ex.get("tests");
+								for(int j = 0; j < tests.size(); j++){
+									JSONObject test = (JSONObject) tests.get(j);
+									String id = (String) test.get("id");
+									if(id.contains(methodName + "[")){
+										counter++;				
+									}
+								}
+								break;
+							}
+						}
+						if(counter == 0){
+							boolean found = false;
+							for(int j = 0; j < tests.size(); j++){
+								JSONObject test = (JSONObject) tests.get(j);
+								String id = (String) test.get("id");
+								if(id.equals(methodName)){
+									counter = 1;
+									found = true;
+									break;
+								}
+							}
+							if(!found){
+								throw new Error("WARNING - method was not executed at all: " + System.getProperty("pub"));
+							}
+						}
+		return counter;	
+	}
 
 	private static void preparePointsCalc(JSONArray vanillaex) {
 		exerciseHashMap.clear();
@@ -193,43 +228,7 @@ public class JUnitPointsMerger {
 					if (method.isAnnotationPresent(Bonus.class)){
 						Bonus bonus = (Bonus) method.getAnnotation(Bonus.class);
 						double bonusPts = bonusPerExHashMap.get(bonus.exID());
-
-
-						// for parameterized tests
-						// count how often method was executed
-						JSONArray tests = null;
-						int counter = 0;
-						for(int i = 0; i < vanillaex.size(); i++) {
-							JSONObject ex = (JSONObject) vanillaex.get(i);
-							String name = (String) ex.get("name");
-							if(name.equals(bonus.exID())){
-								tests = (JSONArray) ex.get("tests");
-								for(int j = 0; j < tests.size(); j++){
-									JSONObject test = (JSONObject) tests.get(j);
-									String id = (String) test.get("id");
-									if(id.contains(method.getName() + "[")){
-										counter++;				
-									}
-								}
-								break;
-							}
-						}
-						if(counter == 0){
-							boolean found = false;
-							for(int j = 0; j < tests.size(); j++){
-								JSONObject test = (JSONObject) tests.get(j);
-								String id = (String) test.get("id");
-								if(id.equals(method.getName())){
-									counter = 1;
-									found = true;
-									break;
-								}
-							}
-							if(!found){
-								throw new Error("WARNING - method was not executed at all: " + System.getProperty("pub"));
-							}
-						}
-
+						int counter = getExecAmount(method.getName(), vanillaex, bonus.exID());
 						bonusPts+=counter*bonus.bonus();
 						bonusPerExHashMap.put(bonus.exID(),bonusPts);
 					}
@@ -248,42 +247,8 @@ public class JUnitPointsMerger {
 					if (method.isAnnotationPresent(Bonus.class)){
 						Bonus bonus = (Bonus) method.getAnnotation(Bonus.class);
 						double bonusPts = bonusPerExHashMap.get(bonus.exID());
-						bonusPts+=bonus.bonus();
-						
-						// for parameterized tests
-						// count how often method was executed
-						JSONArray tests = null;
-						int counter = 0;
-						for(int i = 0; i < vanillaex.size(); i++) {
-							JSONObject ex = (JSONObject) vanillaex.get(i);
-							String name = (String) ex.get("name");
-							if(name.equals(bonus.exID())){
-								tests = (JSONArray) ex.get("tests");
-								for(int j = 0; j < tests.size(); j++){
-									JSONObject test = (JSONObject) tests.get(j);
-									String id = (String) test.get("id");
-									if(id.contains(method.getName() + "[")){
-										counter++;				
-									}
-								}
-								break;
-							}
-						}
-						if(counter == 0){
-							boolean found = false;
-							for(int j = 0; j < tests.size(); j++){
-								JSONObject test = (JSONObject) tests.get(j);
-								String id = (String) test.get("id");
-								if(id.equals(method.getName())){
-									counter = 1;
-									found = true;
-									break;
-								}
-							}
-							if(!found){
-								throw new Error("WARNING - method was not executed at all: " + System.getProperty("pub"));
-							}
-						}
+						int counter = getExecAmount(method.getName(), vanillaex, bonus.exID());
+						bonusPts+=counter*bonus.bonus();
 						bonusPerExHashMap.put(bonus.exID(),bonusPts);
 					}
 				}
