@@ -215,15 +215,18 @@ public class JUnitPointsMerger {
 							}
 						}
 						if(counter == 0){
-							counter = 1;
-						}else{
+							boolean found = false;
 							for(int j = 0; j < tests.size(); j++){
 								JSONObject test = (JSONObject) tests.get(j);
 								String id = (String) test.get("id");
 								if(id.equals(method.getName())){
-									counter++;
+									counter = 1;
+									found = true;
 									break;
 								}
+							}
+							if(!found){
+								throw new Error("WARNING - method was not executed at all: " + System.getProperty("pub"));
 							}
 						}
 
