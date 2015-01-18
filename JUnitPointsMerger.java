@@ -175,7 +175,8 @@ public class JUnitPointsMerger {
 	private static void preparePointsCalc(JSONArray vanillaex) {
 		exerciseHashMap.clear();
 		Exercises exercisesAnnotation;
-		// get -D param
+
+		// get the public class name via -D param
 		if(System.getProperty("pub") != null){
 			// load public test
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
@@ -183,6 +184,7 @@ public class JUnitPointsMerger {
 				pub = cl.loadClass(System.getProperty("pub"));
 				exercisesAnnotation = (Exercises) pub.getAnnotation(Exercises.class);
 				for (Ex exercise : exercisesAnnotation.value()){
+					// save Exercises in HashMap
 					exerciseHashMap.put(exercise.exID(), exercise);
 					bonusPerExHashMap.put(exercise.exID(),0.0);
 				}
@@ -198,7 +200,7 @@ public class JUnitPointsMerger {
 						JSONArray tests = null;
 						int counter = 0;
 						for(int i = 0; i < vanillaex.size(); i++) {
-							JSONObject ex = (JSONObject )vanillaex.get(i);
+							JSONObject ex = (JSONObject) vanillaex.get(i);
 							String name = (String) ex.get("name");
 							if(name.equals(bonus.exID())){
 								tests = (JSONArray) ex.get("tests");
@@ -265,6 +267,7 @@ public class JUnitPointsMerger {
 			for(int j = 0; j < vanillaex2.size();j++){
 				JSONObject vex2 = (JSONObject) vanillaex2.get(j);
 				if(vex1.get("name").equals(vex2.get("name"))){
+					// if the name of the exercises matches
 					JSONArray tests = (JSONArray) vex1.get("tests");
 					tests.addAll((JSONArray) vex2.get("tests"));
 					vanillaex2.remove(vex2);
