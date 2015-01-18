@@ -70,6 +70,7 @@ public class JUnitPointsMerger {
 		} catch (NoSuchMethodException nsme){
 			//throw new Error("WARNING - Method not found");
 		}
+
 		//try secret test class
 		if(secret != null && method == null){
 			try{

@@ -116,7 +116,6 @@ public abstract class JUnitWithPoints {
 			jsontest.put("id", getShortDisplayName(description));
 			jsontest.put("success", (Boolean) (success));
 			jsontest.put("desc", desc);
-	//		jsontest.put("score", ((Double) score).toString());
 			if (!success) {
 				jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 			}
@@ -375,13 +374,10 @@ public abstract class JUnitWithPoints {
 				bonusAchievedPerExercise = Math.min(bonusDeclaredPerExercise, Math.max(0, bonusAchievedPerExercise));
 				pointsAchievedPerExercise = Math.ceil(pointsDeclaredPerExercise * 2 * bonusAchievedPerExercise / bonusDeclaredPerExercise) / 2;
 				pointsAchievedTotal += pointsAchievedPerExercise;
-//				jsonexercise.put("possiblePts", ((Double) exercise.points()).toString());
 				jsonexercise.put("name", exercise.exID());
-//				jsonexercise.put("score", String.format("%1$.1f", pointsAchievedPerExercise));
 				jsonexercises.add(jsonexercise);
 			}
 			jsonsummary.put("exercises", jsonexercises);
-//			jsonsummary.put("score", String.format("%1$.1f", pointsAchievedTotal));
 			if (System.getProperty("json") != null && System.getProperty("json").equals("yes")) {
 				System.err.println(jsonsummary);
 			} else {
