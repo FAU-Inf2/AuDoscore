@@ -268,6 +268,7 @@ public class JUnitPointsMerger {
 					JSONArray tests = (JSONArray) vex1.get("tests");
 					tests.addAll((JSONArray) vex2.get("tests"));
 					vanillaex2.remove(vex2);
+					break;
 				}
 			}
 		}
