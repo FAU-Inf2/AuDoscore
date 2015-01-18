@@ -99,8 +99,7 @@ public class JUnitPointsMerger {
 		ArrayList<SingleReport> reps = new ArrayList<>();
 		double localpoints = 0;
 		JSONArray vextests = (JSONArray) vex.get("tests");
-		/*
-		FIXME: this is not longer true, try to create a better check soon ;-)
+		/* FIXME: this is not longer true, try to create a better check soon ;-)
 		int cnt = 0;
 		for (JSONObject rex : rexs) {
 			cnt++;
@@ -126,10 +125,10 @@ public class JUnitPointsMerger {
 					}
 				}
 				/* FIXME: this is not longer true, see above
-				if (!found) {
-					throw new RuntimeException("could not find " + vextest.get("id") + " in replaced tests");
-				}
-				*/
+				   if (!found) {
+				   throw new RuntimeException("could not find " + vextest.get("id") + " in replaced tests");
+				   }
+				   */
 			}
 			String localSummary = "";
 			if ((Boolean) vextest.get("success")) {
@@ -172,38 +171,38 @@ public class JUnitPointsMerger {
 	}
 
 	private static int getExecAmount(String methodName, JSONArray vanillaex, String bonusExID) {
-						JSONArray tests = null;
-						int counter = 0;
-						for(int i = 0; i < vanillaex.size(); i++) {
-							JSONObject ex = (JSONObject) vanillaex.get(i);
-							String name = (String) ex.get("name");
-							if(name.equals(bonusExID)){
-								tests = (JSONArray) ex.get("tests");
-								for(int j = 0; j < tests.size(); j++){
-									JSONObject test = (JSONObject) tests.get(j);
-									String id = (String) test.get("id");
-									if(id.contains(methodName + "[")){
-										counter++;				
-									}
-								}
-								break;
-							}
-						}
-						if(counter == 0){
-							boolean found = false;
-							for(int j = 0; j < tests.size(); j++){
-								JSONObject test = (JSONObject) tests.get(j);
-								String id = (String) test.get("id");
-								if(id.equals(methodName)){
-									counter = 1;
-									found = true;
-									break;
-								}
-							}
-							if(!found){
-								throw new Error("WARNING - method was not executed at all: " + System.getProperty("pub"));
-							}
-						}
+		JSONArray tests = null;
+		int counter = 0;
+		for(int i = 0; i < vanillaex.size(); i++) {
+			JSONObject ex = (JSONObject) vanillaex.get(i);
+			String name = (String) ex.get("name");
+			if(name.equals(bonusExID)){
+				tests = (JSONArray) ex.get("tests");
+				for(int j = 0; j < tests.size(); j++){
+					JSONObject test = (JSONObject) tests.get(j);
+					String id = (String) test.get("id");
+					if(id.contains(methodName + "[")){
+						counter++;				
+					}
+				}
+				break;
+			}
+		}
+		if(counter == 0){
+			boolean found = false;
+			for(int j = 0; j < tests.size(); j++){
+				JSONObject test = (JSONObject) tests.get(j);
+				String id = (String) test.get("id");
+				if(id.equals(methodName)){
+					counter = 1;
+					found = true;
+					break;
+				}
+			}
+			if(!found){
+				throw new Error("WARNING - method was not executed at all: " + System.getProperty("pub"));
+			}
+		}
 		return counter;	
 	}
 
@@ -255,7 +254,7 @@ public class JUnitPointsMerger {
 			} catch (ClassNotFoundException cnfe){
 				throw new Error("WARNING - secret test class not found");
 			}
-	
+
 		}
 	}
 
@@ -278,7 +277,7 @@ public class JUnitPointsMerger {
 				}
 			}
 		}
-		
+
 		return v1;
 	}
 	public static void main(String[] args) throws Exception {
@@ -292,7 +291,7 @@ public class JUnitPointsMerger {
 			if(isJSONArray(rawVanilla)){
 				// merge
 				vanilla = mergeVanilla((JSONArray) rawVanilla);
-			
+
 			}else{
 				vanilla = (JSONObject) rawVanilla;
 
