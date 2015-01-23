@@ -1,6 +1,16 @@
+package tools.sep;
+
+import java.io.*;
+import java.util.*;
+import java.lang.*;
+import java.lang.reflect.*;
+import java.lang.annotation.*;
+import org.junit.*;
+
+
 public class SingleExecutionPreparer {
 
-	private static usage(){
+	private static void usage(){
 		System.err.println("Usage: java SingleExectionPreparer <ExampleTest.java>");
 		System.exit(0);
 	}
@@ -9,7 +19,7 @@ public class SingleExecutionPreparer {
 		PrintWriter writer = new PrintWriter("single_execution.sh", "UTF-8");
 		writer.println("#!/bin/bash");
 		writer.println("");
-		writer.println("echo \"[\" 1>&2 ");
+		writer.println("echo [ 1>&2 ");
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		try{
 			Class tc = cl.loadClass(className);
@@ -23,10 +33,10 @@ public class SingleExecutionPreparer {
 			}
 			
 		}catch(Exception e) {
-			throw Error("Something bad happened while preparing single execution of testmethods");
+			throw new Error("Something bad happened while preparing single execution of testmethods");
 		}
 
-		writer.println("echo \"]\" 1>&2");
+		writer.println("echo ] 1>&2");
 		writer.close();
 
 	}
