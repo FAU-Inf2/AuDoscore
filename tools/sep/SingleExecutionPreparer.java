@@ -11,7 +11,7 @@ import org.junit.*;
 public class SingleExecutionPreparer {
 
 	private static void usage(){
-		System.err.println("Usage: java SingleExectionPreparer <ExampleTest.java>");
+		System.err.println("Usage: java SingleExecutionPreparer <ExampleTest>");
 		System.exit(0);
 	}
 
