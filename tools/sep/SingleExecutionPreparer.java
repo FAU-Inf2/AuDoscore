@@ -33,11 +33,11 @@ public class SingleExecutionPreparer {
 
 			}	
 		}catch(FileNotFoundException fne) {
-			throw new Error("Something happened while creating the single execution script: " + fne.getMessage());
+			throw new Error("WARNING - Something bad happened while creating the single execution script: " + fne.getMessage());
 		}catch(ClassNotFoundException cnfe) {
-			throw new Error("test class bot found: " + className);
+			throw new Error("WARNING - test class bot found: " + className);
 		}catch(UnsupportedEncodingException uee ) {
-			throw new Error("Something happened while creating the single execution script" + uee.getMessage());
+			throw new Error("WARNING - Something bad happened while creating the single execution script" + uee.getMessage());
 		}
 
 		writer.println("echo ] 1>&2");
