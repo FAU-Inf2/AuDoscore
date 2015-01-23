@@ -407,6 +407,6 @@ public abstract class JUnitWithPoints {
 
 class MyStatement extends Statement {
 	public void evaluate() {
-		AssumeTrue(JUnitWithPoints.REPLACE_IGNORE_MSG);
+		Assume.assumeTrue(false);
 	}
 }
