@@ -153,9 +153,21 @@ public abstract class JUnitWithPoints {
 			return false;
 		}
 
+		protected boolean isNotExecutedCase(Description description) {
+			String methodToBeExecuted = System.getProperty("method");
+			if((methodToBeExecuted != null && !methodToBeExecuted.equals(""))){
+				String method = description.getMethodName();
+				if(!method.equals(methodToBeExecuted)){
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		@Override
 		public final Statement apply(Statement base, Description description) {
-			if (isIgnoredCase(description)) {
+			if (isIgnoredCase(description) || isNotExecutedCase(description)) {
 				base = new MyStatement();
 			}
 			return super.apply(base, description);
@@ -395,6 +407,6 @@ public abstract class JUnitWithPoints {
 
 class MyStatement extends Statement {
 	public void evaluate() {
-		Assert.fail(JUnitWithPoints.REPLACE_IGNORE_MSG);
+		AssumeTrue(JUnitWithPoints.REPLACE_IGNORE_MSG);
 	}
 }
