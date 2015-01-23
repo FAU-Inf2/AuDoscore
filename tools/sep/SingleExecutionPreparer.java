@@ -16,12 +16,13 @@ public class SingleExecutionPreparer {
 	}
 
 	private static void writeOutSingleTestExecution(String className){
-		PrintWriter writer = new PrintWriter("single_execution.sh", "UTF-8");
-		writer.println("#!/bin/bash");
-		writer.println("");
-		writer.println("echo [ 1>&2 ");
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		PrintWriter writer = null;
 		try{
+			writer = new PrintWriter("single_execution.sh", "UTF-8");
+			writer.println("#!/bin/bash");
+			writer.println("");
+			writer.println("echo [ 1>&2 ");
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			Class tc = cl.loadClass(className);
 			for(Method method : tc.getMethods()) {
 				if(method.isAnnotationPresent(Test.class)){
@@ -30,10 +31,13 @@ public class SingleExecutionPreparer {
 					writer.println("echo , 1>&2");
 				}
 
-			}
-			
-		}catch(Exception e) {
-			throw new Error("Something bad happened while preparing single execution of testmethods");
+			}	
+		}catch(FileNotFoundException fne) {
+			throw new Error("Something happened while creating the single execution script: " + fne.getMessage());
+		}catch(ClassNotFoundException cnfe) {
+			throw new Error("test class bot found: " + className);
+		}catch(UnsupportedEncodingException uee ) {
+			throw new Error("Something happened while creating the single execution script" + uee.getMessage());
 		}
 
 		writer.println("echo ] 1>&2");
