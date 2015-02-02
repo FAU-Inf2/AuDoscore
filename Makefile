@@ -114,8 +114,8 @@ run-stage2:
 		echo "]" 1>&2 ; \
 	else \
 		java -cp lib/junit.jar:lib/junitpoints.jar:lib/tools.jar:. tools.sep.SingleExecutionPreparer $(TEST); \
-		sh single_execution.sh; \
 	fi
+	#	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo; \
 	echo ", \"replaced\" : " 1>&2
 	sh ./loop.sh
 	echo "}" 1>&2

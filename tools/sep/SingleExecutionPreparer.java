@@ -24,13 +24,17 @@ public class SingleExecutionPreparer {
 			writer.println("echo \"[\" 1>&2 ");
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			Class tc = cl.loadClass(className);
+			int counter = 0;
 			for(Method method : tc.getMethods()) {
 				if(method.isAnnotationPresent(Test.class)){
+					if(counter > 0){
+						writer.println("echo \",\" 1>&2");
+					}
 					String methodName = method.getName();
-					writer.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junit/junitpoints.jar:. -Dmethod=" + methodName + " -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo");
-					writer.println("echo \",\" 1>&2");
+					writer.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junit/junitpoints.jar:. -Dmethod=" + methodName + " -Djson=yes org.junit.runner.JUnitCore " + className + " || echo");
+					counter++;
 				}
-
+			
 			}	
 		} catch(FileNotFoundException fne) {
 			throw new Error("WARNING - Something bad happened while creating the single execution script: " + fne.getMessage());
