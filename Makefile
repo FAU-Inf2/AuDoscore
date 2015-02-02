@@ -113,9 +113,8 @@ run-stage2:
 		java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes -Dpub=$(TEST) org.junit.runner.JUnitCore $(SECRETTEST) || echo; \
 		echo "]" 1>&2 ; \
 	else \
-		java -cp lib/junit.jar:lib/junitpoints.jar:lib/tools.jar:. tools.sep.SingleExecutionPreparer $(TEST); \
+		java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo; \
 	fi
-	#	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo; \
 	echo ", \"replaced\" : " 1>&2
 	sh ./loop.sh
 	echo "}" 1>&2
