@@ -21,14 +21,14 @@ public class SingleExecutionPreparer {
 			writer = new PrintWriter(new BufferedWriter(new FileWriter("single_execution.sh")));
 			writer.println("#!/bin/bash");
 			writer.println("");
-			writer.println("echo [ 1>&2 ");
+			writer.println("echo \"[\" 1>&2 ");
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			Class tc = cl.loadClass(className);
 			for(Method method : tc.getMethods()) {
 				if(method.isAnnotationPresent(Test.class)){
 					String methodName = method.getName();
 					writer.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junit/junitpoints.jar:. -Dmethod=" + methodName + " -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo");
-					writer.println("echo , 1>&2");
+					writer.println("echo \",\" 1>&2");
 				}
 
 			}	
@@ -43,7 +43,7 @@ public class SingleExecutionPreparer {
 
 		}
 
-		writer.println("echo ] 1>&2");
+		writer.println("echo \"]\" 1>&2");
 		writer.close();
 
 	}
