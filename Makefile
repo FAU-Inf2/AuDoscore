@@ -114,6 +114,7 @@ run-stage2:
 		echo "]" 1>&2 ; \
 	else \
 		java -cp lib/junit.jar:lib/junitpoints.jar:lib/tools.jar:. tools.sep.SingleExecutionPreparer $(TEST); \
+		sh single_execution.sh; \
 	fi
 	echo ", \"replaced\" : " 1>&2
 	sh ./loop.sh
