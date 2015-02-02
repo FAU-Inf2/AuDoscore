@@ -18,7 +18,7 @@ public class SingleExecutionPreparer {
 	private static void writeOutSingleTestExecution(String className){
 		PrintWriter writer = null;
 		try{
-			writer = new PrintWriter("single_execution.sh", "UTF-8");
+			writer = new PrintWriter(new BufferedWriter(new FileWriter("single_execution.sh")));
 			writer.println("#!/bin/bash");
 			writer.println("");
 			writer.println("echo [ 1>&2 ");
@@ -32,12 +32,15 @@ public class SingleExecutionPreparer {
 				}
 
 			}	
-		}catch(FileNotFoundException fne) {
+		} catch(FileNotFoundException fne) {
 			throw new Error("WARNING - Something bad happened while creating the single execution script: " + fne.getMessage());
-		}catch(ClassNotFoundException cnfe) {
-			throw new Error("WARNING - test class bot found: " + className);
-		}catch(UnsupportedEncodingException uee ) {
+		} catch(ClassNotFoundException cnfe) {
+			throw new Error("WARNING - test class not found: " + className);
+		} catch(UnsupportedEncodingException uee ) {
 			throw new Error("WARNING - Something bad happened while creating the single execution script" + uee.getMessage());
+		} catch (IOException ioe) {
+			throw new Error("WARNING - Something bad happened while creating the single execution script" + ioe.getMessage());
+
 		}
 
 		writer.println("echo ] 1>&2");
