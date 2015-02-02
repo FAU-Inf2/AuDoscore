@@ -114,7 +114,7 @@ run-stage2:
 		echo "]" 1>&2 ; \
 	else \
 		# get single test methods and execute them seperatly
-		java tools.sep.SingleExecutionPreparer $(TEST) \
+		java -cp lib/tools.jar:. tools.sep.SingleExecutionPreparer $(TEST) \
 		sh single_execution.sh \
 	fi
 	echo ", \"replaced\" : " 1>&2
