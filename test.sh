@@ -216,7 +216,11 @@ if [ "x$secretclass" != "x" ]; then
 fi
 
 info "- testing"
-( make run-stage2 ) > run2.out 2> run2.err
+if [ "x$single" != "x1"]; then
+	( make run-stage2 ) > run2.out 2> run2.err
+else
+	( make run-stage2-single ) > run2.out 2> run2.err
+fi
 if [ $? -ne 0 ]; then
 	err "failed, stdout:"
 	cat run2.out
