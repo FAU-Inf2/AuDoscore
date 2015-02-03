@@ -121,7 +121,11 @@ run-stage2:
 
 run-stage2-single:
 	echo "{ \"vanilla\" : " 1>&2
-	## TODO
+	if [ "x$(SECRETTEST)" != "x" ]; then \
+	
+	else \
+		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer $(TEST)	
+	fi
 	echo ", \"replaced\" : " 1>&2
 	sh ./loop.sh
 	echo "}" 1>&2

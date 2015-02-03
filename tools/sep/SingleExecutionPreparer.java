@@ -10,8 +10,9 @@ import org.junit.*;
 
 public class SingleExecutionPreparer {
 	private static boolean isPublic = false;
+	private static boolean isSecret = false;
 	private static void usage(){
-		System.err.println("Usage: java SingleExecutionPreparer [--public] <ExampleTest>");
+		System.err.println("Usage: java SingleExecutionPreparer  [--public | --secret ] <ExampleTest>");
 		System.exit(0);
 	}
 
@@ -48,7 +49,7 @@ public class SingleExecutionPreparer {
 			throw new Error("WARNING - Something bad happened while creating the single execution script" + ioe.getMessage());
 
 		}
-		if(!isPublic) {
+		if((!isPublic && !isSecret) || isSecret) {
 			writer.println("echo \"]\" 1>&2");
 		}
 		writer.close();
@@ -65,7 +66,14 @@ public class SingleExecutionPreparer {
 			className = args[0];
 		}
 		if(args.length == 2) {
-			isPublic = true;
+			if(args[0].equals("--public")) {
+				isPublic = true;
+			}
+			if(args[0].equals("--secret")) {
+				isSecret = true;
+			}else{
+				usage();
+			}
 			className = args[1];
 		}
 
