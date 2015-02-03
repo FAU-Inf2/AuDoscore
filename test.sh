@@ -73,7 +73,7 @@ if [ "x$1" == "x-k" ]; then
 	shift
 fi
 single=0
-if ["x$1" == "x--single"]; then
+if [ "x$1" == "x--single" ]; then
 	single=1
 	shift
 fi
