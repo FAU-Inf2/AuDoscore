@@ -121,11 +121,15 @@ run-stage2:
 
 run-stage2-single:
 	echo "{ \"vanilla\" : " 1>&2
+	echo "[" 1>&2
 	if [ "x$(SECRETTEST)" != "x" ]; then \
-	
+		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer $(TEST)	;\
+		echo "," !>&2;	\
+		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer $(SECRETTEST); \
 	else \
 		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer $(TEST)	
 	fi
+	echo "]" 1>&2
 	echo ", \"replaced\" : " 1>&2
 	sh ./loop.sh
 	echo "}" 1>&2
