@@ -59,9 +59,11 @@ fi
 
 if [ $# -lt 2 ]; then
 	err "no argument given"
-	info "usage: $0 [-k] [-s <SECRETCLASS>] <TESTCLASS> <STUDENTSOURCE1> ... <STUDENTSOURCEn> -- <INTERFACE1> ... <INTERFACEn> --";
+	info "usage: $0 [-k] [--single] [-s <SECRETCLASS>] <TESTCLASS> <STUDENTSOURCE1> ... <STUDENTSOURCEn> -- <INTERFACE1> ... <INTERFACEn> --";
 	info " e.g.: $0 ExampleTest Student.java -- PublicInterface.java -- undertest*"
 	info " -k: keep directory and create symlink test.latest"
+	info " -s: specify a secret testclass"
+	info " --single: single execution of methods"
 	exit -1
 fi
 
@@ -70,6 +72,10 @@ if [ "x$1" == "x-k" ]; then
 	keep=1
 	shift
 fi
+single=0
+if ["x$1" == "x--single"]; then
+	single=1
+	shift
 secretclass=
 if [ "x$1" == "x-s" ]; then
 	shift
