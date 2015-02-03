@@ -76,6 +76,7 @@ single=0
 if ["x$1" == "x--single"]; then
 	single=1
 	shift
+fi
 secretclass=
 if [ "x$1" == "x-s" ]; then
 	shift
