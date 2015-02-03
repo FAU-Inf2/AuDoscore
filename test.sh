@@ -216,7 +216,7 @@ if [ "x$secretclass" != "x" ]; then
 fi
 
 info "- testing"
-if [ "x$single" != "x1"]; then
+if [ "x$single" != "x1" ]; then
 	( make run-stage2 ) > run2.out 2> run2.err
 else
 	( make run-stage2-single ) > run2.out 2> run2.err
