@@ -9,9 +9,9 @@ import org.junit.*;
 
 
 public class SingleExecutionPreparer {
-
+	private static boolean isPublic = false;
 	private static void usage(){
-		System.err.println("Usage: java SingleExecutionPreparer <ExampleTest>");
+		System.err.println("Usage: java SingleExecutionPreparer [--public] <ExampleTest>");
 		System.exit(0);
 	}
 
@@ -21,7 +21,9 @@ public class SingleExecutionPreparer {
 			writer = new PrintWriter(new BufferedWriter(new FileWriter("single_execution.sh")));
 			writer.println("#!/bin/bash");
 			writer.println("");
-			writer.println("echo \"[\" 1>&2 ");
+			if(isPublic) {
+				writer.println("echo \"[\" 1>&2 ");
+			}
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			Class tc = cl.loadClass(className);
 			int counter = 0;
@@ -46,18 +48,28 @@ public class SingleExecutionPreparer {
 			throw new Error("WARNING - Something bad happened while creating the single execution script" + ioe.getMessage());
 
 		}
-
-		writer.println("echo \"]\" 1>&2");
+		if(!isPublic) {
+			writer.println("echo \"]\" 1>&2");
+		}
 		writer.close();
 
 	}
 
 	public static void main(String args[]){
-		if(args.length != 1) {
-			usage();
+		String className = null;
+		if(args == null || args.length > 2) {
+			usage();	
 		}
-		
-		writeOutSingleTestExecution(args[0]);
+
+		if(args.length == 1) {
+			className = args[0];
+		}
+		if(args.length == 2) {
+			isPublic = true;
+			className = args[1];
+		}
+
+		writeOutSingleTestExecution(className);
 
 	}
 
