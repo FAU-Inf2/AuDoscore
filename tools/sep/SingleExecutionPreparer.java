@@ -41,11 +41,11 @@ public class SingleExecutionPreparer {
 			usage();	
 		}
 		if(args.length == 1) {
-			className = args[1];
+			className = args[0];
 			dparam = " ";
 		} else {
-			dparam  = " " + args[1] + " ";
-			className = args[2];
+			dparam  = " " + args[0] + " ";
+			className = args[1];
 		}
 
 		writeOutSingleTestExecution(dparam, className);
