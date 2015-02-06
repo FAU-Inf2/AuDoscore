@@ -11,7 +11,7 @@ import org.junit.runner.*;
 import org.junit.runners.model.*;
 
 public class ReadReplace{
-	static boolean pubWithSecret = false;
+	static boolean single = false;
 	public static String getSig(Method m){
 		String sig = m.getDeclaringClass().getName() + "." + m.getName() + "(";
 		for(Class p : m.getParameterTypes()){
@@ -76,6 +76,35 @@ public class ReadReplace{
 		return "";
 	}
 
+
+	public static void loopSingle(String tcln, String pubClass) throws Exception {
+		HashSet<String> set = new HashSet<>();
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		Class c = cl.loadClass(tcln);
+		for(Method meth : c.getMethods()) {
+			if(meth.isAnnotationPresent(Replace.class)){
+				Replace r = meth.getAnnotation(Replace.class);
+				set.add(getCanonicalReplacement(r));
+			}
+		}
+
+		if(!pubClass.equals("")){
+		
+		}else{
+
+		}
+		for (String s : set) {
+			System.out.println("echo \",\" 1>&2");
+			String classpath = s.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
+			if(!pubClass.equals("")){
+			}else{
+
+			}
+		}
+
+
+	}
+
 	public static void loop(String tcln, String pubClass) throws Exception {
 		HashSet<String> set = new HashSet<>();
 
@@ -88,11 +117,10 @@ public class ReadReplace{
 			}
 		}
 
+
 		if(!pubClass.equals("")){
-		System.out.println("echo \",\" 1>&2");
-			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + "--THIS-WILL-NEVER-HAPPEN" + ":.  -Dreplace=" + "--THIS-WILL-NEVER-HAPPEN" + " -Djson=yes" + " -Dpub=" +pubClass + " org.junit.runner.JUnitCore " + tcln + " || echo");
+			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + "--THIS-WILL-NEVER-HAPPEN" + ":. -Dreplace=" + "--THIS-WILL-NEVER-HAPPEN" + " -Djson=yes" + " -Dpub=" +pubClass + " org.junit.runner.JUnitCore " + tcln + " || echo");
 		}else{
-			System.out.println("echo \"[\" 1>&2");
 			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + "--THIS-WILL-NEVER-HAPPEN" + ":.  -Dreplace=" + "--THIS-WILL-NEVER-HAPPEN" + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
 
 		}
@@ -100,14 +128,11 @@ public class ReadReplace{
 			System.out.println("echo \",\" 1>&2");
 			String classpath = s.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
 			if(!pubClass.equals("")){
-				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":.  -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes" + " -Dpub="+pubClass + " org.junit.runner.JUnitCore " + tcln + " || echo");
+				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes" + " -Dpub="+pubClass + " org.junit.runner.JUnitCore " + tcln + " || echo");
 			}else{
-				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":.  -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
+				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
 
 			}
-		}
-		if(!pubWithSecret){
-			System.out.println("echo \"]\" 1>&2");
 		}
 	}
 
@@ -118,15 +143,22 @@ public class ReadReplace{
 		}
 		if (args[0].equals("--loop")) {
 			String pubClass = "";
-			if(args[1].equals("--public")){
-				pubClass = args[2];
-				loop(args[3],pubClass);
-			}else if(args[1].equals("--withSecret")){
-				pubWithSecret = true;
-				loop(args[2],pubClass);
-			}else{
-				loop(args[1],pubClass);
-			
+			if(args[1].equals("--single")) {
+				single = true;
+				pubClass = args[2];	
+				if(args[3].equals("--secret")){
+					pubClass = args[3];
+					loopSingle(args[4],pubClass);
+				}else {
+					loopSingle(args[3],pubClass);
+				}
+			}else {
+				if(args[1].equals("--secret")){
+					pubClass = args[2];
+					loop(args[3],pubClass);
+				}else {
+					loop(args[1],pubClass);
+				}
 			}
 			return;
 		}
