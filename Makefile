@@ -123,12 +123,13 @@ run-stage2-single:
 	echo "{ \"vanilla\" : " 1>&2
 	echo "[" 1>&2
 	if [ "x$(SECRETTEST)" != "x" ]; then \
-		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer -Djson=yes $(TEST) ;\
+		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer -Djson=yes $(TEST) > single_execution.sh ;\
 		echo "," !>&2;	\
-		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "-Djson=yes -Dpub=$(TEST)" $(SECRETTEST); \
+		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "-Djson=yes -Dpub=$(TEST)" $(SECRETTEST) >> single_execution.sh; \
 	else \
-		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer -Djson=yes $(TEST)	
+		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer -Djson=yes $(TEST) > single_execution.sh ; \
 	fi
+	sh single_execution.sh
 	echo "]" 1>&2
 	echo ", \"replaced\" : " 1>&2
 	sh ./loop.sh
