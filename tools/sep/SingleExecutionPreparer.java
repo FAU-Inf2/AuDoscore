@@ -24,7 +24,7 @@ public class SingleExecutionPreparer {
 						System.out.println("echo \",\" 1>&2");
 					}
 					String methodName = method.getName();
-					System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. " + dparam +  "org.junit.runner.JUnitCore " + className + " || echo");
+					System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. " + dparam + "-Dmethod="+methodName+ " org.junit.runner.JUnitCore " + className + " || echo");
 					counter++;
 				}
 			
@@ -40,6 +40,7 @@ public class SingleExecutionPreparer {
 		if(args == null || args.length > 2) {
 			usage();	
 		}
+		
 		if(args.length == 1) {
 			className = args[0];
 			dparam = " ";
