@@ -73,10 +73,10 @@ compile-stage2: miniclean
 	mv $(TEST).java.orig $(TEST).java
 	echo "echo \"[\" 1>&2" > loop.sh
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(TEST) >> loop.sh 
-	if [ "x$(SECRETTEST)" == "x" ]; then \
-		echo "echo \"]\" 1>&2" >> loop.sh ; \
-	else \
+	if [ "x$(SECRETTEST)" != "x" ]; then \
 		echo "echo \",\" 1>&2" >> loop.sh ; \
+	else \
+		echo "echo \"]\" 1>&2" >> loop.sh ; \
 	fi		
 
 compile-stage2-secret:
