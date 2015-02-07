@@ -258,15 +258,41 @@ public class JUnitPointsMerger {
 		}
 	}
 
-	private static JSONObject mergeVanilla(JSONArray rawVanilla) {
-		JSONObject v1 = (JSONObject) rawVanilla.get(0);
-		JSONObject v2 = (JSONObject) rawVanilla.get(1);
-		JSONArray vanillaex1 = (JSONArray) v1.get("exercises");
-		JSONArray vanillaex2 = (JSONArray) v2.get("exercises");
 
-		for(int i = 0; i <  vanillaex1.size() ; i++) {
+	private static JSONObject recursiveMergeJArray(JSONArray raw) {
+		if(raw.size() < 1) {
+			return new JSONObject();
+		}
+
+		if(raw.size() == 1) {
+			return (JSONObject) raw.get(0);
+		}
+
+		int half = raw.size() / 2;
+		JSONArray firsthalf = new JSONArray();
+		JSONArray secondhalf = new JSONArray();
+
+		for(int i = 0; i < half; i++) {
+			firsthalf.add(raw.get(i));
+		}
+
+		for(int i = half; i < raw.size() - half; i++) {
+			secondhalf.add(raw.get(i));
+		}
+
+		JSONObject a = recursiveMergeJArray(firsthalf);
+		JSONObject b = recursiveMergeJArray(secondhalf);
+
+		return baseMergeJArray(a,b);
+
+	}
+
+	private static JSONObject baseMergeJArray(JSONObject o1, JSONObject o2) {
+		JSONArray vanillaex1 = (JSONArray) o1.get("exercises");
+		JSONArray vanillaex2 = (JSONArray) o2.get("exercises");
+		for(int i = 0; i <  o1.size() ; i++) {
 			JSONObject vex1 = (JSONObject) vanillaex1.get(i);
-			for(int j = 0; j < vanillaex2.size();j++){
+			for(int j = 0; j < o2.size();j++){
 				JSONObject vex2 = (JSONObject) vanillaex2.get(j);
 				if(vex1.get("name").equals(vex2.get("name"))){
 					// if the name of the exercises matches
@@ -278,8 +304,32 @@ public class JUnitPointsMerger {
 			}
 		}
 
-		return v1;
+		return o1;
 	}
+
+	private static JSONObject mergeVanilla(Object rawVanilla) {
+
+		if(!isJSONArray(rawVanilla)) {
+			return (JSONObject) rawVanilla;
+		}
+		JSONObject result = recursiveMergeJArray((JSONArray) rawVanilla);
+		return result;
+	}
+
+	private static JSONArray mergeReplaced(JSONArray rawReplaced) {
+		JSONArray replaced = new JSONArray();
+		for(int i = 0; i < rawReplaced.size(); i++) {
+			if(isJSONArray(rawReplaced.get(i))) {
+				JSONObject result = recursiveMergeJArray((JSONArray) rawReplaced.get(i));
+				replaced.add(result);
+			}else{
+				replaced.add(rawReplaced.get(i));
+			}
+		}
+
+		return replaced;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		String inputFile = (args.length == 2) ? args[0] : "result.json";
 		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
@@ -288,17 +338,13 @@ public class JUnitPointsMerger {
 			JSONObject obj  = (JSONObject) parser.parse(new FileReader(inputFile));
 			Object rawVanilla = obj.get("vanilla");
 			JSONObject vanilla = null;
-			if(isJSONArray(rawVanilla)){
-				// merge
-				vanilla = mergeVanilla((JSONArray) rawVanilla);
-
-			}else{
-				vanilla = (JSONObject) rawVanilla;
-
-			}
+			
+			// merge
+			vanilla = mergeVanilla(rawVanilla);	
 			JSONArray vanillaex = (JSONArray) vanilla.get("exercises");
 			preparePointsCalc(vanillaex);
-			JSONArray replaceds = (JSONArray) obj.get("replaced");
+
+			JSONArray replaceds = mergeReplaced((JSONArray) obj.get("replaced"));
 
 			for (int i = 0; i < vanillaex.size(); i++) {
 				JSONObject vex = (JSONObject) vanillaex.get(i);
