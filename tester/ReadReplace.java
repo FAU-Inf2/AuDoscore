@@ -146,12 +146,11 @@ public class ReadReplace{
 		if (args[0].equals("--loop")) {
 			String pubClass = "";
 			if(args[1].equals("--single")) {
-				pubClass = args[2];	
-				if(args[3].equals("--secret")){
+				if(args[2].equals("--secret")){
 					pubClass = args[3];
 					loopSingle(args[4],pubClass);
 				}else {
-					loopSingle(args[3],pubClass);
+					loopSingle(args[2],pubClass);
 				}
 			}else {
 				if(args[1].equals("--secret")){
