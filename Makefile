@@ -79,6 +79,27 @@ compile-stage2: miniclean
 		echo "echo \"]\" 1>&2" >> loop.sh ; \
 	fi		
 
+compile-stage2-single-tmp:
+	./obfuscate
+	cp $(TEST).java $(TEST).java.orig
+	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
+	mv $(TEST).java.tmp $(TEST).java
+	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	mkdir -p mixed || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(TEST) > compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	if [ "x$(INTERFACES)" != "x" ]; then \
+		for i in $(INTERFACES); do \
+			/bin/echo -e "package cleanroom;\n" > cleanroom/$$i; \
+			cat $$i >> cleanroom/$$i; \
+		done; \
+	fi
+	sh -e ./compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	mv $(TEST).java.orig $(TEST).java
+	echo "echo \"[\" 1>&2" > loop.sh
+	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop --single $(TEST) >> loop.sh 
+	echo "echo \"]\" 1>&2" >> loop.sh ; \
+
 compile-stage2-secret:
 	./obfuscate
 	cp $(SECRETTEST).java $(SECRETTEST).java.orig
