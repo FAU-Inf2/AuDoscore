@@ -268,6 +268,10 @@ public class JUnitPointsMerger {
 			return (JSONObject) raw.get(0);
 		}
 
+		if(raw.size() == 2) {
+			return baseMergeJArray((JSONObject) raw.get(0), (JSONObject) raw.get(1));
+		}
+
 		int half = raw.size() / 2;
 		JSONArray firsthalf = new JSONArray();
 		JSONArray secondhalf = new JSONArray();
@@ -276,8 +280,8 @@ public class JUnitPointsMerger {
 			firsthalf.add(raw.get(i));
 		}
 
-		for(int i = half; i < raw.size() - half; i++) {
-			secondhalf.add(raw.get(i));
+		for(int i = 0; i < raw.size() - half; i++) {
+			secondhalf.add(raw.get(half + i));
 		}
 
 		JSONObject a = recursiveMergeJArray(firsthalf);
@@ -292,7 +296,7 @@ public class JUnitPointsMerger {
 		JSONArray vanillaex2 = (JSONArray) o2.get("exercises");
 		for(int i = 0; i <  o1.size() ; i++) {
 			JSONObject vex1 = (JSONObject) vanillaex1.get(i);
-			for(int j = 0; j < o2.size();j++){
+			for(int j = 0; j < o2.size(); j++){
 				JSONObject vex2 = (JSONObject) vanillaex2.get(j);
 				if(vex1.get("name").equals(vex2.get("name"))){
 					// if the name of the exercises matches
@@ -337,10 +341,8 @@ public class JUnitPointsMerger {
 		try {
 			JSONObject obj  = (JSONObject) parser.parse(new FileReader(inputFile));
 			Object rawVanilla = obj.get("vanilla");
-			JSONObject vanilla = null;
 			
-			// merge
-			vanilla = mergeVanilla(rawVanilla);	
+			JSONObject vanilla = mergeVanilla(rawVanilla);	
 			JSONArray vanillaex = (JSONArray) vanilla.get("exercises");
 			preparePointsCalc(vanillaex);
 
