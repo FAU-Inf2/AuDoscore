@@ -106,8 +106,6 @@ public class ReadReplace{
 			SingleExecutionPreparer.main(args);
 			System.out.println("echo \"]\" 1>&2");
 		}
-
-
 	}
 
 	public static void loop(String tcln, String pubClass) throws Exception {
@@ -121,7 +119,6 @@ public class ReadReplace{
 				set.add(getCanonicalReplacement(r));
 			}
 		}
-
 
 		if(!pubClass.equals("")){
 			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + "--THIS-WILL-NEVER-HAPPEN" + ":. -Dreplace=" + "--THIS-WILL-NEVER-HAPPEN" + " -Djson=yes" + " -Dpub=" +pubClass + " org.junit.runner.JUnitCore " + tcln + " || echo");
