@@ -208,7 +208,11 @@ checkAnnotationFormatError run1.out
 
 info "\nstage2 (twice, with secret test cases and weaving)"
 info "- compiling"
-( make compile-stage2 ) > comp2 2>&1
+if [ "x$single" != "x1" ] ;then
+	( make compile-stage2-single-tmp ) > comp2 2>&1
+else
+	( make compile-stage2 ) > comp2 2>&1
+fi
 checkexit $? "\ninternal error\n" comp2
 if [ "x$secretclass" != "x" ]; then
 	( make compile-stage2-secret ) > comp2 2>&1
