@@ -13,7 +13,7 @@ public class SingleExecutionPreparer {
 		System.exit(0);
 	}
 
-	private static void writeOutSingleTestExecution(String dparam, String className){
+	private static void writeOutSingleTestExecution(String cp, String dparam, String className){
 		try{
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			Class tc = cl.loadClass(className);
@@ -24,7 +24,7 @@ public class SingleExecutionPreparer {
 						System.out.println("echo \",\" 1>&2");
 					}
 					String methodName = method.getName();
-					System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. " + dparam + "-Dmethod="+methodName+ " org.junit.runner.JUnitCore " + className + " || echo");
+					System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp "+cp + dparam + "-Dmethod="+methodName+ " org.junit.runner.JUnitCore " + className + " || echo");
 					counter++;
 				}
 			
@@ -37,19 +37,22 @@ public class SingleExecutionPreparer {
 	public static void main(String args[]){
 		String className = null;
 		String dparam = null;
-		if(args == null || args.length > 2) {
+		String cp = null;
+		if(args == null || args.length < 2 || args.length > 3) {
 			usage();	
 		}
 		
-		if(args.length == 1) {
-			className = args[0];
-			dparam = " ";
-		} else {
-			dparam  = " " + args[0] + " ";
+		if(args.length == 2) {
+			cp = args[0];
 			className = args[1];
+			dparam = " ";
+		} else if (args.length == 3){
+			cp = args[0];
+			dparam  = " " + args[1] + " ";
+			className = args[2];
 		}
 
-		writeOutSingleTestExecution(dparam, className);
+		writeOutSingleTestExecution(cp, dparam, className);
 	}
 
 

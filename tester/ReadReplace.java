@@ -9,9 +9,9 @@ import org.junit.*;
 import org.junit.rules.*;
 import org.junit.runner.*;
 import org.junit.runners.model.*;
+import tools.sep.*;
 
 public class ReadReplace{
-	static boolean single = false;
 	public static String getSig(Method m){
 		String sig = m.getDeclaringClass().getName() + "." + m.getName() + "(";
 		for(Class p : m.getParameterTypes()){
@@ -88,18 +88,23 @@ public class ReadReplace{
 			}
 		}
 
-		if(!pubClass.equals("")){
+		// execute sep for single execution
+		String args[] = new String[3];
+		args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:--THIS-WILL-NEVER-HAPPEN:.";
+		args[1] = "-Dreplace=THIS-WILL-NEVER-HAPPEN -Djson=yes";
+		args[2] = tcln;
+		System.out.println("echo \"[\" 1>&2");
+		SingleExecutionPreparer.main(args);
+		System.out.println("echo \"]\" 1>&2");
 		
-		}else{
-
-		}
 		for (String s : set) {
-			System.out.println("echo \",\" 1>&2");
 			String classpath = s.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
-			if(!pubClass.equals("")){
-			}else{
-
-			}
+			System.out.println("echo \",\" 1>&2");
+			System.out.println("echo \"[\" 1>&2");
+			args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:"+classpath+":.";
+			args[1] = "-Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes";
+			SingleExecutionPreparer.main(args);
+			System.out.println("echo \"]\" 1>&2");
 		}
 
 
@@ -144,7 +149,6 @@ public class ReadReplace{
 		if (args[0].equals("--loop")) {
 			String pubClass = "";
 			if(args[1].equals("--single")) {
-				single = true;
 				pubClass = args[2];	
 				if(args[3].equals("--secret")){
 					pubClass = args[3];
