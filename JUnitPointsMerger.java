@@ -292,6 +292,14 @@ public class JUnitPointsMerger {
 	}
 
 	private static JSONObject baseMergeJArray(JSONObject o1, JSONObject o2) {
+
+		if(o1 == null) {
+			return o2;
+		}
+
+		if(o2 == null) {
+			return o1;
+		}
 		JSONArray vanillaex1 = (JSONArray) o1.get("exercises");
 		JSONArray vanillaex2 = (JSONArray) o2.get("exercises");
 		for(int i = 0; i <  o1.size() ; i++) {
