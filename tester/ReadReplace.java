@@ -100,11 +100,13 @@ public class ReadReplace{
 		for (String s : set) {
 			String classpath = s.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
 			System.out.println("echo \",\" 1>&2");
-			System.out.println("echo \"[\" 1>&2");
-			args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:"+classpath+":.";
-			args[1] = "-Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes";
-			SingleExecutionPreparer.main(args);
-			System.out.println("echo \"]\" 1>&2");
+	//		System.out.println("echo \"[\" 1>&2");
+	//		args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:"+classpath+":.";
+	//		args[1] = "-Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes";
+	//		SingleExecutionPreparer.main(args);
+	//		System.out.println("echo \"]\" 1>&2");
+	//
+			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
 		}
 	}
 
