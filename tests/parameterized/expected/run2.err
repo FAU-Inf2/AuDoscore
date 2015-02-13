@@ -1,7 +1,0 @@
-{ "vanilla" : 
-{"exercises":[{"tests":[{"id":"testFooShouldReturn4711[0]","desc":"testFooShouldReturn4711[0]","success":true},{"id":"testFooShouldReturn4711[1]","desc":"testFooShouldReturn4711[1]","success":true},{"id":"testFooShouldReturn4711[2]","desc":"testFooShouldReturn4711[2]","error":"AssertionError(test with runID = 8 fails)","success":false},{"id":"testFooShouldReturn4711[3]","desc":"testFooShouldReturn4711[3]","success":true}],"name":"GA4.6a"}]}
-, "replaced" : 
-[
-{"exercises":[{"tests":[],"name":"GA4.6a"}]}
-]
-}
