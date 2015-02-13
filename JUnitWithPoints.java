@@ -164,10 +164,7 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		public final Statement apply(Statement base, Description description) {
-			if (isIgnoredCase(description)) {
-				base = new MyStatement();
-			}
-			if(isSkippedCase(description)) {
+			if (isIgnoredCase(description) || isSkippedCase(description)) {
 				base = new MyStatement();
 			}
 			return super.apply(base, description);
@@ -377,11 +374,5 @@ public abstract class JUnitWithPoints {
 class MyStatement extends Statement {
 	public void evaluate() {
 		Assert.fail(JUnitWithPoints.REPLACE_IGNORE_MSG);
-	}
-}
-
-class MyStatement2 extends Statement {
-	public void evaluate() {
-		Assume.assumeTrue(false);
 	}
 }

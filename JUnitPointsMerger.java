@@ -255,18 +255,18 @@ public class JUnitPointsMerger {
 
 	private static JSONObject baseMergeJArray(JSONObject o1, JSONObject o2) {
 
-		if(o1 == null) {
+		if(o1 == null || o1.isEmpty()) {
 			return o2;
 		}
 
-		if(o2 == null) {
+		if(o2 == null || o2.isEmpty()) {
 			return o1;
 		}
 		JSONArray vanillaex1 = (JSONArray) o1.get("exercises");
 		JSONArray vanillaex2 = (JSONArray) o2.get("exercises");
-		for(int i = 0; i <  o1.size() ; i++) {
+		for(int i = 0; i <  vanillaex1.size() ; i++) {
 			JSONObject vex1 = (JSONObject) vanillaex1.get(i);
-			for(int j = 0; j < o2.size(); j++){
+			for(int j = 0; j < vanillaex2.size(); j++){
 				JSONObject vex2 = (JSONObject) vanillaex2.get(j);
 				if(vex1.get("name").equals(vex2.get("name"))){
 					// if the name of the exercises matches
@@ -277,7 +277,6 @@ public class JUnitPointsMerger {
 				}
 			}
 		}
-
 		return o1;
 	}
 
@@ -312,7 +311,10 @@ public class JUnitPointsMerger {
 			JSONObject obj  = (JSONObject) parser.parse(new FileReader(inputFile));
 			Object rawVanilla = obj.get("vanilla");
 			
-			JSONObject vanilla = mergeVanilla(rawVanilla);	
+			JSONObject vanilla = mergeVanilla(rawVanilla);
+			PrintWriter writer = new PrintWriter("json.txt", "UTF-8");
+			writer.println(vanilla);
+			writer.close();
 			JSONArray vanillaex = (JSONArray) vanilla.get("exercises");
 			preparePointsCalc(vanillaex);
 
