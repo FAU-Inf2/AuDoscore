@@ -312,9 +312,6 @@ public class JUnitPointsMerger {
 			Object rawVanilla = obj.get("vanilla");
 			
 			JSONObject vanilla = mergeVanilla(rawVanilla);
-			PrintWriter writer = new PrintWriter("json.txt", "UTF-8");
-			writer.println(vanilla);
-			writer.close();
 			JSONArray vanillaex = (JSONArray) vanilla.get("exercises");
 			preparePointsCalc(vanillaex);
 
