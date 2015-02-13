@@ -3,6 +3,7 @@ import java.io.*;
 import java.lang.annotation.*;
 
 import org.junit.*;
+import org.junit.internal.*;
 import org.junit.rules.*;
 import org.junit.runner.*;
 import org.junit.runners.model.*;
@@ -82,36 +83,19 @@ public abstract class JUnitWithPoints {
 			}
 		}
 
-		protected double getPoints(double pts, double pointsDeclaredPerExercise, double bonusDeclaredPerExercise) {
-			return pointsDeclaredPerExercise * Math.abs(pts) / bonusDeclaredPerExercise;
-		}
-
 		final JSONObject format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise) {
 			if (throwable != null && throwable.getLocalizedMessage() != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.REPLACE_IGNORE_MSG)) {
 				return null;
 			}
 
+
+			if(PointsLogger.isSkippedCase(description)) {
+				return null;
+			}
+
 			boolean success = (throwable == null);
 			String desc = null;
-			double score = 0;
-
-			if (bonus != null) {
-				desc = getComment(bonus.comment(), description);
-			}
-			if (bonus != null && success) {
-				score = getPoints(bonus.bonus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
-			}
-			if (malus != null && success) {
-				if (bonus == null) { // only set comment if nothing was added before, points already default to zero
-					desc = getComment(malus.comment(), description);
-				}
-			}
-			if (malus != null && !success) {
-				// in case of failure: overwrite bonus
-				score = -getPoints(malus.malus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
-				desc = getComment(malus.comment(), description);
-			}
-
+			
 			JSONObject jsontest = new JSONObject();
 			jsontest.put("id", getShortDisplayName(description));
 			jsontest.put("success", (Boolean) (success));
@@ -153,10 +137,10 @@ public abstract class JUnitWithPoints {
 			return false;
 		}
 
-		protected boolean isNotExecutedCase(Description description) {
+		public static  boolean isSkippedCase(Description description) {
 			String methodToBeExecuted = System.getProperty("method");
 			if((methodToBeExecuted != null && !methodToBeExecuted.equals(""))){
-				String method = description.getMethodName();
+				String method = getShortDisplayName(description);
 				if(!method.equals(methodToBeExecuted)){
 					return true;
 				}
@@ -167,13 +151,15 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		public final Statement apply(Statement base, Description description) {
-			if (isIgnoredCase(description) || isNotExecutedCase(description)) {
+			if (isIgnoredCase(description)) {
+				base = new MyStatement();
+			}
+			if(isSkippedCase(description)) {
 				base = new MyStatement();
 			}
 			return super.apply(base, description);
 		}
 
-		Set<Long> threadIdsBefore = new HashSet<>();
 
 		@Override
 		protected void starting(Description description) {
@@ -199,12 +185,6 @@ public abstract class JUnitWithPoints {
 				}
 				timeoutSum += testAnnotation.timeout();
 
-				threadIdsBefore.clear();
-				Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-				for (Thread t : threadSet) {
-					threadIdsBefore.add(t.getId());
-				}
-
 				saveOut = System.out;
 				saveErr = System.err;
 
@@ -217,14 +197,6 @@ public abstract class JUnitWithPoints {
 					public void write(int i) {
 					}
 				}));
-
-				if (!isIgnoredCase(description)) {
-					System.gc();
-					Thread.sleep(50);
-					System.gc();
-					Thread.sleep(50);
-					System.gc();
-				}
 			} catch (Exception e) {
 				throw new AnnotationFormatError(e.getMessage());
 			}
@@ -232,22 +204,6 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
-			Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-			for (Thread t : threadSet) {
-				if (t.isAlive() && t.isInterrupted() && !threadIdsBefore.contains(t.getId()) && t.getName().matches("Thread-\\d+")) {
-					/* JUnit interrupts but does not stop threads, this leaves room for side effects between cases
-					 * e.g. students might be writing infinite loops which still allocate ressources
-					 * we try to find these hanging threads here and kill them 
-					 * see: https://groups.yahoo.com/neo/groups/junit/conversations/messages/24565
-					 */
-					t.stop(); // XXX: yes, stop is deprecated, but: we don't use this to test parallel code
-					try {
-						// wait a bit until the thread has been finally destroyed
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-					}
-				}
-			}
 			System.setOut(saveOut);
 			System.setErr(saveErr);
 
@@ -285,6 +241,13 @@ public abstract class JUnitWithPoints {
 				}
 				reportHashMap.get(exID).add(new ReportEntry(description, bonusAnnotation, malusAnnotation, throwable));
 			}
+		}
+
+
+		@Override
+		protected final void skipped(AssumptionViolatedException e, Description description) {
+//			System.setOut(saveOut);
+//			System.setErr(saveErr);
 		}
 
 		@Override
@@ -408,5 +371,11 @@ public abstract class JUnitWithPoints {
 class MyStatement extends Statement {
 	public void evaluate() {
 		Assert.fail(JUnitWithPoints.REPLACE_IGNORE_MSG);
+	}
+}
+
+class MyStatement2 extends Statement {
+	public void evaluate() {
+		Assume.assumeTrue(false);
 	}
 }
