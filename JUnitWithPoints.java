@@ -95,7 +95,20 @@ public abstract class JUnitWithPoints {
 
 			boolean success = (throwable == null);
 			String desc = null;
-			
+		
+			if(bonus != null) {
+				desc = getComment(bonus.comment(),description);
+			}
+			if(malus != null && success) {
+				if(bonus == null) {
+					desc = getComment(malus.comment(),description);
+				}
+			}
+			if(malus != null && !success) {
+				desc = getComment(malus.comment(),description);
+			}
+
+
 			JSONObject jsontest = new JSONObject();
 			jsontest.put("id", getShortDisplayName(description));
 			jsontest.put("success", (Boolean) (success));
@@ -241,13 +254,6 @@ public abstract class JUnitWithPoints {
 				}
 				reportHashMap.get(exID).add(new ReportEntry(description, bonusAnnotation, malusAnnotation, throwable));
 			}
-		}
-
-
-		@Override
-		protected final void skipped(AssumptionViolatedException e, Description description) {
-//			System.setOut(saveOut);
-//			System.setErr(saveErr);
 		}
 
 		@Override
