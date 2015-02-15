@@ -97,7 +97,7 @@ compile-stage2-secret:
 	sh -e ./compile2.sh || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
 	make -B $(SECRETCLASS) || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
 	mv $(SECRETTEST).java.orig $(SECRETTEST).java
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop --single $(TEST) $(SECRETTEST) >> loop.sh	
+	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace -p $(TEST) $(SECRETTEST) >> loop.sh	
 	echo "echo \"]\" 1>&2" >> loop.sh
 
 compile: compile-stage$(STAGE)

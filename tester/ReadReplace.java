@@ -12,6 +12,7 @@ import org.junit.runners.model.*;
 import tools.sep.*;
 
 public class ReadReplace{
+	private static boolean withSecret = false;
 	public static String getSig(Method m){
 		String sig = m.getDeclaringClass().getName() + "." + m.getName() + "(";
 		for(Class p : m.getParameterTypes()){
@@ -85,10 +86,12 @@ public class ReadReplace{
 		args[2] = tcln;
 		System.out.println("echo \"[\" 1>&2");
 		SingleExecutionPreparer.main(args);
-		System.out.println("echo \"]\" 1>&2");
-	
+		// close brackets only if there are no secret tests
+		if(withSecret == false) {
+			System.out.println("echo \"]\" 1>&2");
+		}
 	}
-	public static void loopSecret(String tcln) throws Exception {
+	public static void loopSecret(String tcln, String pub) throws Exception {
 		HashSet<String> set = new HashSet<>();
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Class c = cl.loadClass(tcln);
@@ -102,9 +105,11 @@ public class ReadReplace{
 		// execute sep for single execution
 		String args[] = new String[3];
 		args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:--THIS-WILL-NEVER-HAPPEN:.";
-		args[1] = "-Dreplace=THIS-WILL-NEVER-HAPPEN -Djson=yes";
+		args[1] = "-Dpub="+pub+" -Dreplace=THIS-WILL-NEVER-HAPPEN -Djson=yes";
 		args[2] = tcln;
-		System.out.println("echo \"[\" 1>&2");
+
+		// no open brackets, if there is a secret test there must a public test
+		// brackets where opened when loop for public test was called
 		SingleExecutionPreparer.main(args);
 		System.out.println("echo \"]\" 1>&2");
 	
@@ -117,18 +122,22 @@ public class ReadReplace{
 	//		SingleExecutionPreparer.main(args);
 	//		System.out.println("echo \"]\" 1>&2");
 	//
-			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
+			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dpub=" +pub+ " -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
 		}
 	}
 
 	public static void main(String args[]) throws Exception{
+
 		if(args.length < 1){
 			System.err.println("missing class argument");
 			System.exit(-1);
 		}
+		if(System.getProperty("withSecret") != null && System.getProperty("json").equals.("yes")){
+			withSecret = true;
+		}
 		if (args[0].equals("--loop")) {
 			if(args[1].equals("-p")){
-				loopSecret(args[2]);
+				loopSecret(args[2],args[3]);
 			}else {					
 				loopPublic(args[1]);
 			}
