@@ -77,7 +77,18 @@ public class ReadReplace{
 	}
 
 
-	public static void loopSingle(String tcln, String pubClass) throws Exception {
+	public static void loopPublic(String tcln) throws Exception {
+		// execute sep for single execution
+		String args[] = new String[3];
+		args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:--THIS-WILL-NEVER-HAPPEN:.";
+		args[1] = "-Dreplace=THIS-WILL-NEVER-HAPPEN -Djson=yes";
+		args[2] = tcln;
+		System.out.println("echo \"[\" 1>&2");
+		SingleExecutionPreparer.main(args);
+		System.out.println("echo \"]\" 1>&2");
+	
+	}
+	public static void loopSecret(String tcln) throws Exception {
 		HashSet<String> set = new HashSet<>();
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Class c = cl.loadClass(tcln);
@@ -96,7 +107,7 @@ public class ReadReplace{
 		System.out.println("echo \"[\" 1>&2");
 		SingleExecutionPreparer.main(args);
 		System.out.println("echo \"]\" 1>&2");
-		
+	
 		for (String s : set) {
 			String classpath = s.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
 			System.out.println("echo \",\" 1>&2");
@@ -116,24 +127,14 @@ public class ReadReplace{
 			System.exit(-1);
 		}
 		if (args[0].equals("--loop")) {
-			String pubClass = "";
-			if(args[1].equals("--single")) {
-				if(args[2].equals("--secret")){
-					pubClass = args[3];
-					loopSingle(args[4],pubClass);
-				}else {
-					loopSingle(args[2],pubClass);
-				}
-			}else {
-				if(args[1].equals("--secret")){
-					pubClass = args[2];
-					loop(args[3],pubClass);
-				}else {
-					loop(args[1],pubClass);
-				}
+			if(args[1].equals("-p")){
+				loopSecret(args[2]);
+			}else {					
+				loopPublic(args[1]);
 			}
 			return;
 		}
+
 		String tcln = args[0];
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Class c = cl.loadClass(tcln);

@@ -274,7 +274,6 @@ public abstract class JUnitWithPoints {
 					exercisesAnnotation = (Exercises) pub.getAnnotation(Exercises.class);
 				}catch (ClassNotFoundException cnfe){
 					throw new AnnotationFormatError("WARNING - pub class not found [" + description.getDisplayName() + "]");
-
 				}
 			}else{
 				exercisesAnnotation = description.getAnnotation(Exercises.class);
