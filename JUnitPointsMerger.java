@@ -355,9 +355,9 @@ public class JUnitPointsMerger {
 			fw = new FileWriter(file.getAbsoluteFile());
 			bw = new BufferedWriter(fw);
 			JSONObject merged = new JSONObject();
-			merged.add(vanilla);
-			merged.add(replaced);
-			bw.write(merged);
+			merged.put("vanilla",vanilla);
+			merged.put("replaced",replaceds);
+			bw.write(merged.toString());
 			bw.close();
 			
 
