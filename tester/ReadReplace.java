@@ -87,7 +87,7 @@ public class ReadReplace{
 		System.out.println("echo \"[\" 1>&2");
 		SingleExecutionPreparer.main(args);
 		// close brackets only if there are no secret tests
-		if(withSecret == false) {
+		if(!withSecret) {
 			System.out.println("echo \"]\" 1>&2");
 		}
 	}
@@ -137,8 +137,8 @@ public class ReadReplace{
 				withSecret = true;
 			}
 			if(args[1].equals("-p")){
-				loopSecret(args[2],args[3]);
-			}else {					
+				loopSecret(args[3],args[2]);
+			} else {					
 				loopPublic(args[1]);
 			}
 			return;
