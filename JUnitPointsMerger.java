@@ -349,6 +349,18 @@ public class JUnitPointsMerger {
 			BufferedWriter bw = new BufferedWriter(fw);
 			bw.write(summary);
 			bw.close();
+
+			// write out merged json
+			file = new File(inputFile);
+			fw = new FileWriter(file.getAbsoluteFile());
+			bw = new BufferedWriter(fw);
+			JSONObject merged = new JSONObject();
+			merged.add(vanilla);
+			merged.add(replaced);
+			bw.write(merged);
+			bw.close();
+			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("invalid json");
