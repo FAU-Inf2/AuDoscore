@@ -72,32 +72,12 @@ compile-stage2: miniclean
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
 	echo "echo \"[\" 1>&2" > loop.sh
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(TEST) >> loop.sh 
+	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop --public --single $(TEST) >> loop.sh 
 	if [ "x$(SECRETTEST)" != "x" ]; then \
 		echo "echo \",\" 1>&2" >> loop.sh ; \
 	else \
 		echo "echo \"]\" 1>&2" >> loop.sh ; \
 	fi		
-
-compile-stage2-single-tmp:
-	./obfuscate
-	cp $(TEST).java $(TEST).java.orig
-	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
-	mv $(TEST).java.tmp $(TEST).java
-	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
-	mkdir -p mixed || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(TEST) > compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
-	if [ "x$(INTERFACES)" != "x" ]; then \
-		for i in $(INTERFACES); do \
-			/bin/echo -e "package cleanroom;\n" > cleanroom/$$i; \
-			cat $$i >> cleanroom/$$i; \
-		done; \
-	fi
-	sh -e ./compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
-	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
-	mv $(TEST).java.orig $(TEST).java
-	echo "echo \"[\" 1>&2" > loop.sh
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop --single $(TEST) >> loop.sh 
 	echo "echo \"]\" 1>&2" >> loop.sh ; \
 
 compile-stage2-secret:
@@ -117,7 +97,7 @@ compile-stage2-secret:
 	sh -e ./compile2.sh || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
 	make -B $(SECRETCLASS) || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
 	mv $(SECRETTEST).java.orig $(SECRETTEST).java
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop --secret $(TEST) $(SECRETTEST) >> loop.sh	
+	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop --secret --single $(TEST) $(SECRETTEST) >> loop.sh	
 	echo "echo \"]\" 1>&2" >> loop.sh
 
 
@@ -130,21 +110,6 @@ run-stage1:
 	java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 
 run-stage2:
-	echo "{ \"vanilla\" : " 1>&2
-	if [ "x$(SECRETTEST)" != "x" ]; then \
-		echo "[" 1>&2 ; \
-		java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo; \
-		echo "," 1>&2; \
-		java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes -Dpub=$(TEST) org.junit.runner.JUnitCore $(SECRETTEST) || echo; \
-		echo "]" 1>&2 ; \
-	else \
-		java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo; \
-	fi
-	echo ", \"replaced\" : " 1>&2
-	sh ./loop.sh
-	echo "}" 1>&2
-
-run-stage2-single:
 	echo "{ \"vanilla\" : " 1>&2
 	echo "[" 1>&2
 	if [ "x$(SECRETTEST)" != "x" ]; then \

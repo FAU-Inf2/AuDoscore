@@ -72,11 +72,6 @@ if [ "x$1" == "x-k" ]; then
 	keep=1
 	shift
 fi
-single=0
-if [ "x$1" == "x--single" ]; then
-	single=1
-	shift
-fi
 secretclass=
 if [ "x$1" == "x-s" ]; then
 	shift
@@ -208,11 +203,7 @@ checkAnnotationFormatError run1.out
 
 info "\nstage2 (twice, with secret test cases and weaving)"
 info "- compiling"
-if [ "x$single" != "x1" ]; then
-	( make compile-stage2 ) > comp2 2>&1
-else
-	( make compile-stage2-single-tmp ) > comp2 2>&1
-fi
+( make compile-stage2 ) > comp2 2>&1
 checkexit $? "\ninternal error\n" comp2
 if [ "x$secretclass" != "x" ]; then
 	( make compile-stage2-secret ) > comp2 2>&1
@@ -220,11 +211,8 @@ if [ "x$secretclass" != "x" ]; then
 fi
 
 info "- testing"
-if [ "x$single" != "x1" ]; then
-	( make run-stage2 ) > run2.out 2> run2.err
-else
-	( make run-stage2-single ) > run2.out 2> run2.err
-fi
+( make run-stage2 ) > run2.out 2> run2.err
+
 if [ $? -ne 0 ]; then
 	err "failed, stdout:"
 	cat run2.out
