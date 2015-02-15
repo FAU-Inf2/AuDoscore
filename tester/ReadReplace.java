@@ -132,10 +132,10 @@ public class ReadReplace{
 			System.err.println("missing class argument");
 			System.exit(-1);
 		}
-		if(System.getProperty("withSecret") != null && System.getProperty("json").equals.("yes")){
-			withSecret = true;
-		}
 		if (args[0].equals("--loop")) {
+			if(System.getProperty("withSecret") != null && System.getProperty("withSecret").equals("yes")){
+				withSecret = true;
+			}
 			if(args[1].equals("-p")){
 				loopSecret(args[2],args[3]);
 			}else {					
