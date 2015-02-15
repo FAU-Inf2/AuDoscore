@@ -79,7 +79,6 @@ compile-stage2: miniclean
 		java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(TEST) >> loop.sh ; \
 		echo "echo \"]\" 1>&2" >> loop.sh ; \
 	fi		
-	echo "echo \"]\" 1>&2" >> loop.sh ; \
 
 compile-stage2-secret:
 	./obfuscate
