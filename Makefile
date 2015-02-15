@@ -72,10 +72,11 @@ compile-stage2: miniclean
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
 	echo "echo \"[\" 1>&2" > loop.sh
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop --single $(TEST) >> loop.sh 
 	if [ "x$(SECRETTEST)" != "x" ]; then \
+		java -cp lib/junitpoints.jar:lib/junit.jar:. -DwithSecret=yes tester.ReadReplace --loop  $(TEST) >> loop.sh ; \
 		echo "echo \",\" 1>&2" >> loop.sh ; \
 	else \
+		java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(TEST) >> loop.sh ; \
 		echo "echo \"]\" 1>&2" >> loop.sh ; \
 	fi		
 	echo "echo \"]\" 1>&2" >> loop.sh ; \
