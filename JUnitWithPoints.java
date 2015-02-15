@@ -88,7 +88,6 @@ public abstract class JUnitWithPoints {
 				return null;
 			}
 
-
 			if(PointsLogger.isSkippedCase(description)) {
 				return null;
 			}
