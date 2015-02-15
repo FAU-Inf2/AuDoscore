@@ -360,7 +360,6 @@ public class JUnitPointsMerger {
 			bw.write(merged.toString());
 			bw.close();
 			
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("invalid json");
