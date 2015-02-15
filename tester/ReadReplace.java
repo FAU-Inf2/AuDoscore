@@ -110,36 +110,6 @@ public class ReadReplace{
 		}
 	}
 
-	public static void loop(String tcln, String pubClass) throws Exception {
-		HashSet<String> set = new HashSet<>();
-
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
-		Class c = cl.loadClass(tcln);
-		for(Method meth : c.getMethods()) {
-			if(meth.isAnnotationPresent(Replace.class)){
-				Replace r = meth.getAnnotation(Replace.class);
-				set.add(getCanonicalReplacement(r));
-			}
-		}
-
-		if(!pubClass.equals("")){
-			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + "--THIS-WILL-NEVER-HAPPEN" + ":. -Dreplace=" + "--THIS-WILL-NEVER-HAPPEN" + " -Djson=yes" + " -Dpub=" +pubClass + " org.junit.runner.JUnitCore " + tcln + " || echo");
-		}else{
-			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + "--THIS-WILL-NEVER-HAPPEN" + ":.  -Dreplace=" + "--THIS-WILL-NEVER-HAPPEN" + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
-
-		}
-		for (String s : set) {
-			System.out.println("echo \",\" 1>&2");
-			String classpath = s.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
-			if(!pubClass.equals("")){
-				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes" + " -Dpub="+pubClass + " org.junit.runner.JUnitCore " + tcln + " || echo");
-			}else{
-				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
-
-			}
-		}
-	}
-
 	public static void main(String args[]) throws Exception{
 		if(args.length < 1){
 			System.err.println("missing class argument");

@@ -100,7 +100,6 @@ compile-stage2-secret:
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop --secret --single $(TEST) $(SECRETTEST) >> loop.sh	
 	echo "echo \"]\" 1>&2" >> loop.sh
 
-
 compile: compile-stage$(STAGE)
 
 run-stage0:
