@@ -240,12 +240,18 @@ public abstract class JUnitWithPoints {
 				Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
 				for(Thread t : threadSet) {
 					if(t.isAlive() && t.isInterrupted() && !threadIdsBefore.contains(t.getId()) && t.getName().matches("Thread-\\d+")) {
-						t.stop();
-
+					
+		/* JUnit interrupts but does not stop threads, this leaves room for side effects between cases
+		 * e.g. students might be writing infinite loops which still allocate ressources
+		 * we try to find these hanging threads here and kill them 
+		 * * see: https://groups.yahoo.com/neo/groups/junit/conversations/messages/24565
+		 */
+						t.stop(); // XXX: yes, stop is deprecated, but: we don't use this to test parallel code
 						try {
+							// wait a bit until the thread has been finally destroyed
 							Thread.sleep(100);
 						} catch (InterruptedException e) {
-						
+								
 						}
 					}
 				}
