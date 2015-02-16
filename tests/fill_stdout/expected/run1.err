@@ -1,0 +1,1 @@
+{"exercises":[{"tests":[{"id":"stderr","desc":"stderr","error":"TimeoutException after 300 ms","success":false},{"id":"stdout","desc":"stdout","error":"TimeoutException after 300 ms","success":false}],"name":"GA4.6a"}]}

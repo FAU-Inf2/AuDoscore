@@ -149,7 +149,7 @@ public abstract class JUnitWithPoints {
 			return false;
 		}
 
-		public static  boolean isSkippedCase(Description description) {
+		public static boolean isSkippedCase(Description description) {
 			String methodToBeExecuted = System.getProperty("method");
 			if((methodToBeExecuted != null && !methodToBeExecuted.equals(""))){
 				String method = getShortDisplayName(description);
@@ -161,6 +161,10 @@ public abstract class JUnitWithPoints {
 			return false;
 		}
 
+		public boolean isSingleExec() {
+			return (System.getProperty("single") != null && System.getProperty("single").equals("yes"));
+		}
+
 		@Override
 		public final Statement apply(Statement base, Description description) {
 			if (isIgnoredCase(description) || isSkippedCase(description)) {
@@ -169,6 +173,8 @@ public abstract class JUnitWithPoints {
 			return super.apply(base, description);
 		}
 
+
+		Set<Long> threadIdsBefore = new HashSet<>();
 
 		@Override
 		protected void starting(Description description) {
@@ -194,6 +200,13 @@ public abstract class JUnitWithPoints {
 				}
 				timeoutSum += testAnnotation.timeout();
 
+				if(!isSingleExec()) {
+					threadIdsBefore.clear();
+					Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+					for(Thread t : threadSet) {
+						threadIdsBefore.add(t.getId());
+					}
+				}
 				saveOut = System.out;
 				saveErr = System.err;
 
@@ -206,6 +219,15 @@ public abstract class JUnitWithPoints {
 					public void write(int i) {
 					}
 				}));
+
+				if(!isIgnoredCase(description) && !isSingleExec()) {
+					System.gc();
+					Thread.sleep(50);
+					System.gc();
+					Thread.sleep(50);
+					System.gc();
+				}
+
 			} catch (Exception e) {
 				throw new AnnotationFormatError(e.getMessage());
 			}
@@ -213,6 +235,22 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
+
+			if(!isSingleExec()) {
+				Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+				for(Thread t : threadSet) {
+					if(t.isAlive() && t.isInterrupted() && !threadIdsBefore.contains(t.getId()) && t.getName().matches("Thread-\\d+")) {
+						t.stop();
+
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+						
+						}
+					}
+				}
+			}
+
 			System.setOut(saveOut);
 			System.setErr(saveErr);
 

@@ -1,0 +1,5 @@
+Score: 0.0
+
+GA4.6a (0.0 points):
+✗   0.00 | stderr | TimeoutException after 300 ms
+✗   0.00 | stdout | TimeoutException after 300 ms
