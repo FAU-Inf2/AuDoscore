@@ -96,15 +96,15 @@ public abstract class JUnitWithPoints {
 			String desc = null;
 		
 			if(bonus != null) {
-				desc = getComment(bonus.comment(),description);
+				desc = getComment(bonus.comment(), description);
 			}
 			if(malus != null && success) {
 				if(bonus == null) {
-					desc = getComment(malus.comment(),description);
+					desc = getComment(malus.comment(), description);
 				}
 			}
 			if(malus != null && !success) {
-				desc = getComment(malus.comment(),description);
+				desc = getComment(malus.comment(), description);
 			}
 
 
@@ -200,13 +200,12 @@ public abstract class JUnitWithPoints {
 				}
 				timeoutSum += testAnnotation.timeout();
 
-				if(!isSingleExec()) {
-					threadIdsBefore.clear();
-					Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-					for(Thread t : threadSet) {
-						threadIdsBefore.add(t.getId());
-					}
+				threadIdsBefore.clear();
+				Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+				for(Thread t : threadSet) {
+					threadIdsBefore.add(t.getId());
 				}
+				
 				saveOut = System.out;
 				saveErr = System.err;
 
@@ -235,28 +234,23 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
-
-			if(!isSingleExec()) {
-				Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-				for(Thread t : threadSet) {
-					if(t.isAlive() && t.isInterrupted() && !threadIdsBefore.contains(t.getId()) && t.getName().matches("Thread-\\d+")) {
-					
-		/* JUnit interrupts but does not stop threads, this leaves room for side effects between cases
-		 * e.g. students might be writing infinite loops which still allocate ressources
-		 * we try to find these hanging threads here and kill them 
-		 * * see: https://groups.yahoo.com/neo/groups/junit/conversations/messages/24565
-		 */
-						t.stop(); // XXX: yes, stop is deprecated, but: we don't use this to test parallel code
-						try {
-							// wait a bit until the thread has been finally destroyed
-							Thread.sleep(100);
-						} catch (InterruptedException e) {
-								
-						}
+			Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+			for(Thread t : threadSet) {
+				if(t.isAlive() && t.isInterrupted() && !threadIdsBefore.contains(t.getId()) && t.getName().matches("Thread-\\d+")) {
+					/* JUnit interrupts but does not stop threads, this leaves room for side effects between cases						
+					 *  e.g. students might be writing infinite loops which still allocate ressources
+					 * we try to find these hanging threads here and kill them 
+		 			 * see: https://groups.yahoo.com/neo/groups/junit/conversations/messages/24565
+					 */
+					t.stop(); // XXX: yes, stop is deprecated, but: we don't use this to test parallel code
+					try {
+						// wait a bit until the thread has been finally destroyed
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
 					}
 				}
 			}
-
+			
 			System.setOut(saveOut);
 			System.setErr(saveErr);
 

@@ -118,12 +118,11 @@ run-stage2:
 	else \
 	java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." -Djson=yes $(TEST) > single_execution.sh ; \
 	fi
-	sh single_execution.sh
+	sh ./single_execution.sh
 	echo "]" 1>&2
 	echo ", \"replaced\" : " 1>&2
 	sh ./loop.sh
 	echo "}" 1>&2
-
 
 run: run-stage$(STAGE)
 
