@@ -1,0 +1,9 @@
+{ "vanilla" : 
+{"exercises":[{"tests":[{"id":"test","desc":"test","error":"AssertionError(Should return 42 expected:<42> but was:<23>)","success":false}],"name":"GA4.6a"}]}
+, "replaced" : 
+[
+{"exercises":[{"tests":[],"name":"GA4.6a"}]}
+,
+{"exercises":[{"tests":[{"id":"test","desc":"test","success":true}],"name":"GA4.6a"}]}
+]
+}
