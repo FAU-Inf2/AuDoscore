@@ -79,7 +79,7 @@ public class ReadReplace{
 
 
 	public static void loopPublic(String tcln) throws Exception {
-		// execute sep for single execution
+		
 		String args[] = new String[3];
 		args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:--THIS-WILL-NEVER-HAPPEN:.";
 		args[1] = "-Dreplace=THIS-WILL-NEVER-HAPPEN -Djson=yes";
@@ -92,37 +92,50 @@ public class ReadReplace{
 		}
 	}
 	public static void loopSecret(String tcln, String pub) throws Exception {
-		HashSet<String> set = new HashSet<>();
+		HashMap<String,List<String>> rmap = new HashMap<String,List<String>>();
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Class c = cl.loadClass(tcln);
 		for(Method meth : c.getMethods()) {
 			if(meth.isAnnotationPresent(Replace.class)){
 				Replace r = meth.getAnnotation(Replace.class);
-				set.add(getCanonicalReplacement(r));
+				String cr = getCanonicalReplacement(r);
+				List<String> methods = rmap.get(cr);
+				if(methods == null) {
+					methods = new ArrayList<String>();
+				}
+				methods.add(meth.getName());
+				rmap.put(cr,methods);
 			}
 		}
-
 		// execute sep for single execution
 		String args[] = new String[3];
 		args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:--THIS-WILL-NEVER-HAPPEN:.";
 		args[1] = "-Dpub="+pub+" -Dreplace=THIS-WILL-NEVER-HAPPEN -Djson=yes";
 		args[2] = tcln;
-
-		// no open brackets, if there is a secret test there must a public test
-		// brackets where opened when loop for public test was called
 		SingleExecutionPreparer.main(args);
+		//  brackets were opened in loopPublic
 		System.out.println("echo \"]\" 1>&2");
-	
-		for (String s : set) {
-			String classpath = s.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
+
+		Iterator it = rmap.entrySet().iterator();
+		while(it.hasNext()) {
 			System.out.println("echo \",\" 1>&2");
-	//		System.out.println("echo \"[\" 1>&2");
-	//		args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:"+classpath+":.";
-	//		args[1] = "-Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes";
-	//		SingleExecutionPreparer.main(args);
-	//		System.out.println("echo \"]\" 1>&2");
-	//
-			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dpub=" +pub+ " -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
+			System.out.println("echo \"[\" 1>&2");
+			Map.Entry pair = (Map.Entry) it.next();
+			String s = (String) pair.getKey();
+			List<String> methods = (List<String>) pair.getValue();
+			String classpath = s.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
+		
+			boolean first = true;
+			for(String method : methods) {
+				if(first) {
+					first = false;
+				}else{
+					System.out.println("echo \",\" 1>&2");
+				}
+				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dsingle=yes -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Dmethod="+ method + " -Dpub=" +pub+" -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
+			}
+
+			System.out.println("echo \"]\" 1>&2");
 		}
 	}
 
