@@ -182,7 +182,7 @@ public abstract class JUnitWithPoints {
 				// check if @SecretCase annotation is present
 				SecretCase sc = (SecretCase) description.getAnnotation(SecretCase.class);
 				if(sc != null){
-//					throw new AnnotationFormatError("WARNING - found test case with SECRETCASE annotation: [" + description.getDisplayName() + "]");
+					throw new AnnotationFormatError("WARNING - found test case with SECRETCASE annotation: [" + description.getDisplayName() + "]");
 
 				}
 				
@@ -191,7 +191,7 @@ public abstract class JUnitWithPoints {
 				Replace r = description.getAnnotation(Replace.class);
 				if(st == null && r != null){
 					// @Replace in a public test
-//					throw new AnnotationFormatError("WARNING - found test case with REPLACE in a public test file: [" + description.getDisplayName() + "]");
+					throw new AnnotationFormatError("WARNING - found test case with REPLACE in a public test file: [" + description.getDisplayName() + "]");
 				}
 
 				Test testAnnotation = description.getAnnotation(Test.class);
