@@ -55,7 +55,6 @@ compile-stage1: miniclean
 	rm forbidden
 
 compile-stage2: miniclean
-	./obfuscate
 	cp $(TEST).java $(TEST).java.orig
 	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
 	mv $(TEST).java.tmp $(TEST).java
