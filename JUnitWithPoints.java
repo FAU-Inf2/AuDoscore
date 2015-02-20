@@ -220,15 +220,6 @@ public abstract class JUnitWithPoints {
 						}
 					}));
 				}
-
-				if(!isIgnoredCase(description) && !isSingleExec()) {
-					System.gc();
-					Thread.sleep(50);
-					System.gc();
-					Thread.sleep(50);
-					System.gc();
-				}
-
 			} catch (Exception e) {
 				throw new AnnotationFormatError(e.getMessage());
 			}
