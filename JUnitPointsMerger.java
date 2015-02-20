@@ -64,7 +64,7 @@ public class JUnitPointsMerger {
 		Bonus bonus = null;
 		Malus malus = null;
 		try{
-			method = pub.getMethod(id, null);
+			method = pub.getMethod(id);
 			bonus = (Bonus) method.getAnnotation(Bonus.class);
 			malus = (Malus) method.getAnnotation(Malus.class);
 		} catch (NoSuchMethodException nsme){
@@ -74,7 +74,7 @@ public class JUnitPointsMerger {
 		//try secret test class
 		if(secret != null && method == null){
 			try{
-				method = secret.getMethod(id, null);
+				method = secret.getMethod(id);
 				bonus = (Bonus) method.getAnnotation(Bonus.class);
 				malus = (Malus) method.getAnnotation(Malus.class);
 			} catch (NoSuchMethodException nsme){
