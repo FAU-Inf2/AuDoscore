@@ -3,6 +3,7 @@ import java.io.*;
 import java.lang.annotation.*;
 
 import org.junit.*;
+import org.junit.internal.*;
 import org.junit.rules.*;
 import org.junit.runner.*;
 import org.junit.runners.model.*;
@@ -84,33 +85,27 @@ public abstract class JUnitWithPoints {
 			}
 		}
 
-		protected double getPoints(double pts, double pointsDeclaredPerExercise, double bonusDeclaredPerExercise) {
-			return pointsDeclaredPerExercise * Math.abs(pts) / bonusDeclaredPerExercise;
-		}
-
 		final JSONObject format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise) {
 			if (throwable != null && throwable.getLocalizedMessage() != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.REPLACE_IGNORE_MSG)) {
 				return null;
 			}
 
+			if(PointsLogger.isSkippedCase(description)) {
+				return null;
+			}
+
 			boolean success = (throwable == null);
 			String desc = null;
-			double score = 0;
-
-			if (bonus != null) {
+		
+			if(bonus != null) {
 				desc = getComment(bonus.comment(), description);
 			}
-			if (bonus != null && success) {
-				score = getPoints(bonus.bonus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
-			}
-			if (malus != null && success) {
-				if (bonus == null) { // only set comment if nothing was added before, points already default to zero
+			if(malus != null && success) {
+				if(bonus == null) {
 					desc = getComment(malus.comment(), description);
 				}
 			}
-			if (malus != null && !success) {
-				// in case of failure: overwrite bonus
-				score = -getPoints(malus.malus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
+			if(malus != null && !success) {
 				desc = getComment(malus.comment(), description);
 			}
 
@@ -118,9 +113,7 @@ public abstract class JUnitWithPoints {
 				if(points.bonus() != -1){
 					desc = getComment(points.comment(), description);
 				}
-				if(points.bonus() != -1 && success){
-					score = getPoints(points.bonus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
-				}
+			
 				if(points.malus() != -1 && success){
 					if(points.bonus() == -1){
 						desc = getComment(points.comment(), description);
@@ -136,7 +129,6 @@ public abstract class JUnitWithPoints {
 			jsontest.put("id", getShortDisplayName(description));
 			jsontest.put("success", (Boolean) (success));
 			jsontest.put("desc", desc);
-			jsontest.put("score", ((Double) score).toString());
 			if (!success) {
 				jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 			}
@@ -174,19 +166,51 @@ public abstract class JUnitWithPoints {
 			return false;
 		}
 
+		public static boolean isSkippedCase(Description description) {
+			String methodToBeExecuted = System.getProperty("method");
+			if((methodToBeExecuted != null && !methodToBeExecuted.equals(""))){
+				String method = getShortDisplayName(description);
+				if(!method.equals(methodToBeExecuted)){
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public boolean isSingleExec() {
+			return (System.getProperty("single") != null && System.getProperty("single").equals("yes"));
+		}
+
 		@Override
 		public final Statement apply(Statement base, Description description) {
-			if (isIgnoredCase(description)) {
+			if (isIgnoredCase(description) || isSkippedCase(description)) {
 				base = new MyStatement();
 			}
 			return super.apply(base, description);
 		}
+
 
 		Set<Long> threadIdsBefore = new HashSet<>();
 
 		@Override
 		protected void starting(Description description) {
 			try {
+				// check if @SecretCase annotation is present
+				SecretCase sc = (SecretCase) description.getAnnotation(SecretCase.class);
+				if(sc != null){
+					throw new AnnotationFormatError("WARNING - found test case with SECRETCASE annotation: [" + description.getDisplayName() + "]");
+
+				}
+				
+				Class tc = description.getTestClass();
+				SecretClass st = (SecretClass) tc.getAnnotation(SecretClass.class);
+				Replace r = description.getAnnotation(Replace.class);
+				if(st == null && r != null){
+					// @Replace in a public test
+					throw new AnnotationFormatError("WARNING - found test case with REPLACE in a public test file: [" + description.getDisplayName() + "]");
+				}
+
 				Test testAnnotation = description.getAnnotation(Test.class);
 				if (testAnnotation.timeout() == 0) {
 					throw new AnnotationFormatError("WARNING - found test case without TIMEOUT in @Test annotation: [" + description.getDisplayName() + "]");
@@ -195,10 +219,10 @@ public abstract class JUnitWithPoints {
 
 				threadIdsBefore.clear();
 				Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-				for (Thread t : threadSet) {
+				for(Thread t : threadSet) {
 					threadIdsBefore.add(t.getId());
 				}
-
+				
 				saveOut = System.out;
 				saveErr = System.err;
 
@@ -212,13 +236,14 @@ public abstract class JUnitWithPoints {
 					}
 				}));
 
-				if (!isIgnoredCase(description)) {
+				if(!isIgnoredCase(description) && !isSingleExec()) {
 					System.gc();
 					Thread.sleep(50);
 					System.gc();
 					Thread.sleep(50);
 					System.gc();
 				}
+
 			} catch (Exception e) {
 				throw new AnnotationFormatError(e.getMessage());
 			}
@@ -242,6 +267,7 @@ public abstract class JUnitWithPoints {
 					}
 				}
 			}
+			
 			System.setOut(saveOut);
 			System.setErr(saveErr);
 
@@ -309,7 +335,21 @@ public abstract class JUnitWithPoints {
 		public final Statement apply(Statement base, Description description) {
 			reportHashMap.clear();
 			exerciseHashMap.clear();
-			Exercises exercisesAnnotation = description.getAnnotation(Exercises.class);
+			Exercises exercisesAnnotation;
+			String pubclassName = System.getProperty("pub");
+			Class pub;
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			if(pubclassName != null){
+				try{
+					pub = cl.loadClass(pubclassName);
+					exercisesAnnotation = (Exercises) pub.getAnnotation(Exercises.class);
+				}catch (ClassNotFoundException cnfe){
+					throw new AnnotationFormatError("WARNING - pub class not found [" + description.getDisplayName() + "]");
+				}
+			}else{
+				exercisesAnnotation = description.getAnnotation(Exercises.class);
+
+			}
 			if (exercisesAnnotation == null || exercisesAnnotation.value().length == 0) {
 				throw new AnnotationFormatError("WARNING - found test set without exercise points declaration: [" + description.getDisplayName() + "]");
 			}
@@ -394,13 +434,10 @@ public abstract class JUnitWithPoints {
 				bonusAchievedPerExercise = Math.min(bonusDeclaredPerExercise, Math.max(0, bonusAchievedPerExercise));
 				pointsAchievedPerExercise = Math.ceil(pointsDeclaredPerExercise * 2 * bonusAchievedPerExercise / bonusDeclaredPerExercise) / 2;
 				pointsAchievedTotal += pointsAchievedPerExercise;
-				jsonexercise.put("possiblePts", ((Double) exercise.points()).toString());
 				jsonexercise.put("name", exercise.exID());
-				jsonexercise.put("score", String.format("%1$.1f", pointsAchievedPerExercise));
 				jsonexercises.add(jsonexercise);
 			}
 			jsonsummary.put("exercises", jsonexercises);
-			jsonsummary.put("score", String.format("%1$.1f", pointsAchievedTotal));
 			if (System.getProperty("json") != null && System.getProperty("json").equals("yes")) {
 				System.err.println(jsonsummary);
 			} else {

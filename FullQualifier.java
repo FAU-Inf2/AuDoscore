@@ -110,6 +110,9 @@ class MyPretty extends com.sun.tools.javac.tree.Pretty {
 				case "Replace": 
 					print("tester.annotations.");
 					break;
+				case "SecretClass":
+					print("tester.annotations.");
+					break;
 			}
 			printExpr(tree.annotationType);
 			print("(");

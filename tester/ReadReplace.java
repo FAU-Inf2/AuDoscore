@@ -10,8 +10,10 @@ import org.junit.*;
 import org.junit.rules.*;
 import org.junit.runner.*;
 import org.junit.runners.model.*;
+import tools.sep.*;
 
 public class ReadReplace{
+	private static boolean withSecret = false;
 	public static String getSig(Method m){
 		String sig = m.getDeclaringClass().getName() + "." + m.getName() + "(";
 		for(Class p : m.getParameterTypes()){
@@ -76,38 +78,86 @@ public class ReadReplace{
 		return "";
 	}
 
-	public static void loop(String args[]) throws Exception {
-		HashSet<String> set = new HashSet<>();
 
-		String tcln = args[1];
+	public static void loopPublic(String tcln) throws Exception {
+		
+		String args[] = new String[3];
+		args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:--THIS-WILL-NEVER-HAPPEN:.";
+		args[1] = "-Dreplace=THIS-WILL-NEVER-HAPPEN -Djson=yes";
+		args[2] = tcln;
+		System.out.println("echo \"[\" 1>&2");
+		SingleExecutionPreparer.main(args);
+		// close brackets only if there are no secret tests
+		if(!withSecret) {
+			System.out.println("echo \"]\" 1>&2");
+		}
+	}
+	public static void loopSecret(String tcln, String pub) throws Exception {
+		HashMap<String,List<String>> rmap = new HashMap<String,List<String>>();
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Class c = cl.loadClass(tcln);
 		for(Method meth : c.getMethods()) {
 			if(meth.isAnnotationPresent(Replace.class)){
 				Replace r = meth.getAnnotation(Replace.class);
-				set.add(getCanonicalReplacement(r));
+				String cr = getCanonicalReplacement(r);
+				List<String> methods = rmap.get(cr);
+				if(methods == null) {
+					methods = new ArrayList<String>();
+				}
+				methods.add(meth.getName());
+				rmap.put(cr,methods);
 			}
 		}
-
-		System.out.println("echo \"[\" 1>&2");
-		System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + "--THIS-WILL-NEVER-HAPPEN" + ":.  -Dreplace=" + "--THIS-WILL-NEVER-HAPPEN" + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
-		for (String s : set) {
-			System.out.println("echo \",\" 1>&2");
-			String classpath = s.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
-			System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":.  -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
-		}
+		// execute sep for single execution
+		String args[] = new String[3];
+		args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:--THIS-WILL-NEVER-HAPPEN:.";
+		args[1] = "-Dpub="+pub+" -Dreplace=THIS-WILL-NEVER-HAPPEN -Djson=yes";
+		args[2] = tcln;
+		SingleExecutionPreparer.main(args);
+		//  brackets were opened in loopPublic
 		System.out.println("echo \"]\" 1>&2");
+
+		Iterator it = rmap.entrySet().iterator();
+		while(it.hasNext()) {
+			System.out.println("echo \",\" 1>&2");
+			System.out.println("echo \"[\" 1>&2");
+			Map.Entry pair = (Map.Entry) it.next();
+			String s = (String) pair.getKey();
+			List<String> methods = (List<String>) pair.getValue();
+			String classpath = s.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
+		
+			boolean first = true;
+			for(String method : methods) {
+				if(first) {
+					first = false;
+				}else{
+					System.out.println("echo \",\" 1>&2");
+				}
+				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dsingle=yes -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Dmethod="+ method + " -Dpub=" +pub+" -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
+			}
+
+			System.out.println("echo \"]\" 1>&2");
+		}
 	}
 
 	public static void main(String args[]) throws Exception{
+
 		if(args.length < 1){
 			System.err.println("missing class argument");
 			System.exit(-1);
 		}
 		if (args[0].equals("--loop")) {
-			loop(args);
+			if(System.getProperty("withSecret") != null && System.getProperty("withSecret").equals("yes")){
+				withSecret = true;
+			}
+			if(args[1].equals("-p")){
+				loopSecret(args[3],args[2]);
+			} else {					
+				loopPublic(args[1]);
+			}
 			return;
 		}
+
 		String tcln = args[0];
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Class c = cl.loadClass(tcln);

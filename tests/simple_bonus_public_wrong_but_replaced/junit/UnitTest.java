@@ -17,11 +17,4 @@ public class UnitTest {
 	public final PointsLogger pointsLogger = new PointsLogger();
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout=100)
-	@tester.annotations.Bonus(exID = "GA4.6a", bonus = 47.11)
-	@Replace({"ToTest.toTest"})
-	public void test() {
-		assertEquals("Should return 42", 42, ToTest.toTest());
-	}
 }

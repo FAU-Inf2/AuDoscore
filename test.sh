@@ -5,63 +5,65 @@ script=$(readlink -f $0)
 scriptdir=$(dirname $script)
 
 function info {
-	echo -e "\033[1;34m$1\033[0m"
+echo -e "\033[1;34m$1\033[0m"
 }
 
 function err {
-	echo -e "\033[1;31m$1\033[0m"
+echo -e "\033[1;31m$1\033[0m"
 }
 
 function cleanexit {
-	cd ${callerdir}
-	if [ $keep -eq 0 ]; then
-		info "\ncleaning up"
-		rm -rf test.$$
-	else
-		info "keeping directory"
-		ln -sf test.$$ test.latest
-	fi
-	if [ $# -gt 0 ]; then
-		exit $1
-	fi
-	exit 0
+cd ${callerdir}
+if [ $keep -eq 0 ]; then
+	info "\ncleaning up"
+	rm -rf test.$$
+else
+	info "keeping directory"
+	ln -sf test.$$ test.latest
+fi
+if [ $# -gt 0 ]; then
+	exit $1
+fi
+exit 0
 }
 
 function die {
-	err "$1"
-	cleanexit -1
+err "$1"
+cleanexit -1
 }
 
 function checkexit {
-	exitcode=$1; shift
-	msg=$1; shift
-	file=$1; shift
-	if [ ${exitcode} -ne 0 ]; then
-		err "failed:"
-		cat ${file}
-		die "${msg}"
-	fi
+exitcode=$1; shift
+msg=$1; shift
+file=$1; shift
+if [ ${exitcode} -ne 0 ]; then
+	err "failed:"
+	cat ${file}
+	die "${msg}"
+fi
 }
 
 function checkAnnotationFormatError {
-	file=$1; shift
-	grep -q "^java.lang.annotation.AnnotationFormatError" $file
-	if [ $? -eq 0 ]; then
-		err "testcase format wrong:"
-		cat $file
-		err "\nSummary:\n";
-		cat $file | grep -B1 "^java.lang.annotation.AnnotationFormatError"
-		errfile=$(basename $file .out).err
-		cat $file | grep -B1 "^java.lang.annotation.AnnotationFormatError" >> $errfile
-		die "\ninternal error\n";
-	fi
+file=$1; shift
+grep -q "^java.lang.annotation.AnnotationFormatError" $file
+if [ $? -eq 0 ]; then
+	err "testcase format wrong:"
+	cat $file
+	err "\nSummary:\n";
+	cat $file | grep -B1 "^java.lang.annotation.AnnotationFormatError"
+	errfile=$(basename $file .out).err
+	cat $file | grep -B1 "^java.lang.annotation.AnnotationFormatError" >> $errfile
+	die "\ninternal error\n";
+fi
 }
 
 if [ $# -lt 2 ]; then
 	err "no argument given"
-	info "usage: $0 [-k] <TESTCLASS> <STUDENTSOURCE1> ... <STUDENTSOURCEn> -- <INTERFACE1> ... <INTERFACEn> --";
+	info "usage: $0 [-k] [--single] [-s <SECRETCLASS>] <TESTCLASS> <STUDENTSOURCE1> ... <STUDENTSOURCEn> -- <INTERFACE1> ... <INTERFACEn> --";
 	info " e.g.: $0 ExampleTest Student.java -- PublicInterface.java -- undertest*"
 	info " -k: keep directory and create symlink test.latest"
+	info " -s: specify a secret testclass"
+	info " --single: single execution of methods"
 	exit -1
 fi
 
@@ -69,6 +71,12 @@ keep=0
 if [ "x$1" == "x-k" ]; then
 	keep=1
 	shift
+fi
+secretclass=
+if [ "x$1" == "x-s" ]; then
+	shift
+	secretclass=$1; shift
+	secretclass=$(basename $secretclass ".java")
 fi
 testclass=$1; shift
 testclass=$(basename $testclass ".java")
@@ -135,6 +143,7 @@ info "- write var.mk"
 echo "STUDENTSOURCE = ${studentsource}" > var.mk
 echo "TEST = ${testclass}" >> var.mk
 echo "INTERFACES = ${interfaces}" >> var.mk
+echo "SECRETTEST = ${secretclass}" >> var.mk
 
 info "- copy student sources"
 pushd ../${undertestdir} > /dev/null || die "failed"
@@ -150,6 +159,9 @@ popd > /dev/null
 info "- copy test sources"
 pushd ../junit > /dev/null || die "failed"
 cp ${testclass}.java "${testdir}"/ || die "failed"
+if [ "x$secretclass" != "x" ]; then
+	cp ${secretclass}.java "${testdir}"/ || die "failed"
+fi
 popd > /dev/null
 
 if [ "x${interfaces}" != "x" ]; then
@@ -193,9 +205,14 @@ info "\nstage2 (twice, with secret test cases and weaving)"
 info "- compiling"
 ( make compile-stage2 ) > comp2 2>&1
 checkexit $? "\ninternal error\n" comp2
+if [ "x$secretclass" != "x" ]; then
+	( make compile-stage2-secret ) > comp2 2>&1
+	checkexit $? "\ninternal error\n" comp2
+fi
 
 info "- testing"
 ( make run-stage2 ) > run2.out 2> run2.err
+
 if [ $? -ne 0 ]; then
 	err "failed, stdout:"
 	cat run2.out
@@ -210,7 +227,13 @@ info "  json:"
 cat run2.err
 
 info "- merging"
-( java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar JUnitPointsMerger run2.err merged ) > merge 2>&1
+if [ "x$secretclass" != "x" ]; then
+	( java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar:. -Dpub=$testclass -Dsecret=$secretclass JUnitPointsMerger run2.err merged ) > merge 2>&1
+else
+	( java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar:. -Dpub=$testclass JUnitPointsMerger run2.err merged ) > merge 2>&1
+
+fi
+
 checkexit $? "\ninternal error\n" merge
 cat merged
 

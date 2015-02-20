@@ -1,7 +1,0 @@
-{ "vanilla" : 
-{"score":"1.5","exercises":[{"tests":[{"id":"testFooShouldReturn4711[0]","desc":"testFooShouldReturn4711[0]","score":"0.5","success":true},{"id":"testFooShouldReturn4711[1]","desc":"testFooShouldReturn4711[1]","score":"0.5","success":true},{"id":"testFooShouldReturn4711[2]","desc":"testFooShouldReturn4711[2]","error":"AssertionError(test with runID = 8 fails)","score":"0.0","success":false},{"id":"testFooShouldReturn4711[3]","desc":"testFooShouldReturn4711[3]","score":"0.5","success":true}],"name":"GA4.6a","score":"1.5","possiblePts":"2.0"}]}
-, "replaced" : 
-[
-{"score":"0.0","exercises":[{"tests":[],"name":"GA4.6a","score":"0.0","possiblePts":"2.0"}]}
-]
-}
