@@ -135,8 +135,8 @@ public abstract class JUnitWithPoints {
 	// -------------------------------------------------------------------------------- //
 	protected static class PointsLogger extends TestWatcher {
 
-		private PrintStream saveOut;
-		private PrintStream saveErr;
+		public static PrintStream saveOut;
+		public static PrintStream saveErr;
 
 		protected boolean isIgnoredCase(Description description) {
 			String doReplace = System.getProperty("replace");
@@ -206,18 +206,20 @@ public abstract class JUnitWithPoints {
 					threadIdsBefore.add(t.getId());
 				}
 				
-				saveOut = System.out;
-				saveErr = System.err;
+				if (saveOut == null) {
+					saveOut = System.out;
+					saveErr = System.err;
 
-				System.setOut(new PrintStream(new OutputStream() {
-					public void write(int i) {
-					}
-				}));
+					System.setOut(new PrintStream(new OutputStream() {
+						public void write(int i) {
+						}
+					}));
 
-				System.setErr(new PrintStream(new OutputStream() {
-					public void write(int i) {
-					}
-				}));
+					System.setErr(new PrintStream(new OutputStream() {
+						public void write(int i) {
+						}
+					}));
+				}
 
 				if(!isIgnoredCase(description) && !isSingleExec()) {
 					System.gc();
@@ -234,26 +236,6 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
-			Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-			for(Thread t : threadSet) {
-				if(t.isAlive() && t.isInterrupted() && !threadIdsBefore.contains(t.getId()) && t.getName().matches("Thread-\\d+")) {
-					/* JUnit interrupts but does not stop threads, this leaves room for side effects between cases						
-					 *  e.g. students might be writing infinite loops which still allocate ressources
-					 * we try to find these hanging threads here and kill them 
-		 			 * see: https://groups.yahoo.com/neo/groups/junit/conversations/messages/24565
-					 */
-					t.stop(); // XXX: yes, stop is deprecated, but: we don't use this to test parallel code
-					try {
-						// wait a bit until the thread has been finally destroyed
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-					}
-				}
-			}
-			
-			System.setOut(saveOut);
-			System.setErr(saveErr);
-
 			Bonus bonusAnnotation = description.getAnnotation(Bonus.class);
 			Malus malusAnnotation = description.getAnnotation(Malus.class);
 			if (bonusAnnotation == null && malusAnnotation == null) {
@@ -393,14 +375,14 @@ public abstract class JUnitWithPoints {
 			}
 			jsonsummary.put("exercises", jsonexercises);
 			if (System.getProperty("json") != null && System.getProperty("json").equals("yes")) {
-				System.err.println(jsonsummary);
+				PointsLogger.saveErr.println(jsonsummary);
 			} else {
 				try {
 					try (FileWriter fileWriter = new FileWriter(new File(System.getProperty("user.dir"), "autocomment.txt"))) {
 						fileWriter.write(jsonsummary.toString());
 					}
 				} catch (Throwable t) {
-					System.err.println(jsonsummary);
+					PointsLogger.saveErr.println(jsonsummary);
 				}
 			}
 		}
