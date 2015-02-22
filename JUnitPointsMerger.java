@@ -63,7 +63,7 @@ public class JUnitPointsMerger {
 		Method method = null;
 		Points points = null;
 		try{
-			method = pub.getMethod(id, null);
+			method = pub.getMethod(id);
 			points = (Points) method.getAnnotation(Points.class);
 		} catch (NoSuchMethodException nsme){
 			//throw new Error("WARNING - Method not found");
@@ -72,7 +72,7 @@ public class JUnitPointsMerger {
 		//try secret test class
 		if(secret != null && method == null){
 			try{
-				method = secret.getMethod(id, null);
+				method = secret.getMethod(id);
 				points = (Points) method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException nsme){
 				throw new Error("WARNING - Method not found");
