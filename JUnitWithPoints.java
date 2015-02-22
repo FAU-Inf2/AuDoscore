@@ -173,8 +173,6 @@ public abstract class JUnitWithPoints {
 		}
 
 
-		Set<Long> threadIdsBefore = new HashSet<>();
-
 		@Override
 		protected void starting(Description description) {
 			try {
@@ -199,12 +197,6 @@ public abstract class JUnitWithPoints {
 				}
 				timeoutSum += testAnnotation.timeout();
 
-				threadIdsBefore.clear();
-				Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-				for(Thread t : threadSet) {
-					threadIdsBefore.add(t.getId());
-				}
-				
 				if (saveOut == null) {
 					saveOut = System.out;
 					saveErr = System.err;
