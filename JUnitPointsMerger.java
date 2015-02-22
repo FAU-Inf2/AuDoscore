@@ -61,12 +61,10 @@ public class JUnitPointsMerger {
 		}
 
 		Method method = null;
-		Bonus bonus = null;
-		Malus malus = null;
+		Points points = null;
 		try{
 			method = pub.getMethod(id, null);
-			bonus = (Bonus) method.getAnnotation(Bonus.class);
-			malus = (Malus) method.getAnnotation(Malus.class);
+			points = (Points) method.getAnnotation(Points.class);
 		} catch (NoSuchMethodException nsme){
 			//throw new Error("WARNING - Method not found");
 		}
@@ -75,8 +73,7 @@ public class JUnitPointsMerger {
 		if(secret != null && method == null){
 			try{
 				method = secret.getMethod(id, null);
-				bonus = (Bonus) method.getAnnotation(Bonus.class);
-				malus = (Malus) method.getAnnotation(Malus.class);
+				points = (Points) method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException nsme){
 				throw new Error("WARNING - Method not found");
 			}
@@ -85,11 +82,11 @@ public class JUnitPointsMerger {
 		}
 
 		double score = 0;
-		if (bonus != null && success){
-			score = getPoints(bonus.bonus(), exerciseHashMap.get(bonus.exID()).points(), bonusPerExHashMap.get(bonus.exID()));
+		if (points.bonus() != -1 && success){
+			score = getPoints(points.bonus(), exerciseHashMap.get(points.exID()).points(), bonusPerExHashMap.get(points.exID()));
 		}
-		if (malus != null && !success){
-			score = -getPoints(malus.malus(), exerciseHashMap.get(malus.exID()).points(), bonusPerExHashMap.get(malus.exID()));
+		if (points.malus() != -1 && !success){
+			score = -getPoints(points.malus(), exerciseHashMap.get(points.exID()).points(), bonusPerExHashMap.get(points.exID()));
 		}
 		return score;
 	}
@@ -188,11 +185,13 @@ public class JUnitPointsMerger {
 				}
 				// get sum of bonus
 				for (Method method : pub.getMethods()){
-					if (method.isAnnotationPresent(Bonus.class)){
-						Bonus bonus = (Bonus) method.getAnnotation(Bonus.class);
-						double bonusPts = bonusPerExHashMap.get(bonus.exID());
-						bonusPts+=bonus.bonus();
-						bonusPerExHashMap.put(bonus.exID(),bonusPts);
+					if (method.isAnnotationPresent(Points.class)){
+						Points points = (Points) method.getAnnotation(Points.class);
+						if(points.bonus() != -1) {
+							double bonusPts = bonusPerExHashMap.get(points.exID());
+							bonusPts+=points.bonus();
+							bonusPerExHashMap.put(points.exID(),bonusPts);
+						}
 					}
 				}
 			} catch (ClassNotFoundException cnfe){
@@ -206,11 +205,13 @@ public class JUnitPointsMerger {
 			try{
 				secret = cl.loadClass(System.getProperty("secret"));
 				for (Method method : secret.getMethods()){
-					if (method.isAnnotationPresent(Bonus.class)){
-						Bonus bonus = (Bonus) method.getAnnotation(Bonus.class);
-						double bonusPts = bonusPerExHashMap.get(bonus.exID());
-						bonusPts+=bonus.bonus();
-						bonusPerExHashMap.put(bonus.exID(),bonusPts);
+					if (method.isAnnotationPresent(Points.class)){
+						Points points = (Points) method.getAnnotation(Points.class);
+						if(points.bonus() != -1) {
+							double bonusPts = bonusPerExHashMap.get(points.exID());
+							bonusPts+=points.bonus();
+							bonusPerExHashMap.put(points.exID(),bonusPts);
+						}
 					}
 				}
 			} catch (ClassNotFoundException cnfe){

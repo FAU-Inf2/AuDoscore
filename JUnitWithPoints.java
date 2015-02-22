@@ -51,15 +51,11 @@ public abstract class JUnitWithPoints {
 	// -------------------------------------------------------------------------------- //
 	private static final class ReportEntry {
 		Description description;
-		Bonus bonus;
-		Malus malus;
 		Throwable throwable;
 		Points points;
 
-		private ReportEntry(Description description, Bonus bonus, Malus malus, Points points, Throwable throwable) {
+		private ReportEntry(Description description, Points points, Throwable throwable) {
 			this.description = description;
-			this.bonus = bonus;
-			this.malus = malus;
 			this.throwable = throwable;
 			this.points = points;
 		}
@@ -96,19 +92,6 @@ public abstract class JUnitWithPoints {
 
 			boolean success = (throwable == null);
 			String desc = null;
-		
-			if(bonus != null) {
-				desc = getComment(bonus.comment(), description);
-			}
-			if(malus != null && success) {
-				if(bonus == null) {
-					desc = getComment(malus.comment(), description);
-				}
-			}
-			if(malus != null && !success) {
-				desc = getComment(malus.comment(), description);
-			}
-
 			if(points != null){
 				if(points.bonus() != -1){
 					desc = getComment(points.comment(), description);
@@ -121,7 +104,6 @@ public abstract class JUnitWithPoints {
 				}
 				if(points.malus() != -1 && !success){
 					// in case of failure: overwrite bonus
-					score = -getPoints(points.malus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
 					desc = getComment(points.comment(), description);
 				}
 			}
@@ -277,20 +259,6 @@ public abstract class JUnitWithPoints {
 			if (bonusAnnotation != null || malusAnnotation != null || pointsAnnotation == null ) {
 					throw new AnnotationFormatError("WARNING - found testcase with BONUS/MALUS annotation or no POINTS annoation [" + description.getDisplayName() + "]");
 				
-			} else if (bonusAnnotation != null && bonusAnnotation.exID().trim().length() == 0) {
-				throw new AnnotationFormatError("WARNING - found test case with empty exercise id in BONUS annotation: [" + description.getDisplayName() + "]");
-			} else if ((bonusAnnotation != null || malusAnnotation != null) && pointsAnnotation != null) {
-				throw new AnnotationFormatError("WARNING - found test case with BONUS/MALUS and POINTS annotation: [" + description.getDisplayName() + "]");
-			} else if (bonusAnnotation != null && !exerciseHashMap.containsKey(bonusAnnotation.exID())) {
-				throw new AnnotationFormatError("WARNING - found test case with non-declared exercise id in BONUS annotation: [" + description.getDisplayName() + "]");
-			} else if (bonusAnnotation != null && bonusAnnotation.bonus() == 0) {
-				throw new AnnotationFormatError("WARNING - found test case with illegal bonus value in BONUS annotation: [" + description.getDisplayName() + "]");
-			} else if (malusAnnotation != null && malusAnnotation.exID().trim().length() == 0) {
-				throw new AnnotationFormatError("WARNING - found test case with empty exercise id in MALUS annotation: [" + description.getDisplayName() + "]");
-			} else if (malusAnnotation != null && !exerciseHashMap.containsKey(malusAnnotation.exID())) {
-				throw new AnnotationFormatError("WARNING - found test case with non-declared exercise id in MALUS annotation: [" + description.getDisplayName() + "]");
-			} else if (malusAnnotation != null && malusAnnotation.malus() == 0) {
-				throw new AnnotationFormatError("WARNING - found test case with illegal malus value in MALUS annotation: [" + description.getDisplayName() + "]");
 			} else if (pointsAnnotation != null && pointsAnnotation.exID().trim().length() == 0) {
 				throw new AnnotationFormatError("WARNING - found test case with empty exercise id in POINTS annotation: [" + description.getDisplayName() + "]");
 			} else if (pointsAnnotation != null && !exerciseHashMap.containsKey(pointsAnnotation.exID())) {
@@ -301,25 +269,14 @@ public abstract class JUnitWithPoints {
 				throw new AnnotationFormatError("WARNING - found test case with no malus value and no bonus value in POINTS annotation: [" + description.getDisplayName() + "]");
 			} else {
 				String exID = null;
-				if (bonusAnnotation != null && malusAnnotation != null) {
-					if (!bonusAnnotation.exID().equals(malusAnnotation.exID())){
-						throw new AnnotationFormatError("WARNING - found test case with different exercise id in MALUS/BONUS annotations: [" + description.getDisplayName() + "]");
-					}
-				}
-				if (bonusAnnotation != null) {
-					exID = bonusAnnotation.exID();
-				}
-				if (malusAnnotation != null) {
-					exID = malusAnnotation.exID();
-				}
+				
 				if(pointsAnnotation != null){
 					exID = pointsAnnotation.exID();
-					
 				}
 				if (!reportHashMap.containsKey(exID)) {
 					reportHashMap.put(exID, new ArrayList<ReportEntry>());
 				}
-				reportHashMap.get(exID).add(new ReportEntry(description, bonusAnnotation, malusAnnotation, pointsAnnotation, throwable));
+				reportHashMap.get(exID).add(new ReportEntry(description, pointsAnnotation, throwable));
 			}
 		}
 
@@ -392,9 +349,7 @@ public abstract class JUnitWithPoints {
 				Collections.sort(reportPerExercise, new ReportEntryComparator());
 				bonusDeclaredPerExercise = 0;
 				for (ReportEntry reportEntry : reportPerExercise) {
-					if (reportEntry.bonus != null) {
-						bonusDeclaredPerExercise += Math.abs(reportEntry.bonus.bonus());
-					}else if(reportEntry.points != null){
+					if(reportEntry.points != null){
 						if(reportEntry.points.bonus() != -1){
 							bonusDeclaredPerExercise += Math.abs(reportEntry.points.bonus());
 						}
@@ -404,19 +359,11 @@ public abstract class JUnitWithPoints {
 				bonusAchievedPerExercise = 0;
 				JSONArray jsontests = new JSONArray();
 				for (ReportEntry reportEntry : reportPerExercise) {
-					Bonus bonus = reportEntry.bonus;
-					Malus malus = reportEntry.malus;
 					Points points = reportEntry.points;
 					Throwable throwable = reportEntry.throwable;
 					JSONObject json = reportEntry.format(bonusDeclaredPerExercise, pointsDeclaredPerExercise);
 					if (json != null) {
 						jsontests.add(json);
-					}
-					if (bonus != null && throwable == null) {
-						bonusAchievedPerExercise += Math.abs(bonus.bonus());
-					}
-					if (malus != null && throwable != null) {
-						bonusAchievedPerExercise -= Math.abs(malus.malus());
 					}
 					if(points != null){
 						if(points.bonus() != -1 && throwable == null){
