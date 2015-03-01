@@ -1,0 +1,23 @@
+Score: 14.0
+
+GA4.6a (14.0 points):
+✗   0.00 | test14 | AssertionError(Should return 14 expected:<14> but was:<11>)
+✗   0.00 | test15 | AssertionError(Should return 15 expected:<15> but was:<150>)
+✗  -1.00 | test18 | AssertionError(Should return 18 expected:<18> but was:<188>)
+✗  -1.00 | test3 | AssertionError(Should return 3 expected:<3> but was:<333>)
+✓   1.00 | test
+✓   1.00 | test10
+✓   1.00 | test11
+✓   1.00 | test12
+✓   1.00 | test13
+✓   1.00 | test16
+✓   1.00 | test17
+✓   1.00 | test19
+✓   1.00 | test2
+✓   1.00 | test20
+✓   1.00 | test4
+✓   1.00 | test5
+✓   1.00 | test6
+✓   1.00 | test7
+✓   1.00 | test8
+✓   1.00 | test9
