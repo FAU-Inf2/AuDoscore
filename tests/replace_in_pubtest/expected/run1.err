@@ -1,0 +1,2 @@
+1) UnitTest
+java.lang.annotation.AnnotationFormatError: WARNING - found test set without exercise points declaration: [UnitTest]
