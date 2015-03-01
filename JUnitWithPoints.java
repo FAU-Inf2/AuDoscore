@@ -167,13 +167,6 @@ public abstract class JUnitWithPoints {
 		@Override
 		protected void starting(Description description) {
 			try {
-				// check if @SecretCase annotation is present
-				SecretCase sc = (SecretCase) description.getAnnotation(SecretCase.class);
-				if(sc != null){
-					throw new AnnotationFormatError("WARNING - found test case with SECRETCASE annotation: [" + description.getDisplayName() + "]");
-
-				}
-				
 				Class tc = description.getTestClass();
 				SecretClass st = (SecretClass) tc.getAnnotation(SecretClass.class);
 				Replace r = description.getAnnotation(Replace.class);
