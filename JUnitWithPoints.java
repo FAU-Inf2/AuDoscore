@@ -30,7 +30,7 @@ public abstract class JUnitWithPoints {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	public final static String REPLACE_IGNORE_MSG = "this test case is not executed at all; ignoring it would make the point proportions incorrect -> FAIL!";
+	public final static String SKIPPED_MSG = "this testcase is skipped";
 
 	// ******************** BACKEND FUNCTIONALITY **************************************** //
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
@@ -82,11 +82,7 @@ public abstract class JUnitWithPoints {
 		}
 
 		final JSONObject format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise) {
-			if (throwable != null && throwable.getLocalizedMessage() != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.REPLACE_IGNORE_MSG)) {
-				return null;
-			}
-
-			if(PointsLogger.isSkippedCase(description)) {
+			if (throwable != null && throwable.getLocalizedMessage() != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.SKIPPED_MSG)) {
 				return null;
 			}
 
@@ -148,7 +144,7 @@ public abstract class JUnitWithPoints {
 			return false;
 		}
 
-		public static boolean isSkippedCase(Description description) {
+		protected boolean isSkippedCase(Description description) {
 			String methodToBeExecuted = System.getProperty("method");
 			if((methodToBeExecuted != null && !methodToBeExecuted.equals(""))){
 				String method = getShortDisplayName(description);
@@ -160,10 +156,6 @@ public abstract class JUnitWithPoints {
 			return false;
 		}
 
-		public boolean isSingleExec() {
-			return (System.getProperty("single") != null && System.getProperty("single").equals("yes"));
-		}
-
 		@Override
 		public final Statement apply(Statement base, Description description) {
 			if (isIgnoredCase(description) || isSkippedCase(description)) {
@@ -171,7 +163,6 @@ public abstract class JUnitWithPoints {
 			}
 			return super.apply(base, description);
 		}
-
 
 		@Override
 		protected void starting(Description description) {
@@ -243,6 +234,12 @@ public abstract class JUnitWithPoints {
 				}
 				reportHashMap.get(exID).add(new ReportEntry(description, pointsAnnotation, throwable));
 			}
+		}
+
+		@Override
+		protected void skipped(AssumptionViolatedException e, Description description) {
+			Throwable t = new Throwable(JUnitWithPoints.SKIPPED_MSG);
+			failed(t, description);
 		}
 
 		@Override
@@ -367,6 +364,6 @@ public abstract class JUnitWithPoints {
 
 class MyStatement extends Statement {
 	public void evaluate() {
-		Assert.fail(JUnitWithPoints.REPLACE_IGNORE_MSG);
+		Assume.assumeTrue(false);
 	}
 }

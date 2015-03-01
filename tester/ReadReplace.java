@@ -133,7 +133,7 @@ public class ReadReplace{
 				}else{
 					System.out.println("echo \",\" 1>&2");
 				}
-				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dsingle=yes -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Dmethod="+ method + " -Dpub=" +pub+" -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
+				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Dmethod="+ method + " -Dpub=" +pub+" -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
 			}
 
 			System.out.println("echo \"]\" 1>&2");
