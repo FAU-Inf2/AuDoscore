@@ -27,6 +27,44 @@ fi
 exit 0
 }
 
+
+function checkTestfiles {
+	result=$(grep '@SecretClass' "${testclass}.java")
+	if [ "x${result}" != "x" ]; then
+		echo "WARNING - Found SECRETCLASS annotation in public testfile [${testclass}.java]" > pre.err
+		cleanexit
+	fi
+
+	result=$(grep '@tester.annotations.SecretClass' "${testclass}.java")
+	if [ "x${result}" != "x" ]; then
+		echo "WARNING - Found SECRETCLASS annotation in public testfile [${testclass}.java]" > pre.err
+		cleanexit
+	fi
+
+	
+	result=$(grep '@SecretClass' "${secretclass}.java")
+	if [ "x${result}" == "x" ]; then
+		echo "WARNING - Found no SECRETCLASS annotation in secret testfile [${secretclass}.java]" > pre.err
+		cleanexit
+	fi
+	
+	result=$(grep '@tester.annotations.SecretClass' "${secretclass}.java")
+	if [ "x${result}" == "x" ]; then
+		echo "WARNING - Found no SECRETCLASS annotation in secret testfile [${secretclass}.java]" > pre.err
+		cleanexit
+	fi
+	
+	result=$(grep '@Exercises' "${secretclass}.java")
+	if [ "x${result}" == "x" ]; then
+		echo "WARNING - Found EXERCISES annotation in secret testfile [${secretclass}.java]" > pre.err
+	fi
+	
+	result=$(grep '@tester.annotations.Exercises' "${secretclass}.java")
+	if [ "x${result}" == "x" ]; then
+		echo "WARNING - Found Exercises annotation in secret testfile [${secretclass}.java]" > pre.err
+	fi
+}
+
 function die {
 err "$1"
 cleanexit -1
@@ -175,6 +213,11 @@ if [ "x${interfaces}" != "x" ]; then
 	popd > /dev/null
 fi
 
+
+if [ "x$secretclass" != "x" ]; then
+	info "- check testfiles"
+	checkTestfiles
+fi
 
 info "\nstage0 (student+interfaces only)"
 info "- compiling"
