@@ -29,40 +29,26 @@ exit 0
 
 
 function checkTestfiles {
-	result=$(grep '@SecretClass' "${testclass}.java")
-	if [ "x${result}" != "x" ]; then
+	result=$(grep '*@SecretClass' "${testclass}.java")
+	result2=$(grep '@tester.annotations.SecretClass' "${testclass}.java")
+	if [ "x${result}" != "x" ]  ||  [ "x${result2}" != "x" ]; then
 		echo "WARNING - Found SECRETCLASS annotation in public testfile [${testclass}.java]" > pre.err
 		cleanexit
 	fi
 
-	result=$(grep '@tester.annotations.SecretClass' "${testclass}.java")
-	if [ "x${result}" != "x" ]; then
-		echo "WARNING - Found SECRETCLASS annotation in public testfile [${testclass}.java]" > pre.err
-		cleanexit
-	fi
-
-	
 	result=$(grep '@SecretClass' "${secretclass}.java")
-	if [ "x${result}" == "x" ]; then
-		echo "WARNING - Found no SECRETCLASS annotation in secret testfile [${secretclass}.java]" > pre.err
-		cleanexit
-	fi
-	
-	result=$(grep '@tester.annotations.SecretClass' "${secretclass}.java")
-	if [ "x${result}" == "x" ]; then
+	result2=$(grep '@tester.annotations.SecretClass' "${secretclass}.java")
+	if [ "x${result}" == "x" ] && [ "x${result2}" == "x" ]; then
 		echo "WARNING - Found no SECRETCLASS annotation in secret testfile [${secretclass}.java]" > pre.err
 		cleanexit
 	fi
 	
 	result=$(grep '@Exercises' "${secretclass}.java")
-	if [ "x${result}" == "x" ]; then
+	result2=$(grep '@tester.annotations.Exercises' "${secretclass}.java")
+	if [ "x${result}" != "x" ] || [ "x${result2}" != "x" ]; then
 		echo "WARNING - Found EXERCISES annotation in secret testfile [${secretclass}.java], ignoring"> pre.err
 	fi
 	
-	result=$(grep '@tester.annotations.Exercises' "${secretclass}.java")
-	if [ "x${result}" == "x" ]; then
-		echo "WARNING - Found Exercises annotation in secret testfile [${secretclass}.java]", ignoring> pre.err
-	fi
 }
 
 function die {
