@@ -56,12 +56,12 @@ function checkTestfiles {
 	
 	result=$(grep '@Exercises' "${secretclass}.java")
 	if [ "x${result}" == "x" ]; then
-		echo "WARNING - Found EXERCISES annotation in secret testfile [${secretclass}.java]" > pre.err
+		echo "WARNING - Found EXERCISES annotation in secret testfile [${secretclass}.java], ignoring"> pre.err
 	fi
 	
 	result=$(grep '@tester.annotations.Exercises' "${secretclass}.java")
 	if [ "x${result}" == "x" ]; then
-		echo "WARNING - Found Exercises annotation in secret testfile [${secretclass}.java]" > pre.err
+		echo "WARNING - Found Exercises annotation in secret testfile [${secretclass}.java]", ignoring> pre.err
 	fi
 }
 
