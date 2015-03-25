@@ -51,6 +51,51 @@ function checkTestfiles {
 	
 }
 
+
+function checkTestfiles {
+
+	file1=$1; shift
+	file2=$1; shift
+
+	echo "$file1"
+	echo "$file2"
+
+	# get the annotations
+	secret1=$(grep '@*SecretClass' "$file1")
+	secret2=$(grep '@*SecretClass' "$file2")
+
+	ex1=$(grep '@*Exercises' "$file1")
+	ex2=$(grep '@*Exercises' "$file2")
+
+
+	## check if @SecretClass is present in both files
+	if [ "x${secret1}" != "x" ] && [ "x${secret2}" != "x" ]; then
+		err "Found @SecretClass annotation in both testfiles: $file1 $file2"
+		cleanexit
+	elif [ "x${ex1}" != "x" ] && [ "x${ex2}" != "x" ]; then
+		if [ "x${secret1}" != "x" ]; then
+			# file1 is secrettest ignoring @Exercises Annotation in Secrettest
+			secretclass=$(basename $file1 ".java")
+			testclass=$(basename $file2 ".java")
+			info "@Exercises specified in $file1 (Secrettest) -- ignoring"
+		elif [ "x${secret2}" != "x" ]; then
+			# file2 is secret
+			secretclass=$(basename $file2 ".java")
+			testclass=$(basename $file1 ".java")
+			info "@Exercises specified in $file2 (Secrettest) -- ignoring"
+		fi
+	else
+		if [ "x${secret1}" != "x" ]; then
+			secretclass=$(basename $file1 ".java")
+			publiclass=$(basename $file2 ".java")
+		elif [ "x${secret2}" != "x" ]; then
+			# file2 is secret
+			secretclass=$(basename $file2 ".java")
+			testclass=$(basename $file1 ".java")
+		fi
+	fi
+}
+
 function die {
 err "$1"
 cleanexit -1
@@ -79,34 +124,69 @@ if [ $? -eq 0 ]; then
 	cat $file | grep -B1 "^java.lang.annotation.AnnotationFormatError" >> $errfile
 	die "\ninternal error\n";
 fi
+
 }
 
-if [ $# -lt 2 ]; then
-	err "no argument given"
-	info "usage: $0 [-k] [--single] [-s <SECRETCLASS>] <TESTCLASS> <STUDENTSOURCE1> ... <STUDENTSOURCEn> -- <INTERFACE1> ... <INTERFACEn> --";
-	info " e.g.: $0 ExampleTest Student.java -- PublicInterface.java -- undertest*"
-	info " -k: keep directory and create symlink test.latest"
-	info " -s: specify a secret testclass"
-	info " --single: single execution of methods"
-	exit -1
-fi
+function scanTestFiles {
+	# look for junit folder
+	testdir="junit"
+	if [ -d $testdir ]; then
+		## get the files
+		files=()
+		for entry in "$testdir"/*
+		do	files+=("$entry")
+		done
+		
+		file_count=$(ls -1 $testdir| grep -v ^1 | wc -l)
+		
+		if [ "${file_count}" == "1" ]; then
+			testclass=$(basename ${files[0]} ".java")
+		elif [ "${file_count}" == "2" ]; then
+			checkTestfiles ${files[0]} ${files[1]}
+		else
+			err "Maximum number of testfiles are 2 (Secrettest and Publictest) => abort"
+			die
+		fi
+
+	else
+		err "No junit folder found => abort\n"
+		die
+
+	fi
+
+}
+
+#if [ $# -lt 2 ]; then
+#	err "no argument given"
+#	info "usage: $0 [-k] [--single] [-s <SECRETCLASS>] <TESTCLASS> <STUDENTSOURCE1> ... <STUDENTSOURCEn> -- <INTERFACE1> ... <INTERFACEn> --";
+#	info " e.g.: $0 ExampleTest Student.java -- PublicInterface.java -- undertest*"
+#	info " -k: keep directory and create symlink test.latest"
+#	info " -s: specify a secret testclass"
+#	info " --single: single execution of methods"
+#	exit -1
+#fi
 
 keep=0
 if [ "x$1" == "x-k" ]; then
 	keep=1
 	shift
 fi
-secretclass=
-if [ "x$1" == "x-s" ]; then
-	shift
-	secretclass=$1; shift
-	secretclass=$(basename $secretclass ".java")
-fi
-testclass=$1; shift
-testclass=$(basename $testclass ".java")
+
+# look for testfiles
+scanTestFiles
+
+#secretclass=
+#if [ "x$1" == "x-s" ]; then
+#	shift
+#	secretclass=$1; shift
+#	secretclass=$(basename $secretclass ".java")
+#fi
+
+
 arg=$1; shift
 arg=$(basename $arg)
 studentsource=$arg
+echo $studentsource
 
 while [ $# -gt 0 ] && [ "x$1" != "x--" ]; do
 	arg=$1; shift

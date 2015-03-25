@@ -1,3 +1,3 @@
 #!/bin/bash
 
-../../test.sh -k junit/UnitTest.java cleanroom/ToTest.java -- -- student
+../../test.sh -k cleanroom/ToTest.java -- -- student
