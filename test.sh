@@ -29,71 +29,53 @@ exit 0
 
 
 function checkTestfiles {
-	result=$(grep '*@SecretClass' "${testclass}.java")
-	result2=$(grep '@tester.annotations.SecretClass' "${testclass}.java")
-	if [ "x${result}" != "x" ]  ||  [ "x${result2}" != "x" ]; then
-		echo "WARNING - Found SECRETCLASS annotation in public testfile [${testclass}.java]" > pre.err
-		cleanexit
-	fi
-
-	result=$(grep '@SecretClass' "${secretclass}.java")
-	result2=$(grep '@tester.annotations.SecretClass' "${secretclass}.java")
-	if [ "x${result}" == "x" ] && [ "x${result2}" == "x" ]; then
-		echo "WARNING - Found no SECRETCLASS annotation in secret testfile [${secretclass}.java]" > pre.err
-		cleanexit
-	fi
-	
-	result=$(grep '@Exercises' "${secretclass}.java")
-	result2=$(grep '@tester.annotations.Exercises' "${secretclass}.java")
-	if [ "x${result}" != "x" ] || [ "x${result2}" != "x" ]; then
-		echo "WARNING - Found EXERCISES annotation in secret testfile [${secretclass}.java], ignoring"> pre.err
-	fi
-	
-}
-
-
-function checkTestfiles {
 
 	file1=$1; shift
-	file2=$1; shift
-
-	echo "$file1"
-	echo "$file2"
-
+	file2=$1;
+	
 	# get the annotations
-	secret1=$(grep '@*SecretClass' "$file1")
-	secret2=$(grep '@*SecretClass' "$file2")
+	secret1=$(grep '@*SecretClass' $file1)
+	secret2=$(grep '@*SecretClass' $file2)
 
-	ex1=$(grep '@*Exercises' "$file1")
-	ex2=$(grep '@*Exercises' "$file2")
+	ex1=$(grep '@*Exercises' $file1)
+	ex2=$(grep '@*Exercises' $file2)
 
+	secretclass=
+	testclass=
 
+	## one file should have the @SecretClass annotation
+	if [ "x${secret1}" == "x" ] && [ "x${secret2}" == "x" ]; then
+		err "WARNING - Found no SECRETCLASS annotation in both testfiles"
+		cleanexit
+	fi
 	## check if @SecretClass is present in both files
 	if [ "x${secret1}" != "x" ] && [ "x${secret2}" != "x" ]; then
-		err "Found @SecretClass annotation in both testfiles: $file1 $file2"
+		err "WARNING - Found SECRETCLASS  annotation in both testfiles: $file1 $file2"
 		cleanexit
 	elif [ "x${ex1}" != "x" ] && [ "x${ex2}" != "x" ]; then
 		if [ "x${secret1}" != "x" ]; then
 			# file1 is secrettest ignoring @Exercises Annotation in Secrettest
 			secretclass=$(basename $file1 ".java")
 			testclass=$(basename $file2 ".java")
-			info "@Exercises specified in $file1 (Secrettest) -- ignoring"
+			info "WARNING - @Exercises specified in $file1 (Secrettest) -- ignoring"
 		elif [ "x${secret2}" != "x" ]; then
 			# file2 is secret
 			secretclass=$(basename $file2 ".java")
 			testclass=$(basename $file1 ".java")
-			info "@Exercises specified in $file2 (Secrettest) -- ignoring"
+			info "WARNING - @Exercises specified in $file2 (Secrettest) -- ignoring"
 		fi
 	else
 		if [ "x${secret1}" != "x" ]; then
 			secretclass=$(basename $file1 ".java")
-			publiclass=$(basename $file2 ".java")
+			testclass=$(basename $file2 ".java")
 		elif [ "x${secret2}" != "x" ]; then
 			# file2 is secret
 			secretclass=$(basename $file2 ".java")
 			testclass=$(basename $file1 ".java")
 		fi
 	fi
+	echo $testclass
+	echo $secretclass
 }
 
 function die {
@@ -129,15 +111,15 @@ fi
 
 function scanTestFiles {
 	# look for junit folder
-	testdir="junit"
-	if [ -d $testdir ]; then
+	junit_folder="junit"
+	if [ -d $junit_folder ]; then
 		## get the files
 		files=()
-		for entry in "$testdir"/*
+		for entry in "$junit_folder"/*
 		do	files+=("$entry")
 		done
 		
-		file_count=$(ls -1 $testdir| grep -v ^1 | wc -l)
+		file_count=$(ls -1 $junit_folder| grep -v ^1 | wc -l)
 		
 		if [ "${file_count}" == "1" ]; then
 			testclass=$(basename ${files[0]} ".java")
@@ -173,7 +155,10 @@ if [ "x$1" == "x-k" ]; then
 fi
 
 # look for testfiles
+info "scanning for testfiles"
 scanTestFiles
+echo $testclass
+echo $secretclass
 
 #secretclass=
 #if [ "x$1" == "x-s" ]; then
@@ -277,12 +262,6 @@ if [ "x${interfaces}" != "x" ]; then
 	fi
 	cp ${interfaces} "${testdir}"/ || die "failed"
 	popd > /dev/null
-fi
-
-
-if [ "x$secretclass" != "x" ]; then
-	info "- check testfiles"
-	checkTestfiles
 fi
 
 info "\nstage0 (student+interfaces only)"
