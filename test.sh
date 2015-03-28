@@ -5,26 +5,26 @@ script=$(readlink -f $0)
 scriptdir=$(dirname $script)
 
 function info {
-echo -e "\033[1;34m$1\033[0m"
+	echo -e "\033[1;34m$1\033[0m"
 }
 
 function err {
-echo -e "\033[1;31m$1\033[0m"
+	echo -e "\033[1;31m$1\033[0m"
 }
 
 function cleanexit {
-cd ${callerdir}
-if [ $keep -eq 0 ]; then
-	info "\ncleaning up"
-	rm -rf test.$$
-else
-	info "keeping directory"
-	ln -sf test.$$ test.latest
-fi
-if [ $# -gt 0 ]; then
-	exit $1
-fi
-exit 0
+	cd ${callerdir}
+	if [ $keep -eq 0 ]; then
+		info "\ncleaning up"
+		rm -rf test.$$
+	else
+		info "keeping directory"
+		ln -sf test.$$ test.latest
+	fi
+	if [ $# -gt 0 ]; then
+		exit $1
+	fi
+	exit 0
 }
 
 
@@ -79,8 +79,8 @@ function checkTestfiles {
 }
 
 function die {
-err "$1"
-cleanexit -1
+	err "$1"
+	cleanexit -1
 }
 
 function checkexit {
@@ -126,16 +126,28 @@ function scanTestFiles {
 		elif [ "${file_count}" == "2" ]; then
 			checkTestfiles ${files[0]} ${files[1]}
 		else
-			err "Maximum number of testfiles are 2 (Secrettest and Publictest) => abort"
+			err " WARNING - Maximum number of testfiles are 2 (Secrettest and Publictest) => abort"
 			die
 		fi
-
 	else
-		err "No junit folder found => abort\n"
+		err "WARNING - No junit folder found => abort\n"
 		die
 
 	fi
 
+}
+
+function scanInterfaces {
+	## look for interfaces folder
+	interfaces_folder="interfaces"
+	if [ -d $interfaces_folder ]; then
+		for entry in "$interfaces_folder"/*; do
+			arg=$(basename $entry)
+		 	interfaces="${interfaces} $arg"
+		done
+	else
+		err "WARNNING - No interfaces folder found"
+	fi
 }
 
 #if [ $# -lt 2 ]; then
@@ -156,17 +168,9 @@ fi
 
 # look for testfiles
 info "scanning for testfiles"
+secretclass=""
+testclass=""
 scanTestFiles
-echo $testclass
-echo $secretclass
-
-#secretclass=
-#if [ "x$1" == "x-s" ]; then
-#	shift
-#	secretclass=$1; shift
-#	secretclass=$(basename $secretclass ".java")
-#fi
-
 
 arg=$1; shift
 arg=$(basename $arg)
@@ -181,13 +185,11 @@ done
 
 shift || true # throw -- away if exists
 
-interfaces=""
-while [ $# -gt 0 ] && [ "x$1" != "x--" ]; do
-	arg=$1; shift
-	arg=$(basename $arg)
-	interfaces="${interfaces} $arg"
-done
 
+## get the interfaces
+info "scanning for interfaces"
+interfaces=""
+scanInterfaces
 shift || true # throw -- away if exists
 
 undertestdirs=""
