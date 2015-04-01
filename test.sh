@@ -178,49 +178,8 @@ function scanStudentSources {
 
 }
 
-keep=0
-if [ "x$1" == "x-k" ]; then
-	keep=1
-	shift
-fi
-
-# look for testfiles
-info "scanning for testfiles"
-secretclass=""
-testclass=""
-scanTestFiles
-
-info "scanning for skeletons"
-## TODO
-
-## get the interfaces
-info "scanning for interfaces"
-interfaces=""
-scanInterfaces
-
-info "scanning for student sources"
-undertestdircnt=0
-undertestdirs=""
-studentsource=""
-scanStudentSources
-
-undertestdir="undertest"
-if [ ${undertestdircnt} -eq 1 ]; then
-	undertestdir=${undertestdirs}
-elif [ ${undertestdircnt} -gt 1 ]; then
-	for i in ${undertestdirs}; do
-		info "[recur test with $i]"
-		$0 ${testclass} ${studentsource} -- ${interfaces} -- $i
-		if [ $? != 0 ]; then
-			die "testing $i failed"
-		fi
-		info "\n----------------------------------------\n"
-	done
-	exit 0
-fi
-
-
-
+function testIt {
+undertestdir=$1
 info "preparing test setup"
 info "- create testdir"
 testdir="${callerdir}/test.$$"
@@ -330,3 +289,48 @@ checkexit $? "\ninternal error\n" merge
 cat merged
 
 cleanexit
+
+}
+
+keep=0
+if [ "x$1" == "x-k" ]; then
+	keep=1
+	shift
+fi
+
+# look for testfiles
+info "scanning for testfiles"
+secretclass=""
+testclass=""
+scanTestFiles
+
+info "scanning for skeletons"
+## TODO
+
+## get the interfaces
+info "scanning for interfaces"
+interfaces=""
+scanInterfaces
+
+info "scanning for student sources"
+undertestdircnt=0
+undertestdirs=""
+studentsource=""
+scanStudentSources
+
+undertestdir="undertest"
+if [ ${undertestdircnt} -eq 1 ]; then
+	undertestdir=${undertestdirs}
+	testIt ${undertestdir}
+elif [ ${undertestdircnt} -gt 1 ]; then
+	for i in ${undertestdirs}; do
+		info "[recur test with $i]"
+		(testIt $i)
+		if [ $? != 0 ]; then
+			die "testing $i failed"
+		fi
+		info "\n----------------------------------------\n"
+	done
+	exit 0
+fi
+
