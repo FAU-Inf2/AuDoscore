@@ -153,16 +153,16 @@ function scanInterfaces {
 function scanStudentSources {
 	first_source=1
 	for entry in ./*; do
-		if [ -d $entry ] ; then
+		if [ -d $entry ]; then
 			base_entry=$(basename $entry)
-			if [ "$base_entry" != "junit" ] && [ "$base_entry" != "cleanroom" ] && [ "$base_entry" != "skeleton" ] && [ "$base_entry" != "interfaces" ] && [ "$base_entry" != "expected" ]; then
+			if [ "$base_entry" != "junit" ] && [ "$base_entry" != "cleanroom" ] && [ "$base_entry" != "skeleton" ] && [ "$base_entry" != "interfaces" ] && [ "$base_entry" != "expected" ] && [ "$entry" != "test.*" ]; then
 				((undertestdircnt++))
 				if [ ${undertestdircnt} -eq 1 ]; then
 					undertestdirs=$base_entry
 				else
 					undertestdirs="${undertestdirs} $base_entry"
 				fi
-				sourcecnt=0
+				
 				for file in "$entry"/*; do
 					arg=$(basename $file)
 					if [ ${first_source} -eq 1 ]; then
