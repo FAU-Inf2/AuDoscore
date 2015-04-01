@@ -150,15 +150,32 @@ function scanInterfaces {
 	fi
 }
 
-#if [ $# -lt 2 ]; then
-#	err "no argument given"
-#	info "usage: $0 [-k] [--single] [-s <SECRETCLASS>] <TESTCLASS> <STUDENTSOURCE1> ... <STUDENTSOURCEn> -- <INTERFACE1> ... <INTERFACEn> --";
-#	info " e.g.: $0 ExampleTest Student.java -- PublicInterface.java -- undertest*"
-#	info " -k: keep directory and create symlink test.latest"
-#	info " -s: specify a secret testclass"
-#	info " --single: single execution of methods"
-#	exit -1
-#fi
+function scanStudentSources {
+	for entry in ./*; do
+		if [ -d $entry ] ; then
+			base_entry=$(basename $entry)
+			if [ "$base_entry" != "junit" ] && [ "$base_entry" != "cleanroom" ] && [ "$base_entry" != "skeleton" ] && [ "$base_entry" != "interfaces" ] && [ "$base_entry" != "expected" ]; then
+				((undertestdircnt++))
+				if [ ${undertestdircnt} -eq 1 ]; then
+					undertestdirs=$base_entry
+				else
+					undertestdirs="${undertestdirs} $base_entry"
+				fi
+				sourcecnt=0
+				for file in "$entry"/*; do
+					((sourcecnt++))
+					arg=$(basename $file)
+					if [ ${sourcecnt} -eq 1 ]; then
+						studentsource=$arg
+					else
+						studentsource="${studentsource} $arg"
+					fi
+				done
+			fi	
+		fi
+	done
+
+}
 
 keep=0
 if [ "x$1" == "x-k" ]; then
@@ -172,37 +189,19 @@ secretclass=""
 testclass=""
 scanTestFiles
 
-arg=$1; shift
-arg=$(basename $arg)
-studentsource=$arg
-echo $studentsource
-
-while [ $# -gt 0 ] && [ "x$1" != "x--" ]; do
-	arg=$1; shift
-	arg=$(basename $arg)
-	studentsource="${studentsource} $arg"
-done
-
-shift || true # throw -- away if exists
-
+info "scanning for skeletons"
+## TODO
 
 ## get the interfaces
 info "scanning for interfaces"
 interfaces=""
 scanInterfaces
-shift || true # throw -- away if exists
 
-undertestdirs=""
+info "scanning for student sources"
 undertestdircnt=0
-while [ $# -gt 0 ] && [ "x$1" != "x--" ]; do
-	((undertestdircnt++))
-	if [ ${undertestdircnt} -eq 1 ]; then
-		undertestdirs=$1
-	else
-		undertestdirs="${undertestdirs} $1"
-	fi
-	shift
-done
+undertestdirs=""
+studentsource=""
+scanStudentSources
 
 undertestdir="undertest"
 if [ ${undertestdircnt} -eq 1 ]; then
@@ -218,6 +217,7 @@ elif [ ${undertestdircnt} -gt 1 ]; then
 	done
 	exit 0
 fi
+
 
 
 info "preparing test setup"
