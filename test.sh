@@ -155,7 +155,7 @@ function scanStudentSources {
 	for entry in ./*; do
 		if [ -d $entry ]; then
 			base_entry=$(basename $entry)
-			if [ "$base_entry" != "junit" ] && [ "$base_entry" != "cleanroom" ] && [ "$base_entry" != "skeleton" ] && [ "$base_entry" != "interfaces" ] && [ "$base_entry" != "expected" ] && [ "$entry" != "test.*" ]; then
+			if [ "$base_entry" != "junit" ] && [ "$base_entry" != "cleanroom" ] && [ "$base_entry" != "skeleton" ] && [ "$base_entry" != "interfaces" ] && [ "$base_entry" != "expected" ] && [[ "$base_entry" != "test."* ]]; then
 				((undertestdircnt++))
 				if [ ${undertestdircnt} -eq 1 ]; then
 					undertestdirs=$base_entry
