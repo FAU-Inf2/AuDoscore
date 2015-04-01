@@ -151,7 +151,6 @@ function scanInterfaces {
 }
 
 function scanStudentSources {
-	first_source=1
 	for entry in ./*; do
 		if [ -d $entry ]; then
 			base_entry=$(basename $entry)
@@ -161,17 +160,7 @@ function scanStudentSources {
 					undertestdirs=$base_entry
 				else
 					undertestdirs="${undertestdirs} $base_entry"
-				fi
-				
-				for file in "$entry"/*; do
-					arg=$(basename $file)
-					if [ ${first_source} -eq 1 ]; then
-						studentsource=$arg
-						first_source=0
-					else
-						studentsource="${studentsource} $arg"
-					fi
-				done
+				fi	
 			fi	
 		fi
 	done
@@ -179,6 +168,17 @@ function scanStudentSources {
 }
 
 function testIt {
+first_source=1
+undertestdir=$1
+for file in "$undertestdir"/*; do
+	arg=$(basename $file)
+	if [ ${first_source} -eq 1 ]; then
+		studentsource=$arg
+		first_source=0
+	else
+		studentsource="${studentsource} $arg"
+	fi
+done
 undertestdir=$1
 info "preparing test setup"
 info "- create testdir"
