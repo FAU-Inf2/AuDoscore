@@ -151,6 +151,7 @@ function scanInterfaces {
 }
 
 function scanStudentSources {
+	first_source=1
 	for entry in ./*; do
 		if [ -d $entry ] ; then
 			base_entry=$(basename $entry)
@@ -163,10 +164,10 @@ function scanStudentSources {
 				fi
 				sourcecnt=0
 				for file in "$entry"/*; do
-					((sourcecnt++))
 					arg=$(basename $file)
-					if [ ${sourcecnt} -eq 1 ]; then
+					if [ ${first_source} -eq 1 ]; then
 						studentsource=$arg
+						first_source=0
 					else
 						studentsource="${studentsource} $arg"
 					fi
