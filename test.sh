@@ -179,7 +179,6 @@ for file in "$undertestdir"/*; do
 		studentsource="${studentsource} $arg"
 	fi
 done
-undertestdir=$1
 info "preparing test setup"
 info "- create testdir"
 testdir="${callerdir}/test.$$"
@@ -315,7 +314,6 @@ scanInterfaces
 info "scanning for student sources"
 undertestdircnt=0
 undertestdirs=""
-studentsource=""
 scanStudentSources
 
 undertestdir="undertest"
@@ -325,6 +323,7 @@ if [ ${undertestdircnt} -eq 1 ]; then
 elif [ ${undertestdircnt} -gt 1 ]; then
 	for i in ${undertestdirs}; do
 		info "[recur test with $i]"
+		keep=0
 		(testIt $i)
 		if [ $? != 0 ]; then
 			die "testing $i failed"
