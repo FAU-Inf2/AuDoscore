@@ -139,15 +139,41 @@ function scanTestFiles {
 
 function scanInterfaces {
 	## look for interfaces folder
+	first=1
 	interfaces_folder="interfaces"
 	if [ -d $interfaces_folder ]; then
 		for entry in "$interfaces_folder"/*; do
 			arg=$(basename $entry)
-		 	interfaces="${interfaces} $arg"
+			if [ ${first} -eq 1 ];then
+				interfaces=$arg
+			else
+		 		interfaces="${interfaces} $arg"
+			fi
 		done
 	else
 		err "WARNNING - No interfaces folder found"
 	fi
+}
+
+function scanCleanroom {
+	first=1
+	cleanroom_folder="cleanroom"
+	if [ -d $cleanroom_folder ]; then
+		for entry in "$cleanroom_folder"/*; do
+			arg=$(basename $entry)
+			if [ ${first} -eq 1 ]; then
+				cleanroom=$arg
+				first=0
+			else
+				cleanroom="${cleanroom} $arg"
+			fi
+		done
+	else 
+		err "WARNING - No cleanroom folder found"
+		cleanexit
+	fi
+
+
 }
 
 function scanStudentSources {
@@ -179,6 +205,12 @@ for file in "$undertestdir"/*; do
 		studentsource="${studentsource} $arg"
 	fi
 done
+
+if [ "${cleanroom}" != "${studentsource}" ]; then
+	err "WARNING - cleanroom sources do not match sources under $1"
+	cleanexit
+fi
+
 info "preparing test setup"
 info "- create testdir"
 testdir="${callerdir}/test.$$"
@@ -310,6 +342,10 @@ info "scanning for skeletons"
 info "scanning for interfaces"
 interfaces=""
 scanInterfaces
+
+info "scanning for cleanroom"
+cleanroom=""
+scanCleanroom
 
 info "scanning for student sources"
 undertestdircnt=0
