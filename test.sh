@@ -57,12 +57,13 @@ function checkTestfiles {
 			# file1 is secrettest ignoring @Exercises Annotation in Secrettest
 			secretclass=$(basename $file1 ".java")
 			testclass=$(basename $file2 ".java")
-			info "WARNING - @Exercises specified in $file1 (Secrettest) -- ignoring"
+			err"WARNING - @Exercises specified in $file1 (Secrettest) -- ignoring"
+		
 		elif [ "x${secret2}" != "x" ]; then
 			# file2 is secret
 			secretclass=$(basename $file2 ".java")
 			testclass=$(basename $file1 ".java")
-			info "WARNING - @Exercises specified in $file2 (Secrettest) -- ignoring"
+			err "WARNING - @Exercises specified in $file2 (Secrettest) -- ignoring"
 		fi
 	else
 		if [ "x${secret1}" != "x" ]; then
@@ -74,8 +75,6 @@ function checkTestfiles {
 			testclass=$(basename $file1 ".java")
 		fi
 	fi
-	echo $testclass
-	echo $secretclass
 }
 
 function die {
