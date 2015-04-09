@@ -1,12 +1,12 @@
 #!/bin/bash
 
-declare -a annotations=("@*Bonus(*","@*Exercises({*","@*Forbidden(*","@*Malus(*","@*NotForbidden(*","@*Points(*","@*SecretClass(*")
+declare -a annotations=("@*Bonus(*" "@*Exercises({*" "@*Forbidden(*" "@*Malus(*" "@*NotForbidden(*" "@*Points(*" "@*SecretClass(*")
 
 function clean_file {
 	file=$1
 	if [[ $file == *.java ]];then
-		for annotation in "${annotations[@]}"; do
-			sed -i "/${i}/d" $file	
+		for i in "${annotations[@]}"; do
+			sed -i "/${i}/d" $file
 		done
 	fi
 }
@@ -14,7 +14,7 @@ function clean_file {
 function recursive_clean {
 	start_dir=$1
 	for file in "$start_dir"/*; do
-		if [ ! -d "$file" ];then
+		if [ ! -d "$file" ]; then
 			clean_file $file
 		else
 			recursive_clean $file
