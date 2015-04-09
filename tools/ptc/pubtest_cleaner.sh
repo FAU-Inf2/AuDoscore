@@ -2,12 +2,26 @@
 
 declare -a annotations=("@*Bonus(*","@*Exercises({*","@*Forbidden(*","@*Malus(*","@*NotForbidden(*","@*Points(*","@*SecretClass(*")
 
-function removeAnnotations {
-file=$1
-	for annotation in "${annotations[@]}"; do
-		sed -i "/${i}/d" $file	
+function clean_file {
+	file=$1
+	if [[ $file == *.java ]];then
+		for annotation in "${annotations[@]}"; do
+			sed -i "/${i}/d" $file	
+		done
+	fi
+}
+
+function recursive_clean {
+	start_dir=$1
+	for file in "$start_dir"/*; do
+		if [ ! -d "$file" ];then
+			clean_file $file
+		else
+			recursive_clean $file
+		fi
 	done
 }
+
 
 recursive=0
 arg=$1
@@ -21,18 +35,16 @@ fi
 ## check input file? or directory?
 if [ -d $arg ]; then
 	if [ $recursive -eq 1 ]; then
-		for i in "${annotations[@]}"; do
-			find $arg -type f -name "*.java" | xargs sed -i "/${i}/d"
-		done
+		recursive_clean $arg
 	else
-		for annotation in "${annotations[@]}"; do
-			find $arg -maxdepth 0 -type f -name "*.java" | xargs sed -i "/${i}/d"
+		for file in "$arg"; do
+			if [ -f $file ]; then
+				clean_file $arg
+			fi
 		done
 	fi
 elif [ -f $arg ]; then
-	if [[ $arg == *.java ]];then
-		removeAnnotations $arg
-	fi
+	clean_file $arg
 else
 	echo "$arg is not valid"
 	exit 1
