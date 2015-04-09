@@ -1,6 +1,6 @@
 #!/bin/bash
 
-declare -a annotations=("@*Bonus(*" "@*Exercises({*" "@*Forbidden(*" "@*Malus(*" "@*NotForbidden(*" "@*Points(*" "@*SecretClass(*")
+declare -a annotations=("@*Bonus(*" "@*Exercises({*" "@*Forbidden(*" "@*Malus(*" "@*NotForbidden(*" "@*Points(*" "@*SecretClass(*" "@Rule" "@ClassRule" "import tester.*;" "public final PointsLogger pointLogger = new PointLogger();" "public final static PointsSummary = new PointsSummary()" "extends JUnitWithPoints" "import org.junit.rules.*;" "import java.lang.reflect.*")
 
 function clean_file {
 	file=$1
