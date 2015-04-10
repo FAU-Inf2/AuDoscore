@@ -35,7 +35,9 @@ fi
 ## check input file? or directory?
 if [ -d $arg ]; then
 	if [ $recursive -eq 1 ]; then
-		recursive_clean $arg
+		echo "-r not supported yet!"
+		exit 1
+		#recursive_clean $arg
 	else
 		for file in "$arg"; do
 			if [ -f $file ]; then
