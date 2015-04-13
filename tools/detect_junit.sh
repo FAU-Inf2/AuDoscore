@@ -91,6 +91,8 @@ function scanTestFiles {
 		for i in `cat var.mk | grep TEST | cut -d= -f2`; do
 			ln -s ../${i}.java junit/${i}.java
 		done
+		# do it once more
+		scanTestFiles
 	fi
 
 }
