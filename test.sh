@@ -1,9 +1,10 @@
 #!/bin/bash
 
-if [ "x$1" == "x-v" ]; then
-	set -x
-	shift
-fi
+# FIXME: breaks json
+#if [ "x$1" == "x-v" ]; then
+#	set -x
+#	shift
+#fi
 
 callerdir=${PWD}
 script=$(readlink -f $0)
