@@ -57,7 +57,7 @@ function checkTestfiles {
 			# file1 is secrettest ignoring @Exercises Annotation in Secrettest
 			secretclass=$(basename $file1 ".java")
 			testclass=$(basename $file2 ".java")
-			err"WARNING - @Exercises specified in $file1 (Secrettest) -- ignoring"
+			err "WARNING - @Exercises specified in $file1 (Secrettest) -- ignoring"
 		
 		elif [ "x${secret2}" != "x" ]; then
 			# file2 is secret
