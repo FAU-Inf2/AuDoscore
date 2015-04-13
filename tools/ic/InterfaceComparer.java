@@ -7,12 +7,13 @@ public class InterfaceComparer {
 	private static compareClasses(Class cleanroomClass, Class studentClass){
 	
 		boolean equals = false;
-
+		ArrayList<Method> studentMethods = new ArrayList<Method>(studentClass.getMethods());
 		// checkMethods
 		for(Method cleanroomMethod : cleanroomClass.getMethods()){
-			for(Method studentMethod : studentClass.getMethods) {
+			for(Method studentMethod : studentMethods) {
 				if(cleanroomMethod.equals(studentMethod)) {
 					equals = true;
+					studentMethods.remove(studentMethod);
 					break;
 				}
 
