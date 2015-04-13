@@ -83,6 +83,7 @@ compile-stage2: miniclean
 	if [ "x$(SECRETTEST)" != "x" ]; then \
 		java -cp lib/junitpoints.jar:lib/junit.jar:. -DwithSecret=yes tester.ReadReplace --loop $(TEST) >> loop.sh ; \
 		echo "echo \",\" 1>&2" >> loop.sh ; \
+		make compile-stage2-secret ; \
 	else \
 		java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(TEST) >> loop.sh ; \
 		echo "echo \"]\" 1>&2" >> loop.sh ; \
