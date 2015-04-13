@@ -2,6 +2,7 @@
 
 if [ "x$1" == "x-v" ]; then
 	set -x
+	shift
 fi
 
 callerdir=${PWD}
