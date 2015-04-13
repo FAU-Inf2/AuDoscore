@@ -2,7 +2,7 @@
 
 # FIXME: extract functions to common lib
 function err {
-	echo -e "\033[1;31m$1\033[0m"
+	echo -e "\033[1;31m$1\033[0m" 1>&2
 }
 
 function die {
