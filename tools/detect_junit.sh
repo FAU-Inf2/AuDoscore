@@ -77,7 +77,15 @@ function scanTestFiles {
 		file_count=$(ls -1 $junit_folder| grep -v ^1 | wc -l)
 		
 		if [ "${file_count}" == "1" ]; then
-			die "found only one class"
+			sec=$(grep '@*SecretClass' ${files[0]})
+			if [ "x" != "x$sec" ]; then
+				echo "SECRET=$(basename ${files[0]} .java)" > varsec.mk
+				echo "TEST=" >> varsec.mk
+			else
+				echo "TEST=$(basename ${files[0]} .java)" > varsec.mk
+				echo "SECRET=" >> varsec.mk
+			fi
+			exit
 		elif [ "${file_count}" == "2" ]; then
 			checkTestfiles ${files[0]} ${files[1]} > varsec.mk
 		else
