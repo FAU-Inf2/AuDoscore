@@ -220,8 +220,8 @@ function testIt {
 	mkdir "$testdir" || die "failed to create test dir test.$$"
 	cd "$testdir" > /dev/null 2> /dev/null
 
-		# must be first step
-		info "- copy/install test infrastructure"
+	# must be first step
+	info "- copy/install test infrastructure"
 	${scriptdir}/install.sh > /dev/null 2> /dev/null || die "failed"
 
 	info "- write var.mk"
