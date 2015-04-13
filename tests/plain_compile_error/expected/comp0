@@ -1,7 +1,9 @@
+make[1]: Entering directory '/home/sitowert/AuDoscore/tests/plain_compile_error/test.26788'
 javac ToTest.java	
 ToTest.java:3: error: ';' expected
 		return 42
 		         ^
 1 error
-Makefile:37: recipe for target 'compile-stage0' failed
-make: *** [compile-stage0] Error 1
+Makefile:48: recipe for target 'compile-stage0' failed
+make[1]: *** [compile-stage0] Error 1
+make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/plain_compile_error/test.26788'

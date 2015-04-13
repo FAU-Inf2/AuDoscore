@@ -1,3 +1,5 @@
+make[1]: Entering directory '/home/sitowert/AuDoscore/tests/forbidden_reflection/test.23458'
 javac ToTest.java	
 Note: ToTest.java uses unchecked or unsafe operations.
 Note: Recompile with -Xlint:unchecked for details.
+make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/forbidden_reflection/test.23458'

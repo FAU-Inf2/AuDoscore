@@ -1,11 +1,1 @@
-{ "vanilla" : 
-{"exercises":[{"tests":[{"id":"test","desc":"test","success":true},{"id":"test2","desc":"test2","success":true},{"id":"test3","desc":"test3","success":true},{"id":"test4","desc":"test4","success":true},{"id":"test5","desc":"test5","success":true}],"name":"GA4.6a"}]}
-, "replaced" : 
-[
-{"exercises":[{"tests":[],"name":"GA4.6a"}]},
-{"exercises":[{"tests":[],"name":"GA4.6a"}]},
-{"exercises":[{"tests":[],"name":"GA4.6a"}]},
-{"exercises":[{"tests":[],"name":"GA4.6a"}]},
-{"exercises":[{"tests":[],"name":"GA4.6a"}]}
-]
-}
+{"replaced":[{"exercises":[{"tests":[],"name":"GA4.6a"}]},{"exercises":[{"tests":[],"name":"GA4.6a"}]},{"exercises":[{"tests":[],"name":"GA4.6a"}]},{"exercises":[{"tests":[],"name":"GA4.6a"}]},{"exercises":[{"tests":[],"name":"GA4.6a"}]}],"vanilla":{"exercises":[{"tests":[{"id":"test","desc":"test","success":true},{"id":"test2","desc":"test2","success":true},{"id":"test3","desc":"test3","success":true},{"id":"test4","desc":"test4","success":true},{"id":"test5","desc":"test5","success":true}],"name":"GA4.6a"}]}}

@@ -1,7 +1,1 @@
-{ "vanilla" : 
-{"exercises":[{"tests":[{"id":"test","desc":"test","error":"NullPointerException(): UnitTest.test(line 25)","success":false}],"name":"GA4.6a"}]}
-, "replaced" : 
-[
-{"exercises":[{"tests":[],"name":"GA4.6a"}]}
-]
-}
+{"replaced":[{"exercises":[{"tests":[],"name":"GA4.6a"}]}],"vanilla":{"exercises":[{"tests":[{"id":"test","desc":"test","error":"NullPointerException(): UnitTest.test(line 25)","success":false}],"name":"GA4.6a"}]}}
