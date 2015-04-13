@@ -5,7 +5,6 @@
 #	set -x
 #	shift
 #fi
-
 callerdir=${PWD}
 script=$(readlink -f $0)
 scriptdir=$(dirname $script)

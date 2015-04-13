@@ -4,30 +4,41 @@ public class InterfaceComparer {
 		System.exit(1);
 	}
 
-	private static compareClasses(Class class1, Class class2){
+	private static compareClasses(Class cleanroomClass, Class studentClass){
 	
+		boolean equals = false;
+
 		// checkMethods
-		for(Method method : pub.getMethods()){
-			// TODO	
+		for(Method cleanroomMethod : cleanroomClass.getMethods()){
+			for(Method studentMethod : studentClass.getMethods) {
+				if(cleanroomMethod.equals(studentMethod)) {
+					equals = true;
+					break;
+				}
+
+				if(equals){
+					equals = false;
+				}else{
+					System.err.println("Method " +cleanroomMethod.getName() + "does not match or is not found");
+				}
+			}	
 		}		
 	}
-
-
 
 	public static void main(String args[]){
 		if(args == null || args.length != 2){
 			usage();
 		}
 
-		Class class1 = null;
-		Class class2 = null;
+		Class cleanroomClass = null;
+		Class studentClass = null;
 
 		ClassLoader cl = ClassLoader.getSystemClassLoade();
 		try{
-			class1 = cl.loadClass(args[0]);
-			class2 = cl.loadClass(args[2]);
+			cleanroomClass = cl.loadClass(args[0]);
+			studentClass = cl.loadClass(args[2]);
 
-			compareClasses(class1,class2);
+			compareClasses(cleanroomClass,studentClass);
 		}
 
 	}
