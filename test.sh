@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ "x$1" == "x-v" ]; then
+	set -x
+fi
+
 callerdir=${PWD}
 script=$(readlink -f $0)
 scriptdir=$(dirname $script)
