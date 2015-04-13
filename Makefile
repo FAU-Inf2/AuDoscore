@@ -1,8 +1,13 @@
 include var.mk
 
+STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
+
+ifndef SECRETCLASS
+	tmp:=$(shell tools/detect_junit.sh)
+	include varsec.mk
+endif
 TESTCLASS = $(TEST:=.class)
 TESTSOURCE = $(TEST:=.java)
-STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
 SECRETCLASS = $(SECRETTEST:=.class)
 SECRETSOURCE = $(SECRETTEST:=.java)
 
