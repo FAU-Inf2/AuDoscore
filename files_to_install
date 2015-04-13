@@ -6,6 +6,7 @@
 ./tools/jacoco/jacocoant.jar
 ./tools/jacoco/report_task1.xml
 ./tools/jacoco/report_task2.xml
+./tools/detect_junit.sh
 ./Makefile
 ./test.sh
 ./README.md
