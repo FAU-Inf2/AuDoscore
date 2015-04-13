@@ -86,8 +86,11 @@ function scanTestFiles {
 		fi
 	else
 		echo -e "WARNING - No junit folder found => abort\n"
-		die
-
+		# FIXME: dirty hack in place:
+		mkdir junit
+		for i in `cat var.mk | grep TEST | cut -d= -f2`; do
+			ln -s ../${i}.java junit/${i}.java
+		done
 	fi
 
 }
