@@ -3,6 +3,7 @@ import java.io.*;
 import java.lang.annotation.*;
 
 import org.junit.*;
+import org.junit.internal.*;
 import org.junit.rules.*;
 import org.junit.runner.*;
 import org.junit.runners.model.*;
@@ -29,7 +30,7 @@ public abstract class JUnitWithPoints {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	public final static String REPLACE_IGNORE_MSG = "this test case is not executed at all; ignoring it would make the point proportions incorrect -> FAIL!";
+	public final static String SKIPPED_MSG = "this testcase is skipped";
 
 	// ******************** BACKEND FUNCTIONALITY **************************************** //
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
@@ -50,15 +51,13 @@ public abstract class JUnitWithPoints {
 	// -------------------------------------------------------------------------------- //
 	private static final class ReportEntry {
 		Description description;
-		Bonus bonus;
-		Malus malus;
 		Throwable throwable;
+		Points points;
 
-		private ReportEntry(Description description, Bonus bonus, Malus malus, Throwable throwable) {
+		private ReportEntry(Description description, Points points, Throwable throwable) {
 			this.description = description;
-			this.bonus = bonus;
-			this.malus = malus;
 			this.throwable = throwable;
+			this.points = points;
 		}
 
 		private String getStackTrace() {
@@ -82,41 +81,32 @@ public abstract class JUnitWithPoints {
 			}
 		}
 
-		protected double getPoints(double pts, double pointsDeclaredPerExercise, double bonusDeclaredPerExercise) {
-			return pointsDeclaredPerExercise * Math.abs(pts) / bonusDeclaredPerExercise;
-		}
-
 		final JSONObject format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise) {
-			if (throwable != null && throwable.getLocalizedMessage() != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.REPLACE_IGNORE_MSG)) {
+			if (throwable != null && throwable.getLocalizedMessage() != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.SKIPPED_MSG)) {
 				return null;
 			}
 
 			boolean success = (throwable == null);
 			String desc = null;
-			double score = 0;
-
-			if (bonus != null) {
-				desc = getComment(bonus.comment(), description);
-			}
-			if (bonus != null && success) {
-				score = getPoints(bonus.bonus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
-			}
-			if (malus != null && success) {
-				if (bonus == null) { // only set comment if nothing was added before, points already default to zero
-					desc = getComment(malus.comment(), description);
+			if(points != null){
+				if(points.bonus() != -1){
+					desc = getComment(points.comment(), description);
+				}
+			
+				if(points.malus() != -1 && success){
+					if(points.bonus() == -1){
+						desc = getComment(points.comment(), description);
+					}
+				}
+				if(points.malus() != -1 && !success){
+					// in case of failure: overwrite bonus
+					desc = getComment(points.comment(), description);
 				}
 			}
-			if (malus != null && !success) {
-				// in case of failure: overwrite bonus
-				score = -getPoints(malus.malus(), pointsDeclaredPerExercise, bonusDeclaredPerExercise);
-				desc = getComment(malus.comment(), description);
-			}
-
 			JSONObject jsontest = new JSONObject();
 			jsontest.put("id", getShortDisplayName(description));
 			jsontest.put("success", (Boolean) (success));
 			jsontest.put("desc", desc);
-			jsontest.put("score", ((Double) score).toString());
 			if (!success) {
 				jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 			}
@@ -140,8 +130,8 @@ public abstract class JUnitWithPoints {
 	// -------------------------------------------------------------------------------- //
 	protected static class PointsLogger extends TestWatcher {
 
-		private PrintStream saveOut;
-		private PrintStream saveErr;
+		public static PrintStream saveOut;
+		public static PrintStream saveErr;
 
 		protected boolean isIgnoredCase(Description description) {
 			String doReplace = System.getProperty("replace");
@@ -154,50 +144,56 @@ public abstract class JUnitWithPoints {
 			return false;
 		}
 
+		protected boolean isSkippedCase(Description description) {
+			String methodToBeExecuted = System.getProperty("method");
+			if((methodToBeExecuted != null && !methodToBeExecuted.equals(""))){
+				String method = getShortDisplayName(description);
+				if(!method.equals(methodToBeExecuted)){
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		@Override
 		public final Statement apply(Statement base, Description description) {
-			if (isIgnoredCase(description)) {
+			if (isIgnoredCase(description) || isSkippedCase(description)) {
 				base = new MyStatement();
 			}
 			return super.apply(base, description);
 		}
 
-		Set<Long> threadIdsBefore = new HashSet<>();
-
 		@Override
 		protected void starting(Description description) {
 			try {
+				Class tc = description.getTestClass();
+				SecretClass st = (SecretClass) tc.getAnnotation(SecretClass.class);
+				Replace r = description.getAnnotation(Replace.class);
+				if(st == null && r != null){
+					// @Replace in a public test
+					throw new AnnotationFormatError("WARNING - found test case with REPLACE in a public test file: [" + description.getDisplayName() + "]");
+				}
+
 				Test testAnnotation = description.getAnnotation(Test.class);
 				if (testAnnotation.timeout() == 0) {
 					throw new AnnotationFormatError("WARNING - found test case without TIMEOUT in @Test annotation: [" + description.getDisplayName() + "]");
 				}
 				timeoutSum += testAnnotation.timeout();
 
-				threadIdsBefore.clear();
-				Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-				for (Thread t : threadSet) {
-					threadIdsBefore.add(t.getId());
-				}
+				if (saveOut == null) {
+					saveOut = System.out;
+					saveErr = System.err;
 
-				saveOut = System.out;
-				saveErr = System.err;
+					System.setOut(new PrintStream(new OutputStream() {
+						public void write(int i) {
+						}
+					}));
 
-				System.setOut(new PrintStream(new OutputStream() {
-					public void write(int i) {
-					}
-				}));
-
-				System.setErr(new PrintStream(new OutputStream() {
-					public void write(int i) {
-					}
-				}));
-
-				if (!isIgnoredCase(description)) {
-					System.gc();
-					Thread.sleep(50);
-					System.gc();
-					Thread.sleep(50);
-					System.gc();
+					System.setErr(new PrintStream(new OutputStream() {
+						public void write(int i) {
+						}
+					}));
 				}
 			} catch (Exception e) {
 				throw new AnnotationFormatError(e.getMessage());
@@ -206,59 +202,37 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
-			Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-			for (Thread t : threadSet) {
-				if (t.isAlive() && t.isInterrupted() && !threadIdsBefore.contains(t.getId()) && t.getName().matches("Thread-\\d+")) {
-					/* JUnit interrupts but does not stop threads, this leaves room for side effects between cases
-					 * e.g. students might be writing infinite loops which still allocate ressources
-					 * we try to find these hanging threads here and kill them 
-					 * see: https://groups.yahoo.com/neo/groups/junit/conversations/messages/24565
-					 */
-					t.stop(); // XXX: yes, stop is deprecated, but: we don't use this to test parallel code
-					try {
-						// wait a bit until the thread has been finally destroyed
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-					}
-				}
-			}
-			System.setOut(saveOut);
-			System.setErr(saveErr);
-
 			Bonus bonusAnnotation = description.getAnnotation(Bonus.class);
 			Malus malusAnnotation = description.getAnnotation(Malus.class);
-			if (bonusAnnotation == null && malusAnnotation == null) {
-				throw new AnnotationFormatError("WARNING - found test case without BONUS or MALUS annotation: [" + description.getDisplayName() + "]");
-			} else if (bonusAnnotation != null && bonusAnnotation.exID().trim().length() == 0) {
-				throw new AnnotationFormatError("WARNING - found test case with empty exercise id in BONUS annotation: [" + description.getDisplayName() + "]");
-			} else if (bonusAnnotation != null && !exerciseHashMap.containsKey(bonusAnnotation.exID())) {
-				throw new AnnotationFormatError("WARNING - found test case with non-declared exercise id in BONUS annotation: [" + description.getDisplayName() + "]");
-			} else if (bonusAnnotation != null && bonusAnnotation.bonus() == 0) {
-				throw new AnnotationFormatError("WARNING - found test case with illegal bonus value in BONUS annotation: [" + description.getDisplayName() + "]");
-			} else if (malusAnnotation != null && malusAnnotation.exID().trim().length() == 0) {
-				throw new AnnotationFormatError("WARNING - found test case with empty exercise id in MALUS annotation: [" + description.getDisplayName() + "]");
-			} else if (malusAnnotation != null && !exerciseHashMap.containsKey(malusAnnotation.exID())) {
-				throw new AnnotationFormatError("WARNING - found test case with non-declared exercise id in MALUS annotation: [" + description.getDisplayName() + "]");
-			} else if (malusAnnotation != null && malusAnnotation.malus() == 0) {
-				throw new AnnotationFormatError("WARNING - found test case with illegal malus value in MALUS annotation: [" + description.getDisplayName() + "]");
+			Points pointsAnnotation = description.getAnnotation(Points.class);
+			if (bonusAnnotation != null || malusAnnotation != null || pointsAnnotation == null ) {
+					throw new AnnotationFormatError("WARNING - found testcase with BONUS/MALUS annotation or no POINTS annoation [" + description.getDisplayName() + "]");
+				
+			} else if (pointsAnnotation != null && pointsAnnotation.exID().trim().length() == 0) {
+				throw new AnnotationFormatError("WARNING - found test case with empty exercise id in POINTS annotation: [" + description.getDisplayName() + "]");
+			} else if (pointsAnnotation != null && !exerciseHashMap.containsKey(pointsAnnotation.exID())) {
+				throw new AnnotationFormatError("WARNING - found test case with non-declared exercise id in POINTS annotation: [" + description.getDisplayName() + "]");
+			} else if (pointsAnnotation != null && (pointsAnnotation.malus() == 0 || pointsAnnotation.bonus() == 0)) {
+				throw new AnnotationFormatError("WARNING - found test case with illegal malus value or illegal bonus value in POINTS annotation: [" + description.getDisplayName() + "]");
+			} else if (pointsAnnotation != null && (pointsAnnotation.malus() == -1 && pointsAnnotation.bonus() == -1)) {
+				throw new AnnotationFormatError("WARNING - found test case with no malus value and no bonus value in POINTS annotation: [" + description.getDisplayName() + "]");
 			} else {
 				String exID = null;
-				if (bonusAnnotation != null && malusAnnotation != null) {
-					if (!bonusAnnotation.exID().equals(malusAnnotation.exID())){
-						throw new AnnotationFormatError("WARNING - found test case with different exercise id in MALUS/BONUS annotations: [" + description.getDisplayName() + "]");
-					}
-				}
-				if (bonusAnnotation != null) {
-					exID = bonusAnnotation.exID();
-				}
-				if (malusAnnotation != null) {
-					exID = malusAnnotation.exID();
+				
+				if(pointsAnnotation != null){
+					exID = pointsAnnotation.exID();
 				}
 				if (!reportHashMap.containsKey(exID)) {
 					reportHashMap.put(exID, new ArrayList<ReportEntry>());
 				}
-				reportHashMap.get(exID).add(new ReportEntry(description, bonusAnnotation, malusAnnotation, throwable));
+				reportHashMap.get(exID).add(new ReportEntry(description, pointsAnnotation, throwable));
 			}
+		}
+
+		@Override
+		protected void skipped(AssumptionViolatedException e, Description description) {
+			Throwable t = new Throwable(JUnitWithPoints.SKIPPED_MSG);
+			failed(t, description);
 		}
 
 		@Override
@@ -273,7 +247,21 @@ public abstract class JUnitWithPoints {
 		public final Statement apply(Statement base, Description description) {
 			reportHashMap.clear();
 			exerciseHashMap.clear();
-			Exercises exercisesAnnotation = description.getAnnotation(Exercises.class);
+			Exercises exercisesAnnotation;
+			String pubclassName = System.getProperty("pub");
+			Class pub;
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			if(pubclassName != null){
+				try{
+					pub = cl.loadClass(pubclassName);
+					exercisesAnnotation = (Exercises) pub.getAnnotation(Exercises.class);
+				}catch (ClassNotFoundException cnfe){
+					throw new AnnotationFormatError("WARNING - pub class not found [" + description.getDisplayName() + "]");
+				}
+			}else{
+				exercisesAnnotation = description.getAnnotation(Exercises.class);
+
+			}
 			if (exercisesAnnotation == null || exercisesAnnotation.value().length == 0) {
 				throw new AnnotationFormatError("WARNING - found test set without exercise points declaration: [" + description.getDisplayName() + "]");
 			}
@@ -316,26 +304,29 @@ public abstract class JUnitWithPoints {
 				Collections.sort(reportPerExercise, new ReportEntryComparator());
 				bonusDeclaredPerExercise = 0;
 				for (ReportEntry reportEntry : reportPerExercise) {
-					if (reportEntry.bonus != null) {
-						bonusDeclaredPerExercise += Math.abs(reportEntry.bonus.bonus());
+					if(reportEntry.points != null){
+						if(reportEntry.points.bonus() != -1){
+							bonusDeclaredPerExercise += Math.abs(reportEntry.points.bonus());
+						}
 					}
 				}
 				pointsDeclaredPerExercise = exercise.points();
 				bonusAchievedPerExercise = 0;
 				JSONArray jsontests = new JSONArray();
 				for (ReportEntry reportEntry : reportPerExercise) {
-					Bonus bonus = reportEntry.bonus;
-					Malus malus = reportEntry.malus;
+					Points points = reportEntry.points;
 					Throwable throwable = reportEntry.throwable;
 					JSONObject json = reportEntry.format(bonusDeclaredPerExercise, pointsDeclaredPerExercise);
 					if (json != null) {
 						jsontests.add(json);
 					}
-					if (bonus != null && throwable == null) {
-						bonusAchievedPerExercise += Math.abs(bonus.bonus());
-					}
-					if (malus != null && throwable != null) {
-						bonusAchievedPerExercise -= Math.abs(malus.malus());
+					if(points != null){
+						if(points.bonus() != -1 && throwable == null){
+							bonusAchievedPerExercise += Math.abs(points.bonus());
+						}
+						if(points.malus() != -1 && throwable != null){
+							bonusAchievedPerExercise -= Math.abs(points.malus());
+						}
 					}
 				}
 				if (bonusDeclaredPerExercise <= 0) {
@@ -345,22 +336,19 @@ public abstract class JUnitWithPoints {
 				bonusAchievedPerExercise = Math.min(bonusDeclaredPerExercise, Math.max(0, bonusAchievedPerExercise));
 				pointsAchievedPerExercise = Math.ceil(pointsDeclaredPerExercise * 2 * bonusAchievedPerExercise / bonusDeclaredPerExercise) / 2;
 				pointsAchievedTotal += pointsAchievedPerExercise;
-				jsonexercise.put("possiblePts", ((Double) exercise.points()).toString());
 				jsonexercise.put("name", exercise.exID());
-				jsonexercise.put("score", String.format("%1$.1f", pointsAchievedPerExercise));
 				jsonexercises.add(jsonexercise);
 			}
 			jsonsummary.put("exercises", jsonexercises);
-			jsonsummary.put("score", String.format("%1$.1f", pointsAchievedTotal));
 			if (System.getProperty("json") != null && System.getProperty("json").equals("yes")) {
-				System.err.println(jsonsummary);
+				PointsLogger.saveErr.println(jsonsummary);
 			} else {
 				try {
 					try (FileWriter fileWriter = new FileWriter(new File(System.getProperty("user.dir"), "autocomment.txt"))) {
 						fileWriter.write(jsonsummary.toString());
 					}
 				} catch (Throwable t) {
-					System.err.println(jsonsummary);
+					PointsLogger.saveErr.println(jsonsummary);
 				}
 			}
 		}
@@ -369,6 +357,6 @@ public abstract class JUnitWithPoints {
 
 class MyStatement extends Statement {
 	public void evaluate() {
-		Assert.fail(JUnitWithPoints.REPLACE_IGNORE_MSG);
+		Assume.assumeTrue(false);
 	}
 }

@@ -1,6 +1,5 @@
 import org.junit.*;
 import tester.*;
-
 import org.junit.*;
 import org.junit.rules.*;
 import static org.junit.Assert.*;

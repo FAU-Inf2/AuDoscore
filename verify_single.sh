@@ -12,7 +12,7 @@ for i in `find expected/ -type f`; do
 	ec=$?
 	if [[ $ec -ne 0 ]] && [[ "$i" == expected/run*.err ]]; then
 		# in case of JSON, try to parse and compare as JSON
-		java -cp ../../lib/junitpoints.jar:../../lib/json-simple-1.1.1.jar tools.json_diff.JSONDiff $i $testfile
+		java -cp ../../lib/junitpoints.jar:../../lib/json-simple-1.1.1.jar tools.jsondiff.JSONDiff $i $testfile
 		ec=$?
 	fi
 	error=$((error|ec))

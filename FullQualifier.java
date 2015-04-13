@@ -99,6 +99,7 @@ class MyPretty extends com.sun.tools.javac.tree.Pretty {
 					break;
 				case "Bonus":
 				case "Malus":
+				case "Points":
 				case "SecretCase":
 				case "Ex":
 				case "Exercises":
@@ -106,8 +107,11 @@ class MyPretty extends com.sun.tools.javac.tree.Pretty {
 				case "NotForbidden":
 					print("tester.annotations.");
 					break;
-				case "Replace": // FIXME: this is in the wrong package
-					print("tester.");
+				case "Replace": 
+					print("tester.annotations.");
+					break;
+				case "SecretClass":
+					print("tester.annotations.");
 					break;
 			}
 			printExpr(tree.annotationType);
