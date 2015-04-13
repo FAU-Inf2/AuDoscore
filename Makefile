@@ -84,9 +84,13 @@ compile-stage2: miniclean
 		java -cp lib/junitpoints.jar:lib/junit.jar:. -DwithSecret=yes tester.ReadReplace --loop $(TEST) >> loop.sh ; \
 		echo "echo \",\" 1>&2" >> loop.sh ; \
 		make compile-stage2-secret ; \
+		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." -Djson=yes $(TEST) > single_execution.sh ;\
+		echo "echo \",\" 1>&2" >> single_execution.sh;	\
+		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=$(TEST)" $(SECRETTEST) >> single_execution.sh; \
 	else \
 		java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(TEST) >> loop.sh ; \
 		echo "echo \"]\" 1>&2" >> loop.sh ; \
+		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." -Djson=yes $(TEST) > single_execution.sh ; \
 	fi		
 
 compile-stage2-secret:
@@ -122,13 +126,6 @@ run-stage1:
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
 	echo "[" 1>&2
-	if [ "x$(SECRETTEST)" != "x" ]; then \
-		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." -Djson=yes $(TEST) > single_execution.sh ;\
-		echo "echo \",\" 1>&2" >> single_execution.sh;	\
-		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=$(TEST)" $(SECRETTEST) >> single_execution.sh; \
-	else \
-	java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." -Djson=yes $(TEST) > single_execution.sh ; \
-	fi
 	sh ./single_execution.sh
 	echo "]" 1>&2
 	echo ", \"replaced\" : " 1>&2

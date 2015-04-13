@@ -80,17 +80,11 @@ public class ReadReplace{
 
 
 	public static void loopPublic(String tcln) throws Exception {
-		
 		String args[] = new String[3];
 		args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:--THIS-WILL-NEVER-HAPPEN:.";
 		args[1] = "-Dreplace=THIS-WILL-NEVER-HAPPEN -Djson=yes";
 		args[2] = tcln;
-		System.out.println("echo \"[\" 1>&2");
 		SingleExecutionPreparer.main(args);
-		// close brackets only if there are no secret tests
-		if(!withSecret) {
-			System.out.println("echo \"]\" 1>&2");
-		}
 	}
 	public static void loopSecret(String tcln, String pub) throws Exception {
 		HashMap<String,List<String>> rmap = new HashMap<String,List<String>>();
@@ -110,17 +104,14 @@ public class ReadReplace{
 		}
 		// execute sep for single execution
 		String args[] = new String[3];
-		args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:--THIS-WILL-NEVER-HAPPEN:.";
-		args[1] = "-Dpub="+pub+" -Dreplace=THIS-WILL-NEVER-HAPPEN -Djson=yes";
+		args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:--THIS-WILL-NEVER-HAPPEN-SECRET:.";
+		args[1] = "-Dpub="+pub+" -Dreplace=THIS-WILL-NEVER-HAPPEN-SECRET -Djson=yes";
 		args[2] = tcln;
 		SingleExecutionPreparer.main(args);
-		//  brackets were opened in loopPublic
-		System.out.println("echo \"]\" 1>&2");
 
 		Iterator it = rmap.entrySet().iterator();
 		while(it.hasNext()) {
 			System.out.println("echo \",\" 1>&2");
-			System.out.println("echo \"[\" 1>&2");
 			Map.Entry pair = (Map.Entry) it.next();
 			String s = (String) pair.getKey();
 			List<String> methods = (List<String>) pair.getValue();
@@ -136,7 +127,6 @@ public class ReadReplace{
 				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dreplace=" + s.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>") + " -Dmethod="+ method + " -Dpub=" +pub+" -Djson=yes org.junit.runner.JUnitCore " + tcln + " || echo");
 			}
 
-			System.out.println("echo \"]\" 1>&2");
 		}
 	}
 

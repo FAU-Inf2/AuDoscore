@@ -292,10 +292,6 @@ function testIt {
 	info "- compiling"
 	( make compile-stage2 ) > comp2 2>&1
 	checkexit $? "\ninternal error\n" comp2
-	if [ "x$secretclass" != "x" ]; then
-		( make compile-stage2-secret ) > comp2 2>&1
-		checkexit $? "\ninternal error\n" comp2
-	fi
 
 	info "- testing"
 	( make run-stage2 ) > run2.out 2> run2.err
