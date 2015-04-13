@@ -6,7 +6,9 @@ function err {
 }
 
 function die {
-	err "$1"
+	if [ "x" != "x$1" ]; then
+		err "$1"
+	fi
 	exit -1
 }
 
@@ -64,6 +66,7 @@ function checkTestfiles {
 function scanTestFiles {
 	# look for junit folder
 	junit_folder="junit"
+	touch varsec.mk
 	if [ -d $junit_folder ]; then
 		## get the files
 		files=()
@@ -76,17 +79,17 @@ function scanTestFiles {
 		if [ "${file_count}" == "1" ]; then
 			die "found only one class"
 		elif [ "${file_count}" == "2" ]; then
-			checkTestfiles ${files[0]} ${files[1]}
+			checkTestfiles ${files[0]} ${files[1]} > varsec.mk
 		else
 			err " WARNING - Maximum number of testfiles are 2 (Secrettest and Publictest) => abort"
 			die
 		fi
 	else
-		err "WARNING - No junit folder found => abort\n"
+		echo -e "WARNING - No junit folder found => abort\n"
 		die
 
 	fi
 
 }
 
-scanTestFiles > varsec.mk
+scanTestFiles
