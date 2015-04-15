@@ -17,9 +17,9 @@ Available Annotations
 | `@Ex` | Yes | element in `@Exercises` list | `exId`: String, `points`: Double, `comment`: String, defaults to `<n.a.>` | for every (sub)exercise, create an `@Ex` annotation with unique `exID` |
 | `@Forbidden` | No | class level | Array of Strings | Arguments are interpreted as prefixes of forbidden classes/methods/etc., see also `@NotForbidden` |
 | `@NotForbidden` | No | class level | Array of Strings | Arguments are interpreted as prefixes of allowed classes/methods/etc., these take precedence over `@Forbidden`; see also `@Forbidden` |
+| `@Points` (combination of `@Malus` and `@Bonus` ) | sort of | test case level | `exId`: String, `bonus`: Double, `malus`: Double, `comment`: String, defaults to method name | Student earns `bonus` / sum(`bonus`) * `Ex.points` points for passing this test case. Student looses `malus` / sum(`bonus`) * `Ex.points` points for *not* passing this test case |
 | `@Bonus`(deprecated, please use `@Points`) | sort of | test case level | `exId`: String, `bonus`: Double, `comment`: String, defaults to method name | Student earns `bonus` / sum(`bonus`) * `Ex.points` points for passing this test case |
 | `@Malus` (deprecated, please use `@Points`) | sort of | test case level | `exId`: String, `malus`: Double, `comment`: String, defaults to method name | Student looses `malus` / sum(`bonus`) * `Ex.points` points for *not* passing this test case |
-| `@Replace` | No | test case level | Array of Strings | Strings refer to methods in the student's code. For this test case, all methods mentioned in the `@Replace` annotation will be replaced with their cleanroom counterparts. |
 | `@Replace` | No | test case level | Array of Strings | Strings refer to methods in the student's code. For this test case, all methods mentioned in the `@Replace` annotation will be replaced with their cleanroom counterparts. Note: `@Replace` can only be used in secret tests|
 | `@SecretClass` | No | class level | None | Marks a test class to be secret. Results will not be shown to students before the submission deadline. |
 
