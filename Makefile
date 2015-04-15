@@ -11,12 +11,9 @@ TESTSOURCE = $(TEST:=.java)
 SECRETCLASS = $(SECRETTEST:=.class)
 SECRETSOURCE = $(SECRETTEST:=.java)
 
-all:
-	make prepare
-	./test.sh $(TEST) $(STUDENTSOURCE) -- $(INTERFACES) -- student
+all: prepare
 
-verify:
-	make prepare
+verify: prepare
 	./verify.sh
 
 clean:
@@ -25,9 +22,6 @@ clean:
 	rm -rf mixed
 	rm -f *.class
 	rm -f lib/junitpoints.jar
-
-miniclean:
-	rm -f *.class */*.class
 
 build:
 	rm -rf build
