@@ -348,10 +348,17 @@ info "scanning for cleanroom"
 cleanroom=""
 scanCleanroom
 
-info "scanning for student sources"
-undertestdircnt=0
-undertestdirs=""
-scanStudentSources
+
+if [ "$#" -eq 0 ]; then
+	info "scanning for student sources"
+	undertestdircnt=0
+	undertestdirs=""
+	scanStudentSources
+else
+	info "use args from commandline as student source dirs"
+	undertestdircnt=$#
+	undertestdirs=$@
+fi
 
 undertestdir="undertest"
 if [ ${undertestdircnt} -eq 1 ]; then
