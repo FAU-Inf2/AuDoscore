@@ -16,6 +16,9 @@ all: prepare
 verify: prepare
 	./verify.sh
 
+miniclean:
+	rm -f *.class */*.class
+
 clean:
 	rm -rf build
 	rm -rf replaced
