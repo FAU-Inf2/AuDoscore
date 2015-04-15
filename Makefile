@@ -1,4 +1,4 @@
-include var.mk
+-include var.mk
 
 STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
 
