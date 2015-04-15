@@ -9,38 +9,35 @@ import org.junit.runner.*;
 import org.junit.runners.model.*;
 
 import org.json.simple.*;
-import org.json.simple.parser.*;
 
-import java.lang.reflect.*;
 import tester.*;
 import tester.annotations.*;
 
 
-// ******************** RULES HELPER for pretty code **************************************** //
-final class PointsLogger extends JUnitWithPoints.PointsLogger {
-}
-
-final class PointsSummary extends JUnitWithPoints.PointsSummary {
-}
+// rules helpers to shorten code
+final class PointsLogger extends JUnitWithPoints.PointsLogger {}
+final class PointsSummary extends JUnitWithPoints.PointsSummary {}
 
 public abstract class JUnitWithPoints {
-	// ******************** RULES **************************************** //
+	// these rules help to collect necessary information from test methods
 	@Rule
 	public final PointsLogger pointsLogger = new PointsLogger();
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	public final static String SKIPPED_MSG = "this testcase is skipped";
+	public final static String SKIPPED_MSG = "This testcase is skipped intentionally.";
 
-	// ******************** BACKEND FUNCTIONALITY **************************************** //
+	// backend data structures
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 	private static final HashMap<String, List<ReportEntry>> reportHashMap = new HashMap<>();
 	private static long timeoutSum = 0;
 
 	static {
+		// set locale to avoid differences in reading/writing floats
 		Locale.setDefault(Locale.US);
 	}
 
+	// shortens description if possible
 	private static String getShortDisplayName(Description d) {
 		String orig = d.getDisplayName();
 		int ix = orig.indexOf('(');
@@ -48,7 +45,7 @@ public abstract class JUnitWithPoints {
 		return orig.substring(0, ix);
 	}
 
-	// -------------------------------------------------------------------------------- //
+	// helper class for reports
 	private static final class ReportEntry {
 		Description description;
 		Throwable throwable;
@@ -60,6 +57,7 @@ public abstract class JUnitWithPoints {
 			this.points = points;
 		}
 
+		// get sensible part/line of stack trace
 		private String getStackTrace() {
 			if (throwable == null || throwable instanceof AssertionError) return "";
 			StackTraceElement st[] = throwable.getStackTrace();
@@ -73,8 +71,9 @@ public abstract class JUnitWithPoints {
 			return ": " + ste.getClassName() + "." + ste.getMethodName() + "(line " + ste.getLineNumber() + ")";
 		}
 
+		// determine comment for students
 		protected String getComment(String comment, Description description) {
-			if (comment.equals("<n.a.>")) {
+			if (comment.equals("<n.a.>")) { // default value -> use short method name
 				return getShortDisplayName(description);
 			} else {
 				return comment;
@@ -355,6 +354,7 @@ public abstract class JUnitWithPoints {
 	}
 }
 
+// helper class to skip test methods
 class MyStatement extends Statement {
 	public void evaluate() {
 		Assume.assumeTrue(false);
