@@ -9,7 +9,7 @@ die() {
 	if test "x" != "x$1" ; then
 		err "$1"
 	fi
-	exit -1
+	exit 100
 }
 
 checkTestfiles() {
@@ -71,7 +71,7 @@ scanTestFiles() {
 		## get the files
 		files=""
 		for entry in "$junit_folder"/*.java
-		do	files="$files $entry"
+		do	files="$files$entry "
 		done
 		
 		file_count=$(ls -1 $junit_folder/*.java | wc -l)
@@ -80,11 +80,11 @@ scanTestFiles() {
 			file1="$(echo "$files" | cut -d ' ' -f 1)"
 			sec=$(grep '@*SecretClass' ${file1})
 			if [ "x" != "x$sec" ]; then
-				echo "SECRET=$(basename ${file1} .java)" > varsec.mk
+				echo "SECRETTEST=$(basename ${file1} .java)" > varsec.mk
 				echo "TEST=" >> varsec.mk
 			else
-				echo "TEST=$(basename ${files1} .java)" > varsec.mk
-				echo "SECRET=" >> varsec.mk
+				echo "TEST=$(basename ${file1} .java)" > varsec.mk
+				echo "SECRETTEST=" >> varsec.mk
 			fi
 			exit
 		elif test "${file_count}" = "2" ; then
@@ -97,13 +97,16 @@ scanTestFiles() {
 		fi
 	else
 		/bin/echo -e "WARNING - No junit folder found => abort\n"
-		# FIXME: dirty hack in place:
-		mkdir junit
-		for i in `cat var.mk | grep TEST | cut -d= -f2`; do
-			ln -s ../${i}.java junit/${i}.java
-		done
-		# do it once more
-		scanTestFiles
+		stage=$(cat var.mk | grep STAGE | cut -d= -f2)
+		if test "x$stage" != "x0" ; then
+			# FIXME: dirty hack in place:
+			mkdir junit
+			for i in `cat var.mk | grep TEST | cut -d= -f2`; do
+				ln -s ../${i}.java junit/${i}.java
+			done
+			# do it once more
+			scanTestFiles
+		fi
 	fi
 
 }
