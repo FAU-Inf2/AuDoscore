@@ -318,26 +318,31 @@ public abstract class JUnitWithPoints {
 		}
 
 		@Override
+		// create and print JSON summary to stderr (if requested)
 		protected final void after() {
 			if (System.getProperty("json") != null && System.getProperty("json").equals("yes")) {
-				// create and print JSON summary to stderr
-				String[] exerciseIds = reportHashMap.keySet().toArray(new String[0]);
-				Arrays.sort(exerciseIds);
-				JSONObject jsonSummary = new JSONObject();
+				// loop over all reports and collect results
 				JSONArray jsonExercises = new JSONArray();
-				for (String exerciseId : exerciseIds) {
+				for (Map.Entry<String, List<ReportEntry>> exerciseResults : reportHashMap.entrySet()) {
 					JSONArray jsonTests = new JSONArray();
-					for (ReportEntry reportEntry : reportHashMap.get(exerciseId)) {
+
+					// loop over all results for that exercise
+					for (ReportEntry reportEntry : exerciseResults.getValue()) {
 						JSONObject json = reportEntry.toJSON();
 						if (json != null) {
 							jsonTests.add(json);
 						}
 					}
+
+					// collect result
 					JSONObject jsonExercise = new JSONObject();
-					jsonExercise.put("name", exerciseHashMap.get(exerciseId).exID());
+					jsonExercise.put("name", exerciseResults.getKey());
 					jsonExercise.put("tests", jsonTests);
 					jsonExercises.add(jsonExercise);
 				}
+
+				// add results to root node and write to stderr
+				JSONObject jsonSummary = new JSONObject();
 				jsonSummary.put("exercises", jsonExercises);
 				PointsLogger.saveErr.println(jsonSummary);
 			}

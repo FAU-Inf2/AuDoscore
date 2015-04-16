@@ -1,2 +1,2 @@
 1) UnitTest
-java.lang.annotation.AnnotationFormatError: Declare at least one Bonus case per exercise.
+java.lang.annotation.AnnotationFormatError: WARNING - found @Ex declaration without test method with bonus values: [UnitTest]
