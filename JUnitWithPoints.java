@@ -190,28 +190,9 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
-			Bonus bonusAnnotation = description.getAnnotation(Bonus.class);
-			Malus malusAnnotation = description.getAnnotation(Malus.class);
 			Points pointsAnnotation = description.getAnnotation(Points.class);
-			if (bonusAnnotation != null || malusAnnotation != null) {
-				throw new AnnotationFormatError("WARNING - found testcase with deprecated @Bonus/@Malus annotation [" + description.getDisplayName() + "]");
-			} else if (pointsAnnotation == null) {
-				throw new AnnotationFormatError("WARNING - found testcase without @Points annoation [" + description.getDisplayName() + "]");
-			} else if (pointsAnnotation.exID().trim().length() == 0) {
-				throw new AnnotationFormatError("WARNING - found test case with empty exercise id in @Points annotation: [" + description.getDisplayName() + "]");
-			} else if (!exerciseHashMap.containsKey(pointsAnnotation.exID())) {
-				throw new AnnotationFormatError("WARNING - found test case with non-declared exercise id in @Points annotation: [" + description.getDisplayName() + "]");
-			} else if (pointsAnnotation.malus() == 0 || pointsAnnotation.bonus() == 0) {
-				throw new AnnotationFormatError("WARNING - found test case with illegal bonus/malus value in @Points annotation: [" + description.getDisplayName() + "]");
-			} else if (pointsAnnotation.malus() == -1 && pointsAnnotation.bonus() == -1) {
-				throw new AnnotationFormatError("WARNING - found test case without bonus/malus value in @Points annotation: [" + description.getDisplayName() + "]");
-			} else {
-				String exID = pointsAnnotation.exID();
-				if (!reportHashMap.containsKey(exID)) {
-					reportHashMap.put(exID, new ArrayList<ReportEntry>());
-				}
-				reportHashMap.get(exID).add(new ReportEntry(description, pointsAnnotation, throwable));
-			}
+			String exID = pointsAnnotation.exID();
+			reportHashMap.get(exID).add(new ReportEntry(description, pointsAnnotation, throwable));
 		}
 
 		@Override
@@ -237,10 +218,15 @@ public abstract class JUnitWithPoints {
 			exerciseHashMap.clear();
 
 			Exercises exercisesAnnotation = getExercisesAnnotation(description);
+			// checkAnnotations also fills exerciseHashMap
 			checkAnnotations(description, exercisesAnnotation);
+
+			// fill data structures
 			for (Ex exercise : exercisesAnnotation.value()) {
-				exerciseHashMap.put(exercise.exID(), exercise);
+				reportHashMap.put(exercise.exID(), new ArrayList<ReportEntry>());
 			}
+
+			// start the real JUnit test
 			return super.apply(base, description);
 		}
 
@@ -267,8 +253,10 @@ public abstract class JUnitWithPoints {
 			}
 		}
 
-		// checks all annotation conditions; throws AnnotationFormatError
+		// checks all annotation conditions
+		// fills exerciseHashMap as side effect
 		private void checkAnnotations(Description description, Exercises exercisesAnnotation) {
+			// check annotations on class level
 			if (exercisesAnnotation == null || exercisesAnnotation.value().length == 0) {
 				throw new AnnotationFormatError("WARNING - did not find valid @Exercises declaration: [" + description.getDisplayName() + "]");
 			}
@@ -279,9 +267,12 @@ public abstract class JUnitWithPoints {
 					throw new AnnotationFormatError("WARNING - found @Exercises annotation with illegal points value: [" + exercise.exID() + "]");
 				} else if (exerciseHashMap.containsKey(exercise.exID())) {
 					throw new AnnotationFormatError("WARNING - found @Exercises annotation with duplicate exercise: [" + exercise.exID() + "]");
+				} else {
+					exerciseHashMap.put(exercise.exID(), exercise);
 				}
 			}
 
+			// check annotations on method level
 			long timeoutSum = 0;
 			Class<?> clazz = description.getTestClass();
 			for (Method m : clazz.getMethods()) {
@@ -293,10 +284,28 @@ public abstract class JUnitWithPoints {
 					throw new AnnotationFormatError("WARNING - found test case without 'timeout' in @Test annotation: [" + description.getDisplayName() + "]");
 				}
 				timeoutSum += test.timeout();
+
+				Bonus bonusAnnotation = m.getAnnotation(Bonus.class);
+				Malus malusAnnotation = m.getAnnotation(Malus.class);
+				Points pointsAnnotation = m.getAnnotation(Points.class);
+				if (bonusAnnotation != null || malusAnnotation != null) {
+					throw new AnnotationFormatError("WARNING - found testcase with deprecated @Bonus/@Malus annotation [" + description.getDisplayName() + "]");
+				} else if (pointsAnnotation == null) {
+					throw new AnnotationFormatError("WARNING - found testcase without @Points annotation [" + description.getDisplayName() + "]");
+				} else if (pointsAnnotation.exID().trim().length() == 0) {
+					throw new AnnotationFormatError("WARNING - found test case with empty exercise id in @Points annotation: [" + description.getDisplayName() + "]");
+				} else if (!exerciseHashMap.containsKey(pointsAnnotation.exID())) {
+					throw new AnnotationFormatError("WARNING - found test case with non-declared exercise id in @Points annotation: [" + description.getDisplayName() + "]");
+				} else if (pointsAnnotation.malus() == 0 || pointsAnnotation.bonus() == 0) {
+					throw new AnnotationFormatError("WARNING - found test case with illegal bonus/malus value in @Points annotation: [" + description.getDisplayName() + "]");
+				} else if (pointsAnnotation.malus() == -1 && pointsAnnotation.bonus() == -1) {
+					throw new AnnotationFormatError("WARNING - found test case without bonus/malus value in @Points annotation: [" + description.getDisplayName() + "]");
+				}
 			}
 			if (timeoutSum > MAX_TIMEOUT_MS) {
 				throw new AnnotationFormatError("WARNING - total timeout sum is too high, please reduce to max. " + MAX_TIMEOUT_MS + "ms: [" + timeoutSum + "ms]");
 			}
+
 
 		}
 
