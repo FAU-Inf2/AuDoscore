@@ -9,10 +9,12 @@ public class InterfaceComparer {
 	private static void compareClasses(Class cleanroomClass, Class studentClass) {
 	
 		boolean equals = false;
-		ArrayList<Method> studentMethods = new ArrayList<Method>(Arrays.asList(studentClass.getMethods()));
+		ArrayList<Method> studentMethods = new ArrayList<Method>(Arrays.asList(studentClass.getDeclaredMethods()));
 		// checkMethods
-		for(Method cleanroomMethod : cleanroomClass.getMethods()){
+		for(Method cleanroomMethod : cleanroomClass.getDeclaredMethods()){
+			System.out.println(cleanroomMethod);
 			for(Method studentMethod : studentMethods) {
+				System.out.println(studentMethod);
 				if(cleanroomMethod.equals(studentMethod)) {
 					equals = true;
 					studentMethods.remove(studentMethod);
@@ -22,7 +24,7 @@ public class InterfaceComparer {
 				if(equals){
 					equals = false;
 				}else{
-					System.err.println("Method " +cleanroomMethod.getName() + "does not match or is not found");
+					System.err.println("Method " +cleanroomMethod.getName() + " does not match or is not found");
 				}
 			}	
 		}		
