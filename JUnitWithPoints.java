@@ -1,3 +1,4 @@
+import java.lang.reflect.Method;
 import java.util.*;
 import java.io.*;
 import java.lang.annotation.*;
@@ -32,7 +33,6 @@ public abstract class JUnitWithPoints {
 	// backend data structures
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 	private static final HashMap<String, List<ReportEntry>> reportHashMap = new HashMap<>();
-	private static long timeoutSum = 0;
 
 	static {
 		// set locale explicitly to avoid differences in reading/writing floats
@@ -167,7 +167,6 @@ public abstract class JUnitWithPoints {
 				if (testAnnotation.timeout() == 0) {
 					throw new AnnotationFormatError("WARNING - found test case without TIMEOUT in @Test annotation: [" + description.getDisplayName() + "]");
 				}
-				timeoutSum += testAnnotation.timeout();
 
 				// disable stdout/stderr to avoid timeouts due to large debugging outputs
 				if (saveOut == null) {
@@ -233,21 +232,43 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		public final Statement apply(Statement base, Description description) {
+			// reset states
 			reportHashMap.clear();
 			exerciseHashMap.clear();
-			Exercises exercisesAnnotation;
-			String pubClassName = System.getProperty("pub");
-			if (pubClassName != null) {
-				try {
-					Class pub = ClassLoader.getSystemClassLoader().loadClass(pubClassName);
-					exercisesAnnotation = (Exercises) pub.getAnnotation(Exercises.class);
-				} catch (ClassNotFoundException e) {
-					throw new AnnotationFormatError("WARNING - pub class not found [" + pubClassName + "]");
-				}
-			} else {
-				exercisesAnnotation = description.getAnnotation(Exercises.class);
 
+			Exercises exercisesAnnotation = getExercisesAnnotation(description);
+			checkAnnotations(description, exercisesAnnotation);
+			for (Ex exercise : exercisesAnnotation.value()) {
+				exerciseHashMap.put(exercise.exID(), exercise);
 			}
+			return super.apply(base, description);
+		}
+
+		private Exercises getExercisesAnnotation(Description description) {
+			Exercises exercisesAnnotation;
+			Class<?> publicTestClass = getPublicTestClass();
+			if (publicTestClass == null) {
+				exercisesAnnotation = description.getAnnotation(Exercises.class);
+			} else {
+				exercisesAnnotation = publicTestClass.getAnnotation(Exercises.class);
+			}
+			return exercisesAnnotation;
+		}
+
+		private Class<?> getPublicTestClass() {
+			String pubClassName = System.getProperty("pub");
+			if (pubClassName == null) {
+				return null;
+			}
+			try {
+				return ClassLoader.getSystemClassLoader().loadClass(pubClassName);
+			} catch (ClassNotFoundException e) {
+				throw new AnnotationFormatError("WARNING - pub class specified, but not found [" + pubClassName + "]");
+			}
+		}
+
+		// checks all annotation conditions; throws AnnotationFormatError
+		private void checkAnnotations(Description description, Exercises exercisesAnnotation) {
 			if (exercisesAnnotation == null || exercisesAnnotation.value().length == 0) {
 				throw new AnnotationFormatError("WARNING - did not find valid @Exercises declaration: [" + description.getDisplayName() + "]");
 			}
@@ -259,16 +280,28 @@ public abstract class JUnitWithPoints {
 				} else if (exerciseHashMap.containsKey(exercise.exID())) {
 					throw new AnnotationFormatError("WARNING - found @Exercises annotation with duplicate exercise: [" + exercise.exID() + "]");
 				}
-				exerciseHashMap.put(exercise.exID(), exercise);
 			}
-			return super.apply(base, description);
+
+			long timeoutSum = 0;
+			Class<?> clazz = description.getTestClass();
+			for (Method m : clazz.getMethods()) {
+				Test test = m.getAnnotation(Test.class);
+				if (test == null) {
+					continue;
+				}
+				if (test.timeout() == 0) {
+					throw new AnnotationFormatError("WARNING - found test case without 'timeout' in @Test annotation: [" + description.getDisplayName() + "]");
+				}
+				timeoutSum += test.timeout();
+			}
+			if (timeoutSum > MAX_TIMEOUT_MS) {
+				throw new AnnotationFormatError("WARNING - total timeout sum is too high, please reduce to max. " + MAX_TIMEOUT_MS + "ms: [" + timeoutSum + "ms]");
+			}
+
 		}
 
 		@Override
 		protected final void after() {
-			if (timeoutSum > MAX_TIMEOUT_MS) {
-				throw new AnnotationFormatError("WARNING - total timeout sum is too high, please reduce to max. " + MAX_TIMEOUT_MS + "ms: [" + timeoutSum + "ms]");
-			}
 			for (String exerciseId : exerciseHashMap.keySet()) {
 				if (!reportHashMap.containsKey(exerciseId)) {
 					String doReplace = System.getProperty("replace");
