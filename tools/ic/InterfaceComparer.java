@@ -1,13 +1,11 @@
 import java.util.*;
 import java.lang.reflect.*;
-public class InterfaceComparer {
-	private static void usage() {
-		System.err.println("java InterfaceComparer <CleanroomClass> <StudentClass>");
-		System.exit(1);
-	}
+import java.net.URLClassLoader;
+import java.io.*;
 
+public class InterfaceComparer {
 	private static void compareClasses(Class cleanroomClass, Class studentClass) {
-	
+
 		boolean equals = false;
 		ArrayList<Method> studentMethods = new ArrayList<Method>(Arrays.asList(studentClass.getDeclaredMethods()));
 		// checkMethods
@@ -24,32 +22,44 @@ public class InterfaceComparer {
 				if(equals){
 					equals = false;
 				}else{
-					System.err.println("Method " +cleanroomMethod.getName() + " does not match or is not found");
+					System.err.println("Method " +cleanroomMethod.getName() + " does not exists in student code or does not match");
 				}
 			}	
 		}		
 	}
 
-	public static void main(String args[]){
-		if(args == null || args.length != 2){
-			usage();
-		}
-
-		Class cleanroomClass = null;
-		Class studentClass = null;
-
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
-		try{
-			cleanroomClass = cl.loadClass(args[0]);
-			studentClass = cl.loadClass(args[1]);
-
-		} catch (ClassNotFoundException cnfe) {
-			throw new Error("WARNING - " + cnfe.getMessage());
-		}
-		
-		compareClasses(cleanroomClass,studentClass);
-
+	private static String getSimpleFileName(String path){
+		int idx = path.lastIndexOf("/");
+		return idx >= 0 ? path.substring(idx + 1) : path;
 	}
 
 
+	public static void main(String args[]){
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		String pathToCleanroom = "./cleanroom";
+		File f = new File(pathToCleanroom);
+
+		for(File path : f.listFiles()) {
+			if (path.isFile()) {
+				String pathString = path.toString();
+				if(pathString.matches("*.class")){
+					// get simple Name
+					String fileName = getSimpleFileName(pathString);
+					// strip fileextension
+					fileName = fileName.substring(0, fileName.lastIndexOf('.'));	
+					Class cleanroomClass = null;
+					Class studentClass = null;
+
+					try{
+						cleanroomClass = cl.loadClass(fileName);
+						studentClass = cl.loadClass(fileName);
+
+					} catch (ClassNotFoundException cnfe) {
+						throw new Error("WARNING - " + cnfe.getMessage());
+					}
+					compareClasses(cleanroomClass,studentClass);
+				}
+			}
+		}
+	}
 }
