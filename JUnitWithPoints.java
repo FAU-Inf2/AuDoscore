@@ -13,6 +13,8 @@ import org.json.simple.*;
 import tester.*;
 import tester.annotations.*;
 
+import javax.management.RuntimeErrorException;
+
 
 // rules helpers to shorten code
 final class PointsLogger extends JUnitWithPoints.PointsLogger {}
@@ -80,7 +82,8 @@ public abstract class JUnitWithPoints {
 			}
 		}
 
-		final JSONObject format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise) {
+		final JSONObject toJSON(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise) {
+			// check if this case was ignored or skipped
 			if (throwable != null && throwable.getLocalizedMessage() != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.SKIPPED_MSG)) {
 				return null;
 			}
@@ -276,11 +279,11 @@ public abstract class JUnitWithPoints {
 			}
 			String[] exerciseIds = reportHashMap.keySet().toArray(new String[0]);
 			Arrays.sort(exerciseIds);
-			JSONObject jsonsummary = new JSONObject();
-			JSONArray jsonexercises = new JSONArray();
+			JSONObject jsonSummary = new JSONObject();
+			JSONArray jsonExercises = new JSONArray();
 			for (String exerciseId : exerciseIds) {
 				double bonusDeclaredPerExercise, pointsDeclaredPerExercise;
-				JSONObject jsonexercise = new JSONObject();
+				JSONObject jsonExercise = new JSONObject();
 				Ex exercise = exerciseHashMap.get(exerciseId);
 				List<ReportEntry> reportPerExercise = reportHashMap.get(exerciseId);
 				bonusDeclaredPerExercise = 0;
@@ -292,31 +295,23 @@ public abstract class JUnitWithPoints {
 					}
 				}
 				pointsDeclaredPerExercise = exercise.points();
-				JSONArray jsontests = new JSONArray();
+				JSONArray jsonTests = new JSONArray();
 				for (ReportEntry reportEntry : reportPerExercise) {
-					JSONObject json = reportEntry.format(bonusDeclaredPerExercise, pointsDeclaredPerExercise);
+					JSONObject json = reportEntry.toJSON(bonusDeclaredPerExercise, pointsDeclaredPerExercise);
 					if (json != null) {
-						jsontests.add(json);
+						jsonTests.add(json);
 					}
 				}
 				if (bonusDeclaredPerExercise <= 0) {
 					throw new AnnotationFormatError("Declare at least one Bonus case per exercise.");
 				}
-				jsonexercise.put("tests", jsontests);
-				jsonexercise.put("name", exercise.exID());
-				jsonexercises.add(jsonexercise);
+				jsonExercise.put("tests", jsonTests);
+				jsonExercise.put("name", exercise.exID());
+				jsonExercises.add(jsonExercise);
 			}
-			jsonsummary.put("exercises", jsonexercises);
+			jsonSummary.put("exercises", jsonExercises);
 			if (System.getProperty("json") != null && System.getProperty("json").equals("yes")) {
-				PointsLogger.saveErr.println(jsonsummary);
-			} else {
-				try {
-					try (FileWriter fileWriter = new FileWriter(new File(System.getProperty("user.dir"), "autocomment.txt"))) {
-						fileWriter.write(jsonsummary.toString());
-					}
-				} catch (Throwable t) {
-					PointsLogger.saveErr.println(jsonsummary);
-				}
+				PointsLogger.saveErr.println(jsonSummary);
 			}
 		}
 	}
