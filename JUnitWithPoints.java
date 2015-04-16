@@ -33,7 +33,7 @@ public abstract class JUnitWithPoints {
 	private static long timeoutSum = 0;
 
 	static {
-		// set locale to avoid differences in reading/writing floats
+		// set locale explicitly to avoid differences in reading/writing floats
 		Locale.setDefault(Locale.US);
 	}
 
@@ -226,6 +226,8 @@ public abstract class JUnitWithPoints {
 
 	// helper class for summaries
 	protected static class PointsSummary extends ExternalResource {
+		public static final int MAX_TIMEOUT_MS = 60_000;
+
 		@Override
 		public final Statement apply(Statement base, Description description) {
 			reportHashMap.clear();
@@ -248,11 +250,11 @@ public abstract class JUnitWithPoints {
 			}
 			for (Ex exercise : exercisesAnnotation.value()) {
 				if (exercise.exID().trim().length() == 0) {
-					throw new AnnotationFormatError("WARNING - found exercise points declaration with empty exercise name and following points: [" + exercise.points() + "]");
-				} else if (exercise.points() == 0) {
-					throw new AnnotationFormatError("WARNING - found exercise points declaration with illegal points value: [" + exercise.exID() + "]");
+					throw new AnnotationFormatError("WARNING - found @Exercises annotation with empty exercise name and following points: [" + exercise.points() + "]");
+				} else if (exercise.points() <= 0) {
+					throw new AnnotationFormatError("WARNING - found @Exercises annotation with illegal points value: [" + exercise.exID() + "]");
 				} else if (exerciseHashMap.containsKey(exercise.exID())) {
-					throw new AnnotationFormatError("WARNING - found exercise points declaration with duplicate exercise: [" + exercise.exID() + "]");
+					throw new AnnotationFormatError("WARNING - found @Exercises annotation with duplicate exercise: [" + exercise.exID() + "]");
 				}
 				exerciseHashMap.put(exercise.exID(), exercise);
 			}
@@ -261,8 +263,8 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		protected final void after() {
-			if (timeoutSum > 60_000) {
-				throw new AnnotationFormatError("WARNING - total timeout sum is too high, please reduce to max. 60000ms\": [" + timeoutSum + "ms]");
+			if (timeoutSum > MAX_TIMEOUT_MS) {
+				throw new AnnotationFormatError("WARNING - total timeout sum is too high, please reduce to max. " + MAX_TIMEOUT_MS + "ms: [" + timeoutSum + "ms]");
 			}
 			for (String exerciseId : exerciseHashMap.keySet()) {
 				if (!reportHashMap.containsKey(exerciseId)) {
