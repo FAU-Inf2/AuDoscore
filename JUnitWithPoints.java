@@ -14,8 +14,6 @@ import org.json.simple.*;
 import tester.*;
 import tester.annotations.*;
 
-import javax.management.RuntimeErrorException;
-
 
 // rules helpers to shorten code
 final class PointsLogger extends JUnitWithPoints.PointsLogger {}
@@ -82,7 +80,7 @@ public abstract class JUnitWithPoints {
 			}
 		}
 
-		final JSONObject toJSON(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise) {
+		final JSONObject toJSON() {
 			// check if this case was ignored or skipped
 			if (throwable != null && throwable.getLocalizedMessage() != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.SKIPPED_MSG)) {
 				return null;
@@ -230,17 +228,17 @@ public abstract class JUnitWithPoints {
 			return super.apply(base, description);
 		}
 
+		// returns @Exercises annotation of public test class (if specified) or current class (otherwise)
 		private Exercises getExercisesAnnotation(Description description) {
-			Exercises exercisesAnnotation;
 			Class<?> publicTestClass = getPublicTestClass();
 			if (publicTestClass == null) {
-				exercisesAnnotation = description.getAnnotation(Exercises.class);
+				return description.getAnnotation(Exercises.class);
 			} else {
-				exercisesAnnotation = publicTestClass.getAnnotation(Exercises.class);
+				return publicTestClass.getAnnotation(Exercises.class);
 			}
-			return exercisesAnnotation;
 		}
 
+		// returns public test class (if specified)
 		private Class<?> getPublicTestClass() {
 			String pubClassName = System.getProperty("pub");
 			if (pubClassName == null) {
@@ -274,6 +272,7 @@ public abstract class JUnitWithPoints {
 
 			// check annotations on method level
 			long timeoutSum = 0;
+			HashSet<String> usedExercises = new HashSet<>(), bonusExercises = new HashSet<>();
 			Class<?> clazz = description.getTestClass();
 			for (Method m : clazz.getMethods()) {
 				Test test = m.getAnnotation(Test.class);
@@ -300,7 +299,16 @@ public abstract class JUnitWithPoints {
 					throw new AnnotationFormatError("WARNING - found test case with illegal bonus/malus value in @Points annotation: [" + description.getDisplayName() + "]");
 				} else if (pointsAnnotation.malus() == -1 && pointsAnnotation.bonus() == -1) {
 					throw new AnnotationFormatError("WARNING - found test case without bonus/malus value in @Points annotation: [" + description.getDisplayName() + "]");
+				} else if (pointsAnnotation.bonus() != -1) {
+					bonusExercises.add(pointsAnnotation.exID());
 				}
+				usedExercises.add(pointsAnnotation.exID());
+			}
+			if (usedExercises.size() != exerciseHashMap.size()) {
+				throw new AnnotationFormatError("WARNING - found @Ex declaration without corresponding test method: [" + description.getDisplayName() + "]");
+			}
+			if (bonusExercises.size() != exerciseHashMap.size()) {
+				throw new AnnotationFormatError("WARNING - found @Ex declaration without test method with bonus values: [" + description.getDisplayName() + "]");
 			}
 			if (timeoutSum > MAX_TIMEOUT_MS) {
 				throw new AnnotationFormatError("WARNING - total timeout sum is too high, please reduce to max. " + MAX_TIMEOUT_MS + "ms: [" + timeoutSum + "ms]");
@@ -311,48 +319,26 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		protected final void after() {
-			for (String exerciseId : exerciseHashMap.keySet()) {
-				if (!reportHashMap.containsKey(exerciseId)) {
-					String doReplace = System.getProperty("replace");
-					if (doReplace == null || doReplace.equals("")) {
-						throw new AnnotationFormatError("WARNING - found exercise points declaration for exercise without test case: [" + exerciseId + "]");
-					}
-				}
-			}
-			String[] exerciseIds = reportHashMap.keySet().toArray(new String[0]);
-			Arrays.sort(exerciseIds);
-			JSONObject jsonSummary = new JSONObject();
-			JSONArray jsonExercises = new JSONArray();
-			for (String exerciseId : exerciseIds) {
-				double bonusDeclaredPerExercise, pointsDeclaredPerExercise;
-				JSONObject jsonExercise = new JSONObject();
-				Ex exercise = exerciseHashMap.get(exerciseId);
-				List<ReportEntry> reportPerExercise = reportHashMap.get(exerciseId);
-				bonusDeclaredPerExercise = 0;
-				for (ReportEntry reportEntry : reportPerExercise) {
-					if(reportEntry.points != null){
-						if(reportEntry.points.bonus() != -1){
-							bonusDeclaredPerExercise += Math.abs(reportEntry.points.bonus());
+			if (System.getProperty("json") != null && System.getProperty("json").equals("yes")) {
+				// create and print JSON summary to stderr
+				String[] exerciseIds = reportHashMap.keySet().toArray(new String[0]);
+				Arrays.sort(exerciseIds);
+				JSONObject jsonSummary = new JSONObject();
+				JSONArray jsonExercises = new JSONArray();
+				for (String exerciseId : exerciseIds) {
+					JSONArray jsonTests = new JSONArray();
+					for (ReportEntry reportEntry : reportHashMap.get(exerciseId)) {
+						JSONObject json = reportEntry.toJSON();
+						if (json != null) {
+							jsonTests.add(json);
 						}
 					}
+					JSONObject jsonExercise = new JSONObject();
+					jsonExercise.put("name", exerciseHashMap.get(exerciseId).exID());
+					jsonExercise.put("tests", jsonTests);
+					jsonExercises.add(jsonExercise);
 				}
-				pointsDeclaredPerExercise = exercise.points();
-				JSONArray jsonTests = new JSONArray();
-				for (ReportEntry reportEntry : reportPerExercise) {
-					JSONObject json = reportEntry.toJSON(bonusDeclaredPerExercise, pointsDeclaredPerExercise);
-					if (json != null) {
-						jsonTests.add(json);
-					}
-				}
-				if (bonusDeclaredPerExercise <= 0) {
-					throw new AnnotationFormatError("Declare at least one Bonus case per exercise.");
-				}
-				jsonExercise.put("tests", jsonTests);
-				jsonExercise.put("name", exercise.exID());
-				jsonExercises.add(jsonExercise);
-			}
-			jsonSummary.put("exercises", jsonExercises);
-			if (System.getProperty("json") != null && System.getProperty("json").equals("yes")) {
+				jsonSummary.put("exercises", jsonExercises);
 				PointsLogger.saveErr.println(jsonSummary);
 			}
 		}
