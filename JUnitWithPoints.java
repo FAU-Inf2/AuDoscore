@@ -26,8 +26,6 @@ public abstract class JUnitWithPoints {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	public final static String SKIPPED_MSG = "This testcase is skipped intentionally.";
-
 	// backend data structures
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 	private static final HashMap<String, List<ReportEntry>> reportHashMap = new HashMap<>();
@@ -50,11 +48,18 @@ public abstract class JUnitWithPoints {
 		Description description;
 		Throwable throwable;
 		Points points;
+		boolean skipped;
 
 		private ReportEntry(Description description, Points points, Throwable throwable) {
 			this.description = description;
 			this.throwable = throwable;
 			this.points = points;
+			this.skipped = false;
+		}
+
+		// we did skip this test method
+		public ReportEntry(Description description) {
+			this.skipped = true;
 		}
 
 		// get sensible part/line of stack trace
@@ -80,37 +85,17 @@ public abstract class JUnitWithPoints {
 			}
 		}
 
+		// converts collected result to JSON
 		final JSONObject toJSON() {
-			// check if this case was ignored or skipped
-			if (throwable != null && throwable.getLocalizedMessage() != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.SKIPPED_MSG)) {
-				return null;
-			}
-
 			boolean success = (throwable == null);
-			String desc = null;
-			if(points != null){
-				if(points.bonus() != -1){
-					desc = getComment(points.comment(), description);
-				}
-			
-				if(points.malus() != -1 && success){
-					if(points.bonus() == -1){
-						desc = getComment(points.comment(), description);
-					}
-				}
-				if(points.malus() != -1 && !success){
-					// in case of failure: overwrite bonus
-					desc = getComment(points.comment(), description);
-				}
-			}
-			JSONObject jsontest = new JSONObject();
-			jsontest.put("id", getShortDisplayName(description));
-			jsontest.put("success", (Boolean) (success));
-			jsontest.put("desc", desc);
+			JSONObject jsonTest = new JSONObject();
+			jsonTest.put("id", getShortDisplayName(description));
+			jsonTest.put("success", success);
+			jsonTest.put("desc", getComment(points.comment(), description));
 			if (!success) {
-				jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
+				jsonTest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 			}
-			return jsontest;
+			return jsonTest;
 		}
 	}
 
@@ -119,6 +104,8 @@ public abstract class JUnitWithPoints {
 
 		private static PrintStream saveOut, saveErr;
 
+		// test methods are ignored if their replace set is different to the specified one
+		// FIXME: is that still necessary with single execution?
 		protected boolean isIgnoredCase(Description description) {
 			String doReplace = System.getProperty("replace");
 			if ((doReplace != null && !doReplace.equals(""))) {
@@ -130,6 +117,7 @@ public abstract class JUnitWithPoints {
 			return false;
 		}
 
+		// test methods are skipped during single test method execution
 		protected boolean isSkippedCase(Description description) {
 			String methodToBeExecuted = System.getProperty("method");
 			if((methodToBeExecuted != null && !methodToBeExecuted.equals(""))){
@@ -145,6 +133,7 @@ public abstract class JUnitWithPoints {
 		@Override
 		public final Statement apply(Statement base, Description description) {
 			if (isIgnoredCase(description) || isSkippedCase(description)) {
+				// don't execute these test methods
 				base = new SkipStatement();
 			}
 			return super.apply(base, description);
@@ -152,51 +141,32 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		protected void starting(Description description) {
-			try {
-				Class tc = description.getTestClass();
-				SecretClass st = (SecretClass) tc.getAnnotation(SecretClass.class);
-				Replace r = description.getAnnotation(Replace.class);
-				if(st == null && r != null){
-					// @Replace in a public test
-					throw new AnnotationFormatError("WARNING - found test case with REPLACE in a public test file: [" + description.getDisplayName() + "]");
-				}
+            // disable stdout/stderr to avoid timeouts due to large debugging outputs
+            if (saveOut == null) {
+                saveOut = System.out;
+                saveErr = System.err;
 
-				Test testAnnotation = description.getAnnotation(Test.class);
-				if (testAnnotation.timeout() == 0) {
-					throw new AnnotationFormatError("WARNING - found test case without TIMEOUT in @Test annotation: [" + description.getDisplayName() + "]");
-				}
-
-				// disable stdout/stderr to avoid timeouts due to large debugging outputs
-				if (saveOut == null) {
-					saveOut = System.out;
-					saveErr = System.err;
-
-					System.setOut(new PrintStream(new OutputStream() {
-						public void write(int i) {
-						}
-					}));
-
-					System.setErr(new PrintStream(new OutputStream() {
-						public void write(int i) {
-						}
-					}));
-				}
-			} catch (Exception e) {
-				throw new AnnotationFormatError(e.getMessage());
-			}
+                System.setOut(new PrintStream(new OutputStream() {
+                    public void write(int i) { }
+                }));
+                System.setErr(System.out);
+            }
 		}
 
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
 			Points pointsAnnotation = description.getAnnotation(Points.class);
 			String exID = pointsAnnotation.exID();
-			reportHashMap.get(exID).add(new ReportEntry(description, pointsAnnotation, throwable));
+			if (isIgnoredCase(description) || isSkippedCase(description)) {
+				reportHashMap.get(exID).add(new ReportEntry(description));
+			} else {
+				reportHashMap.get(exID).add(new ReportEntry(description, pointsAnnotation, throwable));
+			}
 		}
 
 		@Override
 		protected void skipped(AssumptionViolatedException e, Description description) {
-			Throwable t = new Throwable(JUnitWithPoints.SKIPPED_MSG);
-			failed(t, description);
+			failed(null, description);
 		}
 
 		@Override
@@ -274,6 +244,8 @@ public abstract class JUnitWithPoints {
 			long timeoutSum = 0;
 			HashSet<String> usedExercises = new HashSet<>(), bonusExercises = new HashSet<>();
 			Class<?> clazz = description.getTestClass();
+			SecretClass secretClassAnnotation = clazz.getAnnotation(SecretClass.class);
+			boolean isSecretClass = secretClassAnnotation != null;
 			for (Method m : clazz.getMethods()) {
 				Test test = m.getAnnotation(Test.class);
 				if (test == null) {
@@ -287,10 +259,13 @@ public abstract class JUnitWithPoints {
 				Bonus bonusAnnotation = m.getAnnotation(Bonus.class);
 				Malus malusAnnotation = m.getAnnotation(Malus.class);
 				Points pointsAnnotation = m.getAnnotation(Points.class);
+				Replace replaceAnnotation = m.getAnnotation(Replace.class);
 				if (bonusAnnotation != null || malusAnnotation != null) {
-					throw new AnnotationFormatError("WARNING - found testcase with deprecated @Bonus/@Malus annotation [" + description.getDisplayName() + "]");
+					throw new AnnotationFormatError("WARNING - found test case with deprecated @Bonus/@Malus annotation [" + description.getDisplayName() + "]");
 				} else if (pointsAnnotation == null) {
-					throw new AnnotationFormatError("WARNING - found testcase without @Points annotation [" + description.getDisplayName() + "]");
+					throw new AnnotationFormatError("WARNING - found test case without @Points annotation [" + description.getDisplayName() + "]");
+				} else if (!isSecretClass && replaceAnnotation != null) {
+					throw new AnnotationFormatError("WARNING - found test case with @Replace in a public test class: [" + description.getDisplayName() + "]");
 				} else if (pointsAnnotation.exID().trim().length() == 0) {
 					throw new AnnotationFormatError("WARNING - found test case with empty exercise id in @Points annotation: [" + description.getDisplayName() + "]");
 				} else if (!exerciseHashMap.containsKey(pointsAnnotation.exID())) {
@@ -313,8 +288,6 @@ public abstract class JUnitWithPoints {
 			if (timeoutSum > MAX_TIMEOUT_MS) {
 				throw new AnnotationFormatError("WARNING - total timeout sum is too high, please reduce to max. " + MAX_TIMEOUT_MS + "ms: [" + timeoutSum + "ms]");
 			}
-
-
 		}
 
 		@Override
@@ -328,9 +301,8 @@ public abstract class JUnitWithPoints {
 
 					// loop over all results for that exercise
 					for (ReportEntry reportEntry : exerciseResults.getValue()) {
-						JSONObject json = reportEntry.toJSON();
-						if (json != null) {
-							jsonTests.add(json);
+						if (!reportEntry.skipped) {
+							jsonTests.add(reportEntry.toJSON());
 						}
 					}
 
