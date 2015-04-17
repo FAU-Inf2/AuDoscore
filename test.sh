@@ -151,6 +151,7 @@ function scanInterfaces {
 			arg=$(basename $entry)
 			if [ ${first} -eq 1 ];then
 				interfaces=$arg
+				first=0
 			else
 		 		interfaces="${interfaces} $arg"
 			fi
