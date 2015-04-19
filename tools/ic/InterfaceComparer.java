@@ -9,7 +9,6 @@ import java.io.*;
 
 public class InterfaceComparer {
 	private static boolean error = false;
-	
 	private static void compareClasses(Class<?> cleanroomClass, Class<?> studentClass) {
 		boolean equals = false;
 		ArrayList<Method> studentMethods = new ArrayList<Method>(Arrays.asList(studentClass.getDeclaredMethods()));
@@ -18,19 +17,19 @@ public class InterfaceComparer {
 			System.out.println("[cleanroom]" + cleanroomMethod);
 			for(Method studentMethod : studentMethods) {
 				System.out.println("[student]" + studentMethod);
-				if(cleanroomMethod.equals(studentMethod)) {
+				if(cleanroomMethod.toString().equals(studentMethod.toString())) {
 					equals = true;
 					studentMethods.remove(studentMethod);
 					break;
 				}
-
-				if(equals){
-					equals = false;
-				}else{
-					error = true;
-					System.err.println("WARNING - Method " +cleanroomMethod.getName() + " does not exists in student code or does not match with student counterpart");
-				}
 			}	
+
+			if(equals){
+				equals = false;
+			}else{
+				error = true;
+				System.err.println("WARNING - Method " +cleanroomMethod + " does not exists in student code or does not match with student counterpart");
+			}
 		}		
 	}
 
