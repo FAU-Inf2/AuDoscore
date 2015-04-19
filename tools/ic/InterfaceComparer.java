@@ -24,7 +24,7 @@ public class InterfaceComparer {
 				if(equals){
 					equals = false;
 				}else{
-					System.err.println("WARNING - Method " +cleanroomMethod.getName() + " does not exists in student code or does not match");
+					System.err.println("WARNING - Method " +cleanroomMethod.getName() + " does not exists in student code or does not match with student counterpart");
 				}
 			}	
 		}		

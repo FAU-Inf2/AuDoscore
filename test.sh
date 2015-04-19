@@ -261,20 +261,21 @@ function testIt {
 		popd > /dev/null
 	fi
 
-	info "\ncompare interfaces of student and cleanroom sources"
-	( make run-comparer ) > pre 2>&1
 
 	info "\nstage0 (student+interfaces only)"
 	info "- compiling"
 	( make compile-stage0 ) > comp0 2>&1
+	info "- compare student+cleanroom"
+	( make run-comparer ) > pre 2>&1
 	checkexit $? "\nstudent result: ☠\n" comp0
 
 	info "\nstage1 (with public test case)"
 	info "- compiling"
 	( make compile-stage1 ) > comp1.out 2> comp1.err
 	checkexit $? "\nstudent result: ✘\n" comp1.err
+	
 
-	info "- testing"
+	info "- testing"	
 	( make run-stage1 ) > run1.out 2> run1.err
 	ec=$?
 	cat run1.out run1.err > run1
