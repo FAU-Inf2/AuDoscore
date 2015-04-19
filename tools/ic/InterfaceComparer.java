@@ -3,6 +3,8 @@ package tools.ic;
 import java.util.*;
 import java.lang.reflect.*;
 import java.net.URLClassLoader;
+import java.net.URL;
+import java.net.MalformedURLException;
 import java.io.*;
 
 public class InterfaceComparer {
@@ -35,9 +37,18 @@ public class InterfaceComparer {
 
 
 	public static void main(String args[]){
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		String pathToCleanroom = "./cleanroom";
+		URL[] cleanroomSearchUrls = null;
+		try {
+			cleanroomSearchUrls = new URL[]{ new URL(pathToCleanroom) };
+		
+		} catch (MalformedURLException mue) {
+			throw new Error("WARNING - " + mue.getMessage());
+		}
+
 		File f = new File(pathToCleanroom);
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		ClassLoader ul = new URLClassLoader(cleanroomSearchUrls);
 
 		for(File path : f.listFiles()) {
 			if (path.isFile()) {
@@ -47,11 +58,11 @@ public class InterfaceComparer {
 					String fileName = getSimpleFileName(pathString);
 					// strip fileextension
 					fileName = fileName.substring(0, fileName.lastIndexOf('.'));	
-					Class cleanroomClass = null;
-					Class studentClass = null;
+					Class<?> cleanroomClass = null;
+					Class<?> studentClass = null;
 
 					try{
-						cleanroomClass = cl.loadClass(fileName);
+						cleanroomClass = ul.loadClass(fileName);
 						studentClass = cl.loadClass(fileName);
 
 					} catch (ClassNotFoundException cnfe) {
