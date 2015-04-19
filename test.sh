@@ -262,7 +262,7 @@ function testIt {
 	fi
 
 	info "\ncompare interfaces of student and cleanroom sources"
-	( make run-comparer ) > comp0 2>&1
+	( make run-comparer ) > pre 2>&1
 
 	info "\nstage0 (student+interfaces only)"
 	info "- compiling"

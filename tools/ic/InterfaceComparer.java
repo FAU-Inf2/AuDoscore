@@ -1,3 +1,5 @@
+package tools.ic;
+
 import java.util.*;
 import java.lang.reflect.*;
 import java.net.URLClassLoader;
@@ -22,7 +24,7 @@ public class InterfaceComparer {
 				if(equals){
 					equals = false;
 				}else{
-					System.err.println("Method " +cleanroomMethod.getName() + " does not exists in student code or does not match");
+					System.err.println("WARNING - Method " +cleanroomMethod.getName() + " does not exists in student code or does not match");
 				}
 			}	
 		}		
@@ -55,7 +57,7 @@ public class InterfaceComparer {
 						studentClass = cl.loadClass(fileName);
 
 					} catch (ClassNotFoundException cnfe) {
-						throw new Error("WARNING - " + cnfe.getMessage());
+						throw new Error("WARNING class [" + cnfe.getMessage()+"] not found");
 					}
 					compareClasses(cleanroomClass,studentClass);
 				}
