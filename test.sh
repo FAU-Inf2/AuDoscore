@@ -263,7 +263,7 @@ function testIt {
 
 	info "\ncompare student+cleanroom"
 	( make run-comparer ) > pre 2>&1
-	checkexit $? "\n error while comparing clearoom sources with studentsources\n" pre
+	checkexit $? "\nerror while comparing clearoom sources with studentsources\n" pre
 
 	info "\nstage0 (student+interfaces only)"
 	info "- compiling"
