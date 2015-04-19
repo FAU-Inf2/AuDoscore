@@ -40,7 +40,7 @@ public class InterfaceComparer {
 		String pathToCleanroom = "./cleanroom";
 		URL[] cleanroomSearchUrls = null;
 		try {
-			cleanroomSearchUrls = new URL[]{ new URL(pathToCleanroom) };
+			cleanroomSearchUrls = new URL[]{ new URL("file://" + pathToCleanroom) };
 		
 		} catch (MalformedURLException mue) {
 			throw new Error("WARNING - " + mue.getMessage());
