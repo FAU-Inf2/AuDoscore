@@ -12,9 +12,7 @@ public class InterfaceComparer {
 		ArrayList<Method> studentMethods = new ArrayList<Method>(Arrays.asList(studentClass.getDeclaredMethods()));
 		// checkMethods
 		for(Method cleanroomMethod : cleanroomClass.getDeclaredMethods()){
-			System.out.println(cleanroomMethod);
 			for(Method studentMethod : studentMethods) {
-				System.out.println(studentMethod);
 				if(cleanroomMethod.equals(studentMethod)) {
 					equals = true;
 					studentMethods.remove(studentMethod);
