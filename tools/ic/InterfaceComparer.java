@@ -8,8 +8,8 @@ import java.net.MalformedURLException;
 import java.io.*;
 
 public class InterfaceComparer {
+	private static boolean error = false;
 	private static void compareClasses(Class<?> cleanroomClass, Class<?> studentClass) {
-
 		boolean equals = false;
 		ArrayList<Method> studentMethods = new ArrayList<Method>(Arrays.asList(studentClass.getDeclaredMethods()));
 		// checkMethods
@@ -24,6 +24,7 @@ public class InterfaceComparer {
 				}
 
 				if(equals){
+					error = true;
 					equals = false;
 				}else{
 					System.err.println("WARNING - Method " +cleanroomMethod.getName() + " does not exists in student code or does not match with student counterpart");
@@ -89,6 +90,10 @@ public class InterfaceComparer {
 				}
 			}
 	
+		}
+
+		if(error){
+			throw new Error();
 		}
 
 	}
