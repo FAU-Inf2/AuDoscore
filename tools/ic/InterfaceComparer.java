@@ -49,7 +49,7 @@ public class InterfaceComparer {
 		
 		} catch (MalformedURLException mue) {
 			throw new Error("WARNING - " + mue.getMessage());
-		
+		}
 
 		File f = new File("./"+pathToCleanroom);
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
