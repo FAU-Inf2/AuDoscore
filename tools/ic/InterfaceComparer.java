@@ -42,7 +42,7 @@ public class InterfaceComparer {
 		for(File path : f.listFiles()) {
 			if (path.isFile()) {
 				String pathString = path.toString();
-				if(pathString.matches("*.class")){
+				if(pathString.endsWith(".class")){
 					// get simple Name
 					String fileName = getSimpleFileName(pathString);
 					// strip fileextension
