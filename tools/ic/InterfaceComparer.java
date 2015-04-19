@@ -50,8 +50,8 @@ public class InterfaceComparer {
 		} catch (MalformedURLException mue) {
 			throw new Error("WARNING - " + mue.getMessage());
 		
+
 		File f = new File("./"+pathToCleanroom);
-		
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		ClassLoader ul = new URLClassLoader(cleanroomSearchUrls);
 
@@ -89,7 +89,9 @@ public class InterfaceComparer {
 					compareClasses(cleanroomClass,studentClass);
 				}
 			}
+	
 		}
+
 		if(error){
 			throw new Error();
 		}
