@@ -261,12 +261,13 @@ function testIt {
 		popd > /dev/null
 	fi
 
+	info "\ncompare student+cleanroom"
+	( make run-comparer ) > pre 2>&1
+	checkexit $? "\n error while comparing clearoom sources with studentsources\n" pre
 
 	info "\nstage0 (student+interfaces only)"
 	info "- compiling"
 	( make compile-stage0 ) > comp0 2>&1
-	info "- compare student+cleanroom"
-	( make run-comparer ) > pre 2>&1
 	checkexit $? "\nstudent result: ☠\n" comp0
 
 	info "\nstage1 (with public test case)"

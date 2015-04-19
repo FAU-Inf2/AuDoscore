@@ -8,13 +8,15 @@ import java.net.MalformedURLException;
 import java.io.*;
 
 public class InterfaceComparer {
-	private static void compareClasses(Class cleanroomClass, Class studentClass) {
+	private static void compareClasses(Class<?> cleanroomClass, Class<?> studentClass) {
 
 		boolean equals = false;
 		ArrayList<Method> studentMethods = new ArrayList<Method>(Arrays.asList(studentClass.getDeclaredMethods()));
 		// checkMethods
 		for(Method cleanroomMethod : cleanroomClass.getDeclaredMethods()){
+			System.out.println("[cleanroom]" + cleanroomMethod);
 			for(Method studentMethod : studentMethods) {
+				System.out.println("[student]" + studentMethod);
 				if(cleanroomMethod.equals(studentMethod)) {
 					equals = true;
 					studentMethods.remove(studentMethod);
@@ -37,16 +39,18 @@ public class InterfaceComparer {
 
 
 	public static void main(String args[]){
-		String pathToCleanroom = "./cleanroom";
+		String pathToCleanroom = "/cleanroom/";
 		URL[] cleanroomSearchUrls = null;
+		String cleanroomUrl = "file://" + System.getProperty("user.dir") + pathToCleanroom;
+		System.out.println("[url] " + cleanroomUrl);
 		try {
-			cleanroomSearchUrls = new URL[]{ new URL("file://" + pathToCleanroom) };
+			cleanroomSearchUrls = new URL[]{ new URL(cleanroomUrl) };
 		
 		} catch (MalformedURLException mue) {
 			throw new Error("WARNING - " + mue.getMessage());
 		}
 
-		File f = new File(pathToCleanroom);
+		File f = new File("./"+pathToCleanroom);
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		ClassLoader ul = new URLClassLoader(cleanroomSearchUrls);
 
@@ -63,14 +67,29 @@ public class InterfaceComparer {
 
 					try{
 						cleanroomClass = ul.loadClass(fileName);
+					
+						// compile student source
+						// This is dirty
+						Runtime rt = Runtime.getRuntime();
+						String cmd = "javac " + fileName + ".java";
+						System.out.println("[cmd] " + cmd);
+						Process pr = rt.exec(cmd);
+						pr.waitFor();
+
 						studentClass = cl.loadClass(fileName);
 
 					} catch (ClassNotFoundException cnfe) {
-						throw new Error("WARNING class [" + cnfe.getMessage()+"] not found");
+						throw new Error("WARNING - class [" + cnfe.getMessage()+"] not found");
+					} catch (IOException ioe) {
+						throw new Error("WARNING - Error while compiling student source ");
+					} catch (InterruptedException ie) {
+						throw new Error("WARNING - Error while compiling student source ");
 					}
 					compareClasses(cleanroomClass,studentClass);
 				}
 			}
+	
 		}
+
 	}
 }
