@@ -1,0 +1,2 @@
+1) UnitTest
+java.lang.annotation.AnnotationFormatError: WARNING - found test case with deprecated @SecretCase annotation in public test [UnitTest]

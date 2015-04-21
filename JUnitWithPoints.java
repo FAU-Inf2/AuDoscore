@@ -260,6 +260,12 @@ public abstract class JUnitWithPoints {
 				Malus malusAnnotation = m.getAnnotation(Malus.class);
 				Points pointsAnnotation = m.getAnnotation(Points.class);
 				Replace replaceAnnotation = m.getAnnotation(Replace.class);
+				SecretCase secretCaseAnnotation = m.getAnnotation(SecretCase.class);
+
+				if(secretCaseAnnotation != null && !isSecretClass){
+					throw new AnnotationFormatError("WARNING - found test case with deprecated @SecretCase annotation in public test [" + description.getDisplayName() + "]");
+				}
+
 				if (bonusAnnotation != null || malusAnnotation != null) {
 					throw new AnnotationFormatError("WARNING - found test case with deprecated @Bonus/@Malus annotation [" + description.getDisplayName() + "]");
 				} else if (pointsAnnotation == null) {

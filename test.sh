@@ -139,7 +139,6 @@ function scanTestFiles {
 		die
 
 	fi
-
 }
 
 function scanInterfaces {
