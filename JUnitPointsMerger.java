@@ -47,38 +47,27 @@ public class JUnitPointsMerger {
 		return pointsDeclaredPerExercise * Math.abs(pts) / bonusDeclaredPerExercise;
 	}
 
-	private static double getLocalPoint(Boolean success, String rawId){
-		// get Bonus and malus from method
-		String id = rawId;	
-		// search in secret an in public
-
-		// for parameterized
-		// split name of method
-		if(id.contains("[")){
-			String[] parts = rawId.split("\\[");
-			System.out.println(parts[0]);
-			id = parts[0];
-		}
+	// extract points annotation from either secret or public class and calculate the point
+	private static double getLocalPoint(Boolean success, String id, Boolean fromSecret){
 
 		Method method = null;
 		Points points = null;
-		try{
-			method = pub.getMethod(id);
-			points = (Points) method.getAnnotation(Points.class);
-		} catch (NoSuchMethodException nsme){
-			//throw new Error("WARNING - Method not found");
-		}
 
-		//try secret test class
-		if(secret != null && method == null){
+		if(fromSecret){
+			// test method originated from a secret test
 			try{
 				method = secret.getMethod(id);
 				points = (Points) method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException nsme){
-				throw new Error("WARNING - Method not found");
+				throw new Error("WARNING - Method " +method.getName()+ " was not found in secret test class " + pub.getName());
 			}
-		}else if(secret == null && method == null){
-			throw new Error("WARNING - Method not found");
+		}else{
+			try{
+				method = pub.getMethod(id);
+				points = (Points) method.getAnnotation(Points.class);
+			} catch (NoSuchMethodException nsme){
+				throw new Error("WARNING - Method " +method.getName()+ " was not found in public test class " + pub.getName());
+			}
 		}
 
 		double score = 0;
@@ -132,7 +121,7 @@ public class JUnitPointsMerger {
 				usedresult = vextest;
 			}
 
-			double localscore = getLocalPoint((Boolean) usedresult.get("success"), (String) usedresult.get("id"));
+			double localscore = getLocalPoint((Boolean) usedresult.get("success"), (String) usedresult.get("id"), (Boolean) usedresult.get("fromSecret"));
 			localpoints += localscore;
 			localSummary += ((Boolean) usedresult.get("success")) ? "✓" : "✗";
 

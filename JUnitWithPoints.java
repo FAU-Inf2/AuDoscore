@@ -177,6 +177,8 @@ public abstract class JUnitWithPoints {
 
 	// helper class for summaries
 	protected static class PointsSummary extends ExternalResource {
+		public static final int MAX_TIMEOUT_MS = 60_000;
+		private static boolean isSecretClass = false;
 
 		@Override
 		public final Statement apply(Statement base, Description description) {
@@ -202,6 +204,7 @@ public abstract class JUnitWithPoints {
 			if (publicTestClass == null) {
 				return description.getAnnotation(Exercises.class);
 			} else {
+				isSecretClass = true;
 				return publicTestClass.getAnnotation(Exercises.class);
 			}
 		}
@@ -231,7 +234,10 @@ public abstract class JUnitWithPoints {
 					// loop over all results for that exercise
 					for (ReportEntry reportEntry : exerciseResults.getValue()) {
 						if (!reportEntry.skipped) {
-							jsonTests.add(reportEntry.toJSON());
+							JSONObject reportJSON = reportEntry.toJSON();
+							// mark test method regarding origin
+							reportJSON.put("fromSecret", isSecretClass);
+							jsonTests.add(reportJSON);
 						}
 					}
 
