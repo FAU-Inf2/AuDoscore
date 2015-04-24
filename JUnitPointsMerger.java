@@ -51,15 +51,7 @@ public class JUnitPointsMerger {
 		// get Bonus and malus from method
 		String id = rawId;	
 		// search in secret an in public
-
-		// for parameterized
-		// split name of method
-		if(id.contains("[")){
-			String[] parts = rawId.split("\\[");
-			System.out.println(parts[0]);
-			id = parts[0];
-		}
-
+		
 		Method method = null;
 		Points points = null;
 		try{
