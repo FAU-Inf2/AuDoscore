@@ -13,7 +13,7 @@ for i in `find expected/ -type f`; do
 		cat $testfile | python -m json.tool > ${testfile}.new
 		mv ${testfile}.new $testfile
 	fi
-	diff -u -I '^make' -I '^Makefile:' $i $testfile
+	diff -b -u -I '^make' -I '^Makefile:' $i $testfile
 	ec=$?
 	if [[ $ec -ne 0 ]] && [[ "$i" == expected/run*.err ]]; then
 		# in case of JSON, try to parse and compare as JSON
