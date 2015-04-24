@@ -310,7 +310,10 @@ public abstract class JUnitWithPoints {
 					// loop over all results for that exercise
 					for (ReportEntry reportEntry : exerciseResults.getValue()) {
 						if (!reportEntry.skipped) {
-							jsonTests.add(reportEntry.toJSON().put("fromSecret",isSecretClass));
+							JSONObject reportJSON = reportEntry.toJSON();
+							// mark test method regarding origin
+							reportJSON.put("fromSecret",isSecretClass);
+							jsonTests.add(reportJSON);
 						}
 					}
 
