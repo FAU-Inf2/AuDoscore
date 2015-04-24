@@ -49,6 +49,7 @@ public abstract class JUnitWithPoints {
 		Throwable throwable;
 		Points points;
 		boolean skipped;
+		boolean fromSecretTest;
 
 		private ReportEntry(Description description, Points points, Throwable throwable) {
 			this.description = description;
@@ -178,6 +179,7 @@ public abstract class JUnitWithPoints {
 	// helper class for summaries
 	protected static class PointsSummary extends ExternalResource {
 		public static final int MAX_TIMEOUT_MS = 60_000;
+		private static boolean isSecretClass = false;
 
 		@Override
 		public final Statement apply(Statement base, Description description) {
@@ -245,7 +247,7 @@ public abstract class JUnitWithPoints {
 			HashSet<String> usedExercises = new HashSet<>(), bonusExercises = new HashSet<>();
 			Class<?> clazz = description.getTestClass();
 			SecretClass secretClassAnnotation = clazz.getAnnotation(SecretClass.class);
-			boolean isSecretClass = secretClassAnnotation != null;
+			isSecretClass = secretClassAnnotation != null;
 			for (Method m : clazz.getMethods()) {
 				Test test = m.getAnnotation(Test.class);
 				if (test == null) {
@@ -308,7 +310,7 @@ public abstract class JUnitWithPoints {
 					// loop over all results for that exercise
 					for (ReportEntry reportEntry : exerciseResults.getValue()) {
 						if (!reportEntry.skipped) {
-							jsonTests.add(reportEntry.toJSON());
+							jsonTests.add(reportEntry.toJSON().put("fromSecret",isSecretClass));
 						}
 					}
 

@@ -67,7 +67,7 @@ public class JUnitPointsMerger {
 				method = secret.getMethod(id);
 				points = (Points) method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException nsme){
-				throw new Error("WARNING - Method not found");
+				throw new Error("WARNING - Method "+ method.getName() +"not found");
 			}
 		}else if(secret == null && method == null){
 			throw new Error("WARNING - Method not found");
