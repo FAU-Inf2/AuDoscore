@@ -1,4 +1,4 @@
-Exception in thread "main" java.lang.annotation.AnnotationFormatError: WARNING - did not find valid @Exercises declaration: [UnitTest]
+Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - did not find valid @Exercises declaration: [UnitTest]
 	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:20)
 	at CheckAnnotation.main(CheckAnnotation.java:94)
 make[1]: *** [compile-stage1] Error 1

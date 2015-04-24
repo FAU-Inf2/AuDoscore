@@ -218,7 +218,7 @@ public abstract class JUnitWithPoints {
 			try {
 				return ClassLoader.getSystemClassLoader().loadClass(pubClassName);
 			} catch (ClassNotFoundException e) {
-				throw new AnnotationFormatError("WARNING - pub class specified, but not found [" + pubClassName + "]");
+				throw new AnnotationFormatError("ERROR - pub class specified, but not found [" + pubClassName + "]");
 			}
 		}
 
