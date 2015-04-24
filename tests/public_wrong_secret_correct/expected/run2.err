@@ -25,11 +25,13 @@
                     {
                         "desc": "test",
                         "error": "AssertionError(Should return 42 expected:<42> but was:<23>)",
+                        "fromSecret": false,
                         "id": "test",
                         "success": false
                     },
                     {
                         "desc": "test2",
+                        "fromSecret": true,
                         "id": "test2",
                         "success": true
                     }

@@ -17,6 +17,7 @@
                     {
                         "desc": "test",
                         "error": "NullPointerException(): UnitTest.test(line 25)",
+                        "fromSecret": false,
                         "id": "test",
                         "success": false
                     }

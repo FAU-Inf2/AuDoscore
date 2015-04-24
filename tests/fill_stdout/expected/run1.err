@@ -6,12 +6,14 @@
                 {
                     "desc": "stderr",
                     "error": "TimeoutException after 300 ms",
+                    "fromSecret": false,
                     "id": "stderr",
                     "success": false
                 },
                 {
                     "desc": "stdout",
                     "error": "TimeoutException after 300 ms",
+                    "fromSecret": false,
                     "id": "stdout",
                     "success": false
                 }

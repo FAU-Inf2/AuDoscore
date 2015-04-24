@@ -25,12 +25,14 @@
                     {
                         "desc": "stdout",
                         "error": "TimeoutException after 300 ms",
+                        "fromSecret": false,
                         "id": "stdout",
                         "success": false
                     },
                     {
                         "desc": "stderr",
                         "error": "TimeoutException after 300 ms",
+                        "fromSecret": false,
                         "id": "stderr",
                         "success": false
                     }

@@ -23,15 +23,17 @@
                 "name": "GA4.6a",
                 "tests": [
                     {
-                        "desc": "test",
-                        "id": "test",
-                        "success": true
-                    },
-                    {
                         "desc": "test2",
                         "error": "AssertionError(Should return 23 expected:<23> but was:<42>)",
+                        "fromSecret": false,
                         "id": "test2",
                         "success": false
+                    },
+                    {
+                        "desc": "test",
+                        "fromSecret": false,
+                        "id": "test",
+                        "success": true
                     }
                 ]
             }

@@ -17,6 +17,7 @@
                     {
                         "desc": "test",
                         "error": "AssertionError(Should return 42 expected:<42> but was:<23>)",
+                        "fromSecret": false,
                         "id": "test",
                         "success": false
                     }

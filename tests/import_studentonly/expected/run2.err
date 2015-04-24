@@ -31,6 +31,7 @@
                     "tests": [
                         {
                             "desc": "test",
+                            "fromSecret": true,
                             "id": "test",
                             "success": true
                         }
@@ -46,16 +47,19 @@
                 "tests": [
                     {
                         "desc": "empty dummy test",
+                        "fromSecret": false,
                         "id": "test34",
                         "success": true
                     },
                     {
                         "desc": "test2",
+                        "fromSecret": true,
                         "id": "test2",
                         "success": true
                     },
                     {
                         "desc": "test",
+                        "fromSecret": true,
                         "id": "test",
                         "success": true
                     }

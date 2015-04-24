@@ -5,11 +5,13 @@
             "tests": [
                 {
                     "desc": "test",
+                    "fromSecret": false,
                     "id": "test",
                     "success": true
                 },
                 {
                     "desc": "test2",
+                    "fromSecret": false,
                     "id": "test2",
                     "success": true
                 }

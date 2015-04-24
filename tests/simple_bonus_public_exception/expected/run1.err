@@ -6,6 +6,7 @@
                 {
                     "desc": "test",
                     "error": "ArrayIndexOutOfBoundsException(aiob): ToTest.toTest(line 3)",
+                    "fromSecret": false,
                     "id": "test",
                     "success": false
                 }

@@ -5,6 +5,7 @@
             "tests": [
                 {
                     "desc": "empty dummy test",
+                    "fromSecret": false,
                     "id": "test34",
                     "success": true
                 }

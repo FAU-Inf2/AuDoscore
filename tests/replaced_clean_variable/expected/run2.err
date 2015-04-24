@@ -23,6 +23,7 @@
                     "tests": [
                         {
                             "desc": "test",
+                            "fromSecret": true,
                             "id": "test",
                             "success": true
                         }
@@ -38,12 +39,14 @@
                 "tests": [
                     {
                         "desc": "empty dummy test",
+                        "fromSecret": false,
                         "id": "test2",
                         "success": true
                     },
                     {
                         "desc": "test",
                         "error": "AssertionError(Should return 42 expected:<42> but was:<65>)",
+                        "fromSecret": true,
                         "id": "test",
                         "success": false
                     }

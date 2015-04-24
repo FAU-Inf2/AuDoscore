@@ -16,6 +16,7 @@
                 "tests": [
                     {
                         "desc": "test",
+                        "fromSecret": false,
                         "id": "test",
                         "success": true
                     }
