@@ -8,6 +8,11 @@ for i in `find expected/ -type f`; do
 	testfile=${i/expected/test.latest}
 	sed -i -e 's/Exception(test timed out after \([^ ]*\) milliseconds): [^"]*/TimeoutException after \1 ms/g' $testfile
 	sed -i -e 's/StackOverflowError(): [^"]*/StackOverflowError()/g' $testfile
+	if [[ "$i" == expected/run*.err ]]; then
+		# pretty print as json before diffing
+		cat $testfile | python -m json.tool > ${testfile}.new
+		mv ${testfile}.new $testfile
+	fi
 	diff -u -I '^make' -I '^Makefile:' $i $testfile
 	ec=$?
 	if [[ $ec -ne 0 ]] && [[ "$i" == expected/run*.err ]]; then
