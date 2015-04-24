@@ -1,46 +1,5 @@
 {
-    "replaced": [
-        {
-            "exercises": [
-                {
-                    "name": "GA4.6a",
-                    "tests": []
-                }
-            ]
-        },
-        {
-            "exercises": [
-                {
-                    "name": "GA4.6a",
-                    "tests": []
-                }
-            ]
-        },
-        {
-            "exercises": [
-                {
-                    "name": "GA4.6a",
-                    "tests": []
-                }
-            ]
-        },
-        {
-            "exercises": [
-                {
-                    "name": "GA4.6a",
-                    "tests": []
-                }
-            ]
-        },
-        {
-            "exercises": [
-                {
-                    "name": "GA4.6a",
-                    "tests": []
-                }
-            ]
-        }
-    ],
+    "replaced": [],
     "vanilla": {
         "exercises": [
             {

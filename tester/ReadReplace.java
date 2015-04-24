@@ -78,14 +78,6 @@ public class ReadReplace{
 		return "";
 	}
 
-
-	public static void loopPublic(String tcln) throws Exception {
-		String args[] = new String[3];
-		args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:--THIS-WILL-NEVER-HAPPEN:.";
-		args[1] = "-Dreplace=THIS-WILL-NEVER-HAPPEN -Djson=yes";
-		args[2] = tcln;
-		SingleExecutionPreparer.main(args);
-	}
 	public static void loopSecret(String tcln, String pub) throws Exception {
 		HashMap<String,List<String>> rmap = new HashMap<String,List<String>>();
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
@@ -102,12 +94,6 @@ public class ReadReplace{
 				rmap.put(cr,methods);
 			}
 		}
-		// execute sep for single execution
-		String args[] = new String[3];
-		args[0] = "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:--THIS-WILL-NEVER-HAPPEN-SECRET:.";
-		args[1] = "-Dpub="+pub+" -Dreplace=THIS-WILL-NEVER-HAPPEN-SECRET -Djson=yes";
-		args[2] = tcln;
-		SingleExecutionPreparer.main(args);
 
 		Iterator it = rmap.entrySet().iterator();
 		while(it.hasNext()) {
@@ -143,7 +129,7 @@ public class ReadReplace{
 			if(args[1].equals("-p")){
 				loopSecret(args[3],args[2]);
 			} else {					
-				loopPublic(args[1]);
+				// FIXME: really nothing to do?
 			}
 			return;
 		}
