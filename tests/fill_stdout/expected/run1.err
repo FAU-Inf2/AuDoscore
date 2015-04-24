@@ -1,1 +1,21 @@
-{"exercises":[{"tests":[{"id":"stderr","desc":"stderr","error":"TimeoutException after 300 ms","success":false},{"id":"stdout","desc":"stdout","error":"TimeoutException after 300 ms","success":false}],"name":"GA4.6a"}]}
+{
+    "exercises": [
+        {
+            "name": "GA4.6a",
+            "tests": [
+                {
+                    "desc": "stderr",
+                    "error": "TimeoutException after 300 ms",
+                    "id": "stderr",
+                    "success": false
+                },
+                {
+                    "desc": "stdout",
+                    "error": "TimeoutException after 300 ms",
+                    "id": "stdout",
+                    "success": false
+                }
+            ]
+        }
+    ]
+}

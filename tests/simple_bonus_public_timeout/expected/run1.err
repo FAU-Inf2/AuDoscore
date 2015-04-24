@@ -1,1 +1,15 @@
-{"exercises":[{"tests":[{"id":"test","desc":"test","error":"TimeoutException after 100 ms","success":false}],"name":"GA4.6a"}]}
+{
+    "exercises": [
+        {
+            "name": "GA4.6a",
+            "tests": [
+                {
+                    "desc": "test",
+                    "error": "TimeoutException after 100 ms",
+                    "id": "test",
+                    "success": false
+                }
+            ]
+        }
+    ]
+}

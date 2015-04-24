@@ -1,1 +1,60 @@
-{"exercises":[{"tests":[{"id":"test","desc":"test","success":true},{"id":"test10","desc":"test10","success":true},{"id":"test2","desc":"test2","success":true},{"id":"test3","desc":"test3","error":"AssertionError(Should return 3 expected:<3> but was:<333>)","success":false},{"id":"test4","desc":"test4","success":true},{"id":"test5","desc":"test5","success":true},{"id":"test6","desc":"test6","success":true},{"id":"test7","desc":"test7","success":true},{"id":"test8","desc":"test8","success":true},{"id":"test9","desc":"test9","success":true}],"name":"GA4.6a"}]}
+{
+    "exercises": [
+        {
+            "name": "GA4.6a",
+            "tests": [
+                {
+                    "desc": "test",
+                    "id": "test",
+                    "success": true
+                },
+                {
+                    "desc": "test10",
+                    "id": "test10",
+                    "success": true
+                },
+                {
+                    "desc": "test2",
+                    "id": "test2",
+                    "success": true
+                },
+                {
+                    "desc": "test3",
+                    "error": "AssertionError(Should return 3 expected:<3> but was:<333>)",
+                    "id": "test3",
+                    "success": false
+                },
+                {
+                    "desc": "test4",
+                    "id": "test4",
+                    "success": true
+                },
+                {
+                    "desc": "test5",
+                    "id": "test5",
+                    "success": true
+                },
+                {
+                    "desc": "test6",
+                    "id": "test6",
+                    "success": true
+                },
+                {
+                    "desc": "test7",
+                    "id": "test7",
+                    "success": true
+                },
+                {
+                    "desc": "test8",
+                    "id": "test8",
+                    "success": true
+                },
+                {
+                    "desc": "test9",
+                    "id": "test9",
+                    "success": true
+                }
+            ]
+        }
+    ]
+}

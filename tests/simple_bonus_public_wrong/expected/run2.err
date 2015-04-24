@@ -1,1 +1,27 @@
-{"replaced":[{"exercises":[{"tests":[],"name":"GA4.6a"}]}],"vanilla":{"exercises":[{"tests":[{"id":"test","desc":"test","error":"AssertionError(Should return 42 expected:<42> but was:<23>)","success":false}],"name":"GA4.6a"}]}}
+{
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "GA4.6a",
+                    "tests": []
+                }
+            ]
+        }
+    ],
+    "vanilla": {
+        "exercises": [
+            {
+                "name": "GA4.6a",
+                "tests": [
+                    {
+                        "desc": "test",
+                        "error": "AssertionError(Should return 42 expected:<42> but was:<23>)",
+                        "id": "test",
+                        "success": false
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,1 +1,39 @@
-{"replaced":[{"exercises":[{"tests":[],"name":"GA4.6a"}]},{"exercises":[{"tests":[],"name":"GA4.6a"}]}],"vanilla":{"exercises":[{"tests":[{"id":"test","desc":"test","success":true},{"id":"test2","desc":"test2","success":true}],"name":"GA4.6a"}]}}
+{
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "GA4.6a",
+                    "tests": []
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "GA4.6a",
+                    "tests": []
+                }
+            ]
+        }
+    ],
+    "vanilla": {
+        "exercises": [
+            {
+                "name": "GA4.6a",
+                "tests": [
+                    {
+                        "desc": "test",
+                        "id": "test",
+                        "success": true
+                    },
+                    {
+                        "desc": "test2",
+                        "id": "test2",
+                        "success": true
+                    }
+                ]
+            }
+        ]
+    }
+}
