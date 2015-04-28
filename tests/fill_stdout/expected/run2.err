@@ -1,26 +1,28 @@
 {
     "replaced": [],
-    "vanilla": {
-        "exercises": [
-            {
-                "name": "GA4.6a",
-                "tests": [
-                    {
-                        "desc": "stdout",
-                        "error": "TimeoutException after 300 ms",
-                        "fromSecret": false,
-                        "id": "stdout",
-                        "success": false
-                    },
-                    {
-                        "desc": "stderr",
-                        "error": "TimeoutException after 300 ms",
-                        "fromSecret": false,
-                        "id": "stderr",
-                        "success": false
-                    }
-                ]
-            }
-        ]
-    }
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "GA4.6a",
+                    "tests": [
+                        {
+                            "desc": "stderr",
+                            "error": "TimeoutException after 300 ms",
+                            "fromSecret": false,
+                            "id": "stderr",
+                            "success": false
+                        },
+                        {
+                            "desc": "stdout",
+                            "error": "TimeoutException after 300 ms",
+                            "fromSecret": false,
+                            "id": "stdout",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }

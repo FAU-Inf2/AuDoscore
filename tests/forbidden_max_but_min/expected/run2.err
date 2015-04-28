@@ -1,18 +1,20 @@
 {
     "replaced": [],
-    "vanilla": {
-        "exercises": [
-            {
-                "name": "GA4.6a",
-                "tests": [
-                    {
-                        "desc": "test",
-                        "fromSecret": false,
-                        "id": "test",
-                        "success": true
-                    }
-                ]
-            }
-        ]
-    }
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "GA4.6a",
+                    "tests": [
+                        {
+                            "desc": "test",
+                            "fromSecret": false,
+                            "id": "test",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }

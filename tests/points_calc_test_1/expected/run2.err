@@ -1,79 +1,81 @@
 {
     "replaced": [],
-    "vanilla": {
-        "exercises": [
-            {
-                "name": "GA4.6a",
-                "tests": [
-                    {
-                        "desc": "test2",
-                        "error": "AssertionError(Should return 2 expected:<2> but was:<5>)",
-                        "fromSecret": false,
-                        "id": "test2",
-                        "success": false
-                    },
-                    {
-                        "desc": "test3",
-                        "error": "AssertionError(Should return 3 expected:<3> but was:<47>)",
-                        "fromSecret": false,
-                        "id": "test3",
-                        "success": false
-                    },
-                    {
-                        "desc": "test4",
-                        "error": "AssertionError(Should return 4 expected:<4> but was:<1337>)",
-                        "fromSecret": false,
-                        "id": "test4",
-                        "success": false
-                    },
-                    {
-                        "desc": "test5",
-                        "error": "AssertionError(Should return 5 expected:<5> but was:<5555>)",
-                        "fromSecret": false,
-                        "id": "test5",
-                        "success": false
-                    },
-                    {
-                        "desc": "test6",
-                        "error": "AssertionError(Should return 6 expected:<6> but was:<23>)",
-                        "fromSecret": false,
-                        "id": "test6",
-                        "success": false
-                    },
-                    {
-                        "desc": "test7",
-                        "fromSecret": false,
-                        "id": "test7",
-                        "success": true
-                    },
-                    {
-                        "desc": "test8",
-                        "error": "AssertionError(Should return 8 expected:<8> but was:<876>)",
-                        "fromSecret": false,
-                        "id": "test8",
-                        "success": false
-                    },
-                    {
-                        "desc": "test9",
-                        "fromSecret": false,
-                        "id": "test9",
-                        "success": true
-                    },
-                    {
-                        "desc": "test10",
-                        "error": "AssertionError(Should return 10 expected:<10> but was:<100>)",
-                        "fromSecret": false,
-                        "id": "test10",
-                        "success": false
-                    },
-                    {
-                        "desc": "test",
-                        "fromSecret": false,
-                        "id": "test",
-                        "success": true
-                    }
-                ]
-            }
-        ]
-    }
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "GA4.6a",
+                    "tests": [
+                        {
+                            "desc": "test10",
+                            "error": "AssertionError(Should return 10 expected:<10> but was:<100>)",
+                            "fromSecret": false,
+                            "id": "test10",
+                            "success": false
+                        },
+                        {
+                            "desc": "test",
+                            "fromSecret": false,
+                            "id": "test",
+                            "success": true
+                        },
+                        {
+                            "desc": "test2",
+                            "error": "AssertionError(Should return 2 expected:<2> but was:<5>)",
+                            "fromSecret": false,
+                            "id": "test2",
+                            "success": false
+                        },
+                        {
+                            "desc": "test3",
+                            "error": "AssertionError(Should return 3 expected:<3> but was:<47>)",
+                            "fromSecret": false,
+                            "id": "test3",
+                            "success": false
+                        },
+                        {
+                            "desc": "test4",
+                            "error": "AssertionError(Should return 4 expected:<4> but was:<1337>)",
+                            "fromSecret": false,
+                            "id": "test4",
+                            "success": false
+                        },
+                        {
+                            "desc": "test5",
+                            "error": "AssertionError(Should return 5 expected:<5> but was:<5555>)",
+                            "fromSecret": false,
+                            "id": "test5",
+                            "success": false
+                        },
+                        {
+                            "desc": "test6",
+                            "error": "AssertionError(Should return 6 expected:<6> but was:<23>)",
+                            "fromSecret": false,
+                            "id": "test6",
+                            "success": false
+                        },
+                        {
+                            "desc": "test7",
+                            "fromSecret": false,
+                            "id": "test7",
+                            "success": true
+                        },
+                        {
+                            "desc": "test8",
+                            "error": "AssertionError(Should return 8 expected:<8> but was:<876>)",
+                            "fromSecret": false,
+                            "id": "test8",
+                            "success": false
+                        },
+                        {
+                            "desc": "test9",
+                            "fromSecret": false,
+                            "id": "test9",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }
