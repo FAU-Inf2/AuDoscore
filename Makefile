@@ -3,8 +3,7 @@
 STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
 
 ifndef SECRETCLASS
-	tmp:=$(shell tools/detect_junit.sh)
-	include varsec.mk
+	-include varsec.mk
 endif
 TESTCLASS = $(TEST:=.class)
 TESTSOURCE = $(TEST:=.java)
