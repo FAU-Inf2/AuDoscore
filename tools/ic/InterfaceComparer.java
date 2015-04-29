@@ -44,11 +44,10 @@ public class InterfaceComparer {
 		File f = new File(pathToCleanroom);
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		String cwd = System.getProperty("user.dir");
-		File cleanroomJAR = new File(cwd+"/cleanroom/");
 		ClassLoader cleanroomLoader = null;
 		ClassLoader studentLoader = null;
 		try{
-			cleanroomLoader = new URLClassLoader(new URL[]{cleanroomJAR.toURI().toURL()});
+			cleanroomLoader = new URLClassLoader(new URL[]{new File(cwd+pathToCleanroom).toURI().toURL()});
 			studentLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()});
 		}catch(MalformedURLException mfue){
 			throw new Error("Error"  + mfue.getMessage());
