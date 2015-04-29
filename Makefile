@@ -56,6 +56,7 @@ compile-stage1: miniclean
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
 	javap -p -c $(STUDENTCLASS) > javap.out
+	sed -i -e 's/(.*//' javap.out
 	! ( cat javap.out | ./forbidden 1>&2 )
 	rm forbidden
 
