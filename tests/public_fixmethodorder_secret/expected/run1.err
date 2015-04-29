@@ -1,0 +1,1 @@
+{"exercises":[{"tests":[{"success":true,"id":"public_a","fromSecret":false,"desc":"public_a"},{"success":true,"id":"public_b","fromSecret":false,"desc":"public_b"},{"success":true,"id":"public_c","fromSecret":false,"desc":"public_c"},{"success":true,"id":"public_d","fromSecret":false,"desc":"public_d"}],"name":"Weite Felder - createAndFill"}]}

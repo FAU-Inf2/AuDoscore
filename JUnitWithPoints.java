@@ -1,3 +1,4 @@
+import java.lang.reflect.Method;
 import java.util.*;
 import java.io.*;
 import java.lang.annotation.*;
@@ -9,38 +10,32 @@ import org.junit.runner.*;
 import org.junit.runners.model.*;
 
 import org.json.simple.*;
-import org.json.simple.parser.*;
 
-import java.lang.reflect.*;
 import tester.*;
 import tester.annotations.*;
 
 
-// ******************** RULES HELPER for pretty code **************************************** //
-final class PointsLogger extends JUnitWithPoints.PointsLogger {
-}
-
-final class PointsSummary extends JUnitWithPoints.PointsSummary {
-}
+// rules helpers to shorten code
+final class PointsLogger extends JUnitWithPoints.PointsLogger {}
+final class PointsSummary extends JUnitWithPoints.PointsSummary {}
 
 public abstract class JUnitWithPoints {
-	// ******************** RULES **************************************** //
+	// these rules help to collect necessary information from test methods
 	@Rule
 	public final PointsLogger pointsLogger = new PointsLogger();
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	public final static String SKIPPED_MSG = "this testcase is skipped";
-
-	// ******************** BACKEND FUNCTIONALITY **************************************** //
+	// backend data structures
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 	private static final HashMap<String, List<ReportEntry>> reportHashMap = new HashMap<>();
-	private static long timeoutSum = 0;
 
 	static {
+		// set locale explicitly to avoid differences in reading/writing floats
 		Locale.setDefault(Locale.US);
 	}
 
+	// shortens description if possible
 	private static String getShortDisplayName(Description d) {
 		String orig = d.getDisplayName();
 		int ix = orig.indexOf('(');
@@ -48,18 +43,26 @@ public abstract class JUnitWithPoints {
 		return orig.substring(0, ix);
 	}
 
-	// -------------------------------------------------------------------------------- //
+	// helper class for reports
 	private static final class ReportEntry {
 		Description description;
 		Throwable throwable;
 		Points points;
+		boolean skipped;
 
 		private ReportEntry(Description description, Points points, Throwable throwable) {
 			this.description = description;
 			this.throwable = throwable;
 			this.points = points;
+			this.skipped = false;
 		}
 
+		// we did skip this test method
+		public ReportEntry(Description description) {
+			this.skipped = true;
+		}
+
+		// get sensible part/line of stack trace
 		private String getStackTrace() {
 			if (throwable == null || throwable instanceof AssertionError) return "";
 			StackTraceElement st[] = throwable.getStackTrace();
@@ -73,66 +76,36 @@ public abstract class JUnitWithPoints {
 			return ": " + ste.getClassName() + "." + ste.getMethodName() + "(line " + ste.getLineNumber() + ")";
 		}
 
+		// determine comment for students
 		protected String getComment(String comment, Description description) {
-			if (comment.equals("<n.a.>")) {
+			if (comment.equals("<n.a.>")) { // default value -> use short method name
 				return getShortDisplayName(description);
 			} else {
 				return comment;
 			}
 		}
 
-		final JSONObject format(double bonusDeclaredPerExercise, double pointsDeclaredPerExercise) {
-			if (throwable != null && throwable.getLocalizedMessage() != null && throwable.getLocalizedMessage().equals(JUnitWithPoints.SKIPPED_MSG)) {
-				return null;
-			}
-
+		// converts collected result to JSON
+		final JSONObject toJSON() {
 			boolean success = (throwable == null);
-			String desc = null;
-			if(points != null){
-				if(points.bonus() != -1){
-					desc = getComment(points.comment(), description);
-				}
-			
-				if(points.malus() != -1 && success){
-					if(points.bonus() == -1){
-						desc = getComment(points.comment(), description);
-					}
-				}
-				if(points.malus() != -1 && !success){
-					// in case of failure: overwrite bonus
-					desc = getComment(points.comment(), description);
-				}
-			}
-			JSONObject jsontest = new JSONObject();
-			jsontest.put("id", getShortDisplayName(description));
-			jsontest.put("success", (Boolean) (success));
-			jsontest.put("desc", desc);
+			JSONObject jsonTest = new JSONObject();
+			jsonTest.put("id", getShortDisplayName(description));
+			jsonTest.put("success", success);
+			jsonTest.put("desc", getComment(points.comment(), description));
 			if (!success) {
-				jsontest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
+				jsonTest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 			}
-			return jsontest;
+			return jsonTest;
 		}
 	}
 
-	private static final class ReportEntryComparator implements Comparator<ReportEntry> {
-		public int compare(ReportEntry r1, ReportEntry r2) {
-			if (r1 == null && r2 == null) return 0;
-			if (r1 == null) return -1;
-			if (r2 == null) return 1;
-			boolean t1 = r1.throwable == null;
-			boolean t2 = r2.throwable == null;
-			if (true || t1 == t2) return r1.description.getDisplayName().compareTo(r2.description.getDisplayName());
-			if (t1) return +1;
-			return -1;
-		}
-	}
-
-	// -------------------------------------------------------------------------------- //
+	// helper class for logging purposes
 	protected static class PointsLogger extends TestWatcher {
 
-		public static PrintStream saveOut;
-		public static PrintStream saveErr;
+		private static PrintStream saveOut, saveErr;
 
+		// test methods are ignored if their replace set is different to the specified one
+		// FIXME: is that still necessary with single execution?
 		protected boolean isIgnoredCase(Description description) {
 			String doReplace = System.getProperty("replace");
 			if ((doReplace != null && !doReplace.equals(""))) {
@@ -144,6 +117,7 @@ public abstract class JUnitWithPoints {
 			return false;
 		}
 
+		// test methods are skipped during single test method execution
 		protected boolean isSkippedCase(Description description) {
 			String methodToBeExecuted = System.getProperty("method");
 			if((methodToBeExecuted != null && !methodToBeExecuted.equals(""))){
@@ -159,80 +133,40 @@ public abstract class JUnitWithPoints {
 		@Override
 		public final Statement apply(Statement base, Description description) {
 			if (isIgnoredCase(description) || isSkippedCase(description)) {
-				base = new MyStatement();
+				// don't execute these test methods
+				base = new SkipStatement();
 			}
 			return super.apply(base, description);
 		}
 
 		@Override
 		protected void starting(Description description) {
-			try {
-				Class tc = description.getTestClass();
-				SecretClass st = (SecretClass) tc.getAnnotation(SecretClass.class);
-				Replace r = description.getAnnotation(Replace.class);
-				if(st == null && r != null){
-					// @Replace in a public test
-					throw new AnnotationFormatError("WARNING - found test case with REPLACE in a public test file: [" + description.getDisplayName() + "]");
-				}
+            // disable stdout/stderr to avoid timeouts due to large debugging outputs
+            if (saveOut == null) {
+                saveOut = System.out;
+                saveErr = System.err;
 
-				Test testAnnotation = description.getAnnotation(Test.class);
-				if (testAnnotation.timeout() == 0) {
-					throw new AnnotationFormatError("WARNING - found test case without TIMEOUT in @Test annotation: [" + description.getDisplayName() + "]");
-				}
-				timeoutSum += testAnnotation.timeout();
-
-				if (saveOut == null) {
-					saveOut = System.out;
-					saveErr = System.err;
-
-					System.setOut(new PrintStream(new OutputStream() {
-						public void write(int i) {
-						}
-					}));
-
-					System.setErr(new PrintStream(new OutputStream() {
-						public void write(int i) {
-						}
-					}));
-				}
-			} catch (Exception e) {
-				throw new AnnotationFormatError(e.getMessage());
-			}
+                System.setOut(new PrintStream(new OutputStream() {
+                    public void write(int i) { }
+                }));
+                System.setErr(System.out);
+            }
 		}
 
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
-			Bonus bonusAnnotation = description.getAnnotation(Bonus.class);
-			Malus malusAnnotation = description.getAnnotation(Malus.class);
 			Points pointsAnnotation = description.getAnnotation(Points.class);
-			if (bonusAnnotation != null || malusAnnotation != null || pointsAnnotation == null ) {
-					throw new AnnotationFormatError("WARNING - found testcase with BONUS/MALUS annotation or no POINTS annoation [" + description.getDisplayName() + "]");
-				
-			} else if (pointsAnnotation != null && pointsAnnotation.exID().trim().length() == 0) {
-				throw new AnnotationFormatError("WARNING - found test case with empty exercise id in POINTS annotation: [" + description.getDisplayName() + "]");
-			} else if (pointsAnnotation != null && !exerciseHashMap.containsKey(pointsAnnotation.exID())) {
-				throw new AnnotationFormatError("WARNING - found test case with non-declared exercise id in POINTS annotation: [" + description.getDisplayName() + "]");
-			} else if (pointsAnnotation != null && (pointsAnnotation.malus() == 0 || pointsAnnotation.bonus() == 0)) {
-				throw new AnnotationFormatError("WARNING - found test case with illegal malus value or illegal bonus value in POINTS annotation: [" + description.getDisplayName() + "]");
-			} else if (pointsAnnotation != null && (pointsAnnotation.malus() == -1 && pointsAnnotation.bonus() == -1)) {
-				throw new AnnotationFormatError("WARNING - found test case with no malus value and no bonus value in POINTS annotation: [" + description.getDisplayName() + "]");
+			String exID = pointsAnnotation.exID();
+			if (isIgnoredCase(description) || isSkippedCase(description)) {
+				reportHashMap.get(exID).add(new ReportEntry(description));
 			} else {
-				String exID = null;
-				
-				if(pointsAnnotation != null){
-					exID = pointsAnnotation.exID();
-				}
-				if (!reportHashMap.containsKey(exID)) {
-					reportHashMap.put(exID, new ArrayList<ReportEntry>());
-				}
 				reportHashMap.get(exID).add(new ReportEntry(description, pointsAnnotation, throwable));
 			}
 		}
 
 		@Override
 		protected void skipped(AssumptionViolatedException e, Description description) {
-			Throwable t = new Throwable(JUnitWithPoints.SKIPPED_MSG);
-			failed(t, description);
+			failed(null, description);
 		}
 
 		@Override
@@ -241,121 +175,90 @@ public abstract class JUnitWithPoints {
 		}
 	}
 
-	// -------------------------------------------------------------------------------- //
+	// helper class for summaries
 	protected static class PointsSummary extends ExternalResource {
+		public static final int MAX_TIMEOUT_MS = 60_000;
+		private static boolean isSecretClass = false;
+
 		@Override
 		public final Statement apply(Statement base, Description description) {
+			// reset states
 			reportHashMap.clear();
 			exerciseHashMap.clear();
-			Exercises exercisesAnnotation;
-			String pubclassName = System.getProperty("pub");
-			Class pub;
-			ClassLoader cl = ClassLoader.getSystemClassLoader();
-			if(pubclassName != null){
-				try{
-					pub = cl.loadClass(pubclassName);
-					exercisesAnnotation = (Exercises) pub.getAnnotation(Exercises.class);
-				}catch (ClassNotFoundException cnfe){
-					throw new AnnotationFormatError("WARNING - pub class not found [" + description.getDisplayName() + "]");
-				}
-			}else{
-				exercisesAnnotation = description.getAnnotation(Exercises.class);
 
-			}
-			if (exercisesAnnotation == null || exercisesAnnotation.value().length == 0) {
-				throw new AnnotationFormatError("WARNING - found test set without exercise points declaration: [" + description.getDisplayName() + "]");
-			}
+			Exercises exercisesAnnotation = getExercisesAnnotation(description);
+
+			// fill data structures
 			for (Ex exercise : exercisesAnnotation.value()) {
-				if (exercise.exID().trim().length() == 0) {
-					throw new AnnotationFormatError("WARNING - found exercise points declaration with empty exercise name and following points: [" + exercise.points() + "]");
-				} else if (exercise.points() == 0) {
-					throw new AnnotationFormatError("WARNING - found exercise points declaration with illegal points value: [" + exercise.exID() + "]");
-				} else if (exerciseHashMap.containsKey(exercise.exID())) {
-					throw new AnnotationFormatError("WARNING - found exercise points declaration with duplicate exercise: [" + exercise.exID() + "]");
-				}
+				reportHashMap.put(exercise.exID(), new ArrayList<ReportEntry>());
 				exerciseHashMap.put(exercise.exID(), exercise);
 			}
+
+			// start the real JUnit test
 			return super.apply(base, description);
 		}
 
-		@Override
-		protected final void after() {
-			if (timeoutSum > 60_000) {
-				throw new AnnotationFormatError("WARNING - total timeout sum is too high, please reduce to max. 60000ms\": [" + timeoutSum + "ms]");
-			}
-			for (String exerciseId : exerciseHashMap.keySet()) {
-				if (!reportHashMap.containsKey(exerciseId)) {
-					String doReplace = System.getProperty("replace");
-					if (doReplace == null || doReplace.equals("")) {
-						throw new AnnotationFormatError("WARNING - found exercise points declaration for exercise without test case: [" + exerciseId + "]");
-					}
-				}
-			}
-			String[] exerciseIds = reportHashMap.keySet().toArray(new String[0]);
-			Arrays.sort(exerciseIds);
-			JSONObject jsonsummary = new JSONObject();
-			JSONArray jsonexercises = new JSONArray();
-			double pointsAchievedTotal = 0;
-			for (String exerciseId : exerciseIds) {
-				double bonusDeclaredPerExercise, bonusAchievedPerExercise, pointsDeclaredPerExercise, pointsAchievedPerExercise;
-				JSONObject jsonexercise = new JSONObject();
-				Ex exercise = exerciseHashMap.get(exerciseId);
-				List<ReportEntry> reportPerExercise = reportHashMap.get(exerciseId);
-				Collections.sort(reportPerExercise, new ReportEntryComparator());
-				bonusDeclaredPerExercise = 0;
-				for (ReportEntry reportEntry : reportPerExercise) {
-					if(reportEntry.points != null){
-						if(reportEntry.points.bonus() != -1){
-							bonusDeclaredPerExercise += Math.abs(reportEntry.points.bonus());
-						}
-					}
-				}
-				pointsDeclaredPerExercise = exercise.points();
-				bonusAchievedPerExercise = 0;
-				JSONArray jsontests = new JSONArray();
-				for (ReportEntry reportEntry : reportPerExercise) {
-					Points points = reportEntry.points;
-					Throwable throwable = reportEntry.throwable;
-					JSONObject json = reportEntry.format(bonusDeclaredPerExercise, pointsDeclaredPerExercise);
-					if (json != null) {
-						jsontests.add(json);
-					}
-					if(points != null){
-						if(points.bonus() != -1 && throwable == null){
-							bonusAchievedPerExercise += Math.abs(points.bonus());
-						}
-						if(points.malus() != -1 && throwable != null){
-							bonusAchievedPerExercise -= Math.abs(points.malus());
-						}
-					}
-				}
-				if (bonusDeclaredPerExercise <= 0) {
-					throw new AnnotationFormatError("Declare at least one Bonus case per exercise.");
-				}
-				jsonexercise.put("tests", jsontests);
-				bonusAchievedPerExercise = Math.min(bonusDeclaredPerExercise, Math.max(0, bonusAchievedPerExercise));
-				pointsAchievedPerExercise = Math.ceil(pointsDeclaredPerExercise * 2 * bonusAchievedPerExercise / bonusDeclaredPerExercise) / 2;
-				pointsAchievedTotal += pointsAchievedPerExercise;
-				jsonexercise.put("name", exercise.exID());
-				jsonexercises.add(jsonexercise);
-			}
-			jsonsummary.put("exercises", jsonexercises);
-			if (System.getProperty("json") != null && System.getProperty("json").equals("yes")) {
-				PointsLogger.saveErr.println(jsonsummary);
+		// returns @Exercises annotation of public test class (if specified) or current class (otherwise)
+		public static Exercises getExercisesAnnotation(Description description) {
+			Class<?> publicTestClass = getPublicTestClass();
+			if (publicTestClass == null) {
+				return description.getAnnotation(Exercises.class);
 			} else {
-				try {
-					try (FileWriter fileWriter = new FileWriter(new File(System.getProperty("user.dir"), "autocomment.txt"))) {
-						fileWriter.write(jsonsummary.toString());
+				isSecretClass = true;
+				return publicTestClass.getAnnotation(Exercises.class);
+			}
+		}
+
+		// returns public test class (if specified)
+		public static Class<?> getPublicTestClass() {
+			String pubClassName = System.getProperty("pub");
+			if (pubClassName == null) {
+				return null;
+			}
+			try {
+				return ClassLoader.getSystemClassLoader().loadClass(pubClassName);
+			} catch (ClassNotFoundException e) {
+				throw new AnnotationFormatError("ERROR - pub class specified, but not found [" + pubClassName + "]");
+			}
+		}
+
+		@Override
+		// create and print JSON summary to stderr (if requested)
+		protected final void after() {
+			if (System.getProperty("json") != null && System.getProperty("json").equals("yes")) {
+				// loop over all reports and collect results
+				JSONArray jsonExercises = new JSONArray();
+				for (Map.Entry<String, List<ReportEntry>> exerciseResults : reportHashMap.entrySet()) {
+					JSONArray jsonTests = new JSONArray();
+
+					// loop over all results for that exercise
+					for (ReportEntry reportEntry : exerciseResults.getValue()) {
+						if (!reportEntry.skipped) {
+							JSONObject reportJSON = reportEntry.toJSON();
+							// mark test method regarding origin
+							reportJSON.put("fromSecret", isSecretClass);
+							jsonTests.add(reportJSON);
+						}
 					}
-				} catch (Throwable t) {
-					PointsLogger.saveErr.println(jsonsummary);
+
+					// collect result
+					JSONObject jsonExercise = new JSONObject();
+					jsonExercise.put("name", exerciseResults.getKey());
+					jsonExercise.put("tests", jsonTests);
+					jsonExercises.add(jsonExercise);
 				}
+
+				// add results to root node and write to stderr
+				JSONObject jsonSummary = new JSONObject();
+				jsonSummary.put("exercises", jsonExercises);
+				PointsLogger.saveErr.println(jsonSummary);
 			}
 		}
 	}
 }
 
-class MyStatement extends Statement {
+// helper class to skip test methods
+class SkipStatement extends Statement {
 	public void evaluate() {
 		Assume.assumeTrue(false);
 	}

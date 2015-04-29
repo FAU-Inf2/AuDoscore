@@ -1,0 +1,38 @@
+{
+    "replaced": [],
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "Weite Felder - createAndFill",
+                    "tests": [
+                        {
+                            "desc": "public_a",
+                            "fromSecret": false,
+                            "id": "public_a",
+                            "success": true
+                        },
+                        {
+                            "desc": "public_b",
+                            "fromSecret": false,
+                            "id": "public_b",
+                            "success": true
+                        },
+                        {
+                            "desc": "public_c",
+                            "fromSecret": false,
+                            "id": "public_c",
+                            "success": true
+                        },
+                        {
+                            "desc": "public_d",
+                            "fromSecret": false,
+                            "id": "public_d",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

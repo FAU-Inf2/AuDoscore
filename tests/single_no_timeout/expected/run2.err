@@ -1,7 +1,20 @@
-{ "vanilla" : 
-{"exercises":[{"tests":[{"id":"test","desc":"test","success":true}],"name":"GA4.6a"}]}
-, "replaced" : 
-[
-{"exercises":[{"tests":[],"name":"GA4.6a"}]}
-]
+{
+    "replaced": [],
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "GA4.6a",
+                    "tests": [
+                        {
+                            "desc": "test",
+                            "fromSecret": false,
+                            "id": "test",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }

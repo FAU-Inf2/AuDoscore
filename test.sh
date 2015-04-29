@@ -138,7 +138,6 @@ function scanTestFiles {
 		die
 
 	fi
-
 }
 
 function scanInterfaces {
@@ -150,6 +149,7 @@ function scanInterfaces {
 			arg=$(basename $entry)
 			if [ ${first} -eq 1 ];then
 				interfaces=$arg
+				first=0
 			else
 		 		interfaces="${interfaces} $arg"
 			fi
@@ -296,10 +296,6 @@ function testIt {
 	info "- compiling"
 	( make compile-stage2 ) > comp2 2>&1
 	checkexit $? "\ninternal error\n" comp2
-	if [ "x$secretclass" != "x" ]; then
-		( make compile-stage2-secret ) > comp2 2>&1
-		checkexit $? "\ninternal error\n" comp2
-	fi
 
 	info "- testing"
 	( make run-stage2 ) > run2.out 2> run2.err
@@ -356,10 +352,17 @@ info "scanning for cleanroom"
 cleanroom=""
 scanCleanroom
 
-info "scanning for student sources"
-undertestdircnt=0
-undertestdirs=""
-scanStudentSources
+
+if [ "$#" -eq 0 ]; then
+	info "scanning for student sources"
+	undertestdircnt=0
+	undertestdirs=""
+	scanStudentSources
+else
+	info "use args from commandline as student source dirs"
+	undertestdircnt=$#
+	undertestdirs=$@
+fi
 
 undertestdir="undertest"
 if [ ${undertestdircnt} -eq 1 ]; then

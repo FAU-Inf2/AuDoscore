@@ -1,5 +1,6 @@
 import org.junit.*;
 import tester.*;
+import tester.annotations.*;
 
 import org.junit.*;
 import org.junit.rules.*;

@@ -18,4 +18,8 @@ public class UnitTest {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
+	@Test(timeout=100)
+	@tester.annotations.Bonus(exID = "GA4.6a", bonus = 0.1, comment="empty dummy test")
+	public void test2() {
+	}
 }

@@ -21,7 +21,7 @@ public class SecretTest {
 	@Test(timeout=100)
 	@tester.annotations.Bonus(exID = "GA4.6a", bonus = 47.11)
 	@Replace({"ToTest.toTest"})
-	public void test() {
+	public void test2() {
 		assertEquals("Should return 42", 42, ToTest.toTest());
 	}
 }
