@@ -51,7 +51,7 @@ public class InterfaceComparer {
 			cleanroomLoader = new URLClassLoader(new URL[]{cleanroomJAR.toURI().toURL()});
 			studentLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()});
 		}catch(MalformedURLException mfue){
-			// TODO
+			throw new Error("Error"  + mfue.getMessage());
 		}
 		for(File path : f.listFiles()) {
 			if (path.isFile()) {

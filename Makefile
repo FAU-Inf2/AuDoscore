@@ -41,12 +41,10 @@ lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 	jar cvf lib/junitpoints.jar -C build .
 
 run-comparer:
-	java lib/junit.jar:cleanroom:. tools.ic.InterfaceComparer
+	javac cleanroom/*.java
+	java lib/junitpoints.jar tools.ic.InterfaceComparer
+	rm cleanroom/*class
 
-compile-cleanroom:
-	javac cleanroom/*
-clean-cleanroom:
-	rm cleanroom/*.class
 compile-stage0:
 	javac $(STUDENTSOURCE)	
 
