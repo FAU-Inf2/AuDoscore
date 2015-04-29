@@ -9,12 +9,18 @@ import java.io.*;
 
 public class InterfaceComparer {
 	private static boolean error = false;
+	private static HashMap<String,Boolean> methodMap = null;
 	private static void compareClasses(Class<?> cleanroomClass, Class<?> studentClass) {
 		boolean equals = false;
 		ArrayList<Method> studentMethods = new ArrayList<Method>(Arrays.asList(studentClass.getDeclaredMethods()));
 		// checkMethods
 		for(Method cleanroomMethod : cleanroomClass.getDeclaredMethods()){
 			System.out.println("[cleanroom]" + cleanroomMethod);
+			// only compare if method was specified in @CompareInterface annotation
+			if(methodMap.get(cleanroomMethod.getName()) == null){
+				continue;
+			}
+			
 			for(Method studentMethod : studentMethods) {
 				System.out.println("[student]" + studentMethod);
 				if(cleanroomMethod.toString().equals(studentMethod.toString())) {
@@ -38,14 +44,24 @@ public class InterfaceComparer {
 		return idx >= 0 ? path.substring(idx + 1) : path;
 	}
 
+	private static HashMap<String,Boolean> argsToMap(String[] methods){
+		HashMap<String,Boolean> methodMap = new HashMap<String,Boolean>();
+		for(String method : methods){
+			methodMap.put(method,true);		
+		}
+
+		return methodMap;
+	}
 
 	public static void main(String args[]){
+		// TODO check args
 		String pathToCleanroom = "./cleanroom/";
 		File f = new File(pathToCleanroom);
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		String cwd = System.getProperty("user.dir");
 		ClassLoader cleanroomLoader = null;
 		ClassLoader studentLoader = null;
+		methodMap = argsToMap(args);
 		try{
 			cleanroomLoader = new URLClassLoader(new URL[]{new File(cwd+pathToCleanroom).toURI().toURL()});
 			studentLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()});
@@ -70,10 +86,10 @@ public class InterfaceComparer {
 					} catch (ClassNotFoundException cnfe) {
 						throw new Error("Error - class [" + cnfe.getMessage()+"] not found");
 					}
+					
 					compareClasses(cleanroomClass,studentClass);
 				}
 			}
-	
 		}
 
 		if(error){
