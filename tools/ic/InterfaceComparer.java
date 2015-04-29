@@ -15,14 +15,12 @@ public class InterfaceComparer {
 		ArrayList<Method> studentMethods = new ArrayList<Method>(Arrays.asList(studentClass.getDeclaredMethods()));
 		// checkMethods
 		for(Method cleanroomMethod : cleanroomClass.getDeclaredMethods()){
-			System.out.println("[cleanroom]" + cleanroomMethod);
 			// only compare if method was specified in @CompareInterface annotation
 			if(methodMap.get(cleanroomMethod.getName()) == null){
 				continue;
 			}
 			
 			for(Method studentMethod : studentMethods) {
-				System.out.println("[student]" + studentMethod);
 				if(cleanroomMethod.toString().equals(studentMethod.toString())) {
 					equals = true;
 					studentMethods.remove(studentMethod);
