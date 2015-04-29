@@ -2,10 +2,12 @@ import org.junit.Test;
 import org.junit.runner.Description;
 import tester.annotations.*;
 
+
 import java.lang.annotation.AnnotationFormatError;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.io.IOException;
 
 public class CheckAnnotation {
 
@@ -31,10 +33,32 @@ public class CheckAnnotation {
             }
         }
 
+        Class<?> clazz = description.getTestClass();
+	
+	// check if there are methods to compare with cleanroom counteparts
+	CompareInterface compareInterfaceAnnotation = clazz.getAnnotation(CompareInterface.class);
+	if(compareInterfaceAnnotation != null){
+		String args = "";
+		for(String method : compareInterfaceAnnotation.value()) {
+			args+=" " + method;
+		}
+
+		// execute comparer
+		String cmd = "java -cp lib/junitpoints.jar tools.ic.InterfaceComparer " + args;
+		Runtime rt = Runtime.getRuntime();
+		try{
+			Process pr = rt.exec(cmd);
+			pr.waitFor();
+		} catch (IOException ioe){
+			throw new Error("Error - " + ioe.getMessage());
+		} catch (InterruptedException ie){
+			throw new Error("Error - " + ie.getMessage());
+		}
+	}
+
         // check annotations on method level
         long timeoutSum = 0;
         HashSet<String> usedExercises = new HashSet<>(), bonusExercises = new HashSet<>();
-        Class<?> clazz = description.getTestClass();
         SecretClass secretClassAnnotation = clazz.getAnnotation(SecretClass.class);
         boolean isSecretClass = secretClassAnnotation != null;
         for (Method m : clazz.getMethods()) {
