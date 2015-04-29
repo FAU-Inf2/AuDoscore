@@ -66,16 +66,16 @@ public class InterfaceComparer {
 					Class<?> studentClass = null;
 
 					try{
-						studentClass = cl.loadClass(fileName);
+						cleanroomClass = cl.loadClass(fileName);
 					
 						// compile cleanroom source
 						Runtime rt = Runtime.getRuntime();
-						String cmd = "javac " + fileName + ".java";
+						String cmd = "make clean-cleanroom";
 						System.out.println("[cmd] " + cmd);
 						Process pr = rt.exec(cmd);
 						pr.waitFor();
 
-						cleanroomClass = cl.loadClass(fileName);
+						studentClass = cl.loadClass(fileName);
 
 					} catch (ClassNotFoundException cnfe) {
 						throw new Error("WARNING - class [" + cnfe.getMessage()+"] not found");

@@ -40,6 +40,13 @@ lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/tools.jar:. $(SRCJUNITPOINTSJAR)
 	jar cvf lib/junitpoints.jar -C build .
 
+run-comparer:
+	java lib/junit.jar:cleanroom:. tools.ic.InterfaceComparer
+
+compile-cleanroom:
+	javac cleanroom/*
+clean-cleanroom:
+	rm cleanroom/*.class
 compile-stage0:
 	javac $(STUDENTSOURCE)	
 
