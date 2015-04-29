@@ -53,7 +53,6 @@ public class InterfaceComparer {
 
 		File f = new File("./"+pathToCleanroom);
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
-		ClassLoader ul = new URLClassLoader(cleanroomSearchUrls);
 
 		for(File path : f.listFiles()) {
 			if (path.isFile()) {
@@ -67,17 +66,16 @@ public class InterfaceComparer {
 					Class<?> studentClass = null;
 
 					try{
-						cleanroomClass = ul.loadClass(fileName);
-					
-						// compile student source
-						// This is dirty
-				//		Runtime rt = Runtime.getRuntime();
-				//		String cmd = "javac " + fileName + ".java";
-				//		System.out.println("[cmd] " + cmd);
-				//		Process pr = rt.exec(cmd);
-				//		pr.waitFor();
-
 						studentClass = cl.loadClass(fileName);
+					
+						// compile cleanroom source
+						Runtime rt = Runtime.getRuntime();
+						String cmd = "javac " + fileName + ".java";
+						System.out.println("[cmd] " + cmd);
+						Process pr = rt.exec(cmd);
+						pr.waitFor();
+
+						cleanroomClass = cl.loadClass(fileName);
 
 					} catch (ClassNotFoundException cnfe) {
 						throw new Error("WARNING - class [" + cnfe.getMessage()+"] not found");
