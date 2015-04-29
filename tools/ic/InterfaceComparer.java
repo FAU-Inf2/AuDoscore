@@ -71,11 +71,11 @@ public class InterfaceComparer {
 					
 						// compile student source
 						// This is dirty
-						Runtime rt = Runtime.getRuntime();
-						String cmd = "javac " + fileName + ".java";
-						System.out.println("[cmd] " + cmd);
-						Process pr = rt.exec(cmd);
-						pr.waitFor();
+				//		Runtime rt = Runtime.getRuntime();
+				//		String cmd = "javac " + fileName + ".java";
+				//		System.out.println("[cmd] " + cmd);
+				//		Process pr = rt.exec(cmd);
+				//		pr.waitFor();
 
 						studentClass = cl.loadClass(fileName);
 
