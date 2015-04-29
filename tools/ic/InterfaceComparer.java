@@ -41,22 +41,8 @@ public class InterfaceComparer {
 
 	public static void main(String args[]){
 		String pathToCleanroom = "/cleanroom/";
-		URL[] cleanroomSearchURLs = null;
-		URL[] studentSearchURLs = null;
-		String cwd = "file://" + System.getProperty("user.dir");
-		String cleanroomURL = cwd + pathToCleanroom;
-		
-		try {
-			cleanroomSearchURLs = new URL[]{ new URL(cleanroomURL) };
-			studentSearchURLs = new URL[] {new URL(cwd)};
-		
-		} catch (MalformedURLException mue) {
-			throw new Error("WARNING - " + mue.getMessage());
-		}
-
 		File f = new File("./"+pathToCleanroom);
-		ClassLoader studentLoader = new URLClassLoader(studentSearchURLs);
-		ClassLoader cleanroomLoader = new URLClassLoader(cleanroomSearchURLs);
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		for(File path : f.listFiles()) {
 			if (path.isFile()) {
 				String pathString = path.toString();
@@ -69,11 +55,22 @@ public class InterfaceComparer {
 					Class<?> studentClass = null;
 
 					try{
-						cleanroomClass = cleanroomLoader.loadClass(fileName);
-						studentClass = studentLoader.loadClass(fileName);
+						cleanroomClass = cl.loadClass(fileName);
+
+						// clean 
+						Runtime rt = Runtime.getRuntime();
+						String cmd = "make clean-cleanroom";
+						Process pr = rt.exec(cmd);
+						pr.waitFor();
+
+						studentClass = cl.loadClass(fileName);
 
 					} catch (ClassNotFoundException cnfe) {
-						throw new Error("WARNING - class [" + cnfe.getMessage()+"] not found");
+						throw new Error("Error - class [" + cnfe.getMessage()+"] not found");
+					} catch(IOException ioe) {
+						throw new Error("Error - cleaning cleanroom failed");
+					} catch(InterruptedException ie) {
+						throw new Error("Error - cleaning cleanroom failed");
 					}
 					compareClasses(cleanroomClass,studentClass);
 				}
