@@ -122,10 +122,6 @@ compile-stage2-secret:
 
 compile: compile-stage$(STAGE)
 
-run-comparer:
-	javac cleanroom/*.java
-	java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.ic.InterfaceComparer
-
 run-stage0:
 	echo "alles gut"
 

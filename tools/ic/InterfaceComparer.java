@@ -41,19 +41,22 @@ public class InterfaceComparer {
 
 	public static void main(String args[]){
 		String pathToCleanroom = "/cleanroom/";
-		URL[] cleanroomSearchUrls = null;
-		String cleanroomUrl = "file://" + System.getProperty("user.dir") + pathToCleanroom;
-		System.out.println("[url] " + cleanroomUrl);
+		URL[] cleanroomSearchURLs = null;
+		URL[] studentSearchURLs = null;
+		String cwd = "file://" + System.getProperty("user.dir");
+		String cleanroomURL = cwd + pathToCleanroom;
+		
 		try {
-			cleanroomSearchUrls = new URL[]{ new URL(cleanroomUrl) };
+			cleanroomSearchURLs = new URL[]{ new URL(cleanroomURL) };
+			studentSearchURLs = new URL[] {new URL(cwd)};
 		
 		} catch (MalformedURLException mue) {
 			throw new Error("WARNING - " + mue.getMessage());
 		}
 
 		File f = new File("./"+pathToCleanroom);
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
-
+		ClassLoader studentLoader = new URLClassLoader(studentSearchURLs);
+		ClassLoader cleanroomLoader = new URLClassLoader(cleanroomSearchURLs);
 		for(File path : f.listFiles()) {
 			if (path.isFile()) {
 				String pathString = path.toString();
@@ -66,23 +69,11 @@ public class InterfaceComparer {
 					Class<?> studentClass = null;
 
 					try{
-						cleanroomClass = cl.loadClass(fileName);
-					
-						// compile cleanroom source
-						Runtime rt = Runtime.getRuntime();
-						String cmd = "make clean-cleanroom";
-						System.out.println("[cmd] " + cmd);
-						Process pr = rt.exec(cmd);
-						pr.waitFor();
-
-						studentClass = cl.loadClass(fileName);
+						cleanroomClass = cleanroomLoader.loadClass(fileName);
+						studentClass = studentLoader.loadClass(fileName);
 
 					} catch (ClassNotFoundException cnfe) {
 						throw new Error("WARNING - class [" + cnfe.getMessage()+"] not found");
-					} catch (IOException ioe) {
-						throw new Error("WARNING - Error while cleaning cleanroom");
-					} catch (InterruptedException ie) {
-						throw new Error("WARNING - Error while cleanrin cleanroom");
 					}
 					compareClasses(cleanroomClass,studentClass);
 				}
