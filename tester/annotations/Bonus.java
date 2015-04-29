@@ -5,6 +5,7 @@ import java.lang.annotation.*;
 @Inherited
 @Target(java.lang.annotation.ElementType.METHOD)
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@Deprecated
 public @interface Bonus {
 	String exID();
 
