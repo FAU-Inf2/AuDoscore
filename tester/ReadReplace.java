@@ -95,9 +95,14 @@ public class ReadReplace{
 			}
 		}
 
+		boolean needSep = false;
 		Iterator it = rmap.entrySet().iterator();
 		while(it.hasNext()) {
-			System.out.println("echo \",\" 1>&2");
+			if (needSep) {
+				System.out.println("echo \",\" 1>&2");
+			} else {
+				needSep = true;
+			}
 			Map.Entry pair = (Map.Entry) it.next();
 			String s = (String) pair.getKey();
 			List<String> methods = (List<String>) pair.getValue();
