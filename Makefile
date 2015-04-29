@@ -55,7 +55,8 @@ compile-stage1: miniclean
 	java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation $(TEST)
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
-	! ( javap -p -c $(STUDENTCLASS) | ./forbidden 1>&2 )
+	javap -p -c $(STUDENTCLASS) > javap.out
+	! ( cat javap.out | ./forbidden 1>&2 )
 	rm forbidden
 
 compile-stage2: miniclean
