@@ -8,7 +8,7 @@
                     "tests": [
                         {
                             "desc": "test",
-                            "error": "NullPointerException(): UnitTest.test(line 25)",
+                            "error": "NullPointerException(): UnitTest.test(line 19)",
                             "fromSecret": false,
                             "id": "test",
                             "success": false

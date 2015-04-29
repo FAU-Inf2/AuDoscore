@@ -1,13 +1,7 @@
 import org.junit.*;
-import tester.*;
+import tester.annotations.*;
 
-import org.junit.*;
-import org.junit.rules.*;
 import static org.junit.Assert.*;
-import java.lang.reflect.*;
-import java.lang.*;
-import java.util.*;
-import java.io.*;
 
 @SecretClass
 public class SecretTest {
