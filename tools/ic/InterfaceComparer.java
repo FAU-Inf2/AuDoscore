@@ -80,9 +80,9 @@ public class InterfaceComparer {
 					} catch (ClassNotFoundException cnfe) {
 						throw new Error("WARNING - class [" + cnfe.getMessage()+"] not found");
 					} catch (IOException ioe) {
-						throw new Error("WARNING - Error while compiling student source ");
+						throw new Error("WARNING - Error while cleaning cleanroom");
 					} catch (InterruptedException ie) {
-						throw new Error("WARNING - Error while compiling student source ");
+						throw new Error("WARNING - Error while cleanrin cleanroom");
 					}
 					compareClasses(cleanroomClass,studentClass);
 				}
