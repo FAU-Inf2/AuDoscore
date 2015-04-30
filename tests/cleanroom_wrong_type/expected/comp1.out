@@ -1,0 +1,13 @@
+rm -f *.class */*.class
+javac cleanroom/*.java
+cp UnitTest.java UnitTest.java.orig
+javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp
+mv UnitTest.java.tmp UnitTest.java
+javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp
+mv UnitTest.java.tmp UnitTest.java
+make -B UnitTest.class || ( mv UnitTest.java.orig UnitTest.java; /bin/false; )
+make[1]: Entering directory `/home/cubu/A/tests/cleanroom_wrong_type/test.26784'
+javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
+make[1]: Leaving directory `/home/cubu/A/tests/cleanroom_wrong_type/test.26784'
+mv UnitTest.java.orig UnitTest.java
+java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest

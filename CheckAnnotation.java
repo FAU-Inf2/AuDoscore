@@ -57,7 +57,6 @@ public class CheckAnnotation {
 		}
 
 		if(pr.exitValue() != 0){
-			
 			throw new Error("Error - Comparing student interface with cleanroom interface failed");
 		}
 	}
