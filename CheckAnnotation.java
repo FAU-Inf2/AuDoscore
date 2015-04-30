@@ -44,15 +44,21 @@ public class CheckAnnotation {
 		}
 
 		// execute comparer
-		String cmd = "java -cp lib/junitpoints.jar tools.ic.InterfaceComparer " + args + " > output ";
+		String cmd = "java -cp lib/junitpoints.jar tools.ic.InterfaceComparer" + args;
 		Runtime rt = Runtime.getRuntime();
+		Process pr = null;
 		try{
-			Process pr = rt.exec(cmd);
+			pr = rt.exec(cmd);
 			pr.waitFor();
 		} catch (IOException ioe){
 			throw new Error("Error - " + ioe.getMessage());
 		} catch (InterruptedException ie){
 			throw new Error("Error - " + ie.getMessage());
+		}
+
+		if(pr.exitValue() != 0){
+			
+			throw new Error("Error - Comparing student interface with cleanroom interface failed");
 		}
 	}
 

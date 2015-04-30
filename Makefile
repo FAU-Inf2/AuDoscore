@@ -46,7 +46,7 @@ compile-cleanroom:
 compile-stage0:
 	javac $(STUDENTSOURCE)	
 
-compile-stage1: miniclean
+compile-stage1: miniclean compile-cleanroom
 	cp $(TEST).java $(TEST).java.orig
 	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(TEST).java > $(TEST).java.tmp
 	mv $(TEST).java.tmp $(TEST).java
