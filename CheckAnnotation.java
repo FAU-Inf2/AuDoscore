@@ -44,7 +44,7 @@ public class CheckAnnotation {
 		}
 
 		// execute comparer
-		String cmd = "java -cp lib/junitpoints.jar tools.ic.InterfaceComparer " + args;
+		String cmd = "java -cp lib/junitpoints.jar tools.ic.InterfaceComparer " + args + " > output ";
 		Runtime rt = Runtime.getRuntime();
 		try{
 			Process pr = rt.exec(cmd);

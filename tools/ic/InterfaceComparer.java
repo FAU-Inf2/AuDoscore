@@ -52,16 +52,19 @@ public class InterfaceComparer {
 	}
 
 	public static void main(String args[]){
-		// TODO check args
-		String pathToCleanroom = "./cleanroom/";
+		if(args == null){
+			System.err.println("Usage: java tools.ic.InterfaceComparer <method1> .. <methodn>");
+			System.exit(-1);
+		}
+		String cwd = System.getProperty("user.dir");
+		String pathToCleanroom = cwd + "/cleanroom/";
 		File f = new File(pathToCleanroom);
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
-		String cwd = System.getProperty("user.dir");
 		ClassLoader cleanroomLoader = null;
 		ClassLoader studentLoader = null;
 		methodMap = argsToMap(args);
 		try{
-			cleanroomLoader = new URLClassLoader(new URL[]{new File(cwd+pathToCleanroom).toURI().toURL()});
+			cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL()});
 			studentLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()});
 		}catch(MalformedURLException mfue){
 			throw new Error("Error"  + mfue.getMessage());
