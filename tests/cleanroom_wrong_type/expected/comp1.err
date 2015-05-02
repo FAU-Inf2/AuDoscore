@@ -1,4 +1,0 @@
-Exception in thread "main" java.lang.Error: Error - Comparing student interface with cleanroom interface failed
-	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:61)
-	at CheckAnnotation.main(CheckAnnotation.java:124)
-make: *** [compile-stage1] Error 1
