@@ -272,7 +272,7 @@ function testIt {
 	checkexit $? "\nstudent result: ✘\n" comp1.err
 
 	info "- checking interfaces"
-	( make run-comparer) 2> interface.err
+	( make run-comparer ) > interface.out 2> interface.err
 	checkexit $? "\nerror\n" interface.err
 
 	info "- testing"	
@@ -297,7 +297,7 @@ function testIt {
 	checkexit $? "\ninternal error\n" comp2
 	
 	info "- checking interfaces"
-	( make run-comparer) 2> interface.err
+	( make run-comparer ) > interface.out 2> interface.err
 	checkexit $? "\nerror\n" interface.err
 
 	info "- testing"
