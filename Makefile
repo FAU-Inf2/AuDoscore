@@ -10,8 +10,6 @@ TESTSOURCE = $(TEST:=.java)
 SECRETCLASS = $(SECRETTEST:=.class)
 SECRETSOURCE = $(SECRETTEST:=.java)
 
-INTERFACEVARFILE = interfacevar.mk
-INTERFAEMETHODS = `cat $(INTEFACEVARFILE)`
 all: prepare
 
 verify: prepare
@@ -44,9 +42,10 @@ lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 
 run-comparer:
 	javac cleanroom/*.java
+	INTERFACEMETHODS=$(info ${intefacevar.mk})
 	java -cp lib/junitpoints.jar tools.ic.InterfaceComparer $(INTERFACEMETHODS) 2> interface.err
 	rm cleanroom/*.class
-	rm interfacevar.mk
+#	rm interfacevar.mk
 
 compile-stage0:
 	javac $(STUDENTSOURCE)	
