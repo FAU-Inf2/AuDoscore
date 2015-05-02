@@ -10,6 +10,8 @@ TESTSOURCE = $(TEST:=.java)
 SECRETCLASS = $(SECRETTEST:=.class)
 SECRETSOURCE = $(SECRETTEST:=.java)
 
+INTERFACEVARFILE = interfacevar.mk
+INTERFAEMETHODS = `cat $(INTEFACEVARFILE)`
 all: prepare
 
 verify: prepare
@@ -40,13 +42,16 @@ lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/tools.jar:. $(SRCJUNITPOINTSJAR)
 	jar cvf lib/junitpoints.jar -C build .
 
-compile-cleanroom:
+run-comparer:
 	javac cleanroom/*.java
+	java -cp lib/junitpoints.jar tools.ic.InterfaceComparer $(INTERFACEMETHODS) 2> interface.err
+	rm cleanroom/*.class
+	rm interfacevar.mk
 
 compile-stage0:
 	javac $(STUDENTSOURCE)	
 
-compile-stage1: miniclean compile-cleanroom
+compile-stage1: miniclean
 	cp $(TEST).java $(TEST).java.orig
 	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(TEST).java > $(TEST).java.tmp
 	mv $(TEST).java.tmp $(TEST).java
@@ -55,7 +60,7 @@ compile-stage1: miniclean compile-cleanroom
 #	sed -i -e 's/@tester.annotations.SecretCase/@org.junit.Ignore/' $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
-	java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation $(TEST)
+	java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation $(TEST) > interfacevar.mk
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
 	! ( javap -p -c $(STUDENTCLASS) | ./forbidden 1>&2 )
@@ -81,7 +86,7 @@ compile-stage2: miniclean
 	mv $(TEST).java.orig $(TEST).java
 	echo "echo \"[\" 1>&2" > loop.sh
 	if [ "x$(SECRETTEST)" != "x" ]; then \
-		java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar:. -Dpub=$(TEST) CheckAnnotation $(SECRETTEST) ; \
+		java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar:. -Dpub=$(TEST) CheckAnnotation $(SECRETTEST) > interfacevar.mk ; \
 		java -cp lib/junitpoints.jar:lib/junit.jar:. -DwithSecret=yes tester.ReadReplace --loop $(TEST) >> loop.sh ; \
 		echo "echo \",\" 1>&2" >> loop.sh ; \
 		make compile-stage2-secret ; \

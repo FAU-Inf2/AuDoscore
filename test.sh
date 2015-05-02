@@ -270,7 +270,10 @@ function testIt {
 	info "- compiling"
 	( make compile-stage1 ) > comp1.out 2> comp1.err
 	checkexit $? "\nstudent result: ✘\n" comp1.err
-	
+
+	info "- checking interfaces"
+	( make run-comparer) 2> interface.err
+	checkexit $? "\nerror\n" interface.err
 
 	info "- testing"	
 	( make run-stage1 ) > run1.out 2> run1.err
@@ -292,6 +295,10 @@ function testIt {
 	info "- compiling"
 	( make compile-stage2 ) > comp2 2>&1
 	checkexit $? "\ninternal error\n" comp2
+	
+	info "- checking interfaces"
+	( make run-comparer) 2> interface.err
+	checkexit $? "\nerror\n" interface.err
 
 	info "- testing"
 	( make run-stage2 ) > run2.out 2> run2.err
