@@ -32,7 +32,7 @@ public class InterfaceComparer {
 				equals = false;
 			}else{
 				error = true;
-				System.err.println("WARNING - Method " +cleanroomMethod + " does not exists in student code or does not match with student counterpart");
+				System.err.println("ERROR - Method " +cleanroomMethod + " does not exists in student code or does not match with student counterpart");
 			}
 		}		
 	}
