@@ -43,7 +43,7 @@ lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 run-comparer:
 	javac cleanroom/*.java
 	INTERFACEMETHODS=$(info ${intefacevar.mk})
-	java -cp lib/junitpoints.jar tools.ic.InterfaceComparer $(INTERFACEMETHODS) 2> interface.err
+	java -cp lib/junitpoints.jar tools.ic.InterfaceComparer $(INTERFACEMETHODS)
 	rm cleanroom/*.class
 #	rm interfacevar.mk
 
