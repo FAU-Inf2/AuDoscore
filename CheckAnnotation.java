@@ -34,23 +34,27 @@ public class CheckAnnotation {
         }
 
         Class<?> clazz = description.getTestClass();
+        SecretClass secretClassAnnotation = clazz.getAnnotation(SecretClass.class);
+        boolean isSecretClass = secretClassAnnotation != null;
 	
 	// check if there are methods to compare with cleanroom counteparts
 	CompareInterface compareInterfaceAnnotation = clazz.getAnnotation(CompareInterface.class);
 	if(compareInterfaceAnnotation != null){
 		String args = "";
 		for(String method : compareInterfaceAnnotation.value()) {
-			args+=" " + method;
+			args+=method+" ";
 		}
 
-		System.out.println(args);
+		if(isSecretClass){
+			System.out.println("SINTERFACEMETHODS = "+args);
+		}else{
+			System.out.println("INTERFACEMETHODS = "+args);
+		}
 	}
 
         // check annotations on method level
         long timeoutSum = 0;
         HashSet<String> usedExercises = new HashSet<>(), bonusExercises = new HashSet<>();
-        SecretClass secretClassAnnotation = clazz.getAnnotation(SecretClass.class);
-        boolean isSecretClass = secretClassAnnotation != null;
         for (Method m : clazz.getMethods()) {
             Test test = m.getAnnotation(Test.class);
             if (test == null) {
