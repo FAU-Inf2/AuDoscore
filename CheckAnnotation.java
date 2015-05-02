@@ -43,7 +43,7 @@ public class CheckAnnotation {
 			args+=" " + method;
 		}
 
-		System.out.println("METHODS=\"" + args +"\"");
+		System.out.println(args);
 	}
 
         // check annotations on method level
