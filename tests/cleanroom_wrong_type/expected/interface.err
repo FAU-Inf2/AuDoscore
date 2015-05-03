@@ -1,4 +1,4 @@
-WARNING - Method public static double ToTest.toTest2() does not exists in student code or does not match with student counterpart
+ERROR - Method public static double ToTest.toTest2() does not exists in student code or does not match with student counterpart
 Exception in thread "main" java.lang.Error
 	at tools.ic.InterfaceComparer.main(InterfaceComparer.java:97)
 make: *** [run-comparer] Error 1

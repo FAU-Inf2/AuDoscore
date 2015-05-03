@@ -87,7 +87,7 @@ compile-stage2: miniclean
 	mv $(TEST).java.orig $(TEST).java
 	echo "echo \"[\" 1>&2" > loop.sh
 	if [ "x$(SECRETTEST)" != "x" ]; then \
-		java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar:. -Dpub=$(TEST) CheckAnnotation $(SECRETTEST) > var.mk ; \
+		java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar:. -Dpub=$(TEST) CheckAnnotation $(SECRETTEST) >> var.mk ; \
 		java -cp lib/junitpoints.jar:lib/junit.jar:. -DwithSecret=yes tester.ReadReplace --loop $(TEST) >> loop.sh ; \
 		echo "echo \",\" 1>&2" >> loop.sh ; \
 		make compile-stage2-secret ; \
