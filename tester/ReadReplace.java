@@ -1,34 +1,17 @@
 package tester;
 
 import tester.annotations.*;
-import java.io.*;
 import java.util.*;
-import java.lang.*;
 import java.lang.reflect.*;
 import java.lang.annotation.*;
-import org.junit.*;
-import org.junit.rules.*;
 import org.junit.runner.*;
-import org.junit.runners.model.*;
-import tools.sep.*;
 
-public class ReadReplace{
-	private static boolean withSecret = false;
-	public static String getSig(Method m){
-		String sig = m.getDeclaringClass().getName() + "." + m.getName() + "(";
-		for(Class p : m.getParameterTypes()){
-			sig +=  p.getSimpleName() + ", ";
-		}
-		if(m.getParameterTypes().length > 0){
-			sig = sig.substring(0, sig.length()-2);
-		}
-		return sig + ")";
-	}
+public class ReadReplace {
 
 	public static String getCanonicalReplacement(Replace r) {
 		Map<String, SortedSet<String>> mMethsMap = getMap(r);
 		String ncln = "";
-		for(Map.Entry<String, SortedSet<String>> e : mMethsMap.entrySet()){
+		for(Map.Entry<String, SortedSet<String>> e : mMethsMap.entrySet()) {
 			ncln += "@" + e.getKey();
 			for(String me : e.getValue())
 				ncln += "#" + me;
@@ -38,25 +21,25 @@ public class ReadReplace{
 
 	public static Map<String, SortedSet<String>> getMap(Replace r) {
 		Map<String, SortedSet<String>> mMethsMap = new TreeMap<>();
-		for(int i=0; i<r.value().length; ++i){
+		for(int i=0; i<r.value().length; ++i) {
 			int s = r.value()[i].indexOf('.');
 			String cln;
 			String regex;
-			if(s == -1){
+			if(s == -1) {
 				cln = r.value()[i];
 				regex = ".*";
-			}else{
+			} else {
 				cln = r.value()[i].substring(0, s);
 				regex = r.value()[i].substring(s+1);
 			}
 
-			if(!mMethsMap.containsKey(cln))
+			if (!mMethsMap.containsKey(cln))
 				mMethsMap.put(cln, new TreeSet<String>());
 			SortedSet<String> meths = mMethsMap.get(cln);
 
 			try {
-				for(Method me : Class.forName(cln).getDeclaredMethods()){
-					if(me.getName().matches(regex)){
+				for (Method me : Class.forName(cln).getDeclaredMethods()) {
+					if (me.getName().matches(regex)) {
 						meths.add(me.getName());
 					}
 				}
@@ -71,7 +54,7 @@ public class ReadReplace{
 	}
 
 	public static String getCanonicalReplacement(Description description) {
-		if(description.getAnnotation(Replace.class) != null) {
+		if (description.getAnnotation(Replace.class) != null) {
 			Replace r = description.getAnnotation(Replace.class);
 			return getCanonicalReplacement(r);
 		}
@@ -82,22 +65,27 @@ public class ReadReplace{
 		HashMap<String,List<String>> rmap = new HashMap<String,List<String>>();
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Class c = cl.loadClass(tcln);
-		for(Method meth : c.getMethods()) {
-			if(meth.isAnnotationPresent(Replace.class)){
+		for (Method meth : c.getMethods()) {
+			if (meth.isAnnotationPresent(Replace.class)) {
 				Replace r = meth.getAnnotation(Replace.class);
 				String cr = getCanonicalReplacement(r);
 				List<String> methods = rmap.get(cr);
-				if(methods == null) {
+				if (methods == null) {
 					methods = new ArrayList<String>();
 				}
 				methods.add(meth.getName());
-				rmap.put(cr,methods);
+				rmap.put(cr, methods);
 			}
 		}
 
+		boolean needSep = false;
 		Iterator it = rmap.entrySet().iterator();
 		while(it.hasNext()) {
-			System.out.println("echo \",\" 1>&2");
+			if (needSep) {
+				System.out.println("echo \",\" 1>&2");
+			} else {
+				needSep = true;
+			}
 			Map.Entry pair = (Map.Entry) it.next();
 			String s = (String) pair.getKey();
 			List<String> methods = (List<String>) pair.getValue();
@@ -123,14 +111,7 @@ public class ReadReplace{
 			System.exit(-1);
 		}
 		if (args[0].equals("--loop")) {
-			if(System.getProperty("withSecret") != null && System.getProperty("withSecret").equals("yes")){
-				withSecret = true;
-			}
-			if(args[1].equals("-p")){
-				loopSecret(args[3],args[2]);
-			} else {					
-				// FIXME: really nothing to do?
-			}
+			loopSecret(args[3],args[2]);
 			return;
 		}
 
@@ -140,11 +121,11 @@ public class ReadReplace{
 		HashSet<String> pres = new HashSet<>();
 		HashSet<String> mids = new HashSet<>();
 		HashSet<String> posts = new HashSet<>();
-		for(Method meth : c.getMethods()) {
-			if(meth.isAnnotationPresent(Replace.class)){
+		for (Method meth : c.getMethods()) {
+			if (meth.isAnnotationPresent(Replace.class)) {
 				Replace r = meth.getAnnotation(Replace.class);
 				Map<String, SortedSet<String>> methsMap = getMap(r);
-				for(Map.Entry<String, SortedSet<String>> e : methsMap.entrySet()){
+				for (Map.Entry<String, SortedSet<String>> e : methsMap.entrySet()) {
 					String ncln = e.getKey();
 					if(e.getValue().size() == 0)
 						continue;
