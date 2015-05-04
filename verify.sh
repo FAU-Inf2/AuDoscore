@@ -1,7 +1,5 @@
 #!/bin/bash
 
-parallel --version
-
 count=0
 failed=0
 start=`date +%s%N`
@@ -9,7 +7,6 @@ failfile=$(tempfile)
 
 run_single() {
 	i=$1
-	echo "next test $i"
 	pushd $i > /dev/null 2> /dev/null
 	echo -n "?"
 	tmpfailfile=$(tempfile)
