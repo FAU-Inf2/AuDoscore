@@ -1,5 +1,10 @@
 #!/bin/bash
 
+echo $SHELL
+$SHELL --version
+/bin/bash --version
+
+
 count=0
 failed=0
 start=`date +%s%N`
