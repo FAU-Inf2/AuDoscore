@@ -4,6 +4,7 @@ echo $SHELL
 $SHELL --version
 /bin/bash --version
 
+parallel /bin/echo ::: tests/*
 
 count=0
 failed=0
