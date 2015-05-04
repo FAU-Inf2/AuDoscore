@@ -1,10 +1,6 @@
 #!/bin/bash
 
-echo $SHELL
-$SHELL --version
-/bin/bash --version
-
-parallel /bin/echo ::: tests/*
+parallel --version
 
 count=0
 failed=0
@@ -36,7 +32,7 @@ for i in tests/*; do
 	count=$((count + 1))
 done
 
-parallel run_single ::: tests/*
+parallel --gnu run_single ::: tests/*
 
 end=`date +%s%N`
 echo -e "\n"
