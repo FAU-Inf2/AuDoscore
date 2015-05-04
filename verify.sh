@@ -29,7 +29,7 @@ for i in tests/*; do
 	count=$((count + 1))
 done
 
-parallel run_single ::: tests/*
+parallel --gnu run_single ::: tests/*
 
 end=`date +%s%N`
 echo -e "\n"

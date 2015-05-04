@@ -2,5 +2,5 @@ language: java
   - openjdk7
   - oraclejdk7
 before_install:
-  - sudo apt-get install bc
+  - sudo apt-get install bc parallel
 script: make verify
