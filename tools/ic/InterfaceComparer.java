@@ -9,7 +9,9 @@ import java.io.*;
 
 public class InterfaceComparer {
 	private static boolean error = false;
-	private static HashMap<String,Boolean> checkMap = null;
+	private static HashMap<String,HashMap<String,Boolean>> checkMap = null;
+
+	// check for specified cleanroom methods with student counterpart
 	private static void compareClasses(Class<?> cleanroomClass, Class<?> studentClass) {
 		boolean equals = false;
 		HashMap<String,Boolean> methodMap = checkMap.get(cleanroomClass.getName());
@@ -55,13 +57,14 @@ public class InterfaceComparer {
 		return idx >= 0 ? path.substring(idx + 1) : path;
 	}
 
-	private static HashMap<String,Boolean> argsToMap(String[] args){
-		HashMap<String,HashMap<String,Boolean>> checkMap = new HashMap<String,HashMap<String,Boolean>>();
+	// parses the cmd args and save it to HashMap
+	private static void argsToMap(String[] args){
+		checkMap = new HashMap<String,HashMap<String,Boolean>>();
 		for(String cm : args){
 			if(cm.contains(".")){
 				String[] parts = cm.split(".");
-				HashMap<String,String> methodMap = checkMap.get(parts[0]);
-				if(classMethodMap == null){
+				HashMap<String,Boolean> methodMap = checkMap.get(parts[0]);
+				if(methodMap == null){
 					methodMap = new HashMap<String,Boolean>();
 					methodMap.put(parts[1],true);
 					checkMap.put(parts[0],methodMap);
@@ -73,7 +76,6 @@ public class InterfaceComparer {
 			}
 
 		}
-		return checkMap;
 	}
 
 	public static void main(String args[]){
@@ -87,7 +89,7 @@ public class InterfaceComparer {
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		ClassLoader cleanroomLoader = null;
 		ClassLoader studentLoader = null;
-		checkMap = argsToMap(args);
+		argsToMap(args);
 		try{
 			cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL()});
 			studentLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()});
