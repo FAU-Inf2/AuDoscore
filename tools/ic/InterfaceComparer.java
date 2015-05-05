@@ -57,15 +57,13 @@ public class InterfaceComparer {
 		checkMap = new HashMap<String,HashMap<String,Boolean>>();
 		for(String cm : args){
 			if(cm.contains(".")){
-				String[] parts = cm.split(".");
+				String[] parts = cm.split("\\.");
 				HashMap<String,Boolean> methodMap = checkMap.get(parts[0]);
 				if(methodMap == null){
 					methodMap = new HashMap<String,Boolean>();
+				}
 					methodMap.put(parts[1],true);
 					checkMap.put(parts[0],methodMap);
-				}else{
-					methodMap.put(parts[1],true);
-				}
 			} else {
 				throw new IllegalArgumentException("Error - @CompareInterface args must to look like this: Class.Method, found: " + cm);
 			}
@@ -80,7 +78,6 @@ public class InterfaceComparer {
 		}
 		String cwd = System.getProperty("user.dir");
 		String pathToCleanroom = cwd + "/cleanroom/";
-		File f = new File(pathToCleanroom);
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		ClassLoader cleanroomLoader = null;
 		ClassLoader studentLoader = null;
