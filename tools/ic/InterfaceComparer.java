@@ -101,7 +101,7 @@ public class InterfaceComparer {
 			for(String methodName : methodMap.keySet()){		
 				System.err.print(methodName+" ");
 			}
-
+			System.err.println("");
 			error = true;
 		}
 		if(error){
