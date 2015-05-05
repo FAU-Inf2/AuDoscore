@@ -35,9 +35,19 @@ public class InterfaceComparer {
 				equals = false;
 			}else{
 				error = true;
-				System.err.println("ERROR - Method " +cleanroomMethod + " does not exists in student code or does not match with student counterpart");
+				System.err.println("ERROR - Method " +cleanroomMethod + "["+cleanroomClass.getName()+"] does not exists in student code or does not match with student counterpart");
 			}
 		}		
+		
+		// check if there were methods declared in @CompareInterface which could not be found
+		if(methodMap.size() != 0) {
+			System.err.println("Error - The following method(s) declared in @CompareInterface could not be found in cleanroom class [" + cleanroomClass.getName()+"]:");
+			for(String methodName : methodMap.keySet()){		
+				System.err.print(methodName+" ");
+			}
+			System.err.println("");
+			error = true;
+		}
 	}
 
 	private static String getSimpleFileName(String path){
@@ -89,23 +99,17 @@ public class InterfaceComparer {
 			Class<?> studentClass = null;
 			try{
 				cleanroomClass = cleanroomLoader.loadClass(className);	
+			} catch (ClassNotFoundException cnfe) {	
+				throw new Error("Error - cleanroom class [" + cnfe.getMessage()+"] not found");
+			}
+			
+			try{
 				studentClass = studentLoader.loadClass(className);
 			} catch (ClassNotFoundException cnfe) {	
-				throw new Error("Error - class [" + cnfe.getMessage()+"] not found");
+				throw new Error("Error - student class [" + cnfe.getMessage()+"] not found");
 			}
+			
 			compareClasses(cleanroomClass,studentClass);
-		}
-
-
-
-		// check if there were methods declared in @CompareInterface which could not be found
-		if(methodMap.size() != 0) {
-			System.err.println("The following method(s) declared in @CompareInterface could not be found in cleanroom:");
-			for(String methodName : methodMap.keySet()){		
-				System.err.print(methodName+" ");
-			}
-			System.err.println("");
-			error = true;
 		}
 		if(error){
 			throw new Error();
