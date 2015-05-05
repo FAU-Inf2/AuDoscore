@@ -52,11 +52,6 @@ public class InterfaceComparer {
 		}
 	}
 
-	private static String getSimpleFileName(String path){
-		int idx = path.lastIndexOf("/");
-		return idx >= 0 ? path.substring(idx + 1) : path;
-	}
-
 	// parses the cmd args and save it to HashMap
 	private static void argsToMap(String[] args){
 		checkMap = new HashMap<String,HashMap<String,Boolean>>();
@@ -72,7 +67,7 @@ public class InterfaceComparer {
 					methodMap.put(parts[1],true);
 				}
 			} else {
-				throw new IllegalArgumentException("Error - @CompareInterface args have to look like this: Class.Method found: " + cm);
+				throw new IllegalArgumentException("Error - @CompareInterface args must to look like this: Class.Method, found: " + cm);
 			}
 
 		}
@@ -94,7 +89,7 @@ public class InterfaceComparer {
 			cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL()});
 			studentLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()});
 		}catch(MalformedURLException mfue){
-			throw new Error("Error"  + mfue.getMessage());
+			throw new Error("Error - "  + mfue.getMessage());
 		}
 		for(String className : checkMap.keySet()){
 			Class<?> cleanroomClass = null;
