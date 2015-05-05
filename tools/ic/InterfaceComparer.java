@@ -94,6 +94,7 @@ public class InterfaceComparer {
 		for(String className : checkMap.keySet()){
 			Class<?> cleanroomClass = null;
 			Class<?> studentClass = null;
+			
 			try{
 				cleanroomClass = cleanroomLoader.loadClass(className);	
 			} catch (ClassNotFoundException cnfe) {	
@@ -108,6 +109,7 @@ public class InterfaceComparer {
 			
 			compareClasses(cleanroomClass,studentClass);
 		}
+
 		if(error){
 			throw new Error();
 		}
