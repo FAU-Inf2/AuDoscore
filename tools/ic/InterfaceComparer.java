@@ -95,14 +95,15 @@ public class InterfaceComparer {
 			}
 		}
 
-		if(error){
-			// check if there were methods declared in @CompareInterface which could not be found
-			if(methodMap.size() != 0) {
-				System.err.println("The following methods declared in @CompareInterface could not be found in cleanroom:");
-				for(String methodName : methodMap.keySet()){
-					System.out.print(methodName+" ");
-				}
+		// check if there were methods declared in @CompareInterface which could not be found
+		if(methodMap.size() != 0) {
+			System.err.println("The following methods declared in @CompareInterface could not be found in cleanroom:");
+			for(String methodName : methodMap.keySet()){		
+				System.out.print(methodName+" ");
 			}
+			error = true;
+		}
+		if(error){
 			throw new Error();
 		}
 	}
