@@ -99,8 +99,9 @@ public class InterfaceComparer {
 		if(methodMap.size() != 0) {
 			System.err.println("The following methods declared in @CompareInterface could not be found in cleanroom:");
 			for(String methodName : methodMap.keySet()){		
-				System.out.print(methodName+" ");
+				System.err.print(methodName+" ");
 			}
+
 			error = true;
 		}
 		if(error){
