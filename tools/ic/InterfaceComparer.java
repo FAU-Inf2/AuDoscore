@@ -19,6 +19,8 @@ public class InterfaceComparer {
 			if(methodMap.get(cleanroomMethod.getName()) == null){
 				continue;
 			}
+
+			methodMap.remove(cleanroomMethod.getName());
 			
 			for(Method studentMethod : studentMethods) {
 				if(cleanroomMethod.toString().equals(studentMethod.toString())) {
@@ -94,6 +96,13 @@ public class InterfaceComparer {
 		}
 
 		if(error){
+			// check if there were methods declared in @CompareInterface which could not be found
+			if(methodMap.size() != 0) {
+				System.err.println("The following methods declared in @CompareInterface could not be found in cleanroom:");
+				for(String methodName : methodMap.keySet()){
+					System.out.print(methodName+" ");
+				}
+			}
 			throw new Error();
 		}
 	}
