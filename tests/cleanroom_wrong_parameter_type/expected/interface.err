@@ -1,0 +1,4 @@
+ERROR - Method public static long ToTest.toTest(long,long) does not exists in student code or does not match with student counterpart
+Exception in thread "main" java.lang.Error
+	at tools.ic.InterfaceComparer.main(InterfaceComparer.java:106)
+make: *** [run-comparer] Error 1

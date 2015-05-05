@@ -1,0 +1,5 @@
+The following methods declared in @CompareInterface could not be found in cleanroom:
+foo bar 
+Exception in thread "main" java.lang.Error
+	at tools.ic.InterfaceComparer.main(InterfaceComparer.java:108)
+make: *** [run-comparer] Error 1

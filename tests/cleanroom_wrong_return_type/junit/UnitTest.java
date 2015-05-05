@@ -10,7 +10,7 @@ import java.util.*;
 import java.io.*;
 
 @Exercises({ @tester.annotations.Ex(exID = "GA4.6a", points = 12.5)})
-@CompareInterface({"toTest2"})
+@CompareInterface({"ToTest.toTest2"})
 public class UnitTest {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints
