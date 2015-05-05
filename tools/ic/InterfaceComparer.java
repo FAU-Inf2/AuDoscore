@@ -69,7 +69,7 @@ public class InterfaceComparer {
 					methodMap.put(parts[1],true);
 				}
 			} else {
-				throw new IllegalArgumentException(/*TODO*/);
+				throw new IllegalArgumentException("Error - @CompareInterface args have to look like this: Class.Method found: " + cm);
 			}
 
 		}
