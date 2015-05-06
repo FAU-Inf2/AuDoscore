@@ -15,7 +15,7 @@ public class InterfaceComparer {
 	private static void compareClasses(Class<?> cleanroomClass, Class<?> studentClass) {
 		boolean equals = false;
 		HashMap<String,Boolean> methodMap = checkMap.get(cleanroomClass.getName());
-		ArrayList<Method> studentMethods = new ArrayList<Method>(Arrays.asList(studentClass.getDeclaredMethods()));
+	//	ArrayList<Method> studentMethods = new ArrayList<Method>(Arrays.asList(studentClass.getDeclaredMethods()));
 		// checkMethods
 		for(Method cleanroomMethod : cleanroomClass.getDeclaredMethods()){
 			// only compare if method was specified in @CompareInterface annotation
@@ -24,18 +24,17 @@ public class InterfaceComparer {
 			}
 
 			methodMap.remove(cleanroomMethod.getName());
-			
-			for(Method studentMethod : studentMethods) {
-				if(cleanroomMethod.toString().equals(studentMethod.toString())) {
-					equals = true;
-					studentMethods.remove(studentMethod);
-					break;
-				}
-			}	
 
-			if(equals){
-				equals = false;
-			}else{
+			Class<?>[] pTypes = cleanroomMethod.getParameterTypes();
+			Method studentMethod = null; 
+			
+			try{
+				studentMethod = studentClass.getMethod(cleanroomMethod.getName(),pTypes);
+			} catch (NoSuchMethodException nsme){
+				System.err.println("ERROR - Method " +cleanroomMethod + "["+cleanroomClass.getName()+"] does not exists in student code or does not match with student counterpart");
+			}
+			
+			if(!cleanroomMethod.toGenericString().equals(studentMethod.toGenericString())) {
 				error = true;
 				System.err.println("ERROR - Method " +cleanroomMethod + "["+cleanroomClass.getName()+"] does not exists in student code or does not match with student counterpart");
 			}
