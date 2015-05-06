@@ -32,6 +32,8 @@ public class InterfaceComparer {
 				studentMethod = studentClass.getMethod(cleanroomMethod.getName(),pTypes);
 			} catch (NoSuchMethodException nsme){
 				System.err.println("ERROR - Method " +cleanroomMethod + "["+cleanroomClass.getName()+"] does not exists in student code or does not match with student counterpart");
+				error = true;
+				continue;
 			}
 			
 			if(!cleanroomMethod.toGenericString().equals(studentMethod.toGenericString())) {
