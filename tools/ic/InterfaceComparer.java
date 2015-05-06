@@ -56,9 +56,12 @@ public class InterfaceComparer {
 	// parses the cmd args and save it to HashMap
 	private static void argsToMap(String[] args){
 		checkMap = new HashMap<String,HashMap<String,Boolean>>();
-		for(String cm : args){
-			if(cm.contains(".")){
-				String[] parts = cm.split("\\.");
+		for(String arg : args){
+			if(arg.contains(".")){
+				String[] parts = arg.split("\\.");
+				if(parts.length != 2){
+					throw new IllegalArgumentException("Error - @CompareInterface args must to look like this: Class.Method, found: " + arg);
+				}
 				HashMap<String,Boolean> methodMap = checkMap.get(parts[0]);
 				if(methodMap == null){
 					methodMap = new HashMap<String,Boolean>();
@@ -66,7 +69,7 @@ public class InterfaceComparer {
 					methodMap.put(parts[1],true);
 					checkMap.put(parts[0],methodMap);
 			} else {
-				throw new IllegalArgumentException("Error - @CompareInterface args must to look like this: Class.Method, found: " + cm);
+				throw new IllegalArgumentException("Error - @CompareInterface args must to look like this: Class.Method, found: " + arg);
 			}
 
 		}
