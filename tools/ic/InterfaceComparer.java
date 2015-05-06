@@ -13,9 +13,7 @@ public class InterfaceComparer {
 
 	// check for specified cleanroom methods with student counterpart
 	private static void compareClasses(Class<?> cleanroomClass, Class<?> studentClass) {
-		boolean equals = false;
 		HashMap<String,Boolean> methodMap = checkMap.get(cleanroomClass.getName());
-	//	ArrayList<Method> studentMethods = new ArrayList<Method>(Arrays.asList(studentClass.getDeclaredMethods()));
 		// checkMethods
 		for(Method cleanroomMethod : cleanroomClass.getDeclaredMethods()){
 			// only compare if method was specified in @CompareInterface annotation
