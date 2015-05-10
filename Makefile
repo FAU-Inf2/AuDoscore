@@ -81,7 +81,7 @@ compile-stage2: miniclean
 	mv $(TEST).java.orig $(TEST).java
 	echo "echo \"[\" 1>&2" > loop.sh
 	if [ "x$(SECRETTEST)" != "x" ]; then \
-		java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar:. -Dpub=$(TEST) CheckAnnotation $(SECRETTEST) >> var.mk ; \
+		java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar:. -Dpub=$(TEST) CheckAnnotation $(SECRETTEST) ; \
 		make compile-stage2-secret ; \
 		echo "make run-stage1" > single_execution.sh ;\
 		echo "echo \",\" 1>&2" >> single_execution.sh;	\
@@ -114,6 +114,10 @@ compile-stage2-secret:
 	echo "echo \"]\" 1>&2" >> loop.sh
 
 compile: compile-stage$(STAGE)
+
+
+run-comparer:
+	java -cp lib/junitpoints.jar $(TEST)
 
 run-stage0:
 	echo "alles gut"

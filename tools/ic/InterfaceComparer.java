@@ -1,4 +1,6 @@
 package tools.ic;
+import tester.annotations.CompareInterface;
+
 
 import java.util.*;
 import java.lang.reflect.*;
@@ -52,9 +54,9 @@ public class InterfaceComparer {
 	}
 
 	// parses the cmd args and save it to HashMap
-	private static void argsToMap(String[] args){
+	private static void valuesToMap(String[] annotationValue){
 		checkMap = new HashMap<String,HashMap<String,Boolean>>();
-		for(String arg : args){
+		for(String arg : annotationValue){
 			if(arg.contains(".")){
 				String[] parts = arg.split("\\.");
 				HashMap<String,Boolean> methodMap = checkMap.get(parts[0]);
@@ -70,16 +72,32 @@ public class InterfaceComparer {
 		}
 	}
 
+	private static String[] extractValueFromUnitTest(String className, ClassLoader classLoader){
+		Class<?> clazz = null;
+		try{
+			clazz = classLoader.loadClass(className);	
+		} catch (ClassNotFoundException cnfe) {					
+			throw new Error("Error -  testclass [" + cnfe.getMessage()+"] not found");
+		}
+		
+		CompareInterface compareInterfaceAnnotation = clazz.getAnnotation(CompareInterface.class);
+		// content was check in compile-stage0 step
+		return compareInterfaceAnnotation.value();
+
+	}
+
 	public static void main(String args[]){
 		if(args == null){
-			System.err.println("Usage: java tools.ic.InterfaceComparer <Class.method1> .. <Class.methodn>");
+			System.err.println("Usage: java tools.ic.InterfaceComparer JUnitTest");
 			System.exit(-1);
 		}
+
+
+
 		String cwd = System.getProperty("user.dir");
 		String pathToCleanroom = cwd + "/cleanroom/";
 		ClassLoader cleanroomLoader = null;
 		ClassLoader studentLoader = null;
-		argsToMap(args);
 		try{
 			cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL()});
 			studentLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()});
@@ -101,6 +119,10 @@ public class InterfaceComparer {
 			} catch (ClassNotFoundException cnfe) {	
 				throw new Error("Error - student class [" + cnfe.getMessage()+"] not found");
 			}
+	
+			// extract content from @CompareInterface Annotation
+			String[] annotationValue = extractValueFromUnitTest(args[0], studentLoader);
+			valuesToMap(annotationValue);
 			
 			compareClasses(cleanroomClass,studentClass);
 		}
