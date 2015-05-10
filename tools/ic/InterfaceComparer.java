@@ -81,6 +81,9 @@ public class InterfaceComparer {
 		}
 		
 		CompareInterface compareInterfaceAnnotation = clazz.getAnnotation(CompareInterface.class);
+		if(compareInterface == null){
+			System.exit(0);
+		}
 		// content was check in compile-stage0 step
 		return compareInterfaceAnnotation.value();
 
