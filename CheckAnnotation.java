@@ -17,12 +17,12 @@ import java.io.File;
 public class CheckAnnotation {
 
     public static final int MAX_TIMEOUT_MS = 60_000;
+    private static String cwd = System.getProperty("user.dir");
 
 
     // checks f given class exists in cleanroom
     private static Class<?> getCleanroomClass(String name){
-	String cwd = System.getProperty("user.dir");
-	String pathToCleanroom = cwd = "/cleanroom/";
+	String pathToCleanroom = cwd + "/cleanroom/";
 	ClassLoader cleanroomLoader = null;
 
 	try{
@@ -36,7 +36,7 @@ public class CheckAnnotation {
 	try{
 		cleanroomClass = cleanroomLoader.loadClass(name);
 	} catch (ClassNotFoundException cnfe) {
-		throw new IllegalArgumentException("Error - Class ["+cnfe.getMessage() +"] specified in @CompareInterface does not exist");
+		throw new IllegalArgumentException("Error - Class ["+cnfe.getMessage() +"] specified in @CompareInterface does not exist in cleanroom");
 	}
 
 	return cleanroomClass;
@@ -159,8 +159,22 @@ public class CheckAnnotation {
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
-        Class<?> clazz = Class.forName(args[0]);
-        Description description = Description.createSuiteDescription(clazz);
+        ClassLoader unitLoader = null;
+	try{
+		unitLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()});
+	} catch (MalformedURLException mfue) {
+		throw new Error("Error " + mfue.getMessage());
+	}
+
+        Class<?> clazz = null;
+	
+	try{
+		clazz = unitLoader.loadClass(args[0]);
+	} catch (ClassNotFoundException cnfe) {
+		throw new IllegalArgumentException("Error - Class ["+cnfe.getMessage() +"] specified in @CompareInterface does not exist");
+	}
+
+	Description description = Description.createSuiteDescription(clazz);
         Exercises exercisesAnnotation = JUnitWithPoints.PointsSummary.getExercisesAnnotation(description);
         checkAnnotations(description, exercisesAnnotation);
     }

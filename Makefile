@@ -40,15 +40,6 @@ lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/tools.jar:. $(SRCJUNITPOINTSJAR)
 	jar cvf lib/junitpoints.jar -C build .
 
-run-comparer:
-	javac cleanroom/*.java
-	if [ "x$(SINTERFACEMETHODS)" != "x" ]; then \
-		java -cp lib/junitpoints.jar tools.ic.InterfaceComparer $(SINTERFACEMETHODS) ;\
-	else \
-		java -cp lib/junitpoints.jar tools.ic.InterfaceComparer $(INTERFACEMETHODS) ;\
-	fi
-	rm cleanroom/*.class
-
 compile-stage0:
 	javac $(STUDENTSOURCE)	
 
@@ -61,7 +52,8 @@ compile-stage1: miniclean
 #	sed -i -e 's/@tester.annotations.SecretCase/@org.junit.Ignore/' $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
-	java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation $(TEST) >> var.mk
+	javac cleanroom/*
+	java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar CheckAnnotation $(TEST) 
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
 	javap -p -c $(STUDENTCLASS) > javap.out
