@@ -5,13 +5,51 @@ import tester.annotations.*;
 
 import java.lang.annotation.AnnotationFormatError;
 import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.MalformedURLException;
+import java.io.File;
 
 public class CheckAnnotation {
 
     public static final int MAX_TIMEOUT_MS = 60_000;
+
+
+    // checks f given class exists in cleanroom
+    private static Class<?> getCleanroomClass(String name){
+	String cwd = System.getProperty("user.dir");
+	String pathToCleanroom = cwd = "/cleanroom/";
+	ClassLoader cleanroomLoader = null;
+
+	try{
+		cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL()});
+	} catch (MalformedURLException mfue) {
+		throw new Error("Error - " + mfue.getMessage());
+	}
+
+	Class<?> cleanroomClass = null;
+
+	try{
+		cleanroomClass = cleanroomLoader.loadClass(name);
+	} catch (ClassNotFoundException cnfe) {
+		throw new IllegalArgumentException("Error - Class ["+cnfe.getMessage() +"] specified in @CompareInterface does not exist");
+	}
+
+	return cleanroomClass;
+    }
+
+    private static Method getMethod(Class<?> cleanroomClass, String methodName){
+	    for(Method cleanroomMethod : cleanroomClass.getDeclaredMethods()){
+	    	if(cleanroomMethod.getName().equals(methodName)){
+			return cleanroomMethod;
+		}
+	    }
+	    return null;
+    }
 
     // checks (almost) all annotation conditions
     public static void checkAnnotations(Description description, Exercises exercisesAnnotation) {
@@ -40,15 +78,30 @@ public class CheckAnnotation {
 	// check if there are methods to compare with cleanroom counteparts
 	CompareInterface compareInterfaceAnnotation = clazz.getAnnotation(CompareInterface.class);
 	if(compareInterfaceAnnotation != null){
-		String args = "";
-		for(String method : compareInterfaceAnnotation.value()) {
-			args+=method+" ";
-		}
+		for(String arg : compareInterfaceAnnotation.value()){
+			if(arg.contains(".")){
+				String[] parts = arg.split("\\.");
+				if(parts.length != 2){
+					throw new IllegalArgumentException("Error - @CompareInterface must look like this: Class, Class.Method or Class.Field, found: " + arg);
+				}
+				// first part is classname, second part method or field
+				Class<?> cleanroomClass = getCleanroomClass(parts[0]);
+				// TODO avoid reloading same class
+				if(getMethod(cleanroomClass,parts[1]) == null){
+					// method does not exists check Field
 
-		if(isSecretClass){
-			System.out.println("SINTERFACEMETHODS = "+args);
-		}else{
-			System.out.println("INTERFACEMETHODS = "+args);
+					try{
+						Field field = cleanroomClass.getField(parts[1]);
+					} catch (NoSuchFieldException nsfe){
+						throw new IllegalArgumentException("Error - " + arg + " specified in @CompareInterface could not be found in cleanroom" );
+					}
+				}
+
+			}else{
+				// delim is not "." assume is a whole class
+				// check if class exists in cleanroom
+				Class<?> cleanroomClass = getCleanroomClass(arg);
+			}
 		}
 	}
 
