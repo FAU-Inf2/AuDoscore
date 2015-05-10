@@ -117,7 +117,7 @@ compile: compile-stage$(STAGE)
 
 
 run-comparer:
-	java -cp lib/junitpoints.jar $(TEST)
+	java -cp lib/junitpoints.jar tools.ic.InterfaceComparer $(TEST)
 
 run-stage0:
 	echo "alles gut"

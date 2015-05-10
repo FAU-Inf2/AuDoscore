@@ -271,6 +271,10 @@ function testIt {
 	( make compile-stage1 ) > comp1.out 2> comp1.err
 	checkexit $? "\nstudent result: ✘\n" comp1.err
 
+	info "- comparing interfaces of student and cleanroom"
+	( make run-comparer ) > inteface.out 2> interface.err
+	checkexit $? "\nerror: ✘\n" interface.err
+	
 	info "- testing"	
 	( make run-stage1 ) > run1.out 2> run1.err
 	ec=$?

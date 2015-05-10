@@ -81,7 +81,7 @@ public class InterfaceComparer {
 		}
 		
 		CompareInterface compareInterfaceAnnotation = clazz.getAnnotation(CompareInterface.class);
-		if(compareInterface == null){
+		if(compareInterfaceAnnotation == null){
 			System.exit(0);
 		}
 		// content was check in compile-stage0 step
@@ -107,6 +107,10 @@ public class InterfaceComparer {
 		}catch(MalformedURLException mfue){
 			throw new Error("Error - "  + mfue.getMessage());
 		}
+
+		// extract content from @CompareInterface Annotation
+		String[] annotationValue = extractValueFromUnitTest(args[0], studentLoader);
+		valuesToMap(annotationValue);
 		for(String className : checkMap.keySet()){
 			Class<?> cleanroomClass = null;
 			Class<?> studentClass = null;
@@ -123,9 +127,6 @@ public class InterfaceComparer {
 				throw new Error("Error - student class [" + cnfe.getMessage()+"] not found");
 			}
 	
-			// extract content from @CompareInterface Annotation
-			String[] annotationValue = extractValueFromUnitTest(args[0], studentLoader);
-			valuesToMap(annotationValue);
 			
 			compareClasses(cleanroomClass,studentClass);
 		}
