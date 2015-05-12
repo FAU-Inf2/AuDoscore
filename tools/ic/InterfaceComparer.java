@@ -76,6 +76,10 @@ public class InterfaceComparer {
 		// check all Methods
 		HashMap<String,Method> studentMethodMap = getMethodMapForClass(studentClass);
 		for(Method cleanroomMethod : cleanroomClass.getDeclaredMethods()){
+			if(!Modifier.isPublic(cleanroomMethod.getModifiers())){
+				continue;
+			}
+
 			boolean success = checkMethod(cleanroomMethod,studentClass);
 			if(!success) {
 				error = true;
@@ -85,6 +89,9 @@ public class InterfaceComparer {
 
 
 		for(Field cleanroomField : cleanroomClass.getFields()){
+			if(!Modifier.isPublic(cleanroomField.getModifiers())){
+				continue;
+			}
 			boolean success = checkField(cleanroomField,getField(studentClass,cleanroomField.getName()),cleanroomClass);
 			if(!success) {
 				error = true;
