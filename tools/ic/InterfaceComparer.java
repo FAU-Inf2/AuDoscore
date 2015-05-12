@@ -51,6 +51,8 @@ public class InterfaceComparer {
 		return true;
 	}
 
+
+	// checks two methods and print err msg. If error occurs false is returned
 	private static boolean checkMethod(Method cleanroomMethod, Class<?> studentClass){
 		Method studentMethod = null;
 		try {	
