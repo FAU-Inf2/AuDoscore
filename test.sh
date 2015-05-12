@@ -296,10 +296,6 @@ function testIt {
 	( make compile-stage2 ) > comp2 2>&1
 	checkexit $? "\ninternal error\n" comp2
 	
-	info "- checking interfaces"
-	( make run-comparer ) > interface.out 2> interface.err
-	checkexit $? "\nerror\n" interface.err
-
 	info "- testing"
 	( make run-stage2 ) > run2.out 2> run2.err
 
