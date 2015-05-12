@@ -38,11 +38,11 @@ public class InterfaceComparer {
 	// checks two fields and print err msg. If error occurs false is returned
 	private static boolean checkField(Field cleanroomField, Field studentField, Class<?> cleanroomClass){
 		if(studentField == null){
-			System.err.println("ERROR - Field " +cleanroomField + "["+cleanroomClass.getName() +"]does not exists in student code");
+			System.err.println("ERROR - Field " +cleanroomField + "["+cleanroomClass.getName() +"] does not exists in student code");
 			return false;
 		}else{
 			if(!cleanroomField.toGenericString().equals(studentField.toGenericString())){
-				System.err.println("ERROR - Field " +cleanroomField + "["+cleanroomClass.getName() +"]does not match with student counterpart");
+				System.err.println("ERROR - Field " +cleanroomField + "["+cleanroomClass.getName() +"] does not match with student counterpart");
 			return false;
 			
 			}
@@ -58,12 +58,12 @@ public class InterfaceComparer {
 		try {	
 			studentMethod = studentClass.getMethod(cleanroomMethod.getName(),cleanroomMethod.getParameterTypes());
 			if(!cleanroomMethod.toGenericString().equals(studentMethod.toGenericString())){
-				System.err.println("ERROR - Method " +cleanroomMethod + "["+studentClass.getName() +"]does not match with student counterpart");
+				System.err.println("ERROR - Method " +cleanroomMethod + "["+studentClass.getName() +"] does not match with student counterpart");
 				return false;
 
 			}
 		} catch (NoSuchMethodException nsme){
-			System.err.println("ERROR - Method " +cleanroomMethod + "["+studentClass.getName() +"]does not match or does not exists in student code");
+			System.err.println("ERROR - Method " +cleanroomMethod + "["+studentClass.getName() +"] does not match or does not exists in studentcode");
 			return false;
 
 		}
@@ -162,7 +162,6 @@ public class InterfaceComparer {
 		}
 		// content was check in compile-stage0 step
 		return compareInterfaceAnnotation.value();
-
 	}
 
 	public static void main(String args[]){
