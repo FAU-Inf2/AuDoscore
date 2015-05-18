@@ -5,7 +5,6 @@
 #	set -x
 #	shift
 #fi
-
 callerdir=${PWD}
 script=$(readlink -f $0)
 scriptdir=$(dirname $script)
@@ -272,7 +271,11 @@ function testIt {
 	( make compile-stage1 ) > comp1.out 2> comp1.err
 	checkexit $? "\nstudent result: ✘\n" comp1.err
 
-	info "- testing"
+	info "- comparing interfaces of student and cleanroom"
+	( make run-comparer ) > inteface.out 2> interface.err
+	checkexit $? "\nerror: ✘\n" interface.err
+	
+	info "- testing"	
 	( make run-stage1 ) > run1.out 2> run1.err
 	ec=$?
 	cat run1.out run1.err > run1
@@ -292,7 +295,7 @@ function testIt {
 	info "- compiling"
 	( make compile-stage2 ) > comp2 2>&1
 	checkexit $? "\ninternal error\n" comp2
-
+	
 	info "- testing"
 	( make run-stage2 ) > run2.out 2> run2.err
 

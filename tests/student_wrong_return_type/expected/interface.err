@@ -1,0 +1,4 @@
+ERROR - Method public static double ToTest.toTest2()[ToTest] does not match with student counterpart
+Exception in thread "main" java.lang.Error
+	at tools.ic.InterfaceComparer.main(InterfaceComparer.java:214)
+make: *** [run-comparer] Error 1

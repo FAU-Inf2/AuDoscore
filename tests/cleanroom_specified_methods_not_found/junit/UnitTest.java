@@ -1,9 +1,16 @@
 import org.junit.*;
-import tester.annotations.*;
+import tester.*;
 
+import org.junit.*;
+import org.junit.rules.*;
 import static org.junit.Assert.*;
+import java.lang.reflect.*;
+import java.lang.*;
+import java.util.*;
+import java.io.*;
 
-@Exercises({ @Ex(exID = "GA4.6a", points = 12.5)})
+@Exercises({ @tester.annotations.Ex(exID = "GA4.6a", points = 12.5)})
+@CompareInterface({"ToTest.foo","ToTest.bar"})
 public class UnitTest {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints
@@ -13,16 +20,14 @@ public class UnitTest {
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
 	@Test(timeout=100)
-	@Points(exID = "GA4.6a", bonus = 47.11)
-	@Replace({"ToTest.toTest"})
+	@Points(exID = "GA4.6a", bonus = 47)
 	public void test() {
 		assertEquals("Should return 42", 42, ToTest.toTest());
 	}
 
 	@Test(timeout=100)
-	@Points(exID = "GA4.6a", bonus = 23.00)
-	@Replace({"ToTest.toTest2"})
+	@Points(exID = "GA4.6a", malus = 11)
 	public void test2() {
-		assertEquals("Should return 23", 23, ToTest.toTest2());
+		assertEquals("Should return 42", 42, ToTest.toTest());
 	}
 }

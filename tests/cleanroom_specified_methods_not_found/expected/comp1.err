@@ -1,0 +1,4 @@
+Exception in thread "main" java.lang.IllegalArgumentException: Error - ToTest.foo specified in @CompareInterface could not be found in cleanroom
+	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:96)
+	at CheckAnnotation.main(CheckAnnotation.java:179)
+make: *** [compile-stage1] Error 1

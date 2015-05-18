@@ -1,4 +1,4 @@
 Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - found test case with deprecated @SecretCase annotation in public test [UnitTest]
-	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:57)
-	at CheckAnnotation.main(CheckAnnotation.java:94)
-make[1]: *** [compile-stage1] Error 1
+	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:128)
+	at CheckAnnotation.main(CheckAnnotation.java:179)
+make: *** [compile-stage1] Error 1
