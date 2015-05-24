@@ -79,42 +79,15 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 
 	public  void visitAnnotation(JCAnnotation tree) {
 		try {
-			print("@");
+		//	print("@");
 			String before = tree.annotationType.toString();
-			switch (before) {
-				case "After":
-				case "Before":
-				case "Ignore":
-				case "FixMethodOrder":
-				case "Rule":
-				case "ClassRule":
-				case "Test":
-					print("org.junit.");
-					break;
-				case "RunWith":
-					print("org.junit.runner.");
-					break;
-				case "Parameters":
-					print("org.junit.runners.Parameterized.");
-					break;
-				case "Bonus":
-				case "Malus":
-				case "Points":
-				case "SecretCase":
-				case "Ex":
-				case "Exercises":
-				case "Forbidden":
-				case "NotForbidden":
-				case "CompareInterface":
-					print("tester.annotations.");
-					break;
-				case "Replace": 
-					print("tester.annotations.");
-					break;
-				case "SecretClass":
-					print("tester.annotations.");
-					break;
+			// FIXME: prefix??
+			if(!before.equals("Test")){
+				// TODO handle @Rule and @ClassRule
+				return;		
 			}
+			
+			print("@");
 			printExpr(tree.annotationType);
 			print("(");
 			if (before.equals("RunWith") && tree.args.head.toString().equals("value = Parameterized.class")) {
