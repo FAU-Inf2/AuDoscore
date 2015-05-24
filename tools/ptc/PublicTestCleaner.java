@@ -57,7 +57,7 @@ public class PublicTestCleaner extends AbstractProcessor {
 
 					StringWriter s = new StringWriter();
 					try {
-						new MyPretty(s, false).printExpr(tree);
+						new PrettyClean(s, false).printExpr(tree);
 					} catch (IOException e) {
 						throw new AssertionError(e);
 					}
@@ -72,8 +72,8 @@ public class PublicTestCleaner extends AbstractProcessor {
 	}
 }
 
-class MyPretty extends com.sun.tools.javac.tree.Pretty {
-	public MyPretty(Writer out, boolean sourceOutput) {
+class PrettyClean extends com.sun.tools.javac.tree.Pretty {
+	public PrettyClean(Writer out, boolean sourceOutput) {
 		super(out, sourceOutput);
 	}
 
