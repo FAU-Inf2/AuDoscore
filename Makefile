@@ -40,6 +40,10 @@ lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/tools.jar:. $(SRCJUNITPOINTSJAR)
 	jar cvf lib/junitpoints.jar -C build .
 
+
+clean-pubtest:$(FILE)
+	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.ptc.PubTestCleaner $(FILE).java > $(TEST).java.tmp
+
 compile-stage0:
 	javac $(STUDENTSOURCE)	
 
