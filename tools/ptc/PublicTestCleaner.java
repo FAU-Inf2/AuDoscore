@@ -22,6 +22,7 @@ import com.sun.tools.javac.model.JavacElements;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCAnnotation;
+import com.sun.tools.javac.tree.JCTree.JCImport;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.Context;
 
@@ -41,6 +42,19 @@ public class PublicTestCleaner extends AbstractProcessor {
 		JavacElements.instance(context);
 	}
 
+	private boolean importToBeSkipped(Object o){
+		if(o.toString().contains("import tester.")) {
+			return true;
+		}
+		if(o.toString().contains("import org.junit.rules.")){
+			return true;
+		}
+		if(o.toString().contains("import java.lang.reflect.")){
+			return true;
+		}
+
+		return false;
+	}
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		if (!roundEnv.processingOver()) {
@@ -53,7 +67,9 @@ public class PublicTestCleaner extends AbstractProcessor {
 						TreePath path = trees.getPath(each);
 						java.util.List imports = path.getCompilationUnit().getImports();
 						for (Object o : imports) {
-							System.out.print(o);
+							if(!importToBeSkipped(o)){
+								System.out.print(o);
+							}
 						}
 					}
 
@@ -75,10 +91,12 @@ public class PublicTestCleaner extends AbstractProcessor {
 }
 
 class PrettyClean extends com.sun.tools.javac.tree.Pretty {
+	
 	public PrettyClean(Writer out, boolean sourceOutput) {
 		super(out, sourceOutput);
 	}
 
+	@Override
 	public  void visitAnnotation(JCAnnotation tree) {
 		String before = tree.annotationType.toString();
 		// FIXME: prefix??
