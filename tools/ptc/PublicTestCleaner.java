@@ -80,14 +80,14 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 	}
 
 	public  void visitAnnotation(JCAnnotation tree) {
+		String before = tree.annotationType.toString();
+		// FIXME: prefix??
+		if(!before.equals("Test")){
+			// TODO handle @Rule and @ClassRule
+			return;		
+		}
+
 		try {
-		//	print("@");
-			String before = tree.annotationType.toString();
-			// FIXME: prefix??
-			if(!before.equals("Test")){
-				// TODO handle @Rule and @ClassRule
-				return;		
-			}
 			
 			print("@");
 			printExpr(tree.annotationType);
