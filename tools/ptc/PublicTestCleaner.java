@@ -52,9 +52,9 @@ public class PublicTestCleaner extends AbstractProcessor {
 		if(o.toString().contains("import java.lang.reflect.")){
 			return true;
 		}
-
 		return false;
 	}
+
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		if (!roundEnv.processingOver()) {
@@ -91,13 +91,61 @@ public class PublicTestCleaner extends AbstractProcessor {
 }
 
 class PrettyClean extends com.sun.tools.javac.tree.Pretty {
-	
+
 	public PrettyClean(Writer out, boolean sourceOutput) {
 		super(out, sourceOutput);
 	}
 
+
 	@Override
-	public  void visitAnnotation(JCAnnotation tree) {
+	public void visitClassDef(JCClassDecl tree) {
+		try {
+			println(); align();
+			printDocComment(tree);
+			printAnnotations(tree.mods.annotations);
+			printFlags(tree.mods.flags & ~INTERFACE);
+			Name enclClassNamePrev = enclClassName;
+			enclClassName = tree.name;
+			if ((tree.mods.flags & INTERFACE) != 0) {
+				print("interface " + tree.name);
+				printTypeParameters(tree.typarams);
+				if (tree.implementing.nonEmpty()) {
+					print(" extends ");
+					printExprs(tree.implementing);
+				}
+			} else {
+				if ((tree.mods.flags & ENUM) != 0)
+					print("enum " + tree.name);
+				else
+					print("class " + tree.name);
+				printTypeParameters(tree.typarams);
+				if (tree.extending != null) {
+					if(!tree.extending.toString.equals("JUnitWithPoints")){
+						print(" extends ");
+						printExpr(tree.extending);
+					}
+				}
+				if (tree.implementing.nonEmpty()) {
+					print(" implements ");
+					printExprs(tree.implementing);
+				}
+			}
+			print(" ");
+			if ((tree.mods.flags & ENUM) != 0) {
+				printEnumBody(tree.defs);
+			} else {
+				printBlock(tree.defs);
+			}
+			enclClassName = enclClassNamePrev;
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
+	}
+
+
+
+	@Override
+	public void visitAnnotation(JCAnnotation tree) {
 		String before = tree.annotationType.toString();
 		// FIXME: prefix??
 		if(!before.equals("Test")){
@@ -106,7 +154,7 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 		}
 
 		try {
-			
+
 			print("@");
 			printExpr(tree.annotationType);
 			print("(");
