@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Set;
 
+
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -23,8 +24,10 @@ import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCAnnotation;
 import com.sun.tools.javac.tree.JCTree.JCImport;
+import com.sun.tools.javac.tree.JCTree.JCClassDecl;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.Context;
+import com.sun.tools.javac.util.Name;
 
 @SupportedAnnotationTypes("*")
 @SupportedOptions("replaces")
@@ -92,6 +95,11 @@ public class PublicTestCleaner extends AbstractProcessor {
 
 class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 
+	Name enclClassName;
+	public static final int ENUM = 1 << 14;
+	public static final int INTERFACE = 1 << 9;
+
+
 	public PrettyClean(Writer out, boolean sourceOutput) {
 		super(out, sourceOutput);
 	}
@@ -100,7 +108,7 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 	@Override
 	public void visitClassDef(JCClassDecl tree) {
 		try {
-			println(); align();
+			println();
 			printDocComment(tree);
 			printAnnotations(tree.mods.annotations);
 			printFlags(tree.mods.flags & ~INTERFACE);
@@ -120,7 +128,7 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 					print("class " + tree.name);
 				printTypeParameters(tree.typarams);
 				if (tree.extending != null) {
-					if(!tree.extending.toString.equals("JUnitWithPoints")){
+					if(!tree.extending.toString().equals("JUnitWithPoints")){
 						print(" extends ");
 						printExpr(tree.extending);
 					}
@@ -138,7 +146,8 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 			}
 			enclClassName = enclClassNamePrev;
 		} catch (IOException e) {
-			throw new UncheckedIOException(e);
+			// FIXME: should be UncheckedIOException
+			throw new Error("something failed while removing AuDoscore annotations: " + e);
 		}
 	}
 
@@ -154,7 +163,6 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 		}
 
 		try {
-
 			print("@");
 			printExpr(tree.annotationType);
 			print("(");
@@ -165,7 +173,7 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 			}
 			print(")");
 		} catch (IOException e) {
-			throw new Error("something failed while pretty printing annotations: " + e);
+			throw new Error("something failed while removing AuDoscore annotations: " + e);
 		}
 	}
 }
