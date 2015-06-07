@@ -22,6 +22,7 @@ import com.sun.tools.javac.model.JavacElements;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCAnnotation;
+import com.sun.tools.javac.tree.JCTree.JCImport;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.Context;
 
@@ -41,6 +42,19 @@ public class PublicTestCleaner extends AbstractProcessor {
 		JavacElements.instance(context);
 	}
 
+	private boolean importToBeSkipped(Object o){
+		if(o.toString().contains("import tester.")) {
+			return true;
+		}
+		if(o.toString().contains("import org.junit.rules.")){
+			return true;
+		}
+		if(o.toString().contains("import java.lang.reflect.")){
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		if (!roundEnv.processingOver()) {
@@ -53,7 +67,9 @@ public class PublicTestCleaner extends AbstractProcessor {
 						TreePath path = trees.getPath(each);
 						java.util.List imports = path.getCompilationUnit().getImports();
 						for (Object o : imports) {
-							System.out.print(o);
+							if(!importToBeSkipped(o)){
+								System.out.print(o);
+							}
 						}
 					}
 
@@ -75,20 +91,70 @@ public class PublicTestCleaner extends AbstractProcessor {
 }
 
 class PrettyClean extends com.sun.tools.javac.tree.Pretty {
+
 	public PrettyClean(Writer out, boolean sourceOutput) {
 		super(out, sourceOutput);
 	}
 
-	public  void visitAnnotation(JCAnnotation tree) {
+
+	@Override
+	public void visitClassDef(JCClassDecl tree) {
 		try {
-		//	print("@");
-			String before = tree.annotationType.toString();
-			// FIXME: prefix??
-			if(!before.equals("Test")){
-				// TODO handle @Rule and @ClassRule
-				return;		
+			println(); align();
+			printDocComment(tree);
+			printAnnotations(tree.mods.annotations);
+			printFlags(tree.mods.flags & ~INTERFACE);
+			Name enclClassNamePrev = enclClassName;
+			enclClassName = tree.name;
+			if ((tree.mods.flags & INTERFACE) != 0) {
+				print("interface " + tree.name);
+				printTypeParameters(tree.typarams);
+				if (tree.implementing.nonEmpty()) {
+					print(" extends ");
+					printExprs(tree.implementing);
+				}
+			} else {
+				if ((tree.mods.flags & ENUM) != 0)
+					print("enum " + tree.name);
+				else
+					print("class " + tree.name);
+				printTypeParameters(tree.typarams);
+				if (tree.extending != null) {
+					if(!tree.extending.toString.equals("JUnitWithPoints")){
+						print(" extends ");
+						printExpr(tree.extending);
+					}
+				}
+				if (tree.implementing.nonEmpty()) {
+					print(" implements ");
+					printExprs(tree.implementing);
+				}
 			}
-			
+			print(" ");
+			if ((tree.mods.flags & ENUM) != 0) {
+				printEnumBody(tree.defs);
+			} else {
+				printBlock(tree.defs);
+			}
+			enclClassName = enclClassNamePrev;
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
+	}
+
+
+
+	@Override
+	public void visitAnnotation(JCAnnotation tree) {
+		String before = tree.annotationType.toString();
+		// FIXME: prefix??
+		if(!before.equals("Test")){
+			// TODO handle @Rule and @ClassRule
+			return;		
+		}
+
+		try {
+
 			print("@");
 			printExpr(tree.annotationType);
 			print("(");
