@@ -22,6 +22,7 @@ Available Annotations
 | `@Malus` (deprecated, please use `@Points`) | sort of | test case level | `exId`: String, `malus`: Double, `comment`: String, defaults to method name | Student looses `malus` / sum(`bonus`) * `Ex.points` points for *not* passing this test case |
 | `@Replace` | No | test case level | Array of Strings | Strings refer to methods in the student's code. For this test case, all methods mentioned in the `@Replace` annotation will be replaced with their cleanroom counterparts. Note: `@Replace` can only be used in secret tests|
 | `@SecretClass` | No | class level | None | Marks a test class to be secret. Results will not be shown to students before the submission deadline. |
+| `@CompareInterface` | No | class level | Array of String | Checks if methods and fields of students have the same signature as their cleanroom counterparts. Possible Strings: "Classname.Methodname, "Classname.Fieldname", "Classname". If only the Classname is given all public methods/fields are checked.|
 
 License
 =======
