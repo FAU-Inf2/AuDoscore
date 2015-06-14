@@ -140,7 +140,7 @@ public class JUnitPointsMerger {
             }
 
             String replaceErrorProperty = System.getProperty("replaceError");
-            if (replaceErrorProperty != null && replaceErrorProperty != "") {
+            if (replaceErrorProperty != null && replaceErrorProperty == "true") {
                 if (rexCounterpart != null) {
                     Object replaceError = rexCounterpart.get("error");
                     if (replaceError != null) {
