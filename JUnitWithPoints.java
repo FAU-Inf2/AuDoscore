@@ -2,6 +2,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.io.*;
 import java.lang.annotation.*;
+import java.util.concurrent.SynchronousQueue;
 
 import org.junit.*;
 import org.junit.internal.*;
@@ -94,7 +95,9 @@ public abstract class JUnitWithPoints {
 			jsonTest.put("id", getShortDisplayName(description));
 			jsonTest.put("success", success);
 			jsonTest.put("desc", getComment(points.comment(), description));
-			jsonTest.put("executionTimeInMS",executionTime);
+			if(System.getProperty("time") != null && System.getProperty("time").equals("on")) {
+				jsonTest.put("executionTimeInMS", executionTime);
+			}
 			if (!success) {
 				jsonTest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 			}
