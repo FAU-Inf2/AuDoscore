@@ -2,6 +2,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.io.*;
 import java.lang.annotation.*;
+import java.util.concurrent.SynchronousQueue;
 
 import org.junit.*;
 import org.junit.internal.*;
@@ -49,11 +50,13 @@ public abstract class JUnitWithPoints {
 		Throwable throwable;
 		Points points;
 		boolean skipped;
+		long executionTime;
 
-		private ReportEntry(Description description, Points points, Throwable throwable) {
+		private ReportEntry(Description description, Points points, Throwable throwable, long executionTime) {
 			this.description = description;
 			this.throwable = throwable;
 			this.points = points;
+			this.executionTime = executionTime;
 			this.skipped = false;
 		}
 
@@ -92,6 +95,9 @@ public abstract class JUnitWithPoints {
 			jsonTest.put("id", getShortDisplayName(description));
 			jsonTest.put("success", success);
 			jsonTest.put("desc", getComment(points.comment(), description));
+			if(System.getProperty("time") != null && System.getProperty("time").equals("on")) {
+				jsonTest.put("executionTimeInMS", executionTime);
+			}
 			if (!success) {
 				jsonTest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 			}
@@ -103,6 +109,8 @@ public abstract class JUnitWithPoints {
 	protected static class PointsLogger extends TestWatcher {
 
 		private static PrintStream saveOut, saveErr;
+		private long startTime = 0;
+		private long endTime = 0;
 
 		// test methods are ignored if their replace set is different to the specified one
 		// FIXME: is that still necessary with single execution?
@@ -141,6 +149,7 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		protected void starting(Description description) {
+			startTime = System.currentTimeMillis();
             // disable stdout/stderr to avoid timeouts due to large debugging outputs
             if (saveOut == null) {
                 saveOut = System.out;
@@ -155,12 +164,14 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
+			endTime = System.currentTimeMillis();
+			long executionTime  = endTime - startTime;
 			Points pointsAnnotation = description.getAnnotation(Points.class);
 			String exID = pointsAnnotation.exID();
 			if (isIgnoredCase(description) || isSkippedCase(description)) {
 				reportHashMap.get(exID).add(new ReportEntry(description));
 			} else {
-				reportHashMap.get(exID).add(new ReportEntry(description, pointsAnnotation, throwable));
+				reportHashMap.get(exID).add(new ReportEntry(description, pointsAnnotation, throwable,executionTime));
 			}
 		}
 
