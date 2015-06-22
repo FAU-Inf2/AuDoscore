@@ -100,7 +100,6 @@ public class JUnitPointsMerger {
 		}
 		*/
 
-        JSONObject rexCounterpart = null;
         for (int i = 0; i < vextests.size(); i++) {
             JSONObject vextest = (JSONObject) vextests.get(i);
             JSONObject usedresult = vextest;
@@ -110,7 +109,6 @@ public class JUnitPointsMerger {
                 for (int j = 0; !found && j < rextests.size(); j++) {
                     JSONObject rextest = (JSONObject) rextests.get(j);
                     if (rextest.get("id").equals(vextest.get("id"))) {
-                        rexCounterpart = rextest;
                         if ((Boolean) rextest.get("success")) {
                             usedresult = rextest;
                         }
@@ -137,17 +135,6 @@ public class JUnitPointsMerger {
             Object error = usedresult.get("error");
             if (error != null) {
                 localSummary += " | " + (String) error;
-            }
-
-            String replaceErrorProperty = System.getProperty("replaceError");
-            if (replaceErrorProperty != null && replaceErrorProperty != "") {
-                if (rexCounterpart != null) {
-                    Object replaceError = rexCounterpart.get("error");
-                    if (replaceError != null) {
-                        localSummary += " | " + (String) replaceError;
-                    }
-                }
-
             }
 
             localSummary += "\n";
