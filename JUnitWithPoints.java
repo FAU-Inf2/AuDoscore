@@ -94,7 +94,7 @@ public abstract class JUnitWithPoints {
 			jsonTest.put("id", getShortDisplayName(description));
 			jsonTest.put("success", success);
 			jsonTest.put("desc", getComment(points.comment(), description));
-			jsonTest.put("executionTime",executionTime);
+			jsonTest.put("executionTimeInMS",executionTime);
 			if (!success) {
 				jsonTest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
 			}
