@@ -95,7 +95,7 @@ public abstract class JUnitWithPoints {
 			jsonTest.put("id", getShortDisplayName(description));
 			jsonTest.put("success", success);
 			jsonTest.put("desc", getComment(points.comment(), description));
-			if(System.getProperty("time") != null && System.getProperty("time").equals("on")) {
+			if (System.getenv("AUDOSCORETIMINGS") != null) {
 				jsonTest.put("executionTimeInMS", executionTime);
 			}
 			if (!success) {
