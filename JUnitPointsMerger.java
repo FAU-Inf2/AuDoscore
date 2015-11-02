@@ -332,7 +332,14 @@ public class JUnitPointsMerger {
 
 			JSONArray replaceds = mergeReplaced((JSONArray) obj.get("replaced"));
 
+			TreeMap<String,Integer> sortedEx = new TreeMap<>();
 			for (int i = 0; i < vanillaex.size(); i++) {
+				JSONObject vex = (JSONObject) vanillaex.get(i);
+				String name = (String) vex.get("name");
+				sortedEx.put(name + "__" + i, i);
+			}
+
+			for (Integer i : sortedEx.values()) {
 				JSONObject vex = (JSONObject) vanillaex.get(i);
 				ArrayList<JSONObject> rexs = new ArrayList<>();
 				for (int k = 0; k < replaceds.size(); k++) {
