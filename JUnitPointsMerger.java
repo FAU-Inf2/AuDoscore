@@ -150,6 +150,11 @@ public class JUnitPointsMerger {
 
 			}
 
+			Long execTime = (Long)usedresult.get("executionTimeInMS");
+			if (execTime != null) {
+				localSummary += " | " + execTime + "ms";
+			}
+
 			localSummary += "\n";
 
 			SingleReport r = new SingleReport();
