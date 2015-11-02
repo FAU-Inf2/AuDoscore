@@ -97,6 +97,7 @@ public abstract class JUnitWithPoints {
 			jsonTest.put("desc", getComment(points.comment(), description));
 			if (System.getenv("AUDOSCORETIMINGS") != null) {
 				jsonTest.put("executionTimeInMS", executionTime);
+				jsonTest.put("timeout", description.getAnnotation(Test.class).timeout());
 			}
 			if (!success) {
 				jsonTest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());

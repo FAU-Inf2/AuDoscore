@@ -152,7 +152,8 @@ public class JUnitPointsMerger {
 
 			Long execTime = (Long)usedresult.get("executionTimeInMS");
 			if (execTime != null) {
-				localSummary += " | " + execTime + "ms";
+				Long timeout = (Long)usedresult.get("timeout");
+				localSummary += " | " + execTime + "ms (of " + timeout + "ms)";
 			}
 
 			localSummary += "\n";
