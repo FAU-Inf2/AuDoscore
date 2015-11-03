@@ -263,6 +263,11 @@ public abstract class JUnitWithPoints {
 				// add results to root node and write to stderr
 				JSONObject jsonSummary = new JSONObject();
 				jsonSummary.put("exercises", jsonExercises);
+				try {
+					PointsLogger.saveErr = new PrintStream(PointsLogger.saveErr, true, "utf-8");
+				} catch (UnsupportedEncodingException e) {
+					// silently ignore exception -> it's not that important after all
+				}
 				PointsLogger.saveErr.println(jsonSummary);
 			}
 		}
