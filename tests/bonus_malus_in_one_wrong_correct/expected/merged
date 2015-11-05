@@ -1,5 +1,5 @@
-Score: 5.0
+Score: 4.5
 
-GA4.6a (5.0 points):
+GA4.6a (4.5 points):
 ✗  -1.46 | test | AssertionError(Should return 42 expected:<42> but was:<23>)
 ✓   6.25 | test2

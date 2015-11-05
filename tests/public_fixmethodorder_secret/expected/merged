@@ -1,0 +1,11 @@
+Score: 5.0
+
+Weite Felder - createAndFill (5.0 points):
+✓   0.13 | public_a
+✓   0.39 | public_b
+✓   2.45 | public_c
+✓   0.10 | public_d
+✓   0.13 | secret_a
+✓   1.69 | secret_b
+✓   0.00 | secret_c
+✓   0.10 | secret_d

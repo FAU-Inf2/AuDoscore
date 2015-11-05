@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# FIXME: breaks json
+#if [ "x$1" == "x-v" ]; then
+#	set -x
+#	shift
+#fi
 callerdir=${PWD}
 script=$(readlink -f $0)
 scriptdir=$(dirname $script)
@@ -57,7 +62,7 @@ function checkTestfiles {
 			# file1 is secrettest ignoring @Exercises Annotation in Secrettest
 			secretclass=$(basename $file1 ".java")
 			testclass=$(basename $file2 ".java")
-			err"WARNING - @Exercises specified in $file1 (Secrettest) -- ignoring"
+			err "WARNING - @Exercises specified in $file1 (Secrettest) -- ignoring"
 		
 		elif [ "x${secret2}" != "x" ]; then
 			# file2 is secret
@@ -133,7 +138,6 @@ function scanTestFiles {
 		die
 
 	fi
-
 }
 
 function scanInterfaces {
@@ -145,6 +149,7 @@ function scanInterfaces {
 			arg=$(basename $entry)
 			if [ ${first} -eq 1 ];then
 				interfaces=$arg
+				first=0
 			else
 		 		interfaces="${interfaces} $arg"
 			fi
@@ -216,8 +221,8 @@ function testIt {
 	mkdir "$testdir" || die "failed to create test dir test.$$"
 	cd "$testdir" > /dev/null 2> /dev/null
 
-		# must be first step
-		info "- copy/install test infrastructure"
+	# must be first step
+	info "- copy/install test infrastructure"
 	${scriptdir}/install.sh > /dev/null 2> /dev/null || die "failed"
 
 	info "- write var.mk"
@@ -266,7 +271,11 @@ function testIt {
 	( make compile-stage1 ) > comp1.out 2> comp1.err
 	checkexit $? "\nstudent result: ✘\n" comp1.err
 
-	info "- testing"
+	info "- comparing interfaces of student and cleanroom"
+	( make run-comparer ) > inteface.out 2> interface.err
+	checkexit $? "\nerror: ✘\n" interface.err
+	
+	info "- testing"	
 	( make run-stage1 ) > run1.out 2> run1.err
 	ec=$?
 	cat run1.out run1.err > run1
@@ -286,11 +295,7 @@ function testIt {
 	info "- compiling"
 	( make compile-stage2 ) > comp2 2>&1
 	checkexit $? "\ninternal error\n" comp2
-	if [ "x$secretclass" != "x" ]; then
-		( make compile-stage2-secret ) > comp2 2>&1
-		checkexit $? "\ninternal error\n" comp2
-	fi
-
+	
 	info "- testing"
 	( make run-stage2 ) > run2.out 2> run2.err
 
@@ -309,9 +314,9 @@ function testIt {
 
 	info "- merging"
 	if [ "x$secretclass" != "x" ]; then
-		( java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar:. -Dpub=$testclass -Dsecret=$secretclass JUnitPointsMerger run2.err merged ) > merge 2>&1
+		( java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar:. $replace_error -Dpub=$testclass -Dsecret=$secretclass JUnitPointsMerger run2.err merged ) > merge 2>&1
 	else
-		( java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar:. -Dpub=$testclass JUnitPointsMerger run2.err merged ) > merge 2>&1
+		( java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar:. $replace_error -Dpub=$testclass JUnitPointsMerger run2.err merged ) > merge 2>&1
 
 	fi
 
@@ -327,6 +332,14 @@ if [ "x$1" == "x-k" ]; then
 	keep=1
 	shift
 fi
+
+replace_error=""
+if [ "x$1" == "x--replace-error" ]; then
+	replace_error="-DreplaceError=true"
+	echo "fooo"
+	shift
+fi
+
 
 # look for testfiles
 info "scanning for testfiles"
@@ -346,10 +359,17 @@ info "scanning for cleanroom"
 cleanroom=""
 scanCleanroom
 
-info "scanning for student sources"
-undertestdircnt=0
-undertestdirs=""
-scanStudentSources
+
+if [ "$#" -eq 0 ]; then
+	info "scanning for student sources"
+	undertestdircnt=0
+	undertestdirs=""
+	scanStudentSources
+else
+	info "use args from commandline as student source dirs"
+	undertestdircnt=$#
+	undertestdirs=$@
+fi
 
 undertestdir="undertest"
 if [ ${undertestdircnt} -eq 1 ]; then

@@ -1,0 +1,15 @@
+{
+    "exercises": [
+        {
+            "name": "GA4.6a",
+            "tests": [
+                {
+                    "desc": "empty dummy test",
+                    "fromSecret": false,
+                    "id": "test4",
+                    "success": true
+                }
+            ]
+        }
+    ]
+}

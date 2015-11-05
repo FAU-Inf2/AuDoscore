@@ -1,13 +1,7 @@
 import org.junit.*;
-import tester.*;
+import tester.annotations.*;
 
-import org.junit.*;
-import org.junit.rules.*;
 import static org.junit.Assert.*;
-import java.lang.reflect.*;
-import java.lang.*;
-import java.util.*;
-import java.io.*;
 
 @SecretClass
 public class SecretTest {
@@ -19,14 +13,14 @@ public class SecretTest {
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
 	@Test(timeout=100)
-	@tester.annotations.Bonus(exID = "GA4.6a", bonus = 47.11)
+	@Points(exID = "GA4.6a", bonus = 47.11)
 	@Replace({"ToTest.third"})
 	public void test() {
 		assertEquals("Should return 42", 42, ToTest.toTest());
 	}
 
 	@Test(timeout=100)
-	@tester.annotations.Bonus(exID = "GA4.6a", bonus = 23.00)
+	@Points(exID = "GA4.6a", bonus = 23.00)
 	public void test2() {
 		assertEquals("Should return 23", 23, ToTest.toTest2());
 	}

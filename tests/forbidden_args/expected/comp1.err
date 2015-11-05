@@ -1,0 +1,2 @@
+       2: invokestatic  #3                  // Method java/lang/Integer.parseInt:
+make[1]: *** [compile-stage1] Error 1

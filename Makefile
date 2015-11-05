@@ -1,18 +1,22 @@
-include var.mk
+-include var.mk
 
+STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
+
+ifndef SECRETCLASS
+	-include varsec.mk
+endif
 TESTCLASS = $(TEST:=.class)
 TESTSOURCE = $(TEST:=.java)
-STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
 SECRETCLASS = $(SECRETTEST:=.class)
 SECRETSOURCE = $(SECRETTEST:=.java)
 
-all:
-	make prepare
-	./test.sh $(TEST) $(STUDENTSOURCE) -- $(INTERFACES) -- student
+all: prepare
 
-verify:
-	make prepare
+verify: prepare
 	./verify.sh
+
+miniclean:
+	rm -f *.class */*.class
 
 clean:
 	rm -rf build
@@ -20,9 +24,6 @@ clean:
 	rm -rf mixed
 	rm -f *.class
 	rm -f lib/junitpoints.jar
-
-miniclean:
-	rm -f *.class */*.class
 
 build:
 	rm -rf build
@@ -33,11 +34,19 @@ prepare: updategitrev lib/junitpoints.jar
 updategitrev:
 	git rev-parse HEAD > GITREV
 
-SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/annotations/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java tester/annotations/Bonus.java tester/annotations/Ex.java tester/annotations/Points.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/Malus.java tester/annotations/NotForbidden.java tools/jsondiff/JSONDiff.java FullQualifier.java tools/bomacon/BonusMalusConverter.java tools/sep/SingleExecutionPreparer.java
+SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/annotations/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java tester/annotations/SecretCase.java tester/annotations/Bonus.java tester/annotations/Ex.java tester/annotations/Points.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/Malus.java tester/annotations/NotForbidden.java tools/jsondiff/JSONDiff.java FullQualifier.java tools/bomacon/BonusMalusConverter.java tools/sep/SingleExecutionPreparer.java CheckAnnotation.java tools/SingleMethodRunner.java tools/ic/InterfaceComparer.java tools/ptc/PublicTestCleaner.java
 
 lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/tools.jar:. $(SRCJUNITPOINTSJAR)
 	jar cvf lib/junitpoints.jar -C build .
+
+
+clean-pubtest: $(FILE)
+	cp $(FILE) $(FILE).orig
+	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.ptc.PublicTestCleaner $(FILE) > $(FILE).tmp
+	mv $(FILE).tmp $(FILE)
+	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(FILE) > $(FILE).tmp
+	mv $(FILE).orig $(FILE)
 
 compile-stage0:
 	javac $(STUDENTSOURCE)	
@@ -48,12 +57,16 @@ compile-stage1: miniclean
 	mv $(TEST).java.tmp $(TEST).java
 	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
 	mv $(TEST).java.tmp $(TEST).java
-	sed -i -e 's/@tester.annotations.SecretCase/@org.junit.Ignore/' $(TEST).java
+#	sed -i -e 's/@tester.annotations.SecretCase/@org.junit.Ignore/' $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
+	javac cleanroom/*
+	java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar CheckAnnotation $(TEST) 
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
-	! ( javap -p -c $(STUDENTCLASS) | ./forbidden 1>&2 )
+	javap -p -c $(STUDENTCLASS) > javap.out
+	sed -i -e 's/(.*//' javap.out
+	! ( cat javap.out | ./forbidden 1>&2 )
 	rm forbidden
 
 compile-stage2: miniclean
@@ -76,11 +89,14 @@ compile-stage2: miniclean
 	mv $(TEST).java.orig $(TEST).java
 	echo "echo \"[\" 1>&2" > loop.sh
 	if [ "x$(SECRETTEST)" != "x" ]; then \
-		java -cp lib/junitpoints.jar:lib/junit.jar:. -DwithSecret=yes tester.ReadReplace --loop $(TEST) >> loop.sh ; \
-		echo "echo \",\" 1>&2" >> loop.sh ; \
+		make compile-stage2-secret ; \
+		java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar:. -Dpub=$(TEST) CheckAnnotation $(SECRETTEST) ; \
+		echo "make run-stage1" > single_execution.sh ;\
+		echo "echo \",\" 1>&2" >> single_execution.sh;	\
+		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=$(TEST)" $(SECRETTEST) >> single_execution.sh; \
 	else \
-		java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop $(TEST) >> loop.sh ; \
 		echo "echo \"]\" 1>&2" >> loop.sh ; \
+		echo "make run-stage1" > single_execution.sh ; \
 	fi		
 
 compile-stage2-secret:
@@ -107,6 +123,10 @@ compile-stage2-secret:
 
 compile: compile-stage$(STAGE)
 
+
+run-comparer:
+	java -cp lib/junitpoints.jar tools.ic.InterfaceComparer $(TEST)
+
 run-stage0:
 	echo "alles gut"
 
@@ -116,13 +136,6 @@ run-stage1:
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
 	echo "[" 1>&2
-	if [ "x$(SECRETTEST)" != "x" ]; then \
-		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." -Djson=yes $(TEST) > single_execution.sh ;\
-		echo "echo \",\" 1>&2" >> single_execution.sh;	\
-		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=$(TEST)" $(SECRETTEST) >> single_execution.sh; \
-	else \
-	java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." -Djson=yes $(TEST) > single_execution.sh ; \
-	fi
 	sh ./single_execution.sh
 	echo "]" 1>&2
 	echo ", \"replaced\" : " 1>&2

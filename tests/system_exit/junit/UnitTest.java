@@ -1,17 +1,10 @@
 import org.junit.*;
-import tester.*;
-
-import org.junit.*;
-import org.junit.rules.*;
-import static org.junit.Assert.*;
-import java.lang.reflect.*;
-import java.lang.*;
-import java.util.*;
-import java.io.*;
-import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
+import tester.annotations.*;
 
-@tester.annotations.Exercises({ @tester.annotations.Ex(exID = "GA4.6a", points = 12.5)})
+import static org.junit.Assert.*;
+
+@Exercises({ @Ex(exID = "GA4.6a", points = 12.5)})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UnitTest {
 	// instead of explicitly coding the following rules here,
@@ -22,19 +15,19 @@ public class UnitTest {
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
 	@Test(timeout=100)
-	@tester.annotations.Bonus(exID = "GA4.6a", bonus = 8)
+	@Points(exID = "GA4.6a", bonus = 8)
 	public void test1() {
 		assertEquals("Should return 42", 42, ToTest.toTest());
 	}
 
 	@Test(timeout=100)
-	@tester.annotations.Bonus(exID = "GA4.6a", bonus = 1.33)
+	@Points(exID = "GA4.6a", bonus = 1.33)
 	public void test2() {
 		ToTest.exit();
 	}
 
 	@Test(timeout=100)
-	@tester.annotations.Bonus(exID = "GA4.6a", bonus = 4)
+	@Points(exID = "GA4.6a", bonus = 4)
 	public void test3() {
 		assertEquals("Should return 42", 42, ToTest.toTest());
 	}

@@ -1,2 +1,2 @@
-       4: invokestatic  #2                  // Method java/lang/Math.max:(II)I
-make: *** [compile-stage1] Error 1
+       4: invokestatic  #2                  // Method java/lang/Math.max:
+make[1]: *** [compile-stage1] Error 1

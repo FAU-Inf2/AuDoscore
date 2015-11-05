@@ -1,15 +1,9 @@
 import org.junit.*;
-import tester.*;
+import tester.annotations.*;
 
-import org.junit.*;
-import org.junit.rules.*;
 import static org.junit.Assert.*;
-import java.lang.reflect.*;
-import java.lang.*;
-import java.util.*;
-import java.io.*;
 
-@tester.annotations.Exercises({ @tester.annotations.Ex(exID = "GA4.6a", points = 20.0)})
+@Exercises({ @Ex(exID = "GA4.6a", points = 20.0)})
 public class UnitTest {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints

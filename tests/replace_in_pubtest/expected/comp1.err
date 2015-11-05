@@ -1,0 +1,4 @@
+Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - found test case with @Replace in a public test class: [UnitTest]
+	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:136)
+	at CheckAnnotation.main(CheckAnnotation.java:179)
+make: *** [compile-stage1] Error 1

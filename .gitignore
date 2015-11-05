@@ -5,3 +5,5 @@ test.latest
 GITREV
 build/
 lib/junitpoints.jar
+tests/*/test.*
+disabled_tests/*/test.*
