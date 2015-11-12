@@ -3,7 +3,7 @@
 count=0
 failed=0
 start=`date +%s%N`
-failfile=$(tempfile)
+export failfile=$(tempfile)
 
 run_single() {
 	i=$1
