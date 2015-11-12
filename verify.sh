@@ -11,7 +11,7 @@ run_single() {
 	echo -n "?"
 	tmpfailfile=$(tempfile)
 	echo "* $i:" >> $tmpfailfile
-	../../verify_single.sh >> $tmpfailfile
+	../../verify_single.sh &>> $tmpfailfile
 	if [ $? -eq 0 ]; then
 		echo -n -e "\b."
 	else
