@@ -1,8 +1,8 @@
 #!/bin/bash
 
 count=0
-failed=0
 start=`date +%s%N`
+export failed=$(tempfile)
 export failfile=$(tempfile)
 
 run_single() {
@@ -16,10 +16,11 @@ run_single() {
 		echo -n -e "\b."
 	else
 		echo -n -e "\bE"
-		failed=$((failed+1))
+		echo -n "." >> $failed
 		cat $tmpfailfile >> $failfile
 		echo >> $failfile
 	fi
+	rm $tmpfailfile
 	popd > /dev/null 2> /dev/null
 }
 
@@ -37,10 +38,13 @@ echo -e "\n"
 cat $failfile
 rm $failfile
 
-elapsed=`echo "scale=3; ($end - $start) / 1000000000" | bc`
-echo -e "\n$failed/$count test(s) failed | Time: $elapsed s"
+failedCnt=$(cat $failed | wc -c)
+rm $failed
 
-if [ $failed -gt 0 ]; then
+elapsed=`echo "scale=3; ($end - $start) / 1000000000" | bc`
+echo -e "\n$failedCnt/$count test(s) failed | Time: $elapsed s"
+
+if [ $failedCnt -gt 0 ]; then
 	exit 1
 fi
 exit 0
