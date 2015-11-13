@@ -106,7 +106,7 @@ function checkAnnotationFormatError {
 		err "testcase format wrong:"
 		cat $file
 		err "\nSummary:\n";
-		cat $file | egrep -B1 "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" | sed -e 's/.*ERROR - //'
+		cat $file | egrep -B1 "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" | sed -e 's/.*ERROR - /ERROR - /'
 		errfile=$(basename $file .out).err
 		cat $file | egrep -B1 "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" >> $errfile
 		die "\ninternal error\n";
