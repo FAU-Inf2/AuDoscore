@@ -1,4 +1,4 @@
-Exception in thread "main" java.lang.IllegalArgumentException: Error - Class [Foo] specified in @CompareInterface does not exist in cleanroom
+Exception in thread "main" java.lang.IllegalArgumentException: ERROR - Class [Foo] specified in @CompareInterface does not exist in cleanroom
 	at CheckAnnotation.getCleanroomClass(CheckAnnotation.java:39)
 	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:103)
 	at CheckAnnotation.main(CheckAnnotation.java:179)
