@@ -1,7 +1,10 @@
-import org.junit.*;
-import tester.annotations.*;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-import static org.junit.Assert.*;
+import tester.annotations.Ex;
+import tester.annotations.Exercises;
+import tester.annotations.Points;
 
 @Exercises({ @Ex(exID = "GA4.6a", points = 12.5)})
 public class UnitTest {
