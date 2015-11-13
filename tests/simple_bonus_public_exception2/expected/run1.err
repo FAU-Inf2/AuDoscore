@@ -5,7 +5,7 @@
             "tests": [
                 {
                     "desc": "test",
-                    "error": "NullPointerException(): UnitTest.test(line 19)",
+                    "error": "NullPointerException(): UnitTest.test(line 23)",
                     "fromSecret": false,
                     "id": "test",
                     "success": false
