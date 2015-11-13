@@ -1,13 +1,12 @@
-import org.junit.*;
-import tester.*;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.*;
-import org.junit.rules.*;
-import static org.junit.Assert.*;
-import java.lang.reflect.*;
-import java.lang.*;
-import java.util.*;
-import java.io.*;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+
+import tester.annotations.CompareInterface;
+import tester.annotations.Exercises;
+import tester.annotations.Points;
 
 @Exercises({ @tester.annotations.Ex(exID = "GA4.6a", points = 12.5)})
 @CompareInterface({"ToTest.toTest","ToTest.toTest2"})

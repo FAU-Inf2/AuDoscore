@@ -1,8 +1,14 @@
-import org.junit.*;
-import org.junit.runners.MethodSorters;
-import tester.annotations.*;
+import static org.junit.Assert.assertEquals;
 
-import static org.junit.Assert.*;
+import org.junit.ClassRule;
+import org.junit.FixMethodOrder;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+
+import tester.annotations.Ex;
+import tester.annotations.Exercises;
+import tester.annotations.Points;
 
 @Exercises({ @Ex(exID = "GA4.6a", points = 12.5)})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
