@@ -100,7 +100,6 @@ function checkexit {
 
 function checkAnnotationFormatError {
 	file=$1; shift
-	info "checking $file for annotformaterr"
 	egrep -q "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" $file
 	if [ $? -eq 0 ]; then
 		err "testcase format wrong:"
