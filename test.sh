@@ -100,14 +100,15 @@ function checkexit {
 
 function checkAnnotationFormatError {
 	file=$1; shift
-	grep -q "^java.lang.annotation.AnnotationFormatError" $file
+	info "checking $file for annotformaterr"
+	egrep -q "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" $file
 	if [ $? -eq 0 ]; then
 		err "testcase format wrong:"
 		cat $file
 		err "\nSummary:\n";
-		cat $file | grep -B1 "^java.lang.annotation.AnnotationFormatError"
+		cat $file | egrep -B1 "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" | sed -e 's/.*ERROR - //'
 		errfile=$(basename $file .out).err
-		cat $file | grep -B1 "^java.lang.annotation.AnnotationFormatError" >> $errfile
+		cat $file | egrep -B1 "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" >> $errfile
 		die "\ninternal error\n";
 	fi
 
@@ -269,7 +270,10 @@ function testIt {
 	info "\nstage1 (with public test case)"
 	info "- compiling"
 	( make compile-stage1 ) > comp1.out 2> comp1.err
-	checkexit $? "\nstudent result: ✘\n" comp1.err
+	ec=$?
+	checkAnnotationFormatError comp1.err
+	checkexit $ec "\nstudent result: ✘\n" comp1.err
+
 
 	info "- comparing interfaces of student and cleanroom"
 	( make run-comparer ) > inteface.out 2> interface.err
@@ -289,12 +293,13 @@ function testIt {
 		info "\nstudent result: ✔\n";
 	fi
 
-	checkAnnotationFormatError run1.out
-
 	info "\nstage2 (twice, with secret test cases and weaving)"
 	info "- compiling"
 	( make compile-stage2 ) > comp2 2>&1
-	checkexit $? "\ninternal error\n" comp2
+	ec=$?
+	checkAnnotationFormatError comp2
+	checkexit $ec "\ninternal error\n" comp2
+
 	
 	info "- testing"
 	( make run-stage2 ) > run2.out 2> run2.err
@@ -306,8 +311,6 @@ function testIt {
 		cat run2.err
 		die "\ninternal error\n";
 	fi
-
-	checkAnnotationFormatError run2.out
 
 	info "  json:"
 	cat run2.err
