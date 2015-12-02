@@ -18,7 +18,7 @@ for i in `find expected/ -type f`; do
 				mv ${testfile}.new $testfile
 			fi
 		fi
-		diff -b -u -I '^make' -I '^Makefile:' -I '^javac ' $i $testfile
+		diff -w -u -I '^make' -I '^Makefile:' -I '^javac ' $i $testfile
 		ec=$?
 		if [[ $ec -ne 0 ]] && [[ "$i" == expected/run*.err ]]; then
 			# in case of JSON, try to parse and compare as JSON
