@@ -26,7 +26,7 @@ public class CheckAnnotation {
 	ClassLoader cleanroomLoader = null;
 
 	try{
-		cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL()});
+		cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL(), new File(cwd).toURI().toURL()});
 	} catch (MalformedURLException mfue) {
 		throw new Error("Error - " + mfue.getMessage());
 	}
