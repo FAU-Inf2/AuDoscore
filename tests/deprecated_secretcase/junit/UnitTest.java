@@ -18,13 +18,13 @@ public class UnitTest {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=100)
+	@Test(timeout=200)
 	@Points(exID = "GA4.6a", bonus = 47)
 	public void test() {
 		assertEquals("Should return 42", 42, ToTest.toTest());
 	}
 
-	@Test(timeout=100)
+	@Test(timeout=200)
 	@Points(exID = "GA4.6a", malus = 11)
 	@SecretCase
 	public void test2() {

@@ -17,7 +17,7 @@ public class SecretTest {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=100)
+	@Test(timeout=200)
 	@Points(exID = "GA4.6a", bonus = 47)
 	@Replace({"ToTest.toTest"})
 	public void test() {

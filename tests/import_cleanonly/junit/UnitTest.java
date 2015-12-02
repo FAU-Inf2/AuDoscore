@@ -15,7 +15,7 @@ public class UnitTest {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=100)
+	@Test(timeout=200)
 	@Points(exID = "GA4.6a", bonus = 0.1, comment="empty dummy test")
 	public void test4() {
 	}

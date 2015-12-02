@@ -20,19 +20,19 @@ public class UnitTest {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=100)
+	@Test(timeout=200)
 	@Points(exID = "GA4.6a", bonus = 8)
 	public void test1() {
 		assertEquals("Should return 42", 42, ToTest.toTest());
 	}
 
-	@Test(timeout=100)
+	@Test(timeout=200)
 	@Points(exID = "GA4.6a", bonus = 1.33)
 	public void test2() {
 		ToTest.exit();
 	}
 
-	@Test(timeout=100)
+	@Test(timeout=200)
 	@Points(exID = "GA4.6a", bonus = 4)
 	public void test3() {
 		assertEquals("Should return 42", 42, ToTest.toTest());
