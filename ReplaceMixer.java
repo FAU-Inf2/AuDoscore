@@ -11,6 +11,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.ElementKind;
 import javax.tools.*;
+import com.sun.source.tree.Tree.Kind;
 import com.sun.source.util.Trees;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
@@ -173,6 +174,24 @@ public class ReplaceMixer extends AbstractProcessor {
 			classLevel++;
 			if (classLevel > 1) {
 				System.err.println("found inner class: " + tree.name);
+			}
+			if (tree.getKind() == Kind.ENUM) {
+				// remove default constructor from *inner* enums to make code valid
+				List<JCTree> schlepp = null;
+				for (List<JCTree> t = tree.defs; t.nonEmpty(); t = t.tail) {
+					if (t.head != null && t.head.getKind() == Kind.METHOD) {
+						JCTree.JCMethodDecl m = (JCTree.JCMethodDecl) t.head;
+						if (m.name.toString().equals("<init>") && m.params.size() == 0) {
+							if (schlepp == null) {
+								tree.defs = t.tail;
+							} else {
+								schlepp.tail = t.tail;
+							}
+							break;
+						}
+					}
+					schlepp = t;
+				}
 			}
 			super.visitClassDef(tree);
 			classLevel--;
