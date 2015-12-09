@@ -24,6 +24,10 @@ for i in `find expected/ -type f`; do
 			# in case of JSON, try to parse and compare as JSON
 			java -cp ../../lib/junitpoints.jar:../../lib/json-simple-1.1.1.jar tools.jsondiff.JSONDiff $i $testfile
 			ec=$?
+			if [[ -n "$REBUILD" ]]; then
+				# in case of JSON, store pretty printed version
+				cp $testfile $i
+			fi
 		fi
 	else
 		echo "$testfile does not exist..."
