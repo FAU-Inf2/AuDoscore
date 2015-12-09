@@ -79,6 +79,7 @@ compile-stage2: miniclean
 	mkdir -p mixed || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(TEST) > compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	if [ "x$(INTERFACES)" != "x" ]; then \
+		set -e ; \
 		for i in $(INTERFACES); do \
 			/bin/echo -e "package cleanroom;\n" > cleanroom/$$i; \
 			cat $$i >> cleanroom/$$i; \
@@ -89,12 +90,14 @@ compile-stage2: miniclean
 	mv $(TEST).java.orig $(TEST).java
 	echo "echo \"[\" 1>&2" > loop.sh
 	if [ "x$(SECRETTEST)" != "x" ]; then \
+		set -e ; \
 		make compile-stage2-secret ; \
 		java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar:. -Dpub=$(TEST) CheckAnnotation $(SECRETTEST) ; \
 		echo "make run-stage1" > single_execution.sh ;\
 		echo "echo \",\" 1>&2" >> single_execution.sh;	\
 		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=$(TEST)" $(SECRETTEST) >> single_execution.sh; \
 	else \
+		set -e ; \
 		echo "echo \"]\" 1>&2" >> loop.sh ; \
 		echo "make run-stage1" > single_execution.sh ; \
 	fi		
@@ -110,6 +113,7 @@ compile-stage2-secret:
 	mkdir -p mixed || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(SECRETTEST) > compile2.sh || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
 	if [ "x$(INTERFACES)" != "x" ]; then \
+		set -e ; \
 		for i in $(INTERFACES); do \
 			/bin/echo -e "package cleanroom;\n" > cleanroom/$$i; \
 			cat $$i >> cleanroom/$$i; \

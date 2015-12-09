@@ -20,13 +20,13 @@ public class CheckAnnotation {
     private static String cwd = System.getProperty("user.dir");
 
 
-    // checks f given class exists in cleanroom
+    // checks if given class exists in cleanroom
     private static Class<?> getCleanroomClass(String name){
 	String pathToCleanroom = cwd + "/cleanroom/";
 	ClassLoader cleanroomLoader = null;
 
 	try{
-		cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL()});
+		cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL(), new File(cwd).toURI().toURL()});
 	} catch (MalformedURLException mfue) {
 		throw new Error("Error - " + mfue.getMessage());
 	}
@@ -36,7 +36,7 @@ public class CheckAnnotation {
 	try{
 		cleanroomClass = cleanroomLoader.loadClass(name);
 	} catch (ClassNotFoundException cnfe) {
-		throw new IllegalArgumentException("Error - Class ["+cnfe.getMessage() +"] specified in @CompareInterface does not exist in cleanroom");
+		throw new IllegalArgumentException("ERROR - Class ["+cnfe.getMessage() +"] specified in @CompareInterface does not exist in cleanroom");
 	}
 
 	return cleanroomClass;
@@ -82,7 +82,7 @@ public class CheckAnnotation {
 			if(arg.contains(".")){
 				String[] parts = arg.split("\\.");
 				if(parts.length != 2){
-					throw new IllegalArgumentException("Error - @CompareInterface must look like this: Class, Class.Method or Class.Field, found: " + arg);
+					throw new IllegalArgumentException("ERROR - @CompareInterface must look like this: Class, Class.Method or Class.Field, found: " + arg);
 				}
 				// first part is classname, second part method or field
 				Class<?> cleanroomClass = getCleanroomClass(parts[0]);
@@ -93,7 +93,7 @@ public class CheckAnnotation {
 					try{
 						Field field = cleanroomClass.getField(parts[1]);
 					} catch (NoSuchFieldException nsfe){
-						throw new IllegalArgumentException("Error - " + arg + " specified in @CompareInterface could not be found in cleanroom" );
+						throw new IllegalArgumentException("ERROR - " + arg + " specified in @CompareInterface could not be found in cleanroom" );
 					}
 				}
 
@@ -171,7 +171,7 @@ public class CheckAnnotation {
 	try{
 		clazz = unitLoader.loadClass(args[0]);
 	} catch (ClassNotFoundException cnfe) {
-		throw new IllegalArgumentException("Error - Class ["+cnfe.getMessage() +"] specified in @CompareInterface does not exist");
+		throw new IllegalArgumentException("ERROR - Class ["+cnfe.getMessage() +"] specified in @CompareInterface does not exist");
 	}
 
 	Description description = Description.createSuiteDescription(clazz);

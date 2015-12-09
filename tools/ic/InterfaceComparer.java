@@ -51,16 +51,53 @@ public class InterfaceComparer {
 		return true;
 	}
 
+	private static String methodToStringWithoutThrows(Method m) {
+		String s = m.toGenericString();
+		int throwsIndex = s.indexOf(" throws ");
+		if (throwsIndex > 0) {
+			s = s.substring(0, throwsIndex);
+		}
+		return s;
+	}
+
+	// checks that every exception type in left is also included in right
+	// unless it doesn't have to be declared, i.e. unchecked exception
+	private static boolean checkExceptionTypes(Class<?>[] left, Class<?>[] right) {
+		List<Class<?>> rightList = Arrays.asList(right);
+		for (Class<?> e : left) {
+			if (RuntimeException.class.isAssignableFrom(e) ||
+				Error.class.isAssignableFrom(e)) {
+				// skip unchecked exceptions
+				continue;
+			}
+			if (!rightList.contains(e)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 	// checks two methods and print err msg. If error occurs false is returned
 	private static boolean checkMethod(Method cleanroomMethod, Class<?> studentClass){
 		Method studentMethod = null;
 		try {	
 			studentMethod = studentClass.getMethod(cleanroomMethod.getName(),cleanroomMethod.getParameterTypes());
-			if(!cleanroomMethod.toGenericString().equals(studentMethod.toGenericString())){
+			String cleanString   = methodToStringWithoutThrows(cleanroomMethod);
+			String studentString = methodToStringWithoutThrows(studentMethod);
+
+			if (!cleanString.equals(studentString)) {
 				System.err.println("ERROR - Method " +cleanroomMethod + "["+studentClass.getName() +"] does not match with student counterpart");
 				return false;
 
+			}
+
+			Class<?>[] cleanExc = cleanroomMethod.getExceptionTypes();	
+			Class<?>[] studentExc = studentMethod.getExceptionTypes();	
+			if (!checkExceptionTypes(cleanExc, studentExc) ||
+				!checkExceptionTypes(studentExc, cleanExc)) {
+				System.err.println("ERROR - Method " +cleanroomMethod + "["+studentClass.getName() +"] does not match with respect to exception types");
+				return false;
 			}
 		} catch (NoSuchMethodException nsme){
 			System.err.println("ERROR - Method " +cleanroomMethod + "["+studentClass.getName() +"] does not match or does not exists in studentcode");
@@ -182,7 +219,7 @@ public class InterfaceComparer {
 		ClassLoader cleanroomLoader = null;
 		ClassLoader studentLoader = null;
 		try{
-			cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL()});
+			cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL(), new File(cwd).toURI().toURL()});
 			studentLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()});
 		}catch(MalformedURLException mfue){
 			throw new Error("Error - "  + mfue.getMessage());

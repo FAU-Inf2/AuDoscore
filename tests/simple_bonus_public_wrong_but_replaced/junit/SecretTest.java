@@ -1,7 +1,12 @@
-import org.junit.*;
-import tester.annotations.*;
+import static org.junit.Assert.assertEquals;
 
-import static org.junit.Assert.*;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+
+import tester.annotations.Points;
+import tester.annotations.Replace;
+import tester.annotations.SecretClass;
 
 @SecretClass
 public class SecretTest {
@@ -12,7 +17,7 @@ public class SecretTest {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=100)
+	@Test(timeout=200)
 	@Points(exID = "GA4.6a", bonus = 47.11)
 	@Replace({"ToTest.toTest"})
 	public void test2() {

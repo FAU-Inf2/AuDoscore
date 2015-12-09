@@ -1,7 +1,10 @@
-import org.junit.*;
-import tester.annotations.*;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-import static org.junit.Assert.*;
+import tester.annotations.Ex;
+import tester.annotations.Exercises;
+import tester.annotations.Points;
 
 @Exercises({@Ex(exID = "GA4.6a", points = 12.5)})
 public class UnitTest {
@@ -12,7 +15,7 @@ public class UnitTest {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=100)
+	@Test(timeout=200)
 	@Points(exID = "GA4.6a", bonus = 0.1, comment="empty dummy test")
 	public void test2() {
 	}

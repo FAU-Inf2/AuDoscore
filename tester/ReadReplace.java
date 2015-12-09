@@ -47,7 +47,7 @@ public class ReadReplace {
 					meths.add("<init>");
 				}
 			} catch (ClassNotFoundException e) {
-				throw new AnnotationFormatError("Cannot replace unknown class: " + cln);
+				throw new AnnotationFormatError("ERROR - Cannot replace unknown class: " + cln);
 			}
 		}
 		return mMethsMap;

@@ -1,9 +1,11 @@
-import java.util.*;
-import org.junit.*;
-import org.junit.FixMethodOrder;
-import org.junit.runners.MethodSorters;
-import static org.junit.Assert.*;
-import tester.annotations.*;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+
+import tester.annotations.Points;
+import tester.annotations.SecretClass;
 
 @SecretClass
 public class SecretTest {

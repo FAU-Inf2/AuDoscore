@@ -1,9 +1,14 @@
-import java.util.*;
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.ClassRule;
 import org.junit.FixMethodOrder;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import static org.junit.Assert.*;
-import tester.annotations.*;
+
+import tester.annotations.Ex;
+import tester.annotations.Exercises;
+import tester.annotations.Points;
 
 @Exercises({ @Ex(exID = "Weite Felder - createAndFill", points = 5) })
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
