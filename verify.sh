@@ -2,14 +2,14 @@
 
 count=0
 start=`date +%s%N`
-export failed=$(tempfile)
-export failfile=$(tempfile)
+export failed=$(mktemp)
+export failfile=$(mktemp)
 
 run_single() {
 	i=$1
 	pushd $i > /dev/null 2> /dev/null
 	echo -n "?"
-	tmpfailfile=$(tempfile)
+	tmpfailfile=$(mktemp)
 	echo "* $i:" >> $tmpfailfile
 	../../verify_single.sh &>> $tmpfailfile
 	if [ $? -eq 0 ]; then
