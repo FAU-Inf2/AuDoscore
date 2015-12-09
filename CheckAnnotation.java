@@ -1,7 +1,9 @@
 import org.junit.Test;
+import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.runner.Description;
-import tester.annotations.*;
 
+import tester.annotations.*;
 
 import java.lang.annotation.AnnotationFormatError;
 import java.lang.reflect.Method;
@@ -156,6 +158,37 @@ public class CheckAnnotation {
         if (timeoutSum > MAX_TIMEOUT_MS) {
             throw new AnnotationFormatError("ERROR - total timeout sum is too high, please reduce to max. " + MAX_TIMEOUT_MS + "ms: [" + timeoutSum + "ms]");
         }
+
+	// check for @Rule and @ClassRule
+	boolean hasRule = false, hasClassRule = false;
+	for (Field f : clazz.getFields()) {
+		if (JUnitWithPoints.PointsLogger.class.isAssignableFrom(f.getType())) {
+			if (hasRule) {
+				throw new AnnotationFormatError("ERROR - found PointsLogger twice; what are you trying to do?");
+			}
+			Rule rule = f.getAnnotation(Rule.class);
+			if (rule == null) {
+				throw new AnnotationFormatError("ERROR - found PointsLogger but @Rule annotation is missing");
+			}
+			hasRule = true;
+		}
+		if (JUnitWithPoints.PointsSummary.class.isAssignableFrom(f.getType())) {
+			if (hasClassRule) {
+				throw new AnnotationFormatError("ERROR - found PointsSummary twice; what are you trying to do?");
+			}
+			ClassRule rule = f.getAnnotation(ClassRule.class);
+			if (rule == null) {
+				throw new AnnotationFormatError("ERROR - found PointsSummary but @ClassRule annotation is missing");
+			}
+			hasClassRule = true;
+		}
+	}
+	if (!hasRule) {
+		throw new AnnotationFormatError("ERROR - found no valid @Rule annotation in test class");
+	}
+	if (!hasClassRule) {
+		throw new AnnotationFormatError("ERROR - found no valid @ClassRule annotation in test class");
+	}
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
