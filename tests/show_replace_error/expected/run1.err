@@ -1,1 +1,15 @@
-{"exercises":[{"tests":[{"id":"test2","desc":"empty dummy test","fromSecret":false,"success":true}],"name":"GA4.6a"}]}
+{
+    "exercises": [
+        {
+            "name": "GA4.6a",
+            "tests": [
+                {
+                    "desc": "empty dummy test",
+                    "fromSecret": false,
+                    "id": "test2",
+                    "success": true
+                }
+            ]
+        }
+    ]
+}
