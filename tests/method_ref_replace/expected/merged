@@ -1,0 +1,9 @@
+Score: 1.5
+
+TestMethodRef (1.5 points):
+✗   0.00 | testBaz | AssertionError(baz() is wrong expected:<42> but was:<21>)
+✓   0.50 | testBar
+✓   1.00 | testFoo
+✓   0.00 | testInterfaceBar
+✓   0.00 | testInterfaceBaz
+✓   0.00 | testInterfaceFoo

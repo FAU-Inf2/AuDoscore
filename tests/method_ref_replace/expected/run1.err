@@ -1,0 +1,27 @@
+{
+    "exercises": [
+        {
+            "name": "TestMethodRef",
+            "tests": [
+                {
+                    "desc": "testInterfaceBar",
+                    "fromSecret": false,
+                    "id": "testInterfaceBar",
+                    "success": true
+                },
+                {
+                    "desc": "testInterfaceBaz",
+                    "fromSecret": false,
+                    "id": "testInterfaceBaz",
+                    "success": true
+                },
+                {
+                    "desc": "testInterfaceFoo",
+                    "fromSecret": false,
+                    "id": "testInterfaceFoo",
+                    "success": true
+                }
+            ]
+        }
+    ]
+}
