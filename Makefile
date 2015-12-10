@@ -43,9 +43,9 @@ lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 
 clean-pubtest: $(FILE)
 	cp $(FILE) $(FILE).orig
-	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.ptc.PublicTestCleaner $(FILE) > $(FILE).tmp
+	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.ptc.PublicTestCleaner $(FILE) > $(FILE).tmp
 	mv $(FILE).tmp $(FILE)
-	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(FILE) > $(FILE).tmp
+	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(FILE) > $(FILE).tmp
 	mv $(FILE).orig $(FILE)
 
 compile-stage0:
@@ -53,15 +53,15 @@ compile-stage0:
 
 compile-stage1: miniclean
 	cp $(TEST).java $(TEST).java.orig
-	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(TEST).java > $(TEST).java.tmp
+	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(TEST).java > $(TEST).java.tmp
 	mv $(TEST).java.tmp $(TEST).java
-	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
+	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
 	mv $(TEST).java.tmp $(TEST).java
 #	sed -i -e 's/@tester.annotations.SecretCase/@org.junit.Ignore/' $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
 	javac cleanroom/*
-	java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar CheckAnnotation $(TEST) 
+	java -cp lib/junit.jar:lib/junitpoints.jar CheckAnnotation $(TEST)
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
 	javap -p -c $(STUDENTCLASS) > javap.out
@@ -71,9 +71,9 @@ compile-stage1: miniclean
 
 compile-stage2: miniclean
 	cp $(TEST).java $(TEST).java.orig
-	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(TEST).java > $(TEST).java.tmp
+	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(TEST).java > $(TEST).java.tmp
 	mv $(TEST).java.tmp $(TEST).java
-	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
+	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
 	mv $(TEST).java.tmp $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mkdir -p mixed || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
@@ -92,10 +92,10 @@ compile-stage2: miniclean
 	if [ "x$(SECRETTEST)" != "x" ]; then \
 		set -e ; \
 		make compile-stage2-secret ; \
-		java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar:. -Dpub=$(TEST) CheckAnnotation $(SECRETTEST) ; \
+		java -cp lib/junit.jar:lib/junitpoints.jar:. -Dpub=$(TEST) CheckAnnotation $(SECRETTEST) ; \
 		echo "make run-stage1" > single_execution.sh ;\
 		echo "echo \",\" 1>&2" >> single_execution.sh;	\
-		java -cp lib/tools.jar:lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=$(TEST)" $(SECRETTEST) >> single_execution.sh; \
+		java -cp lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=$(TEST)" $(SECRETTEST) >> single_execution.sh; \
 	else \
 		set -e ; \
 		echo "echo \"]\" 1>&2" >> loop.sh ; \
@@ -105,9 +105,9 @@ compile-stage2: miniclean
 compile-stage2-secret:
 	./obfuscate
 	cp $(SECRETTEST).java $(SECRETTEST).java.orig
-	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(SECRETTEST).java > $(SECRETTEST).java.tmp
+	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(SECRETTEST).java > $(SECRETTEST).java.tmp
 	mv $(SECRETTEST).java.tmp $(SECRETTEST).java
-	javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(SECRETTEST).java > $(SECRETTEST).java.tmp
+	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(SECRETTEST).java > $(SECRETTEST).java.tmp
 	mv $(SECRETTEST).java.tmp $(SECRETTEST).java
 	make -B $(SECRETCLASS) || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
 	mkdir -p mixed || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
