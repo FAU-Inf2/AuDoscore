@@ -68,6 +68,8 @@ compile-stage1: miniclean
 	sed -i -e 's/(.*//' javap.out
 	! ( cat javap.out | ./forbidden 1>&2 )
 	rm forbidden
+	make run-comparer
+
 
 compile-stage2: miniclean
 	cp $(TEST).java $(TEST).java.orig
