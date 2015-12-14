@@ -1,4 +1,4 @@
-make[1]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.5260'
+make[1]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.17973'
 rm -f *.class */*.class
 cp UnitTest.java UnitTest.java.orig
 javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp
@@ -6,16 +6,16 @@ mv UnitTest.java.tmp UnitTest.java
 javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp
 mv UnitTest.java.tmp UnitTest.java
 make -B UnitTest.class || ( mv UnitTest.java.orig UnitTest.java; /bin/false; )
-make[2]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.5260'
+make[2]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.17973'
 javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
-make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.5260'
+make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.17973'
 mv UnitTest.java.orig UnitTest.java
 javac cleanroom/*
-java -cp lib/junit.jar:lib/junitpoints.jar CheckAnnotation UnitTest
+java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
 javap -p -c ToTest > javap.out
 sed -i -e 's/(.*//' javap.out
 ! ( cat javap.out | ./forbidden 1>&2 )
 rm forbidden
-make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.5260'
+make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.17973'
