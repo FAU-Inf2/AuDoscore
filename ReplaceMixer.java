@@ -135,7 +135,7 @@ public class ReplaceMixer extends AbstractProcessor {
 
 			ArrayList<String> types = new ArrayList<>();
 			for (JCVariableDecl decl : tree.params) {
-				final Symbol paramTypeSymbol = TreeInfo.symbolFor(decl.vartype);
+				final Symbol paramTypeSymbol = TreeInfo.symbol(decl.vartype);
 				if (paramTypeSymbol == null) {
 					types.add(decl.vartype.toString());
 				} else {

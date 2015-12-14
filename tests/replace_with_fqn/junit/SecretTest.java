@@ -19,6 +19,6 @@ public class SecretTest {
 	@Replace({ "ToTest.test" })
 	@Points(exID = "FQN", bonus = 47.11)
 	public void testSec() {
-		assertEquals(1, new ToTest().test(java.util.Arrays.asList(42)));
+		assertEquals(1, new ToTest().test(java.util.Arrays.asList((Object)42)));
 	}
 }
