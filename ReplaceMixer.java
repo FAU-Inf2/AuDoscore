@@ -14,6 +14,7 @@ import javax.tools.*;
 import com.sun.source.tree.Tree.Kind;
 import com.sun.source.util.Trees;
 import com.sun.source.util.TreePath;
+import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.*;
 import com.sun.tools.javac.util.*;
@@ -134,7 +135,12 @@ public class ReplaceMixer extends AbstractProcessor {
 
 			ArrayList<String> types = new ArrayList<>();
 			for (JCVariableDecl decl : tree.params) {
-				types.add(decl.vartype.toString());
+				final Symbol paramTypeSymbol = TreeInfo.symbolFor(decl.vartype);
+				if (paramTypeSymbol == null) {
+					types.add(decl.vartype.toString());
+				} else {
+					types.add(paramTypeSymbol.asType().toString());
+				}
 			}
 			String name = tree.name.toString() + ": " +  Arrays.toString(types.toArray());
 			if (isCleanroom) {
