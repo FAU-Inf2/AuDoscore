@@ -1,4 +1,5 @@
 ERROR - Field public static int ToTest.myInt[ToTest] does not match with student counterpart
 Exception in thread "main" java.lang.Error
-	at tools.ic.InterfaceComparer.main(InterfaceComparer.java:251)
+	at tools.ic.InterfaceComparer.main(InterfaceComparer.java:253)
 make[1]: *** [run-comparer] Error 1
+make: *** [compile-stage1] Error 2
