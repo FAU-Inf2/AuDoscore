@@ -1,0 +1,11 @@
+{ "vanilla" : 
+[
+{"exercises":[{"tests":[{"success":true,"id":"testEmpty","fromSecret":false,"desc":"testEmpty"}],"name":"DefaultMethod"}]}
+,
+{"exercises":[{"tests":[{"success":false,"id":"testFoo","error":"AssertionError(foo() is wrong expected:<42> but was:<21>)","fromSecret":true,"desc":"testFoo"}],"name":"DefaultMethod"}]}
+]
+, "replaced" : 
+[
+{"exercises":[{"tests":[{"success":true,"id":"testFoo","fromSecret":true,"desc":"testFoo"}],"name":"DefaultMethod"}]}
+]
+}
