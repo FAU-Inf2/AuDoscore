@@ -136,11 +136,14 @@ public class ReplaceMixer extends AbstractProcessor {
 			ArrayList<String> types = new ArrayList<>();
 			for (JCVariableDecl decl : tree.params) {
 				final Symbol paramTypeSymbol = TreeInfo.symbol(decl.vartype);
-				if (paramTypeSymbol == null) {
-					types.add(decl.vartype.toString());
-				} else {
-					types.add(paramTypeSymbol.asType().toString());
+				String fullyQualifiedType = decl.vartype.toString();
+				if (paramTypeSymbol != null) {
+					fullyQualifiedType = paramTypeSymbol.asType().toString();
+					if (fullyQualifiedType.indexOf("cleanroom.") == 0) {
+						fullyQualifiedType = fullyQualifiedType.substring("cleanroom.".length());
+					}
 				}
+				types.add(fullyQualifiedType);
 			}
 			String name = tree.name.toString() + ": " +  Arrays.toString(types.toArray());
 			if (isCleanroom) {
