@@ -1,14 +1,9 @@
+make[1]: Entering directory '/home/sitowert/AuDoscore/tests/student_wrong_field/test.32465'
 rm -f *.class */*.class
-cp UnitTest.java UnitTest.java.orig
-javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp
-mv UnitTest.java.tmp UnitTest.java
-javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp
-mv UnitTest.java.tmp UnitTest.java
-make -B UnitTest.class || ( mv UnitTest.java.orig UnitTest.java; /bin/false; )
-make[1]: Entering directory '/home/sitowert/AuDoscore/tests/student_wrong_field/test.11562'
+cp UnitTest.java UnitTest.java.orig ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class || ( mv UnitTest.java.orig UnitTest.java; /bin/false; ) ; mv UnitTest.java.orig UnitTest.java ;
+make[2]: Entering directory '/home/sitowert/AuDoscore/tests/student_wrong_field/test.32465'
 javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
-make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/student_wrong_field/test.11562'
-mv UnitTest.java.orig UnitTest.java
+make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/student_wrong_field/test.32465'
 javac cleanroom/*
 java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
@@ -18,8 +13,9 @@ sed -i -e 's/(.*//' javap.out
 ! ( cat javap.out | ./forbidden 1>&2 )
 rm forbidden
 make run-comparer
-make[1]: Entering directory '/home/sitowert/AuDoscore/tests/student_wrong_field/test.11562'
+make[2]: Entering directory '/home/sitowert/AuDoscore/tests/student_wrong_field/test.32465'
 java -cp lib/junitpoints.jar tools.ic.InterfaceComparer UnitTest
-Makefile:134: recipe for target 'run-comparer' failed
-make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/student_wrong_field/test.11562'
-Makefile:55: recipe for target 'compile-stage1' failed
+Makefile:119: recipe for target 'run-comparer' failed
+make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/student_wrong_field/test.32465'
+Makefile:65: recipe for target 'compile-stage1' failed
+make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/student_wrong_field/test.32465'
