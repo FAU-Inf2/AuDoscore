@@ -87,7 +87,9 @@ public class InterfaceComparer {
 			String studentString = methodToStringWithoutThrows(studentMethod);
 
 			if (!cleanString.equals(studentString)) {
-				System.err.println("ERROR - Method " +cleanroomMethod + "["+studentClass.getName() +"] does not match with student counterpart");
+				System.err.println("ERROR - Method does not match with student counterpart: ");
+				System.err.println("\t * student: " + studentString);
+				System.err.println("\t *   clean: " + cleanString);
 				return false;
 
 			}

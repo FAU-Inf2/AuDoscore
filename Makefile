@@ -61,13 +61,15 @@ compile-stage1: miniclean
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
 	javac cleanroom/*
-	java -cp lib/junit.jar:lib/junitpoints.jar CheckAnnotation $(TEST)
+	java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation $(TEST)
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
 	javap -p -c $(STUDENTCLASS) > javap.out
 	sed -i -e 's/(.*//' javap.out
 	! ( cat javap.out | ./forbidden 1>&2 )
 	rm forbidden
+	make run-comparer
+
 
 compile-stage2: miniclean
 	cp $(TEST).java $(TEST).java.orig

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 count=0
 start=`date +%s%N`
