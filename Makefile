@@ -87,7 +87,7 @@ compile-stage2: miniclean
 			cat $$i >> cleanroom/$$i; \
 		done; \
 	fi
-	sh -e ./compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
+	sh -ex ./compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
 	echo "echo \"[\" 1>&2" > loop.sh
@@ -121,7 +121,7 @@ compile-stage2-secret:
 			cat $$i >> cleanroom/$$i; \
 		done; \
 	fi
-	sh -e ./compile2.sh || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
+	sh -ex ./compile2.sh || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
 	make -B $(SECRETCLASS) || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
 	mv $(SECRETTEST).java.orig $(SECRETTEST).java
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p $(TEST) $(SECRETTEST) >> loop.sh	
