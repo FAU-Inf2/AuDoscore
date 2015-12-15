@@ -57,7 +57,6 @@ compile-stage1: miniclean
 	mv $(TEST).java.tmp $(TEST).java
 	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
 	mv $(TEST).java.tmp $(TEST).java
-#	sed -i -e 's/@tester.annotations.SecretCase/@org.junit.Ignore/' $(TEST).java
 	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
 	mv $(TEST).java.orig $(TEST).java
 	javac cleanroom/*
@@ -72,13 +71,7 @@ compile-stage1: miniclean
 
 
 compile-stage2: miniclean
-	cp $(TEST).java $(TEST).java.orig
-	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(TEST).java > $(TEST).java.tmp
-	mv $(TEST).java.tmp $(TEST).java
-	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
-	mv $(TEST).java.tmp $(TEST).java
-	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
-	mv $(TEST).java.orig $(TEST).java
+	make compile-stage1
 	echo "echo \"[\" 1>&2" > loop.sh
 	if [ "x$(SECRETTEST)" != "x" ]; then \
 		set -e ; \

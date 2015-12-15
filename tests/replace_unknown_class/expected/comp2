@@ -1,4 +1,7 @@
-make[1]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.13790'
+make[1]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.10811'
+rm -f *.class */*.class
+make compile-stage1
+make[2]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.10811'
 rm -f *.class */*.class
 cp UnitTest.java UnitTest.java.orig
 javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp
@@ -6,10 +9,23 @@ mv UnitTest.java.tmp UnitTest.java
 javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp
 mv UnitTest.java.tmp UnitTest.java
 make -B UnitTest.class || ( mv UnitTest.java.orig UnitTest.java; /bin/false; )
-make[2]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.13790'
+make[3]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.10811'
 javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
-make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.13790'
+make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.10811'
 mv UnitTest.java.orig UnitTest.java
+javac cleanroom/*
+java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
+java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
+chmod +x forbidden
+javap -p -c ToTest > javap.out
+sed -i -e 's/(.*//' javap.out
+! ( cat javap.out | ./forbidden 1>&2 )
+rm forbidden
+make run-comparer
+make[3]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.10811'
+java -cp lib/junitpoints.jar tools.ic.InterfaceComparer UnitTest
+make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.10811'
+make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.10811'
 echo "echo \"[\" 1>&2" > loop.sh
 if [ "xSecretTest" != "x" ]; then \
 	set -e ; \
@@ -23,7 +39,7 @@ else \
 	echo "echo \"]\" 1>&2" >> loop.sh ; \
 	echo "make run-stage1" > single_execution.sh ; \
 fi		
-make[2]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.13790'
+make[2]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.10811'
 ./obfuscate
 cp SecretTest.java SecretTest.java.orig
 javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter SecretTest.java > SecretTest.java.tmp
@@ -31,17 +47,17 @@ mv SecretTest.java.tmp SecretTest.java
 javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier SecretTest.java > SecretTest.java.tmp
 mv SecretTest.java.tmp SecretTest.java
 make -B SecretTest.class || ( mv SecretTest.java.orig SecretTest.java; /bin/false; )
-make[3]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.13790'
+make[3]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.10811'
 javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. SecretTest.java ToTest.java 
-make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.13790'
+make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.10811'
 mkdir -p mixed || ( mv SecretTest.java.orig SecretTest.java; /bin/false; )
 java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh || ( mv SecretTest.java.orig SecretTest.java; /bin/false; )
 Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - Cannot replace unknown class: UnkownClass
 	at tester.ReadReplace.getMap(ReadReplace.java:50)
 	at tester.ReadReplace.main(ReadReplace.java:127)
-Makefile:97: recipe for target 'compile-stage2-secret' failed
+Makefile:90: recipe for target 'compile-stage2-secret' failed
 make[2]: *** [compile-stage2-secret] Error 1
-make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.13790'
-Makefile:75: recipe for target 'compile-stage2' failed
+make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.10811'
+Makefile:74: recipe for target 'compile-stage2' failed
 make[1]: *** [compile-stage2] Error 2
-make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.13790'
+make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.10811'
