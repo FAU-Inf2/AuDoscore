@@ -68,7 +68,8 @@ public class ReplaceMixer extends AbstractProcessor {
 				} else {
 					isCleanroom = false;
 				}
-				if (each.getKind() == ElementKind.CLASS) {
+				if ((each.getKind() == ElementKind.CLASS)
+						|| (each.getKind() == ElementKind.INTERFACE)) {
 					classLevel = 0;
 					JCTree tree = (JCTree) trees.getTree(each);
 					tree.accept(new Merger());
