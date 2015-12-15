@@ -149,10 +149,10 @@ public class CheckAnnotation {
             }
             usedExercises.add(pointsAnnotation.exID());
         }
-        if (usedExercises.size() != exerciseHashMap.size()) {
+        if (!isSecretClass && usedExercises.size() != exerciseHashMap.size()) {
             throw new AnnotationFormatError("ERROR - found @Ex declaration without corresponding test method: [" + description.getDisplayName() + "]");
         }
-        if (bonusExercises.size() != exerciseHashMap.size()) {
+        if (!isSecretClass && bonusExercises.size() != exerciseHashMap.size()) {
             throw new AnnotationFormatError("ERROR - found @Ex declaration without test method with bonus values: [" + description.getDisplayName() + "]");
         }
         if (timeoutSum > MAX_TIMEOUT_MS) {
