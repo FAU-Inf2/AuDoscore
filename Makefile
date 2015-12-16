@@ -11,7 +11,6 @@ compiletest = \
 	make -B $(2) || ( mv $(1).java.orig $(1).java; /bin/false; ) ; \
 	mv $(1).java.orig $(1).java ;
 
-
 ifndef SECRETCLASS
 	-include varsec.mk
 endif
@@ -94,6 +93,11 @@ compile-stage2-secret:
 	./obfuscate
 	$(call compiletest,$(SECRETTEST),$(SECRETCLASS))
 	javac cleanroom/*.java
+	for i in cleanroom/*.java; do \
+		cp $$i $${i}.bak; \
+		/bin/echo -e "package cleanroom;" > $$i ; \
+		cat $${i}.bak >> $$i; \
+	done
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(SECRETTEST) > compile2.sh || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
 	if [ "x$(INTERFACES)" != "x" ]; then \
 		set -e ; \
