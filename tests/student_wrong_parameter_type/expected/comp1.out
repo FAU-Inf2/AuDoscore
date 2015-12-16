@@ -1,10 +1,9 @@
-make[1]: Entering directory '/home/sitowert/AuDoscore/tests/student_wrong_parameter_type/test.896'
+make[1]: Entering directory '/home/sitowert/AuDoscore/tests/student_wrong_parameter_type/test.1744'
 rm -f *.class */*.class
-cp UnitTest.java UnitTest.java.orig ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class || ( mv UnitTest.java.orig UnitTest.java; /bin/false; ) ; mv UnitTest.java.orig UnitTest.java ;
-make[2]: Entering directory '/home/sitowert/AuDoscore/tests/student_wrong_parameter_type/test.896'
+javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac cleanroom/*.java;
+make[2]: Entering directory '/home/sitowert/AuDoscore/tests/student_wrong_parameter_type/test.1744'
 javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
-make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/student_wrong_parameter_type/test.896'
-javac cleanroom/*
+make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/student_wrong_parameter_type/test.1744'
 java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
@@ -13,9 +12,9 @@ sed -i -e 's/(.*//' javap.out
 ! ( cat javap.out | ./forbidden 1>&2 )
 rm forbidden
 make run-comparer
-make[2]: Entering directory '/home/sitowert/AuDoscore/tests/student_wrong_parameter_type/test.896'
+make[2]: Entering directory '/home/sitowert/AuDoscore/tests/student_wrong_parameter_type/test.1744'
 java -cp lib/junitpoints.jar tools.ic.InterfaceComparer UnitTest
-Makefile:119: recipe for target 'run-comparer' failed
-make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/student_wrong_parameter_type/test.896'
-Makefile:65: recipe for target 'compile-stage1' failed
-make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/student_wrong_parameter_type/test.896'
+Makefile:112: recipe for target 'run-comparer' failed
+make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/student_wrong_parameter_type/test.1744'
+Makefile:61: recipe for target 'compile-stage1' failed
+make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/student_wrong_parameter_type/test.1744'
