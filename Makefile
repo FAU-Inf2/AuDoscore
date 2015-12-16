@@ -3,13 +3,12 @@
 STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
 
 compiletest = \
-	cp $(1).java $(1).java.orig ; \
 	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(1).java > $(1).java.tmp ; \
 	mv $(1).java.tmp $(1).java ; \
 	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(1).java > $(1).java.tmp ; \
 	mv $(1).java.tmp $(1).java ; \
-	make -B $(2) || ( mv $(1).java.orig $(1).java; /bin/false; ) ; \
-	mv $(1).java.orig $(1).java ;
+	make -B $(2)
+	javac cleanroom/*.java;
 
 ifndef SECRETCLASS
 	-include varsec.mk
@@ -51,18 +50,15 @@ lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 
 
 clean-pubtest: $(FILE)
-	cp $(FILE) $(FILE).orig
 	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.ptc.PublicTestCleaner $(FILE) > $(FILE).tmp
 	mv $(FILE).tmp $(FILE)
 	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(FILE) > $(FILE).tmp
-	mv $(FILE).orig $(FILE)
 
 compile-stage0:
 	javac $(STUDENTSOURCE)	
 
 compile-stage1: miniclean
 	$(call compiletest,$(TEST),$(TESTCLASS))
-	javac cleanroom/*.java
 	java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation $(TEST)
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
@@ -92,13 +88,12 @@ compile-stage2: miniclean
 compile-stage2-secret:
 	./obfuscate
 	$(call compiletest,$(SECRETTEST),$(SECRETCLASS))
-	javac cleanroom/*.java
 	for i in cleanroom/*.java; do \
 		cp $$i $${i}.bak; \
 		/bin/echo -e "package cleanroom;" > $$i ; \
 		cat $${i}.bak >> $$i; \
 	done
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(SECRETTEST) > compile2.sh || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
+	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(SECRETTEST) > compile2.sh
 	if [ "x$(INTERFACES)" != "x" ]; then \
 		set -e ; \
 		for i in $(INTERFACES); do \
@@ -106,7 +101,7 @@ compile-stage2-secret:
 			cat $$i >> cleanroom/$$i; \
 		done; \
 	fi
-	sh -ex ./compile2.sh || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
+	sh -ex ./compile2.sh
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p $(TEST) $(SECRETTEST) >> loop.sh	
 	echo "echo \"]\" 1>&2" >> loop.sh
 
