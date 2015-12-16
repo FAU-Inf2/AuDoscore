@@ -7,7 +7,7 @@ compiletest = \
 	mv $(1).java.tmp $(1).java ; \
 	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(1).java > $(1).java.tmp ; \
 	mv $(1).java.tmp $(1).java ; \
-	make -B $(2)
+	make -B $(2); \
 	javac cleanroom/*.java;
 
 ifndef SECRETCLASS
