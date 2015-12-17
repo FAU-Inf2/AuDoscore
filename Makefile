@@ -2,6 +2,11 @@
 
 STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
 
+SHELL=/bin/sh
+ifneq ("$(wildcard /bin/dash)","")
+	SHELL=/bin/dash
+endif
+
 compiletest = \
 	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(1).java > $(1).java.tmp ; \
 	mv $(1).java.tmp $(1).java ; \
@@ -101,7 +106,7 @@ compile-stage2-secret:
 			cat $$i >> cleanroom/$$i; \
 		done; \
 	fi
-	dash -ex ./compile2.sh
+	$(SHELL) -ex ./compile2.sh
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p $(TEST) $(SECRETTEST) >> loop.sh	
 	echo "echo \"]\" 1>&2" >> loop.sh
 
@@ -120,10 +125,10 @@ run-stage1:
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
 	echo "[" 1>&2
-	dash ./single_execution.sh
+	$(SHELL) ./single_execution.sh
 	echo "]" 1>&2
 	echo ", \"replaced\" : " 1>&2
-	dash ./loop.sh
+	$(SHELL) ./loop.sh
 	echo "}" 1>&2
 
 run: run-stage$(STAGE)
