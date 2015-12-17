@@ -101,7 +101,7 @@ compile-stage2-secret:
 			cat $$i >> cleanroom/$$i; \
 		done; \
 	fi
-	sh -ex ./compile2.sh
+	bash -ex ./compile2.sh
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p $(TEST) $(SECRETTEST) >> loop.sh	
 	echo "echo \"]\" 1>&2" >> loop.sh
 
@@ -120,10 +120,10 @@ run-stage1:
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
 	echo "[" 1>&2
-	sh ./single_execution.sh
+	bash ./single_execution.sh
 	echo "]" 1>&2
 	echo ", \"replaced\" : " 1>&2
-	sh ./loop.sh
+	bash ./loop.sh
 	echo "}" 1>&2
 
 run: run-stage$(STAGE)
