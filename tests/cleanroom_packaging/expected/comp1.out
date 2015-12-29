@@ -1,0 +1,16 @@
+rm -f *.class */*.class
+javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac cleanroom/*.java;
+make[1]: Entering directory '/home/marius/Arbeit/AuDoscore/my-tests/test1/test.9183'
+javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java Foo.java Z.java 
+make[1]: Leaving directory '/home/marius/Arbeit/AuDoscore/my-tests/test1/test.9183'
+java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
+java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
+chmod +x forbidden
+javap -p -c Foo Z > javap.out
+sed -i -e 's/(.*//' javap.out
+! ( cat javap.out | ./forbidden 1>&2 )
+rm forbidden
+make run-comparer
+make[1]: Entering directory '/home/marius/Arbeit/AuDoscore/my-tests/test1/test.9183'
+java -cp lib/junitpoints.jar tools.ic.InterfaceComparer UnitTest
+make[1]: Leaving directory '/home/marius/Arbeit/AuDoscore/my-tests/test1/test.9183'
