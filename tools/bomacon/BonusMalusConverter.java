@@ -31,7 +31,7 @@ import com.sun.tools.javac.util.List;
 
 @SupportedAnnotationTypes("*")
 	@SupportedOptions("replaces")
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 	public class BonusMalusConverter extends AbstractProcessor {
 		private Trees trees;
 		private boolean imported = false;
