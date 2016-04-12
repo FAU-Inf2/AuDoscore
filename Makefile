@@ -2,6 +2,19 @@
 
 STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
 
+SHELL=/bin/sh
+ifneq ("$(wildcard /bin/dash)","")
+	SHELL=/bin/dash
+endif
+
+compiletest = \
+	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(1).java > $(1).java.tmp ; \
+	mv $(1).java.tmp $(1).java ; \
+	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(1).java > $(1).java.tmp ; \
+	mv $(1).java.tmp $(1).java ; \
+	make -B $(2); \
+	javac cleanroom/*.java;
+
 ifndef SECRETCLASS
 	-include varsec.mk
 endif
@@ -42,25 +55,15 @@ lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 
 
 clean-pubtest: $(FILE)
-	cp $(FILE) $(FILE).orig
 	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.ptc.PublicTestCleaner $(FILE) > $(FILE).tmp
 	mv $(FILE).tmp $(FILE)
 	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(FILE) > $(FILE).tmp
-	mv $(FILE).orig $(FILE)
 
 compile-stage0:
 	javac $(STUDENTSOURCE)	
 
 compile-stage1: miniclean
-	cp $(TEST).java $(TEST).java.orig
-	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(TEST).java > $(TEST).java.tmp
-	mv $(TEST).java.tmp $(TEST).java
-	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
-	mv $(TEST).java.tmp $(TEST).java
-#	sed -i -e 's/@tester.annotations.SecretCase/@org.junit.Ignore/' $(TEST).java
-	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
-	mv $(TEST).java.orig $(TEST).java
-	javac cleanroom/*
+	$(call compiletest,$(TEST),$(TESTCLASS))
 	java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation $(TEST)
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
@@ -72,24 +75,7 @@ compile-stage1: miniclean
 
 
 compile-stage2: miniclean
-	cp $(TEST).java $(TEST).java.orig
-	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(TEST).java > $(TEST).java.tmp
-	mv $(TEST).java.tmp $(TEST).java
-	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(TEST).java > $(TEST).java.tmp
-	mv $(TEST).java.tmp $(TEST).java
-	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
-	mkdir -p mixed || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(TEST) > compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
-	if [ "x$(INTERFACES)" != "x" ]; then \
-		set -e ; \
-		for i in $(INTERFACES); do \
-			/bin/echo -e "package cleanroom;\n" > cleanroom/$$i; \
-			cat $$i >> cleanroom/$$i; \
-		done; \
-	fi
-	sh -e ./compile2.sh || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
-	make -B $(TESTCLASS) || ( mv $(TEST).java.orig $(TEST).java; /bin/false; )
-	mv $(TEST).java.orig $(TEST).java
+	make compile-stage1
 	echo "echo \"[\" 1>&2" > loop.sh
 	if [ "x$(SECRETTEST)" != "x" ]; then \
 		set -e ; \
@@ -106,14 +92,13 @@ compile-stage2: miniclean
 
 compile-stage2-secret:
 	./obfuscate
-	cp $(SECRETTEST).java $(SECRETTEST).java.orig
-	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(SECRETTEST).java > $(SECRETTEST).java.tmp
-	mv $(SECRETTEST).java.tmp $(SECRETTEST).java
-	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(SECRETTEST).java > $(SECRETTEST).java.tmp
-	mv $(SECRETTEST).java.tmp $(SECRETTEST).java
-	make -B $(SECRETCLASS) || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
-	mkdir -p mixed || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(SECRETTEST) > compile2.sh || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
+	$(call compiletest,$(SECRETTEST),$(SECRETCLASS))
+	for i in cleanroom/*.java; do \
+		cp $$i $${i}.bak; \
+		/bin/echo -e "package cleanroom;" > $$i ; \
+		cat $${i}.bak >> $$i; \
+	done
+	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(SECRETTEST) > compile2.sh
 	if [ "x$(INTERFACES)" != "x" ]; then \
 		set -e ; \
 		for i in $(INTERFACES); do \
@@ -121,9 +106,7 @@ compile-stage2-secret:
 			cat $$i >> cleanroom/$$i; \
 		done; \
 	fi
-	sh -e ./compile2.sh || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
-	make -B $(SECRETCLASS) || ( mv $(SECRETTEST).java.orig $(SECRETTEST).java; /bin/false; )
-	mv $(SECRETTEST).java.orig $(SECRETTEST).java
+	$(SHELL) -ex ./compile2.sh
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p $(TEST) $(SECRETTEST) >> loop.sh	
 	echo "echo \"]\" 1>&2" >> loop.sh
 
@@ -142,10 +125,10 @@ run-stage1:
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
 	echo "[" 1>&2
-	sh ./single_execution.sh
+	$(SHELL) ./single_execution.sh
 	echo "]" 1>&2
 	echo ", \"replaced\" : " 1>&2
-	sh ./loop.sh
+	$(SHELL) ./loop.sh
 	echo "}" 1>&2
 
 run: run-stage$(STAGE)

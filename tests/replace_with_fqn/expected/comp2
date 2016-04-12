@@ -1,28 +1,24 @@
+make[1]: Entering directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
 rm -f *.class */*.class
-cp UnitTest.java UnitTest.java.orig
-javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp
-mv UnitTest.java.tmp UnitTest.java
-javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp
-mv UnitTest.java.tmp UnitTest.java
-make -B UnitTest.class || ( mv UnitTest.java.orig UnitTest.java; /bin/false; )
-make[1]: Entering directory '/home/mkamp/projects/AuDoscore/tests/replace_with_fqn/test.25685'
+make compile-stage1
+make[2]: Entering directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
+rm -f *.class */*.class
+javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac cleanroom/*.java;
+make[3]: Entering directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
 javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
-make[1]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/replace_with_fqn/test.25685'
-mkdir -p mixed || ( mv UnitTest.java.orig UnitTest.java; /bin/false; )
-java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace UnitTest > compile2.sh || ( mv UnitTest.java.orig UnitTest.java; /bin/false; )
-if [ "x" != "x" ]; then \
-	set -e ; \
-	for i in ; do \
-		/bin/echo -e "package cleanroom;\n" > cleanroom/$i; \
-		cat $i >> cleanroom/$i; \
-	done; \
-fi
-sh -e ./compile2.sh || ( mv UnitTest.java.orig UnitTest.java; /bin/false; )
-make -B UnitTest.class || ( mv UnitTest.java.orig UnitTest.java; /bin/false; )
-make[1]: Entering directory '/home/mkamp/projects/AuDoscore/tests/replace_with_fqn/test.25685'
-javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
-make[1]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/replace_with_fqn/test.25685'
-mv UnitTest.java.orig UnitTest.java
+make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
+java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
+java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
+chmod +x forbidden
+javap -p -c ToTest > javap.out
+sed -i -e 's/(.*//' javap.out
+! ( cat javap.out | ./forbidden 1>&2 )
+rm forbidden
+make run-comparer
+make[3]: Entering directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
+java -cp lib/junitpoints.jar tools.ic.InterfaceComparer UnitTest
+make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
+make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
 echo "echo \"[\" 1>&2" > loop.sh
 if [ "xSecretTest" != "x" ]; then \
 	set -e ; \
@@ -36,19 +32,18 @@ else \
 	echo "echo \"]\" 1>&2" >> loop.sh ; \
 	echo "make run-stage1" > single_execution.sh ; \
 fi		
-make[1]: Entering directory '/home/mkamp/projects/AuDoscore/tests/replace_with_fqn/test.25685'
+make[2]: Entering directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
 ./obfuscate
-cp SecretTest.java SecretTest.java.orig
-javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter SecretTest.java > SecretTest.java.tmp
-mv SecretTest.java.tmp SecretTest.java
-javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier SecretTest.java > SecretTest.java.tmp
-mv SecretTest.java.tmp SecretTest.java
-make -B SecretTest.class || ( mv SecretTest.java.orig SecretTest.java; /bin/false; )
-make[2]: Entering directory '/home/mkamp/projects/AuDoscore/tests/replace_with_fqn/test.25685'
+javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter SecretTest.java > SecretTest.java.tmp ; mv SecretTest.java.tmp SecretTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier SecretTest.java > SecretTest.java.tmp ; mv SecretTest.java.tmp SecretTest.java ; make -B SecretTest.class; javac cleanroom/*.java;
+make[3]: Entering directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
 javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. SecretTest.java ToTest.java 
-make[2]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/replace_with_fqn/test.25685'
-mkdir -p mixed || ( mv SecretTest.java.orig SecretTest.java; /bin/false; )
-java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh || ( mv SecretTest.java.orig SecretTest.java; /bin/false; )
+make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
+for i in cleanroom/*.java; do \
+	cp $i ${i}.bak; \
+	/bin/echo -e "package cleanroom;" > $i ; \
+	cat ${i}.bak >> $i; \
+done
+java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
 if [ "x" != "x" ]; then \
 	set -e ; \
 	for i in ; do \
@@ -56,18 +51,17 @@ if [ "x" != "x" ]; then \
 		cat $i >> cleanroom/$i; \
 	done; \
 fi
-sh -e ./compile2.sh || ( mv SecretTest.java.orig SecretTest.java; /bin/false; )
+/bin/dash -ex ./compile2.sh
++ mkdir -p ToTest#test
++ javac -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#test -proc:only -processor ReplaceMixer cleanroom/ToTest.java ToTest.java
 class ToTest ispub true
 class ToTest, true, 0, true
 class ToTest ispub true
 duplicate method: <init>: [], taken from student
 duplicate method: test: [java.util.List<E>], taken from cleanroom
 class ToTest, false, 0, true
-make -B SecretTest.class || ( mv SecretTest.java.orig SecretTest.java; /bin/false; )
-make[2]: Entering directory '/home/mkamp/projects/AuDoscore/tests/replace_with_fqn/test.25685'
-javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. SecretTest.java ToTest.java 
-make[2]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/replace_with_fqn/test.25685'
-mv SecretTest.java.orig SecretTest.java
++ javac -cp . -d ToTest#test -sourcepath ToTest#test ToTest#test/ToTest.java
 java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p UnitTest SecretTest >> loop.sh	
 echo "echo \"]\" 1>&2" >> loop.sh
-make[1]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/replace_with_fqn/test.25685'
+make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
+make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'

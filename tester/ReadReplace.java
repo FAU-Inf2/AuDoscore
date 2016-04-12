@@ -118,9 +118,7 @@ public class ReadReplace {
 		String tcln = args[0];
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Class c = cl.loadClass(tcln);
-		HashSet<String> pres = new HashSet<>();
 		HashSet<String> mids = new HashSet<>();
-		HashSet<String> posts = new HashSet<>();
 		for (Method meth : c.getMethods()) {
 			if (meth.isAnnotationPresent(Replace.class)) {
 				Replace r = meth.getAnnotation(Replace.class);
@@ -131,18 +129,12 @@ public class ReadReplace {
 						continue;
 					for(String me : e.getValue())
 						ncln += "#" + me.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
-					pres.add("cp cleanroom/" + e.getKey() + ".java cleanroom/orig_" + e.getKey() + ".java; "
-						+ "/bin/echo -e \"package cleanroom;\" > cleanroom/" + e.getKey() + ".java; "
-						+ "cat cleanroom/orig_" + e.getKey() + ".java >> cleanroom/" + e.getKey() + ".java;");
 					mids.add("mkdir -p " + ncln + "; "
 						+ "javac -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=" + ncln + " -proc:only -processor ReplaceMixer cleanroom/" + e.getKey() + ".java " + e.getKey() + ".java > " + ncln + "/" + e.getKey() + ".java; "
 						+ "javac -cp . -d " + ncln + " -sourcepath " + ncln + " " + ncln + "/" + e.getKey() + ".java;");
-					posts.add("mv cleanroom/orig_" + e.getKey() + ".java cleanroom/" + e.getKey() + ".java;");
 				}
 			}
 		}
-		for (String pre : pres) System.out.println(pre);
 		for (String mid : mids) System.out.println(mid);
-		for (String post : posts) System.out.println(post);
 	}
 }

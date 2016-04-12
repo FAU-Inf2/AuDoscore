@@ -6,6 +6,8 @@ addons:
       - bc
       - parallel
 language: java
+jdk:
   - openjdk7
   - oraclejdk7
+  - oraclejdk8
 script: make verify

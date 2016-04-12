@@ -24,7 +24,8 @@ function cleanexit {
 		rm -rf test.$$
 	else
 		info "keeping directory"
-		ln -sf test.$$ test.latest
+		rm -f test.latest
+		ln -s test.$$ test.latest
 	fi
 	if [ $# -gt 0 ]; then
 		exit $1
