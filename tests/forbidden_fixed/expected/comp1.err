@@ -1,0 +1,2 @@
+       0: invokestatic  #2                  // Method java/util/Collections.emptyList:
+make: *** [compile-stage1] Error 1

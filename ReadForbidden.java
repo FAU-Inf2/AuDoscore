@@ -21,14 +21,14 @@ public class ReadForbidden {
 			Forbidden forbidden = (Forbidden) newClass.getAnnotation(Forbidden.class);
 			if (forbidden == null) continue;
 			for (String s : forbidden.value()) {
-				String escape = s.replaceAll("\\.", "(\\\\.|/)");
+				String escape = getRegex(s, forbidden.type());
 				grep += "|" + escape;
 			}
 			NotForbidden notforbidden = (NotForbidden) newClass.getAnnotation(NotForbidden.class);
 			if (notforbidden == null) continue;
 			for (String s : notforbidden.value()) {
 				hasNotForbidden = true;
-				String escape = s.replaceAll("\\.", "(\\\\.|/)");
+				String escape = getRegex(s, notforbidden.type());
 				grep2 += sep + escape;
 				sep = "|";
 			}
@@ -40,5 +40,23 @@ public class ReadForbidden {
 			grep = grep2 + " | " + grep;
 		}
 		System.out.println(grep);
+	}
+
+	private static String getRegex(final String classSpec, final Forbidden.Type type) {
+		switch (type) {
+			case PREFIX:
+				return classSpec.replaceAll("\\.", "(\\\\.|/)");
+
+			case FIXED:
+				return classSpec.replaceAll("\\.", "(\\\\.|/)") + "\\W";
+
+			case WILDCARD:
+				return classSpec.replaceAll("\\.", "(\\\\.|/)").replaceAll("\\*", "\\S*");
+
+			default:
+				System.err.println("unsupported type for @Forbidden");
+				System.exit(-2);
+				return null;
+		}
 	}
 }
