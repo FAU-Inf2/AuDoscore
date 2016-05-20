@@ -52,16 +52,6 @@ if [ "x" != "x" ]; then \
 	done; \
 fi
 /bin/dash -ex ./compile2.sh
-+ mkdir -p ToTest#<init>#toTest#toTest2
-+ javac -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#<init>#toTest#toTest2 -proc:only -processor ReplaceMixer cleanroom/ToTest.java ToTest.java
-class ToTest ispub true
-class ToTest, true, 0, true
-class ToTest ispub true
-duplicate method: <init>: [], taken from cleanroom
-duplicate method: toTest: [], taken from cleanroom
-duplicate method: toTest2: [], taken from cleanroom
-class ToTest, false, 0, true
-+ javac -cp . -d ToTest#<init>#toTest#toTest2 -sourcepath ToTest#<init>#toTest#toTest2 ToTest#<init>#toTest#toTest2/ToTest.java
 + mkdir -p ToTest#toTest2
 + javac -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#toTest2 -proc:only -processor ReplaceMixer cleanroom/ToTest.java ToTest.java
 class ToTest ispub true
@@ -72,6 +62,16 @@ duplicate method: toTest: [], taken from student
 duplicate method: toTest2: [], taken from cleanroom
 class ToTest, false, 0, true
 + javac -cp . -d ToTest#toTest2 -sourcepath ToTest#toTest2 ToTest#toTest2/ToTest.java
++ mkdir -p ToTest#<init>#toTest#toTest2
++ javac -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#<init>#toTest#toTest2 -proc:only -processor ReplaceMixer cleanroom/ToTest.java ToTest.java
+class ToTest ispub true
+class ToTest, true, 0, true
+class ToTest ispub true
+duplicate method: <init>: [], taken from cleanroom
+duplicate method: toTest: [], taken from cleanroom
+duplicate method: toTest2: [], taken from cleanroom
+class ToTest, false, 0, true
++ javac -cp . -d ToTest#<init>#toTest#toTest2 -sourcepath ToTest#<init>#toTest#toTest2 ToTest#<init>#toTest#toTest2/ToTest.java
 java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p UnitTest SecretTest >> loop.sh	
 echo "echo \"]\" 1>&2" >> loop.sh
 make[2]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/replace_full_class/test.4220'

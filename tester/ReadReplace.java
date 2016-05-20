@@ -129,7 +129,7 @@ public class ReadReplace {
 		String tcln = args[0];
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Class c = cl.loadClass(tcln);
-		HashSet<String> mids = new HashSet<>();
+		LinkedHashSet<String> mids = new LinkedHashSet<>();
 		for (Method meth : getMethodsSorted(c)) {
 			if (meth.isAnnotationPresent(Replace.class)) {
 				Replace r = meth.getAnnotation(Replace.class);
