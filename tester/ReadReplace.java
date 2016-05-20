@@ -8,6 +8,17 @@ import org.junit.runner.*;
 
 public class ReadReplace {
 
+	public static Method[] getMethodsSorted(final Class cls) {
+		final Method[] methods = cls.getMethods();
+		Arrays.sort(methods, new Comparator<Method>() {
+			@Override
+			public int compare(final Method method1, final Method method2) {
+				return method1.getName().compareTo(method2.getName());
+			}
+		});
+		return methods;
+	}
+
 	public static String getCanonicalReplacement(Replace r) {
 		Map<String, SortedSet<String>> mMethsMap = getMap(r);
 		String ncln = "";
@@ -65,7 +76,7 @@ public class ReadReplace {
 		LinkedHashMap<String,List<String>> rmap = new LinkedHashMap<String,List<String>>();
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Class c = cl.loadClass(tcln);
-		for (Method meth : c.getMethods()) {
+		for (Method meth : getMethodsSorted(c)) {
 			if (meth.isAnnotationPresent(Replace.class)) {
 				Replace r = meth.getAnnotation(Replace.class);
 				String cr = getCanonicalReplacement(r);
@@ -119,7 +130,7 @@ public class ReadReplace {
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Class c = cl.loadClass(tcln);
 		HashSet<String> mids = new HashSet<>();
-		for (Method meth : c.getMethods()) {
+		for (Method meth : getMethodsSorted(c)) {
 			if (meth.isAnnotationPresent(Replace.class)) {
 				Replace r = meth.getAnnotation(Replace.class);
 				Map<String, SortedSet<String>> methsMap = getMap(r);
