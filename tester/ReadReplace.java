@@ -62,7 +62,7 @@ public class ReadReplace {
 	}
 
 	public static void loopSecret(String tcln, String pub) throws Exception {
-		HashMap<String,List<String>> rmap = new HashMap<String,List<String>>();
+		LinkedHashMap<String,List<String>> rmap = new LinkedHashMap<String,List<String>>();
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		Class c = cl.loadClass(tcln);
 		for (Method meth : c.getMethods()) {
