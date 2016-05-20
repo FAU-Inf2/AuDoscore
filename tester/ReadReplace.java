@@ -130,7 +130,7 @@ public class ReadReplace {
 					for(String me : e.getValue())
 						ncln += "#" + me.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
 					mids.add("mkdir -p " + ncln + "; "
-						+ "javac -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=" + ncln + " -proc:only -processor ReplaceMixer cleanroom/" + e.getKey() + ".java " + e.getKey() + ".java > " + ncln + "/" + e.getKey() + ".java; "
+						+ "javac -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=" + ncln + " -proc:only -processor ReplaceMixer cleanroom/" + e.getKey() + ".java " + e.getKey() + ".java > " + ncln + "/" + e.getKey() + ".java; "
 						+ "javac -cp . -d " + ncln + " -sourcepath " + ncln + " " + ncln + "/" + e.getKey() + ".java;");
 				}
 			}
