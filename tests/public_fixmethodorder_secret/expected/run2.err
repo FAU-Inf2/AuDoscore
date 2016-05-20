@@ -40,21 +40,6 @@
                     "name": "Weite Felder - createAndFill",
                     "tests": [
                         {
-                            "desc": "secret_a",
-                            "fromSecret": true,
-                            "id": "secret_a",
-                            "success": true
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "exercises": [
-                {
-                    "name": "Weite Felder - createAndFill",
-                    "tests": [
-                        {
                             "desc": "secret_b",
                             "fromSecret": true,
                             "id": "secret_b",
@@ -73,6 +58,21 @@
                             "desc": "secret_c",
                             "fromSecret": true,
                             "id": "secret_c",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Weite Felder - createAndFill",
+                    "tests": [
+                        {
+                            "desc": "secret_a",
+                            "fromSecret": true,
+                            "id": "secret_a",
                             "success": true
                         }
                     ]

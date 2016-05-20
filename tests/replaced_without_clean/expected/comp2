@@ -53,7 +53,7 @@ if [ "x" != "x" ]; then \
 fi
 /bin/dash -ex ./compile2.sh
 + mkdir -p ToTest#toTest
-+ javac -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#toTest -proc:only -processor ReplaceMixer cleanroom/ToTest.java ToTest.java
++ javac -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#toTest -proc:only -processor ReplaceMixer cleanroom/ToTest.java ToTest.java
 class ToTest ispub true
 class ToTest, true, 0, true
 class ToTest ispub true
