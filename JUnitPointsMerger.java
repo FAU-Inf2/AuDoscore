@@ -63,14 +63,14 @@ public class JUnitPointsMerger {
 				method = secret.getMethod(id);
 				points = (Points) method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException nsme) {
-				throw new Error("WARNING - Method " + method.getName() + " was not found in secret test class " + pub.getName());
+				throw new Error("WARNING - Method " + id + " was not found in secret test class " + secret.getName());
 			}
 		} else {
 			try {
 				method = pub.getMethod(id);
 				points = (Points) method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException nsme) {
-				throw new Error("WARNING - Method " + method.getName() + " was not found in public test class " + pub.getName());
+				throw new Error("WARNING - Method " + id + " was not found in public test class " + pub.getName());
 			}
 		}
 
