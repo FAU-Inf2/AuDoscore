@@ -1,6 +1,6 @@
 { "vanilla" : 
 [
-{"exercises":[{"tests":[{"success":true,"id":"test","fromSecret":false,"desc":"test"}],"name":"clinit bug"}]}
+{"exercises":[{"name":"clinit bug","tests":[{"desc":"test","fromSecret":false,"id":"test","success":true}]}]}
 ,
 Exception in thread "main" java.lang.ExceptionInInitializerError
 	at java.lang.Class.forName0(Native Method)
