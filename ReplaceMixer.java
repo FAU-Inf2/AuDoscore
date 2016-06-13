@@ -30,8 +30,6 @@ import javax.lang.model.util.Elements;
 public class ReplaceMixer extends AbstractProcessor {
 	public final String CLEAN_PREFIX = "__clean";
 	private Trees trees;
-	private TreeMaker make;
-	private JavacElements elements;
 
 	private HashMap<String, JCTree> cleanMethods = new HashMap<>();
 	private HashMap<String, JCTree> cleanInnerClasses = new HashMap<>();
@@ -48,8 +46,6 @@ public class ReplaceMixer extends AbstractProcessor {
 		super.init(env);
 		trees = Trees.instance(env);
 		Context context = ((JavacProcessingEnvironment) env).getContext();
-		make = TreeMaker.instance(context);
-		elements = JavacElements.instance(context);
 		String repString = env.getOptions().get("replaces");
 		if (repString != null) {
 			replaces = repString.split("#");

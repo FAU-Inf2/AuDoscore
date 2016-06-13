@@ -249,7 +249,7 @@ public abstract class JUnitWithPoints {
 							JSONObject reportJSON = reportEntry.toJSON();
 							// mark test method regarding origin
 							reportJSON.put("fromSecret", isSecretClass);
-							jsonTests.add(reportJSON);
+							jsonTests.add(new TreeMap<String, Object>(reportJSON));
 						}
 					}
 
@@ -257,7 +257,7 @@ public abstract class JUnitWithPoints {
 					JSONObject jsonExercise = new JSONObject();
 					jsonExercise.put("name", exerciseResults.getKey());
 					jsonExercise.put("tests", jsonTests);
-					jsonExercises.add(jsonExercise);
+					jsonExercises.add(new TreeMap<String, Object>(jsonExercise));
 				}
 
 				// add results to root node and write to stderr

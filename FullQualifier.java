@@ -106,11 +106,7 @@ class MyPretty extends com.sun.tools.javac.tree.Pretty {
 				case "Forbidden":
 				case "NotForbidden":
 				case "CompareInterface":
-					print("tester.annotations.");
-					break;
 				case "Replace": 
-					print("tester.annotations.");
-					break;
 				case "SecretClass":
 					print("tester.annotations.");
 					break;

@@ -35,7 +35,7 @@ public class SingleExecutionPreparer {
 						System.out.println("echo \",\" 1>&2");
 					}
 					String methodName = method.getName();
-					System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp "+cp + dparam + " tools.SingleMethodRunner " + className + " " + methodName + " || echo");
+					System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp "+cp + dparam + " tools.SingleMethodRunner " + className + " " + methodName);
 					counter++;
 				}
 			

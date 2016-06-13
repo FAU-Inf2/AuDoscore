@@ -21,13 +21,13 @@ public class ReadReplace {
 
 	public static String getCanonicalReplacement(Replace r) {
 		Map<String, SortedSet<String>> mMethsMap = getMap(r);
-		String ncln = "";
+		final StringBuilder ncln = new StringBuilder();
 		for(Map.Entry<String, SortedSet<String>> e : mMethsMap.entrySet()) {
-			ncln += "@" + e.getKey();
+			ncln.append('@').append(e.getKey());
 			for(String me : e.getValue())
-				ncln += "#" + me;
+				ncln.append('#').append(me);
 		}
-		return ncln;
+		return ncln.toString();
 	}
 
 	public static Map<String, SortedSet<String>> getMap(Replace r) {
@@ -109,7 +109,7 @@ public class ReadReplace {
 				}else{
 					System.out.println("echo \",\" 1>&2");
 				}
-				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dpub=" +pub+" -Djson=yes tools.SingleMethodRunner " + tcln + " "  + method + " || echo");
+				System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dpub=" +pub+" -Djson=yes tools.SingleMethodRunner " + tcln + " "  + method);
 			}
 
 		}
@@ -135,14 +135,15 @@ public class ReadReplace {
 				Replace r = meth.getAnnotation(Replace.class);
 				Map<String, SortedSet<String>> methsMap = getMap(r);
 				for (Map.Entry<String, SortedSet<String>> e : methsMap.entrySet()) {
-					String ncln = e.getKey();
+					final StringBuilder ncln = new StringBuilder(e.getKey());
 					if(e.getValue().size() == 0)
 						continue;
 					for(String me : e.getValue())
-						ncln += "#" + me.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
-					mids.add("mkdir -p " + ncln + "; "
-						+ "javac -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=" + ncln + " -proc:only -processor ReplaceMixer cleanroom/" + e.getKey() + ".java " + e.getKey() + ".java > " + ncln + "/" + e.getKey() + ".java; "
-						+ "javac -cp . -d " + ncln + " -sourcepath " + ncln + " " + ncln + "/" + e.getKey() + ".java;");
+						ncln.append('#').append(me.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>"));
+					final String nclns = ncln.toString();
+					mids.add("mkdir -p " + nclns + "; "
+						+ "javac -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=" + nclns + " -proc:only -processor ReplaceMixer cleanroom/" + e.getKey() + ".java " + e.getKey() + ".java > " + nclns + "/" + e.getKey() + ".java; "
+						+ "javac -cp . -d " + nclns + " -sourcepath " + nclns + " " + nclns + "/" + e.getKey() + ".java;");
 				}
 			}
 		}
