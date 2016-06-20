@@ -19,5 +19,6 @@ public class SingleMethodRunner {
         JUnitCore juc = new JUnitCore();
         juc.addListener(new TextListener(new RealSystem()));
         Result result = juc.run(request);
+				System.exit(0);
     }
 }
