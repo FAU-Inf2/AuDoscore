@@ -43,8 +43,7 @@ public class InterfaceComparer {
 		}else{
 			if(!cleanroomField.toGenericString().equals(studentField.toGenericString())){
 				System.err.println("ERROR - Field " +cleanroomField + "["+cleanroomClass.getName() +"] does not match with student counterpart");
-			return false;
-			
+				return false;
 			}
 		}
 
@@ -183,8 +182,8 @@ public class InterfaceComparer {
 				if(fieldMethodMap == null){
 					fieldMethodMap = new HashMap<String,Boolean>();
 				}
-					fieldMethodMap.put(parts[1],true);
-					checkMap.put(parts[0],fieldMethodMap);
+				fieldMethodMap.put(parts[1],true);
+				checkMap.put(parts[0],fieldMethodMap);
 			} else {
 				// Only Class is given
 				HashMap<String,Boolean> fieldMethodMap = new HashMap<String,Boolean>();

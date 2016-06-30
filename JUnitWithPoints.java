@@ -151,16 +151,16 @@ public abstract class JUnitWithPoints {
 		@Override
 		protected void starting(Description description) {
 			startTime = System.currentTimeMillis();
-            // disable stdout/stderr to avoid timeouts due to large debugging outputs
-            if (saveOut == null) {
-                saveOut = System.out;
-                saveErr = System.err;
+			// disable stdout/stderr to avoid timeouts due to large debugging outputs
+			if (saveOut == null) {
+				saveOut = System.out;
+				saveErr = System.err;
 
-                System.setOut(new PrintStream(new OutputStream() {
-                    public void write(int i) { }
-                }));
-                System.setErr(System.out);
-            }
+				System.setOut(new PrintStream(new OutputStream() {
+					public void write(int i) { }
+				}));
+				System.setErr(System.out);
+			}
 		}
 
 		@Override

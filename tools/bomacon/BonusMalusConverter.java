@@ -30,53 +30,53 @@ import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.List;
 
 @SupportedAnnotationTypes("*")
-	@SupportedOptions("replaces")
+@SupportedOptions("replaces")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
-	public class BonusMalusConverter extends AbstractProcessor {
-		private Trees trees;
-		private boolean imported = false;
+public class BonusMalusConverter extends AbstractProcessor {
+	private Trees trees;
+	private boolean imported = false;
 
-		@Override
-			public synchronized void init(ProcessingEnvironment env) {
-				super.init(env);
-				trees = Trees.instance(env);
-				Context context = ((JavacProcessingEnvironment) env).getContext();
-				TreeMaker.instance(context);
-				JavacElements.instance(context);
-			}
+	@Override
+	public synchronized void init(ProcessingEnvironment env) {
+		super.init(env);
+		trees = Trees.instance(env);
+		Context context = ((JavacProcessingEnvironment) env).getContext();
+		TreeMaker.instance(context);
+		JavacElements.instance(context);
+	}
 
-		@Override
-			public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-				if (!roundEnv.processingOver()) {
-					Set<? extends Element> elements = roundEnv.getRootElements();
-					for (Element each : elements) {
-						if (each.getKind() == ElementKind.CLASS) {
-							JCTree tree = (JCTree) trees.getTree(each);
-							if (!imported) { 
-								imported = true;
-								TreePath path = trees.getPath(each);
-								java.util.List imports = path.getCompilationUnit().getImports();
-								for (Object o : imports) {
-									System.out.print(o);
-								}
-							}
-
-							StringWriter s = new StringWriter();
-							try {
-								new PointsPretty(s, false).printExpr(tree);
-							} catch (IOException e) {
-								throw new AssertionError(e);
-							}
-							System.out.println(s.toString());
+	@Override
+	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+		if (!roundEnv.processingOver()) {
+			Set<? extends Element> elements = roundEnv.getRootElements();
+			for (Element each : elements) {
+				if (each.getKind() == ElementKind.CLASS) {
+					JCTree tree = (JCTree) trees.getTree(each);
+					if (!imported) { 
+						imported = true;
+						TreePath path = trees.getPath(each);
+						java.util.List imports = path.getCompilationUnit().getImports();
+						for (Object o : imports) {
+							System.out.print(o);
 						}
 					}
-					// even with -proc:only the javac does some semantic checking
-					// to avoid that (we compile the generated files anyway in the next step), exit in a clean way
-					System.exit(0);
+
+					StringWriter s = new StringWriter();
+					try {
+						new PointsPretty(s, false).printExpr(tree);
+					} catch (IOException e) {
+						throw new AssertionError(e);
+					}
+					System.out.println(s.toString());
 				}
-				return false;
 			}
+			// even with -proc:only the javac does some semantic checking
+			// to avoid that (we compile the generated files anyway in the next step), exit in a clean way
+			System.exit(0);
+		}
+		return false;
 	}
+}
 
 class PointsPretty extends com.sun.tools.javac.tree.Pretty {
 	public PointsPretty(Writer out, boolean sourceOutput) {
