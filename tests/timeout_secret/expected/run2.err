@@ -1,0 +1,36 @@
+{
+    "replaced": [],
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "test",
+                    "tests": [
+                        {
+                            "desc": "a",
+                            "fromSecret": false,
+                            "id": "a",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "test",
+                    "tests": [
+                        {
+                            "desc": "b",
+                            "error": "TimeoutException after 100 ms",
+                            "fromSecret": true,
+                            "id": "b",
+                            "success": false
+                        }
+                    ]
+                }
+]
+        }
+]
+}
