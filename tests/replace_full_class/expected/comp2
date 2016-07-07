@@ -10,9 +10,17 @@ make[3]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/replace_full_cl
 java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
-javap -p -c ToTest > javap.out
-sed -i -e 's/(.*//' javap.out
-! ( cat javap.out | ./forbidden 1>&2 )
+if [ "xSecretTest" != "x" ]; then \
+	STUDENTCLASSES=$(find . -iname "*.class" -a \! \( -name "UnitTest*" -o -name "SecretTest*" \) ); \
+else \
+	STUDENTCLASSES=$(find . -iname "*.class" -a \! -name "UnitTest*"); \
+fi; \
+for i in $STUDENTCLASSES; do \
+	rm -f javap.out; \
+	javap -p -c $i > javap.out; \
+	sed -i -e 's/(.*//' javap.out; \
+	! ( cat javap.out | ./forbidden 1>&2 ); \
+done
 rm forbidden
 make run-comparer
 make[3]: Entering directory '/home/mkamp/projects/AuDoscore/tests/replace_full_class/test.4220'
