@@ -1,7 +1,5 @@
 -include var.mk
 
-STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
-
 SHELL=/bin/sh
 ifneq ("$(wildcard /bin/dash)","")
 	SHELL=/bin/dash
@@ -67,9 +65,17 @@ compile-stage1: miniclean
 	java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation $(TEST)
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
-	javap -p -c $(STUDENTCLASS) > javap.out
-	sed -i -e 's/(.*//' javap.out
-	! ( cat javap.out | ./forbidden 1>&2 )
+	if [ "x$(SECRETTEST)" != "x" ]; then \
+		STUDENTCLASSES=$$(find . -iname "*.class" -a \! \( -name "$(TEST)*" -o -name "$(SECRETTEST)*" \) ); \
+	else \
+		STUDENTCLASSES=$$(find . -iname "*.class" -a \! -name "$(TEST)*"); \
+	fi; \
+	for i in $$STUDENTCLASSES; do \
+		rm -f javap.out; \
+		javap -p -c $$i > javap.out; \
+		sed -i -e 's/(.*//' javap.out; \
+		! ( cat javap.out | ./forbidden 1>&2 ); \
+	done
 	rm forbidden
 	make run-comparer
 
