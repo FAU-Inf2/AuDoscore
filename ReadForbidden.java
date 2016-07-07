@@ -50,7 +50,7 @@ public class ReadForbidden {
 				return classSpec.replaceAll("\\.", "(\\\\.|/)");
 
 			case FIXED:
-				return classSpec.replaceAll("\\.", "(\\\\.|/)") + "\\W";
+				return classSpec.replaceAll("\\.", "(\\\\.|/)") + "(\\W|$)";
 
 			case WILDCARD:
 				return classSpec.replaceAll("\\.", "(\\\\.|/)").replaceAll("\\*", "\\S*");
