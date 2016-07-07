@@ -74,7 +74,7 @@ compile-stage1: miniclean
 		rm -f javap.out; \
 		javap -p -c $$i > javap.out; \
 		sed -i -e 's/(.*//' javap.out; \
-		! ( cat javap.out | ./forbidden 1>&2 ); \
+		! ( cat javap.out | ./forbidden 1>&2 ) || exit 1; \
 	done
 	rm forbidden
 	make run-comparer
