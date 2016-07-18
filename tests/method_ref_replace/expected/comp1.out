@@ -7,9 +7,17 @@ make[2]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/method_ref_repl
 java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
-javap -p -c ToTest > javap.out
-sed -i -e 's/(.*//' javap.out
-! ( cat javap.out | ./forbidden 1>&2 )
+if [ "xSecretTest" != "x" ]; then \
+       STUDENTCLASSES=$(find . -iname "*.class" -a \! \( -name "UnitTest*" -o -name "SecretTest*" \) ); \
+else \
+       STUDENTCLASSES=$(find . -iname "*.class" -a \! -name "UnitTest*"); \
+fi; \
+for i in $STUDENTCLASSES; do \
+       rm -f javap.out; \
+       javap -p -c $i > javap.out; \
+       sed -i -e 's/(.*//' javap.out; \
+       ! ( cat javap.out | ./forbidden 1>&2 ) || exit 1; \
+done
 rm forbidden
 make run-comparer
 make[2]: Entering directory '/home/mkamp/projects/AuDoscore/tests/method_ref_replace/test.8405'
