@@ -160,11 +160,21 @@ public abstract class JUnitWithPoints {
 					public void write(int i) { }
 				}));
 				System.setErr(System.out);
+
+				// Install security manager
+				try {
+					System.setSecurityManager(new TesterSecurityManager());
+				} catch (final SecurityException e) { /* Ignore */ }
 			}
 		}
 
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
+			// Reset security manager
+			try {
+				System.setSecurityManager(null);
+			} catch (final SecurityException e) { /* Ignore */ }
+			
 			endTime = System.currentTimeMillis();
 			long executionTime  = endTime - startTime;
 			Points pointsAnnotation = description.getAnnotation(Points.class);
