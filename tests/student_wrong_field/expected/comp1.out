@@ -7,9 +7,17 @@ make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/student_wrong_field/t
 java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
-javap -p -c ToTest > javap.out
-sed -i -e 's/(.*//' javap.out
-! ( cat javap.out | ./forbidden 1>&2 )
+if [ "x" != "x" ]; then \
+	STUDENTCLASSES=$(find . -iname "*.class" -a \! \( -name "UnitTest*" -o -name "*" \) ); \
+else \
+	STUDENTCLASSES=$(find . -iname "*.class" -a \! -name "UnitTest*"); \
+fi; \
+for i in $STUDENTCLASSES; do \
+	rm -f javap.out; \
+	javap -p -c $i > javap.out; \
+	sed -i -e 's/(.*//' javap.out; \
+	! ( cat javap.out | ./forbidden 1>&2 ) || exit 1; \
+done
 rm forbidden
 make run-comparer
 make[2]: Entering directory '/home/sitowert/AuDoscore/tests/student_wrong_field/test.1077'

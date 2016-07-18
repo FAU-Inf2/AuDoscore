@@ -1,7 +1,5 @@
 -include var.mk
 
-STUDENTCLASS = $(STUDENTSOURCE:%.java=%)
-
 SHELL=/bin/sh
 ifneq ("$(wildcard /bin/dash)","")
 	SHELL=/bin/dash
@@ -47,7 +45,7 @@ prepare: updategitrev lib/junitpoints.jar
 updategitrev:
 	git rev-parse HEAD > GITREV
 
-SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/annotations/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java tester/annotations/SecretCase.java tester/annotations/Bonus.java tester/annotations/Ex.java tester/annotations/Points.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/Malus.java tester/annotations/NotForbidden.java tools/jsondiff/JSONDiff.java FullQualifier.java tools/bomacon/BonusMalusConverter.java tools/sep/SingleExecutionPreparer.java CheckAnnotation.java tools/SingleMethodRunner.java tools/ic/InterfaceComparer.java tools/ptc/PublicTestCleaner.java
+SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/annotations/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java tester/annotations/SecretCase.java tester/annotations/Bonus.java tester/annotations/Ex.java tester/annotations/Points.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/Malus.java tester/annotations/NotForbidden.java tools/jsondiff/JSONDiff.java FullQualifier.java tools/bomacon/BonusMalusConverter.java tools/sep/SingleExecutionPreparer.java CheckAnnotation.java tools/SingleMethodRunner.java tools/ic/InterfaceComparer.java tools/ptc/PublicTestCleaner.java tester/TesterSecurityManager.java
 
 lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/tools.jar:. $(SRCJUNITPOINTSJAR)
@@ -67,9 +65,17 @@ compile-stage1: miniclean
 	java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation $(TEST)
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
-	javap -p -c $(STUDENTCLASS) > javap.out
-	sed -i -e 's/(.*//' javap.out
-	! ( cat javap.out | ./forbidden 1>&2 )
+	if [ "x$(SECRETTEST)" != "x" ]; then \
+		STUDENTCLASSES=$$(find . -iname "*.class" -a \! \( -name "$(TEST)*" -o -name "$(SECRETTEST)*" \) ); \
+	else \
+		STUDENTCLASSES=$$(find . -iname "*.class" -a \! -name "$(TEST)*"); \
+	fi; \
+	for i in $$STUDENTCLASSES; do \
+		rm -f javap.out; \
+		javap -p -c $$i > javap.out; \
+		sed -i -e 's/(.*//' javap.out; \
+		! ( cat javap.out | ./forbidden 1>&2 ) || exit 1; \
+	done
 	rm forbidden
 	make run-comparer
 
