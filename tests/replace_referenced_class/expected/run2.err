@@ -1,0 +1,52 @@
+{
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "RepRefClass",
+                    "tests": [
+                        {
+                            "desc": "test",
+                            "fromSecret": true,
+                            "id": "test",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "RepRefClass",
+                    "tests": [
+                        {
+                            "desc": "empty dummy test",
+                            "fromSecret": false,
+                            "id": "test22",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "RepRefClass",
+                    "tests": [
+                        {
+                            "desc": "test",
+                            "error": "AssertionError(Should return 42 expected:<42> but was:<-1>)",
+                            "fromSecret": true,
+                            "id": "test",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

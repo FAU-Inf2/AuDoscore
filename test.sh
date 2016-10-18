@@ -24,7 +24,8 @@ function cleanexit {
 		rm -rf test.$$
 	else
 		info "keeping directory"
-		ln -sf test.$$ test.latest
+		rm -f test.latest
+		ln -s test.$$ test.latest
 	fi
 	if [ $# -gt 0 ]; then
 		exit $1
@@ -273,11 +274,6 @@ function testIt {
 	checkAnnotationFormatError comp1.err
 	checkexit $ec "\nstudent result: ✘\n" comp1.err
 
-
-	info "- comparing interfaces of student and cleanroom"
-	( make run-comparer ) > inteface.out 2> interface.err
-	checkexit $? "\nerror: ✘\n" interface.err
-	
 	info "- testing"	
 	( make run-stage1 ) > run1.out 2> run1.err
 	ec=$?

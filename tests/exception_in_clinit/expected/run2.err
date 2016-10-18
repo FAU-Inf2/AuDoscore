@@ -1,0 +1,14 @@
+{ "vanilla" : 
+[
+{"exercises":[{"name":"clinit bug","tests":[{"desc":"test","fromSecret":false,"id":"test","success":true}]}]}
+,
+Exception in thread "main" java.lang.ExceptionInInitializerError
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:264)
+	at tools.SingleMethodRunner.main(SingleMethodRunner.java:18)
+Caused by: java.lang.NullPointerException
+	at ToTest.<init>(ToTest.java:3)
+	at SecretTest.<clinit>(SecretTest.java:15)
+	... 3 more
+make: *** [run-stage2] Error 1
+Above JSON is broken

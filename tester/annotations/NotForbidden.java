@@ -7,5 +7,6 @@ import java.lang.annotation.*;
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 public @interface NotForbidden {
 	String[] value();
+	Forbidden.Type type() default Forbidden.Type.PREFIX;
 }
 

@@ -11,8 +11,10 @@ public class ReadForbidden {
 			System.exit(-1);
 		}
 
-		String grep = "egrep '(java(\\.|/)lang(\\.|/)ClassLoader|java(\\.|/)lang(\\.|/)reflect|java(\\.|/)lang(\\.|/)System(\\.|/)exit";
-		String grep2 = "egrep -v '(";
+		final StringBuilder grep = new StringBuilder(
+			"egrep '(java(\\.|/)lang(\\.|/)ClassLoader|java(\\.|/)lang(\\.|/)reflect|java(\\.|/)lang(\\.|/)System(\\.|/)exit"
+		);
+		final StringBuilder grep2 = new StringBuilder("egrep -v '(");
 		String sep = "";
 		boolean hasNotForbidden = false;
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
@@ -21,24 +23,42 @@ public class ReadForbidden {
 			Forbidden forbidden = (Forbidden) newClass.getAnnotation(Forbidden.class);
 			if (forbidden == null) continue;
 			for (String s : forbidden.value()) {
-				String escape = s.replaceAll("\\.", "(\\\\.|/)");
-				grep += "|" + escape;
+				grep.append('|').append(getRegex(s, forbidden.type()));
 			}
 			NotForbidden notforbidden = (NotForbidden) newClass.getAnnotation(NotForbidden.class);
 			if (notforbidden == null) continue;
 			for (String s : notforbidden.value()) {
 				hasNotForbidden = true;
-				String escape = s.replaceAll("\\.", "(\\\\.|/)");
-				grep2 += sep + escape;
+				grep2.append(sep).append("\\W").append(getRegex(s, notforbidden.type()));
 				sep = "|";
 			}
 		}
 
-		grep += ")'";
-		grep2 += ")'";
+		grep.append(")'");
+		grep2.append(")'");
+
+		String result = grep.toString();
 		if(hasNotForbidden) {
-			grep = grep2 + " | " + grep;
+			result = grep2.toString() + " | " + result;
 		}
-		System.out.println(grep);
+		System.out.println(result);
+	}
+
+	private static String getRegex(final String classSpec, final Forbidden.Type type) {
+		switch (type) {
+			case PREFIX:
+				return classSpec.replaceAll("\\.", "(\\\\.|/)");
+
+			case FIXED:
+				return classSpec.replaceAll("\\.", "(\\\\.|/)") + "(\\W|$)";
+
+			case WILDCARD:
+				return classSpec.replaceAll("\\.", "(\\\\.|/)").replaceAll("\\*", "[^\\\\./\\\\s]*");
+
+			default:
+				System.err.println("unsupported type for @Forbidden");
+				System.exit(-2);
+				return null;
+		}
 	}
 }

@@ -25,7 +25,7 @@ import com.sun.tools.javac.util.Context;
 
 @SupportedAnnotationTypes("*")
 @SupportedOptions("replaces")
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class FullQualifier extends AbstractProcessor {
 	private Trees trees;
 	private boolean imported = false;
@@ -106,11 +106,7 @@ class MyPretty extends com.sun.tools.javac.tree.Pretty {
 				case "Forbidden":
 				case "NotForbidden":
 				case "CompareInterface":
-					print("tester.annotations.");
-					break;
 				case "Replace": 
-					print("tester.annotations.");
-					break;
 				case "SecretClass":
 					print("tester.annotations.");
 					break;

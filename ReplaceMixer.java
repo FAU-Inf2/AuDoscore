@@ -14,6 +14,7 @@ import javax.tools.*;
 import com.sun.source.tree.Tree.Kind;
 import com.sun.source.util.Trees;
 import com.sun.source.util.TreePath;
+import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.*;
 import com.sun.tools.javac.util.*;
@@ -25,12 +26,10 @@ import javax.lang.model.util.Elements;
 
 @SupportedAnnotationTypes("*")
 @SupportedOptions("replaces")
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ReplaceMixer extends AbstractProcessor {
 	public final String CLEAN_PREFIX = "__clean";
 	private Trees trees;
-	private TreeMaker make;
-	private JavacElements elements;
 
 	private HashMap<String, JCTree> cleanMethods = new HashMap<>();
 	private HashMap<String, JCTree> cleanInnerClasses = new HashMap<>();
@@ -47,8 +46,6 @@ public class ReplaceMixer extends AbstractProcessor {
 		super.init(env);
 		trees = Trees.instance(env);
 		Context context = ((JavacProcessingEnvironment) env).getContext();
-		make = TreeMaker.instance(context);
-		elements = JavacElements.instance(context);
 		String repString = env.getOptions().get("replaces");
 		if (repString != null) {
 			replaces = repString.split("#");
@@ -67,7 +64,8 @@ public class ReplaceMixer extends AbstractProcessor {
 				} else {
 					isCleanroom = false;
 				}
-				if (each.getKind() == ElementKind.CLASS) {
+				if ((each.getKind() == ElementKind.CLASS)
+						|| (each.getKind() == ElementKind.INTERFACE)) {
 					classLevel = 0;
 					JCTree tree = (JCTree) trees.getTree(each);
 					tree.accept(new Merger());
@@ -134,7 +132,15 @@ public class ReplaceMixer extends AbstractProcessor {
 
 			ArrayList<String> types = new ArrayList<>();
 			for (JCVariableDecl decl : tree.params) {
-				types.add(decl.vartype.toString());
+				final Symbol paramTypeSymbol = TreeInfo.symbol(decl.vartype);
+				String fullyQualifiedType = decl.vartype.toString();
+				if (paramTypeSymbol != null) {
+					fullyQualifiedType = paramTypeSymbol.asType().toString();
+					if (fullyQualifiedType.indexOf("cleanroom.") == 0) {
+						fullyQualifiedType = fullyQualifiedType.substring("cleanroom.".length());
+					}
+				}
+				types.add(fullyQualifiedType);
 			}
 			String name = tree.name.toString() + ": " +  Arrays.toString(types.toArray());
 			if (isCleanroom) {

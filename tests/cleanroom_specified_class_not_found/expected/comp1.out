@@ -1,13 +1,9 @@
+make[1]: Entering directory '/home/sitowert/AuDoscore/tests/cleanroom_specified_class_not_found/test.11064'
 rm -f *.class */*.class
-cp UnitTest.java UnitTest.java.orig
-javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp
-mv UnitTest.java.tmp UnitTest.java
-javac -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp
-mv UnitTest.java.tmp UnitTest.java
-make -B UnitTest.class || ( mv UnitTest.java.orig UnitTest.java; /bin/false; )
-make[1]: Entering directory `/home/cubu/AuDoscore/tests/cleanroom_specified_class_not_found/test.31603'
+javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac cleanroom/*.java;
+make[2]: Entering directory '/home/sitowert/AuDoscore/tests/cleanroom_specified_class_not_found/test.11064'
 javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
-make[1]: Leaving directory `/home/cubu/AuDoscore/tests/cleanroom_specified_class_not_found/test.31603'
-mv UnitTest.java.orig UnitTest.java
-javac cleanroom/*
-java -cp lib/tools.jar:lib/junit.jar:lib/junitpoints.jar CheckAnnotation UnitTest 
+make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/cleanroom_specified_class_not_found/test.11064'
+java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
+Makefile:61: recipe for target 'compile-stage1' failed
+make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/cleanroom_specified_class_not_found/test.11064'

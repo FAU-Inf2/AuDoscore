@@ -1,0 +1,95 @@
+{
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "TestMethodRef",
+                    "tests": [
+                        {
+                            "desc": "testFoo",
+                            "fromSecret": true,
+                            "id": "testFoo",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "TestMethodRef",
+                    "tests": [
+                        {
+                            "desc": "testInterfaceBar",
+                            "fromSecret": false,
+                            "id": "testInterfaceBar",
+                            "success": true
+                        },
+                        {
+                            "desc": "testInterfaceBaz",
+                            "fromSecret": false,
+                            "id": "testInterfaceBaz",
+                            "success": true
+                        },
+                        {
+                            "desc": "testInterfaceFoo",
+                            "fromSecret": false,
+                            "id": "testInterfaceFoo",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "TestMethodRef",
+                    "tests": [
+                        {
+                            "desc": "testFoo",
+                            "error": "AssertionError(foo() is wrong expected:<42> but was:<21>)",
+                            "fromSecret": true,
+                            "id": "testFoo",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "TestMethodRef",
+                    "tests": [
+                        {
+                            "desc": "testBar",
+                            "fromSecret": true,
+                            "id": "testBar",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "TestMethodRef",
+                    "tests": [
+                        {
+                            "desc": "testBaz",
+                            "error": "AssertionError(baz() is wrong expected:<42> but was:<21>)",
+                            "fromSecret": true,
+                            "id": "testBaz",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
