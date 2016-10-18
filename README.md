@@ -24,6 +24,50 @@ Available Annotations
 | `@SecretClass` | No | class level | None | Marks a test class to be secret. Results will not be shown to students before the submission deadline. |
 | `@CompareInterface` | No | class level | Array of String | Checks if methods and fields of students have the same signature as their cleanroom counterparts. Possible Strings: "Classname.Methodname, "Classname.Fieldname", "Classname". If only the Classname is given all public methods/fields are checked.|
 
+Local Usage
+=======
+
+AuDoscore comes with a test script which can be used to locally grade a
+submission. The test script requires that the files belonging to an exercise be
+organized in a specific directory structure:
+
+```
+exercise_dir
+  ↦ cleanroom
+      ↦ Solver.java
+  ↦ interfaces
+      ↦ ISolver.java
+  ↦ junit
+      ↦ UnitTest.java
+      ↦ SecretTest.java
+  ↦ skeleton
+      ↦ Solver.java
+  ↦ student
+      ↦ Solver.java
+```
+
+The `cleanroom` directory contains the cleanroom solution. The annotated unit
+tests reside in the `junit` directory, while the student's submission is placed
+in the `student` directory. The `interfaces` and `skeleton` directories are
+optional and contain the interfaces to implement by a submission and the
+skeleton code for a submission, respectively.
+
+To run AuDoscore on this example, `cd` to the `exercise_dir` and execute the
+`test.sh` script from the AuDoscore repository. The `test.sh` script takes the
+name of the directory containing the submission as an optional parameter, so
+you can also test submissions in other directories than `student`. The test
+script produces a nicely formatted output of the passed and failed tests and
+also prints the scored points.
+
+Branches
+=======
+
+There are currently three active branches in this repository. Development
+usually happens in the `master` branch. The `master` branch is periodically
+merged into the `java-1.8` branch, which contains additional fixes for Java 8.
+The `release` branch just contains the version of AuDoscore currently in use by
+us.
+
 License
 =======
 
