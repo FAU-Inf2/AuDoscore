@@ -59,6 +59,15 @@ you can also test submissions in other directories than `student`. The test
 script produces a nicely formatted output of the passed and failed tests and
 also prints the scored points.
 
+Branches
+=======
+
+There are currently three active branches in this repository. Development
+usually happens in the `master` branch. The `master` branch is periodically
+merged into the `java-1.8` branch, which contains additional fixes for Java 8.
+The `release` branch just contains the version of AuDoscore currently in use by
+us.
+
 License
 =======
 
