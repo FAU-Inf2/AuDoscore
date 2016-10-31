@@ -1,0 +1,44 @@
+rm -f *.class */*.class
+make compile-stage1
+make[1]: Entering directory '/home/mkamp/projects/AuDoscore/tests/forbidden_in_interfaces/test.7910'
+rm -f *.class */*.class
+javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac cleanroom/*.java;
+make[2]: Entering directory '/home/mkamp/projects/AuDoscore/tests/forbidden_in_interfaces/test.7910'
+javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java Super.java
+make[2]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/forbidden_in_interfaces/test.7910'
+java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
+java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
+chmod +x forbidden
+if [ "x" != "x" ]; then \
+	STUDENTCLASSES=$(find . -iname "*.class" -a \! \( -name "UnitTest*" -o -name "*" \) ); \
+else \
+	STUDENTCLASSES=$(find . -iname "*.class" -a \! -name "UnitTest*"); \
+fi; \
+if [ "xSuper.java" != "x" ]; then \
+	STUDENTCLASSES=$(echo "$STUDENTCLASSES" | grep -vE "$(echo "Super.java" | sed "s/\.java/\.class/g" | tr " " "|")"); \
+fi; \
+for i in $STUDENTCLASSES; do \
+	rm -f javap.out; \
+	javap -p -c $i > javap.out; \
+	sed -i -e 's/(.*//' javap.out; \
+	! ( cat javap.out | ./forbidden 1>&2 ) || exit 1; \
+done
+rm forbidden
+make run-comparer
+make[2]: Entering directory '/home/mkamp/projects/AuDoscore/tests/forbidden_in_interfaces/test.7910'
+java -cp lib/junitpoints.jar tools.ic.InterfaceComparer UnitTest
+make[2]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/forbidden_in_interfaces/test.7910'
+make[1]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/forbidden_in_interfaces/test.7910'
+echo "echo \"[\" 1>&2" > loop.sh
+if [ "x" != "x" ]; then \
+	set -e ; \
+	make compile-stage2-secret ; \
+	java -cp lib/junit.jar:lib/junitpoints.jar:. -Dpub=UnitTest CheckAnnotation  ; \
+	echo "make run-stage1" > single_execution.sh ;\
+	echo "echo \",\" 1>&2" >> single_execution.sh;	\
+	java -cp lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=UnitTest"  >> single_execution.sh; \
+else \
+	set -e ; \
+	echo "echo \"]\" 1>&2" >> loop.sh ; \
+	echo "make run-stage1" > single_execution.sh ; \
+fi		
