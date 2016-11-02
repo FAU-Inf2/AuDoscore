@@ -52,7 +52,8 @@ public class TesterSecurityManager extends SecurityManager {
 				}
 
 				case "accessDeclaredMembers": {
-					// Only grant this permission if the method is called by JUnit
+					// Only grant this permission if the method is called by JUnit or by
+					// java.lang.Thread.<init>
 					final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 					for (int i = 1; i < stackTrace.length; ++i) {
 						if (!this.getClass().getCanonicalName().equals(stackTrace[i].getClassName())
@@ -61,6 +62,11 @@ public class TesterSecurityManager extends SecurityManager {
 								&& !stackTrace[i].getClassName().startsWith("org.junit.")) {
 							// Deny permission
 							super.checkPermission(perm);
+						}
+						if ("java.lang.Thread".equals(stackTrace[i].getClassName())
+								&& "<init>".equals(stackTrace[i].getMethodName())) {
+							// Thread constructor, grant permission
+							return;
 						}
 					}
 					// No violating class found, grant permission
