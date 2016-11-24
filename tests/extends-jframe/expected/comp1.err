@@ -1,0 +1,3 @@
+public class ToTest extends javax.swing.JFrame {
+       1: invokespecial #1                  // Method javax/swing/JFrame."<init>":
+make: *** [compile-stage1] Error 1
