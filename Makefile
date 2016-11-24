@@ -71,7 +71,7 @@ compile-stage1: miniclean
 		STUDENTCLASSES=$$(find . -iname "*.class" -a \! -name "$(TEST)*"); \
 	fi; \
 	if [ "x$(INTERFACES)" != "x" ]; then \
-		STUDENTCLASSES=$$(echo "$$STUDENTCLASSES" | grep -vE "$$(echo "$(INTERFACES)" | sed "s/\.java/(\\\\\$[^.]*)?\.class/g" | tr " " "|")"); \
+		STUDENTCLASSES=$$(echo "$$STUDENTCLASSES" | grep -vE "$$(echo "$(INTERFACES)" | sed 's/\.java/(\\\$$[^.]*)?\.class/g' | tr " " "|")"); \
 	fi; \
 	for i in $$STUDENTCLASSES; do \
 		rm -f javap.out; \
