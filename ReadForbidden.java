@@ -12,7 +12,7 @@ public class ReadForbidden {
 		}
 
 		final StringBuilder grep = new StringBuilder(
-			"egrep '(java(\\.|/)lang(\\.|/)ClassLoader|java(\\.|/)lang(\\.|/)reflect|java(\\.|/)lang(\\.|/)System(\\.|/)exit"
+			"egrep '(java(\\.|/)lang(\\.|/)ClassLoader|java(\\.|/)lang(\\.|/)reflect|java(\\.|/)lang(\\.|/)System(\\.|/)exit|java(\\.|/)awt(\\.|/)|javax(\\.|/)swing(\\.|/)"
 		);
 		final StringBuilder grep2 = new StringBuilder("egrep -v '(");
 		String sep = "";
