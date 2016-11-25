@@ -1,0 +1,2 @@
+       2: multianewarray #2,  2             // class "[[Ljava/util/Random;"
+make: *** [compile-stage1] Error 1

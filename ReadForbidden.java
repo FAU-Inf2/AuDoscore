@@ -29,7 +29,7 @@ public class ReadForbidden {
 			if (notforbidden == null) continue;
 			for (String s : notforbidden.value()) {
 				hasNotForbidden = true;
-				grep2.append(sep).append("\\W").append(getRegex(s, notforbidden.type()));
+				grep2.append(sep).append("(\\W|\\[L)").append(getRegex(s, notforbidden.type()));
 				sep = "|";
 			}
 		}
