@@ -115,7 +115,7 @@ public class CheckAnnotation {
 			if (test == null) {
 				continue;
 			}
-			if (test.timeout() == 0) {
+			if (test.timeout() <= 0) {
 				throw new AnnotationFormatError("ERROR - found test case without 'timeout' in @Test annotation: [" + description.getDisplayName() + "]");
 			}
 			timeoutSum += test.timeout();
