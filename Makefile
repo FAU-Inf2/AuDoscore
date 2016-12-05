@@ -23,8 +23,11 @@ SECRETSOURCE = $(SECRETTEST:=.java)
 
 all: prepare
 
-verify: prepare
+verify: prepare verify-ptc
 	./verify.sh
+
+verify-ptc: prepare
+	./verify-ptc.sh
 
 miniclean:
 	rm -f *.class */*.class
