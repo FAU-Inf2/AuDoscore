@@ -66,9 +66,9 @@ compile-stage1: miniclean
 	java -cp lib/junitpoints.jar:. ReadForbidden $(TEST) > forbidden
 	chmod +x forbidden
 	if [ "x$(SECRETTEST)" != "x" ]; then \
-		STUDENTCLASSES=$$(find . -iname "*.class" -a \! \( -name "$(TEST)*" -o -name "$(SECRETTEST)*" \) ); \
+		STUDENTCLASSES=$$(find . -maxdepth 1 -iname "*.class" -a \! \( -name "$(TEST)*" -o -name "$(SECRETTEST)*" \) ); \
 	else \
-		STUDENTCLASSES=$$(find . -iname "*.class" -a \! -name "$(TEST)*"); \
+		STUDENTCLASSES=$$(find . -maxdepth 1 -iname "*.class" -a \! -name "$(TEST)*"); \
 	fi; \
 	if [ "x$(INTERFACES)" != "x" ]; then \
 		STUDENTCLASSES=$$(echo "$$STUDENTCLASSES" | grep -vE "$$(echo "$(INTERFACES)" | sed 's/\.java/(\\\$$[^.]*)?\.class/g' | tr " " "|")"); \
