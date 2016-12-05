@@ -7,9 +7,9 @@ java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
 if [ "x" != "x" ]; then \
-	STUDENTCLASSES=$(find . -iname "*.class" -a \! \( -name "UnitTest*" -o -name "*" \) ); \
+	STUDENTCLASSES=$(find . -maxdepth 1 -iname "*.class" -a \! \( -name "UnitTest*" -o -name "*" \) ); \
 else \
-	STUDENTCLASSES=$(find . -iname "*.class" -a \! -name "UnitTest*"); \
+	STUDENTCLASSES=$(find . -maxdepth 1 -iname "*.class" -a \! -name "UnitTest*"); \
 fi; \
 if [ "xSuper.java" != "x" ]; then \
 	STUDENTCLASSES=$(echo "$STUDENTCLASSES" | grep -vE "$(echo "Super.java" | sed 's/\.java/(\\\$[^.]*)?\.class/g' | tr " " "|")"); \
