@@ -54,9 +54,6 @@ public class PublicTestCleaner extends AbstractProcessor {
 		if(o.toString().contains("import org.junit.rules.")){
 			return true;
 		}
-		if(o.toString().contains("import java.lang.reflect.")){
-			return true;
-		}
 		return false;
 	}
 
