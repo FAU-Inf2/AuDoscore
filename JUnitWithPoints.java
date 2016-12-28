@@ -109,7 +109,6 @@ public abstract class JUnitWithPoints {
 	// helper class for logging purposes
 	protected static class PointsLogger extends TestWatcher {
 
-		private static PrintStream saveOut, saveErr;
 		private long startTime = 0;
 		private long endTime = 0;
 
@@ -151,21 +150,6 @@ public abstract class JUnitWithPoints {
 		@Override
 		protected void starting(Description description) {
 			startTime = System.currentTimeMillis();
-			// disable stdout/stderr to avoid timeouts due to large debugging outputs
-			if (saveOut == null) {
-				saveOut = System.out;
-				saveErr = System.err;
-
-				System.setOut(new PrintStream(new OutputStream() {
-					public void write(int i) { }
-				}));
-				System.setErr(System.out);
-
-				// Install security manager
-				try {
-					System.setSecurityManager(new TesterSecurityManager());
-				} catch (final SecurityException e) { /* Ignore */ }
-			}
 		}
 
 		@Override
@@ -200,6 +184,7 @@ public abstract class JUnitWithPoints {
 	// helper class for summaries
 	protected static class PointsSummary extends ExternalResource {
 		public static final int MAX_TIMEOUT_MS = 60_000;
+		private static PrintStream saveOut, saveErr;
 		private static boolean isSecretClass = false;
 
 		@Override
@@ -274,11 +259,30 @@ public abstract class JUnitWithPoints {
 				JSONObject jsonSummary = new JSONObject();
 				jsonSummary.put("exercises", jsonExercises);
 				try {
-					PointsLogger.saveErr = new PrintStream(PointsLogger.saveErr, true, "utf-8");
+					saveErr = new PrintStream(saveErr, true, "utf-8");
 				} catch (UnsupportedEncodingException e) {
 					// silently ignore exception -> it's not that important after all
 				}
-				PointsLogger.saveErr.println(jsonSummary);
+				saveErr.println(jsonSummary);
+			}
+		}
+
+		@Override
+		protected final void before() {
+			// disable stdout/stderr to avoid timeouts due to large debugging outputs
+			if (saveOut == null) {
+				saveOut = System.out;
+				saveErr = System.err;
+
+				System.setOut(new PrintStream(new OutputStream() {
+					public void write(int i) { }
+				}));
+				System.setErr(System.out);
+
+				// Install security manager
+				try {
+					System.setSecurityManager(new TesterSecurityManager());
+				} catch (final SecurityException e) { /* Ignore */ }
 			}
 		}
 	}
