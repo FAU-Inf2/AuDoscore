@@ -2,6 +2,7 @@ package tester;
 
 import java.io.FilePermission;
 import java.lang.reflect.ReflectPermission;
+import java.net.NetPermission;
 import java.util.PropertyPermission;
 import java.security.Permission;
 
@@ -93,6 +94,14 @@ public class TesterSecurityManager extends SecurityManager {
 					}
 					break;
 				}
+
+				case "createClassLoader": {
+					// Only grant this permission if the method is called from JUnit
+					if (calledFromJUnit()) {
+						return;
+					}
+					break;
+				}
 			}
 		} else if (perm instanceof FilePermission) {
 			final FilePermission filePerm = (FilePermission) perm;
@@ -109,6 +118,12 @@ public class TesterSecurityManager extends SecurityManager {
 				// Grant permission
 				return;
 			}
+		} else if (perm instanceof NetPermission) {
+			if (!checkNetPermission((NetPermission) perm)) {
+				super.checkPermission(perm);
+			}
+			// Grant permission
+			return;
 		} else if (perm instanceof ReflectPermission) {
 			// Reflection is already checked during stage1, so allow everything
 			return;
@@ -137,11 +152,12 @@ public class TesterSecurityManager extends SecurityManager {
 
 
 	private boolean checkReadPermissions(final String fileName) {
-		// Allow only if called from ClassLoader
+		// Allow only if called from ClassLoader or from JUnit
 		final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 		for (int i = 1; i < stackTrace.length; ++i) {
 			if (!stackTrace[i].getClassName().startsWith("java.")
 					&& !stackTrace[i].getClassName().startsWith("sun.")
+					&& !stackTrace[i].getClassName().startsWith("org.junit.")
 					&& !this.getClass().getCanonicalName().equals(stackTrace[i].getClassName())) {
 				// Deny read
 				return false;
@@ -150,8 +166,40 @@ public class TesterSecurityManager extends SecurityManager {
 				// Allow
 				return true;
 			}
+			if ("org.junit.runner.JUnitCore".equals(stackTrace[i].getClassName())) {
+				// Allow
+				return true;
+			}
 		}
 
+		return false;
+	}
+
+
+
+	private boolean checkNetPermission(final NetPermission perm) {
+		if ("specifyStreamHandler".equals(perm.getName())) {
+			// Allow only if called from JUnit
+			return calledFromJUnit();
+		}
+		return false;
+	}
+
+
+
+	private boolean calledFromJUnit() {
+		final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+		for (int i = 1; i < stackTrace.length; ++i) {
+			if (!stackTrace[i].getClassName().startsWith("java.")
+					&& !stackTrace[i].getClassName().startsWith("sun.")
+					&& !stackTrace[i].getClassName().startsWith("org.junit.")
+					&& !this.getClass().getCanonicalName().equals(stackTrace[i].getClassName())) {
+				return false;
+			}
+			if ("org.junit.runner.JUnitCore".equals(stackTrace[i].getClassName())) {
+				return true;
+			}
+		}
 		return false;
 	}
 }
