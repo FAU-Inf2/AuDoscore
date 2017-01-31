@@ -1,10 +1,10 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Collections;
-import java.util.ArrayList;
 import javax.annotation.processing.*;
 import javax.lang.model.*;
 import javax.lang.model.element.Element;
@@ -122,6 +122,23 @@ public class ReplaceMixer extends AbstractProcessor {
 			}
 		}
 
+		private String getTypesAsString(final ArrayList<String> types,
+				final List<JCTypeParameter> typeParameters) {
+			
+			final ArrayList<String> typesCopy = new ArrayList<>(types);
+			for (int i = 0; i < typesCopy.size(); ++i) {
+				String typeAsString = typesCopy.get(i);
+				for (int j = 0; j < typeParameters.size(); ++j) {
+					typeAsString = typeAsString.replaceAll(
+							"\\b" + typeParameters.get(j).name.toString() + "\\b",
+							"§_typeParam_" + j);
+				}
+				typesCopy.set(i, typeAsString);
+			}
+
+			return Arrays.toString(typesCopy.toArray());
+		}
+
 		@Override
 		public void visitMethodDef(JCMethodDecl tree) {
 			super.visitMethodDef(tree);
@@ -141,7 +158,7 @@ public class ReplaceMixer extends AbstractProcessor {
 				}
 				types.add(fullyQualifiedType);
 			}
-			String name = tree.name.toString() + ": " +  Arrays.toString(types.toArray());
+			String name = tree.name.toString() + ": " +  getTypesAsString(types, tree.typarams);
 			if (isCleanroom) {
 				cleanMethods.put(name, tree);
 			} else {
