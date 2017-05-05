@@ -190,7 +190,8 @@ public class TesterSecurityManager extends SecurityManager {
 				// Deny read
 				return false;
 			}
-			if ("java.lang.ClassLoader".equals(stackTrace[i].getClassName())) {
+			if ("java.lang.ClassLoader".equals(stackTrace[i].getClassName())
+					|| stackTrace[i].getClassName().startsWith("java.lang.ClassLoader$")) {
 				// Allow
 				return true;
 			}
@@ -208,7 +209,7 @@ public class TesterSecurityManager extends SecurityManager {
 	private boolean checkNetPermission(final NetPermission perm) {
 		if ("specifyStreamHandler".equals(perm.getName())) {
 			// Allow only if called from JUnit
-			return calledFromJUnit();
+			return calledFromJUnit() || calledFrom("java.awt.Toolkit", "java.", "sun.");
 		}
 		return false;
 	}
