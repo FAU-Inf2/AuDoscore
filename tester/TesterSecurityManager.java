@@ -92,10 +92,33 @@ public class TesterSecurityManager extends SecurityManager {
 
 				case "createClassLoader": {
 					// Only grant this permission if the method is called from JUnit
-					if (calledFromJUnit()) {
+					if (calledFromJUnit() || calledFrom("java.awt.Color", "java.")) {
 						return;
 					}
 					break;
+				}
+
+				case "loadLibrary.awt": {
+					if (calledFrom("java.awt.Color", "java.")) {
+						return;
+					}
+					break;
+				}
+
+				case "getenv.DISPLAY": {
+					if (calledFrom("java.awt.Toolkit", "java.")) {
+						// Grant permission
+						return;
+					}
+					break;
+				}
+
+				default: {
+					if (perm.getName().startsWith("loadLibrary.") && perm.getName().contains("awt")
+							&& calledFrom("java.awt.Toolkit", "java.")) {
+						// Grant permission
+						return;
+					}
 				}
 			}
 		} else if (perm instanceof FilePermission) {
@@ -110,6 +133,11 @@ public class TesterSecurityManager extends SecurityManager {
 		} else if (perm instanceof PropertyPermission) {
 			final PropertyPermission propPerm = (PropertyPermission) perm;
 			if ("read".equals(propPerm.getActions())) {
+				// Grant permission
+				return;
+			}
+			if ("sun.font.fontmanager".equals(propPerm.getName())
+					&& calledFrom("java.awt.Toolkit", "java.")) {
 				// Grant permission
 				return;
 			}
@@ -183,15 +211,27 @@ public class TesterSecurityManager extends SecurityManager {
 
 
 	private boolean calledFromJUnit() {
+		return calledFrom("org.junit.runner.JUnitCore", "java.", "sun.", "org.junit.");
+	}
+
+
+
+	private boolean calledFrom(final String calledFromClassName,
+			final String ... allowedClassPrefixes) {
 		final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 		for (int i = 1; i < stackTrace.length; ++i) {
-			if (!stackTrace[i].getClassName().startsWith("java.")
-					&& !stackTrace[i].getClassName().startsWith("sun.")
-					&& !stackTrace[i].getClassName().startsWith("org.junit.")
-					&& !this.getClass().getCanonicalName().equals(stackTrace[i].getClassName())) {
-				return false;
+			if (!this.getClass().getCanonicalName().equals(stackTrace[i].getClassName())) {
+				boolean checkNext = true;
+				for (int j = 0; checkNext && j < allowedClassPrefixes.length; ++j) {
+					checkNext &= !stackTrace[i].getClassName().startsWith(allowedClassPrefixes[j]);
+				}
+
+				if (checkNext) {
+					return false;
+				}
 			}
-			if ("org.junit.runner.JUnitCore".equals(stackTrace[i].getClassName())) {
+
+			if (calledFromClassName.equals(stackTrace[i].getClassName())) {
 				return true;
 			}
 		}
