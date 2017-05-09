@@ -85,6 +85,73 @@ public class JUnitPointsMerger {
 	}
 
 
+	private static String getFormattedErrorString(String error) {
+		if (error.length() <= 1000 || !error.startsWith("ComparisonFailure")) {
+			return error;
+		}
+
+		// We have a very long ComparisonFailure -> try to "compress" it
+		final int expectedPos = error.indexOf("expected:<");
+		if (expectedPos < 0) {
+			return error; // Unexpected error format
+		}
+
+		final int butWasPos = error.indexOf("> but was:<", expectedPos);
+		if (butWasPos < 0) {
+			return error; // Unexpected error format
+		}
+
+		final int expectedDiffStart = error.indexOf('[', expectedPos);
+		final int expectedDiffEnd = expectedDiffStart < 0 ? -1 : error.lastIndexOf(']', butWasPos);
+
+		final int butWasDiffStart = error.indexOf('[', butWasPos);
+		final int butWasDiffEnd = butWasDiffStart < 0 ? -1 : error.lastIndexOf(']');
+
+		final StringBuilder resultBuilder = new StringBuilder();
+		resultBuilder.append(error.substring(0, expectedPos + 10));
+
+		// Expected:
+		if (expectedDiffEnd > expectedPos) {
+			resultBuilder.append(error.substring(expectedPos + 10, expectedDiffStart));
+
+			if (expectedDiffEnd - expectedDiffStart > 50) {
+				resultBuilder
+						.append(error.substring(expectedDiffStart, expectedDiffStart + 11))
+						.append(">...<")
+						.append(error.substring(expectedDiffEnd - 10, expectedDiffEnd));
+			} else {
+				resultBuilder.append(error.substring(expectedDiffStart, expectedDiffEnd));
+			}
+
+			resultBuilder.append(error.substring(expectedDiffEnd, butWasPos));
+		} else {
+			resultBuilder.append(error.substring(expectedPos + 10, butWasPos));
+		}
+
+		resultBuilder.append(error.substring(butWasPos, butWasPos + 11));
+
+		if (butWasDiffEnd > butWasPos) {
+			// But Was:
+			resultBuilder.append(error.substring(butWasPos + 11, butWasDiffStart));
+
+			if (butWasDiffEnd - butWasDiffStart > 50) {
+				resultBuilder
+						.append(error.substring(butWasDiffStart, butWasDiffStart + 11))
+						.append(">...<")
+						.append(error.substring(butWasDiffEnd - 10, butWasDiffEnd));
+			} else {
+				resultBuilder.append(error.substring(butWasDiffStart, butWasDiffEnd));
+			}
+
+			resultBuilder.append(error.substring(butWasDiffEnd));
+		} else {
+			resultBuilder.append(error.substring(butWasPos + 11));
+		}
+
+		return resultBuilder.toString();
+	}
+
+
 	private static void merge(ArrayList<JSONObject> rexs, JSONObject vex) { // merges two exercises
 		ArrayList<SingleReport> reps = new ArrayList<>();
 		double localpoints = 0;
@@ -136,7 +203,7 @@ public class JUnitPointsMerger {
 			localSummary += (String) usedresult.get("desc");
 			Object error = usedresult.get("error");
 			if (error != null) {
-				localSummary += " | " + (String) error;
+				localSummary += " | " + getFormattedErrorString((String) error);
 			}
 
 			String replaceErrorProperty = System.getProperty("replaceError");
@@ -144,7 +211,7 @@ public class JUnitPointsMerger {
 				if (rexCounterpart != null) {
 					Object replaceError = rexCounterpart.get("error");
 					if (replaceError != null) {
-						localSummary += " | " + (String) replaceError;
+						localSummary += " | " + getFormattedErrorString((String) replaceError);
 					}
 				}
 
