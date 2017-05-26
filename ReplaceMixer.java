@@ -1,10 +1,8 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import javax.annotation.processing.*;
 import javax.lang.model.*;
 import javax.lang.model.element.Element;
@@ -20,9 +18,6 @@ import com.sun.tools.javac.tree.*;
 import com.sun.tools.javac.util.*;
 import com.sun.tools.javac.tree.JCTree.*;
 import com.sun.tools.javac.util.List;
-import com.sun.tools.javac.util.Name;
-import com.sun.tools.javac.model.JavacElements;
-import javax.lang.model.util.Elements;
 
 @SupportedAnnotationTypes("*")
 @SupportedOptions("replaces")
@@ -93,9 +88,12 @@ public class ReplaceMixer extends AbstractProcessor {
 	}
 
 	private boolean isReplace(String method) {
-		if (replaces == null) return false;
-		for (String s : replaces) {
-			if (method.startsWith(s + ":")) return true;
+		if (replaces != null) {
+			for (String s : replaces) {
+				if (method.startsWith(s + ":")) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}
@@ -114,11 +112,11 @@ public class ReplaceMixer extends AbstractProcessor {
 		public void visitVarDef(JCVariableDecl tree) {
 			super.visitVarDef(tree);
 
-			if (insideBlock) return;
-
-			String name = tree.name.toString();
-			if (isCleanroom && name.startsWith(CLEAN_PREFIX)) {
-				cleanFields.put(name, tree);
+			if (!insideBlock) {
+				String name = tree.name.toString();
+				if (isCleanroom && name.startsWith(CLEAN_PREFIX)) {
+					cleanFields.put(name, tree);
+				}
 			}
 		}
 
@@ -143,8 +141,9 @@ public class ReplaceMixer extends AbstractProcessor {
 		public void visitMethodDef(JCMethodDecl tree) {
 			super.visitMethodDef(tree);
 
-			if (classLevel != 1) return;
-			if (!isPublic) return;
+			if (classLevel != 1 || !isPublic) {
+				return;
+			}
 
 			ArrayList<String> types = new ArrayList<>();
 			for (JCVariableDecl decl : tree.params) {
@@ -231,9 +230,11 @@ public class ReplaceMixer extends AbstractProcessor {
 			// outer
 			// public class
 			// of student
-			if (classLevel >= 1) return; // no outer class
-			if (!mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC)) return; // no public class
-			if (isCleanroom) return; // no student class
+			if (classLevel >= 1 // no outer class
+					|| !mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC) // no public class
+					|| isCleanroom) { // no student class
+				return;
+			}
 
 			tree.defs = appendAll(tree.defs, cleanMethods);
 			tree.defs = appendAll(tree.defs, cleanFields);

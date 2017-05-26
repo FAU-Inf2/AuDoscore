@@ -10,7 +10,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.MalformedURLException;
@@ -95,7 +94,7 @@ public class CheckAnnotation {
 						try{
 							Field field = cleanroomClass.getField(parts[1]);
 						} catch (NoSuchFieldException nsfe){
-							throw new IllegalArgumentException("ERROR - " + arg + " specified in @CompareInterface could not be found in cleanroom" );
+							throw new IllegalArgumentException("ERROR - " + arg + " specified in @CompareInterface could not be found in cleanroom");
 						}
 					}
 

@@ -24,10 +24,19 @@ public class ReadReplace {
 		final StringBuilder ncln = new StringBuilder();
 		for(Map.Entry<String, SortedSet<String>> e : mMethsMap.entrySet()) {
 			ncln.append('@').append(e.getKey());
-			for(String me : e.getValue())
+			for(String me : e.getValue()) {
 				ncln.append('#').append(me);
+			}
 		}
 		return ncln.toString();
+	}
+
+	public static String getCanonicalReplacement(Description description) {
+		if (description.getAnnotation(Replace.class) != null) {
+			Replace r = description.getAnnotation(Replace.class);
+			return getCanonicalReplacement(r);
+		}
+		return "";
 	}
 
 	public static Map<String, SortedSet<String>> getMap(Replace r) {
@@ -44,8 +53,9 @@ public class ReadReplace {
 				regex = r.value()[i].substring(s+1);
 			}
 
-			if (!mMethsMap.containsKey(cln))
+			if (!mMethsMap.containsKey(cln)) {
 				mMethsMap.put(cln, new TreeSet<String>());
+			}
 			SortedSet<String> meths = mMethsMap.get(cln);
 
 			try {
@@ -62,14 +72,6 @@ public class ReadReplace {
 			}
 		}
 		return mMethsMap;
-	}
-
-	public static String getCanonicalReplacement(Description description) {
-		if (description.getAnnotation(Replace.class) != null) {
-			Replace r = description.getAnnotation(Replace.class);
-			return getCanonicalReplacement(r);
-		}
-		return "";
 	}
 
 	public static void loopSecret(String tcln, String pub) throws Exception {
@@ -136,17 +138,35 @@ public class ReadReplace {
 				Map<String, SortedSet<String>> methsMap = getMap(r);
 				for (Map.Entry<String, SortedSet<String>> e : methsMap.entrySet()) {
 					final StringBuilder ncln = new StringBuilder(e.getKey());
-					if(e.getValue().size() == 0)
+					if(e.getValue().size() == 0) {
 						continue;
-					for(String me : e.getValue())
+					}
+					for(String me : e.getValue()) {
 						ncln.append('#').append(me.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>"));
+					}
 					final String nclns = ncln.toString();
 					mids.add("mkdir -p " + nclns + "; "
-						+ "javac -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=" + nclns + " -proc:only -processor ReplaceMixer cleanroom/" + e.getKey() + ".java " + e.getKey() + ".java > " + nclns + "/" + e.getKey() + ".java; "
-						+ "javac -cp . -d " + nclns + " -sourcepath " + nclns + " " + nclns + "/" + e.getKey() + ".java;");
+							+ "javac -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces="
+							+ nclns
+							+ " -proc:only -processor ReplaceMixer cleanroom/"
+							+ e.getKey() + ".java "
+							+ e.getKey() + ".java > "
+							+ nclns
+							+ "/"
+							+ e.getKey() + ".java; "
+							+ "javac -cp . -d "
+							+ nclns
+							+ " -sourcepath "
+							+ nclns
+							+ " "
+							+ nclns
+							+ "/"
+							+ e.getKey() + ".java;");
 				}
 			}
 		}
-		for (String mid : mids) System.out.println(mid);
+		for (String mid : mids) {
+			System.out.println(mid);
+		}
 	}
 }
