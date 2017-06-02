@@ -19,9 +19,15 @@ public class JUnitPointsMerger {
 
 	private static final class SingleReportComparator implements Comparator<SingleReport> {
 		public int compare(SingleReport r1, SingleReport r2) {
-			if (r1 == null && r2 == null) return 0;
-			if (r1 == null) return -1;
-			if (r2 == null) return 1;
+			if (r1 == null && r2 == null) {
+				return 0;
+			}
+			if (r1 == null) {
+				return -1;
+			}
+			if (r2 == null) {
+				return 1;
+			}
 			boolean t1 = r1.success;
 			boolean t2 = r2.success;
 			if (t1 == t2) {
@@ -30,7 +36,9 @@ public class JUnitPointsMerger {
 				}
 				return r1.description.compareTo(r2.description);
 			}
-			if (t1) return +1;
+			if (t1) {
+				return +1;
+			}
 			return -1;
 		}
 	}

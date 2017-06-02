@@ -1,6 +1,8 @@
 package tester;
 
 import java.io.FilePermission;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.ReflectPermission;
 import java.net.NetPermission;
 import java.util.PropertyPermission;
@@ -60,7 +62,25 @@ public class TesterSecurityManager extends SecurityManager {
 						if (!this.getClass().getCanonicalName().equals(stackTrace[i].getClassName())
 								&& !"tools.SingleMethodRunner".equals(stackTrace[i].getClassName())
 								&& !stackTrace[i].getClassName().startsWith("java.")
+								&& !stackTrace[i].getClassName().startsWith("sun.reflect.")
 								&& !stackTrace[i].getClassName().startsWith("org.junit.")) {
+							// Also grant the permission if the first offending method is a
+							// JUnit test case
+							try {
+								final Method method = Class.forName(stackTrace[i].getClassName())
+										.getMethod(stackTrace[i].getMethodName());
+								if (method != null) {
+									for (final Annotation annotation : method.getDeclaredAnnotations()) {
+										if ("org.junit.Test".equals(annotation.annotationType().getCanonicalName())) {
+											// Called from JUnit test case, grant permission
+											return;
+										}
+									}
+								}
+							} catch (final NoSuchMethodException|ClassNotFoundException e) {
+								// Ignore
+							}
+
 							// Deny permission
 							super.checkPermission(perm);
 						}

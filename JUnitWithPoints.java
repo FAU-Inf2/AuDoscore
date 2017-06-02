@@ -1,8 +1,6 @@
-import java.lang.reflect.Method;
 import java.util.*;
 import java.io.*;
 import java.lang.annotation.*;
-import java.util.concurrent.SynchronousQueue;
 
 import org.junit.*;
 import org.junit.internal.*;
@@ -25,7 +23,7 @@ public abstract class JUnitWithPoints {
 	@Rule
 	public final PointsLogger pointsLogger = new PointsLogger();
 	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
+	public static final PointsSummary pointsSummary = new PointsSummary();
 
 	// backend data structures
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
@@ -40,7 +38,9 @@ public abstract class JUnitWithPoints {
 	private static String getShortDisplayName(Description d) {
 		String orig = d.getDisplayName();
 		int ix = orig.indexOf('(');
-		if (ix == -1) return orig;
+		if (ix == -1) {
+			return orig;
+		}
 		return orig.substring(0, ix);
 	}
 
@@ -67,9 +67,15 @@ public abstract class JUnitWithPoints {
 
 		// get sensible part/line of stack trace
 		private String getStackTrace() {
-			if (throwable == null || throwable instanceof AssertionError) return "";
+			if (throwable == null || throwable instanceof AssertionError) {
+				return "";
+			}
+
 			StackTraceElement st[] = throwable.getStackTrace();
-			if (st.length == 0) return "";
+			if (st.length == 0) {
+				return "";
+			}
+
 			StackTraceElement ste = st[0]; // TODO: maybe search for student code here
 			int i = 1;
 			while (ste.getClassName().indexOf('.') >= 0 && i < st.length) {
