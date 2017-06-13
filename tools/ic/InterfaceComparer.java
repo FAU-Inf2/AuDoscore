@@ -79,7 +79,7 @@ public class InterfaceComparer {
 						.append('.');
 			}
 
-			resultBuilder.append(paramType.getRawType().getTypeName());
+			resultBuilder.append(paramType.getRawType().toString());
 
 			final Type[] typeArguments = paramType.getActualTypeArguments();
 			if (typeArguments.length > 0) {
@@ -108,7 +108,7 @@ public class InterfaceComparer {
 			}
 			return resultBuilder.toString();
 		}
-		return type.getTypeName();
+		return type.toString();
 	}
 
 
@@ -128,7 +128,7 @@ public class InterfaceComparer {
 
 		return resultBuilder
 				.append(' ')
-				.append(field.getDeclaringClass().getTypeName())
+				.append(field.getDeclaringClass().getName())
 				.append('.')
 				.append(field.getName())
 				.toString();
@@ -164,7 +164,7 @@ public class InterfaceComparer {
 
 		resultBuilder
 				.append(toNormalizedString(method.getGenericReturnType(), replacements)).append(' ')
-				.append(method.getDeclaringClass().getTypeName()).append('.')
+				.append(method.getDeclaringClass().getName()).append('.')
 				.append(method.getName()).append('(');
 
 		final Type[] params = method.getGenericParameterTypes();
