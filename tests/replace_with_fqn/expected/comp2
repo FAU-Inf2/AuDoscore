@@ -69,7 +69,7 @@ class ToTest ispub true
 class ToTest, true, 0, true
 class ToTest ispub true
 duplicate method: <init>: [], taken from student
-duplicate method: test: [java.util.List<E>], taken from cleanroom
+duplicate method: test: [java.util.List], taken from cleanroom
 class ToTest, false, 0, true
 + javac -cp . -d ToTest#test -sourcepath ToTest#test ToTest#test/ToTest.java
 java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p UnitTest SecretTest >> loop.sh	

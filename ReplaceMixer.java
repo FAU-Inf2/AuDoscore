@@ -1,6 +1,8 @@
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.*;
@@ -26,9 +28,9 @@ public class ReplaceMixer extends AbstractProcessor {
 	public final String CLEAN_PREFIX = "__clean";
 	private Trees trees;
 
-	private HashMap<String, JCTree> cleanMethods = new HashMap<>();
-	private HashMap<String, JCTree> cleanInnerClasses = new HashMap<>();
-	private HashMap<String, JCTree> cleanFields = new HashMap<>();
+	private HashMap<String, Replacement> cleanMethods = new HashMap<>();
+	private HashMap<String, Replacement> cleanInnerClasses = new HashMap<>();
+	private HashMap<String, Replacement> cleanFields = new HashMap<>();
 	private boolean isPublic = true;
 	private boolean imported[] = {false, false}; // cleanroom, student
 	private boolean isCleanroom;
@@ -98,8 +100,22 @@ public class ReplaceMixer extends AbstractProcessor {
 		return false;
 	}
 
+	private static class Replacement {
+		final List<JCTypeParameter> typeParams;
+		final JCTree tree;
+
+		Replacement(final List<JCTypeParameter> typeParams, final JCTree tree) {
+			this.typeParams = typeParams;
+			this.tree = tree;
+		}
+	}
+
 	private class Merger extends TreeTranslator {
+
+		private final ArrayDeque<List<JCTypeParameter>> typeParamStack = new ArrayDeque<>();
+
 		public boolean insideBlock = false;
+
 
 		@Override
 		public void visitBlock(JCBlock tree) {
@@ -115,7 +131,7 @@ public class ReplaceMixer extends AbstractProcessor {
 			if (!insideBlock) {
 				String name = tree.name.toString();
 				if (isCleanroom && name.startsWith(CLEAN_PREFIX)) {
-					cleanFields.put(name, tree);
+					cleanFields.put(name, new Replacement(typeParamStack.peek(), tree));
 				}
 			}
 		}
@@ -150,21 +166,28 @@ public class ReplaceMixer extends AbstractProcessor {
 				final Symbol paramTypeSymbol = TreeInfo.symbol(decl.vartype);
 				String fullyQualifiedType = decl.vartype.toString();
 				if (paramTypeSymbol != null) {
-					fullyQualifiedType = paramTypeSymbol.asType().toString();
+					fullyQualifiedType = paramTypeSymbol.toString();
 					if (fullyQualifiedType.indexOf("cleanroom.") == 0) {
 						fullyQualifiedType = fullyQualifiedType.substring("cleanroom.".length());
 					}
 				}
 				types.add(fullyQualifiedType);
 			}
-			String name = tree.name.toString() + ": " +  getTypesAsString(types, tree.typarams);
+
+			final List<JCTypeParameter> typeParams = typeParamStack.isEmpty()
+					? tree.typarams
+					: typeParamStack.peek().appendList(tree.typarams);
+			String name = tree.name.toString() + ": " +  getTypesAsString(types, typeParams);
 			if (isCleanroom) {
-				cleanMethods.put(name, tree);
+				cleanMethods.put(name, new Replacement(typeParamStack.peek(), tree));
 			} else {
-				if (cleanMethods.get(name) != null) {
+				if (cleanMethods.containsKey(name)) {
 					if (isReplace(name)) {
 						System.err.println("duplicate method: " + name + ", taken from cleanroom");
-						result = cleanMethods.get(name);
+
+						final Replacement replacement = cleanMethods.get(name);
+						result = new TypeParameterTranslator(replacement.typeParams, typeParams)
+								.translate(replacement.tree);
 					} else {
 						System.err.println("duplicate method: " + name + ", taken from student");
 					}
@@ -174,9 +197,13 @@ public class ReplaceMixer extends AbstractProcessor {
 			}
 		}
 
-		private List<JCTree> appendAll(List<JCTree> list, Map<String, JCTree> cleanObjects) {
-			for (Map.Entry<String, JCTree> entry : cleanObjects.entrySet()) {
-				list = list.append(entry.getValue());
+		private List<JCTree> appendAll(List<JCTree> list, final List<JCTypeParameter> typeParams,
+				final Map<String, Replacement> cleanObjects) {
+
+			for (Map.Entry<String, Replacement> entry : cleanObjects.entrySet()) {
+				final Replacement replacement = entry.getValue();
+				list = list.append(new TypeParameterTranslator(replacement.typeParams, typeParams)
+						.translate(replacement.tree));
 			}
 			return list;
 		}
@@ -214,7 +241,9 @@ public class ReplaceMixer extends AbstractProcessor {
 					schlepp = t;
 				}
 			}
+			typeParamStack.push(tree.typarams);
 			super.visitClassDef(tree);
+			typeParamStack.pop();
 			classLevel--;
 			isPublic = oldPublic;
 
@@ -223,7 +252,7 @@ public class ReplaceMixer extends AbstractProcessor {
 			if (isCleanroom && classLevel >= 1 && tree.name.toString().startsWith(CLEAN_PREFIX)) {
 				// remember additional inner classes of cleanroom
 				// those will be added later in student's public class
-				cleanInnerClasses.put(tree.name.toString(), tree);
+				cleanInnerClasses.put(tree.name.toString(), new Replacement(tree.typarams, tree));
 			}
 
 			// only add methods, fields and inner classes in
@@ -236,11 +265,87 @@ public class ReplaceMixer extends AbstractProcessor {
 				return;
 			}
 
-			tree.defs = appendAll(tree.defs, cleanMethods);
-			tree.defs = appendAll(tree.defs, cleanFields);
-			tree.defs = appendAll(tree.defs, cleanInnerClasses);
+			tree.defs = appendAll(tree.defs, tree.typarams, cleanMethods);
+			tree.defs = appendAll(tree.defs, tree.typarams, cleanFields);
+			tree.defs = appendAll(tree.defs, tree.typarams, cleanInnerClasses);
 			
 			result = tree;
+		}
+	}
+
+	private class TypeParameterTranslator extends TreeTranslator {
+
+		private final Map<Name, Name> typeParamMap = new HashMap<>();
+		private boolean inType = false;
+
+		TypeParameterTranslator(final List<JCTypeParameter> cleanroomTypeParams,
+				final List<JCTypeParameter> currentTypeParams) {
+			if (cleanroomTypeParams != null && currentTypeParams != null) {
+				for (final Iterator<JCTypeParameter> cleanroomIt = cleanroomTypeParams.iterator(),
+						currentIt = currentTypeParams.iterator();
+						cleanroomIt.hasNext() && currentIt.hasNext();) {
+					this.typeParamMap.put(cleanroomIt.next().name, currentIt.next().name);
+				}
+			}
+		}
+
+		@Override
+		public <T extends JCTree> T translate(final T tree) {
+			if (inType && tree instanceof JCIdent) {
+				final JCIdent ident = (JCIdent) tree;
+				if (this.typeParamMap.containsKey(ident.name)) {
+					ident.name = this.typeParamMap.get(ident.name);
+				}
+				return tree;
+			}
+			return super.translate(tree);
+		}
+
+		@Override
+		public void visitMethodDef(JCMethodDecl tree) {
+			tree.mods = translate(tree.mods);
+
+			inType = true;
+			tree.restype = translate(tree.restype);
+			inType = false;
+
+			tree.typarams = translateTypeParams(tree.typarams);
+			tree.params = translateVarDefs(tree.params);
+
+			inType = true;
+			tree.thrown = translate(tree.thrown);
+			inType = false;
+
+			tree.body = translate(tree.body);
+
+			result = tree;
+		}
+
+		@Override
+		public void visitVarDef(final JCVariableDecl tree) {
+			inType = true;
+			tree.vartype = translate(tree.vartype);
+			inType = false;
+			tree.init = translate(tree.init);
+
+			result = tree;
+		}
+
+		@Override
+		public void visitTypeCast(final JCTypeCast tree) {
+			inType = true;
+			tree.clazz = translate(tree.clazz);
+			inType = false;
+			tree.expr = translate(tree.expr);
+
+			result = tree;
+		}
+
+		@Override
+		public void visitTypeParameter(final JCTypeParameter tree) {
+			inType = true;
+			super.visitTypeParameter(tree);
+			inType = false;
 		}
 	}
 }
