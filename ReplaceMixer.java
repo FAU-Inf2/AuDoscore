@@ -347,5 +347,21 @@ public class ReplaceMixer extends AbstractProcessor {
 			super.visitTypeParameter(tree);
 			inType = false;
 		}
+
+		@Override
+		public void visitNewClass(JCNewClass tree) {
+			tree.encl = translate(tree.encl);
+
+			inType = true;
+			for (List<JCExpression> list = tree.typeargs; list.nonEmpty(); list = list.tail) {
+				list.head = translate(list.head);
+			}
+			tree.clazz = translate(tree.clazz);
+			inType = false;
+
+			tree.args = translate(tree.args);
+			tree.def = translate(tree.def);
+			result = tree;
+		}
 	}
 }
