@@ -54,10 +54,10 @@
                     "name": "GA4.6a",
                     "tests": [
                         {
-                            "desc": "test2",
-                            "error": "AssertionError(Should return 23*42 expected:<966> but was:<2>)",
+                            "desc": "test",
+                            "error": "AssertionError(Should return 42 expected:<42> but was:<-1>)",
                             "fromSecret": true,
-                            "id": "test2",
+                            "id": "test",
                             "success": false
                         }
                     ]
@@ -70,10 +70,10 @@
                     "name": "GA4.6a",
                     "tests": [
                         {
-                            "desc": "test",
-                            "error": "AssertionError(Should return 42 expected:<42> but was:<-1>)",
+                            "desc": "test2",
+                            "error": "AssertionError(Should return 23*42 expected:<966> but was:<2>)",
                             "fromSecret": true,
-                            "id": "test",
+                            "id": "test2",
                             "success": false
                         }
                     ]

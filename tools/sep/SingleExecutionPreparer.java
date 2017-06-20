@@ -13,18 +13,29 @@ public class SingleExecutionPreparer {
 		System.exit(0);
 	}
 
+	public static Method[] getMethodsSorted(final Class cls) {
+		final Method[] methods = cls.getMethods();
+		Arrays.sort(methods, new Comparator<Method>() {
+			@Override
+			public int compare(final Method method1, final Method method2) {
+				return method1.getName().compareTo(method2.getName());
+			}
+		});
+		return methods;
+	}
+
 	private static void writeOutSingleTestExecution(String cp, String dparam, String className){
 		try{
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			Class tc = cl.loadClass(className);
 			int counter = 0;
-			for(Method method : tc.getMethods()) {
+			for(Method method : getMethodsSorted(tc)) {
 				if(method.isAnnotationPresent(Test.class)){
 					if(counter > 0){
 						System.out.println("echo \",\" 1>&2");
 					}
 					String methodName = method.getName();
-					System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp "+cp + dparam + " tools.SingleMethodRunner " + className + " " + methodName + " || echo");
+					System.out.println("java -XX:-OmitStackTraceInFastThrow -XX:+UseConcMarkSweepGC -Xmx1024m -cp "+cp + dparam + " tools.SingleMethodRunner " + className + " " + methodName);
 					counter++;
 				}
 			

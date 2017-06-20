@@ -10,9 +10,20 @@ make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class
 java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
-javap -p -c ToTest > javap.out
-sed -i -e 's/(.*//' javap.out
-! ( cat javap.out | ./forbidden 1>&2 )
+if [ "xSecretTest" != "x" ]; then \
+	STUDENTCLASSES=$(find . -maxdepth 1 -iname "*.class" -a \! \( -name "UnitTest*" -o -name "SecretTest*" \) ); \
+else \
+	STUDENTCLASSES=$(find . -maxdepth 1 -iname "*.class" -a \! -name "UnitTest*"); \
+fi; \
+if [ "x" != "x" ]; then \
+	STUDENTCLASSES=$(echo "$STUDENTCLASSES" | grep -vE "$(echo "" | sed 's/\.java/(\\\$[^.]*)?\.class/g' | tr " " "|")"); \
+fi; \
+for i in $STUDENTCLASSES; do \
+	rm -f javap.out; \
+	javap -p -c $i > javap.out; \
+	sed -i -e 's/(.*//' javap.out; \
+	! ( cat javap.out | ./forbidden 1>&2 ) || exit 1; \
+done
 rm forbidden
 make run-comparer
 make[3]: Entering directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.25265'
@@ -45,8 +56,8 @@ for i in cleanroom/*.java; do \
 done
 java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
 Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - Cannot replace unknown class: UnkownClass
-	at tester.ReadReplace.getMap(ReadReplace.java:50)
-	at tester.ReadReplace.main(ReadReplace.java:125)
+	at tester.ReadReplace.getMap(ReadReplace.java:71)
+	at tester.ReadReplace.main(ReadReplace.java:138)
 Makefile:89: recipe for target 'compile-stage2-secret' failed
 make[2]: *** [compile-stage2-secret] Error 1
 make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.25265'

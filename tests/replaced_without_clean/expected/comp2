@@ -10,9 +10,20 @@ make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/replaced_without_clea
 java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
-javap -p -c ToTest > javap.out
-sed -i -e 's/(.*//' javap.out
-! ( cat javap.out | ./forbidden 1>&2 )
+if [ "xSecretTest" != "x" ]; then \
+	STUDENTCLASSES=$(find . -maxdepth 1 -iname "*.class" -a \! \( -name "UnitTest*" -o -name "SecretTest*" \) ); \
+else \
+	STUDENTCLASSES=$(find . -maxdepth 1 -iname "*.class" -a \! -name "UnitTest*"); \
+fi; \
+if [ "x" != "x" ]; then \
+	STUDENTCLASSES=$(echo "$STUDENTCLASSES" | grep -vE "$(echo "" | sed 's/\.java/(\\\$[^.]*)?\.class/g' | tr " " "|")"); \
+fi; \
+for i in $STUDENTCLASSES; do \
+	rm -f javap.out; \
+	javap -p -c $i > javap.out; \
+	sed -i -e 's/(.*//' javap.out; \
+	! ( cat javap.out | ./forbidden 1>&2 ) || exit 1; \
+done
 rm forbidden
 make run-comparer
 make[3]: Entering directory '/home/sitowert/AuDoscore/tests/replaced_without_clean/test.8217'
@@ -53,7 +64,7 @@ if [ "x" != "x" ]; then \
 fi
 /bin/dash -ex ./compile2.sh
 + mkdir -p ToTest#toTest
-+ javac -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#toTest -proc:only -processor ReplaceMixer cleanroom/ToTest.java ToTest.java
++ javac -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#toTest -proc:only -processor ReplaceMixer cleanroom/ToTest.java ToTest.java
 class ToTest ispub true
 class ToTest, true, 0, true
 class ToTest ispub true

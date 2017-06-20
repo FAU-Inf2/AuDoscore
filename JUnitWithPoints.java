@@ -1,8 +1,6 @@
-import java.lang.reflect.Method;
 import java.util.*;
 import java.io.*;
 import java.lang.annotation.*;
-import java.util.concurrent.SynchronousQueue;
 
 import org.junit.*;
 import org.junit.internal.*;
@@ -25,7 +23,7 @@ public abstract class JUnitWithPoints {
 	@Rule
 	public final PointsLogger pointsLogger = new PointsLogger();
 	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
+	public static final PointsSummary pointsSummary = new PointsSummary();
 
 	// backend data structures
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
@@ -40,7 +38,9 @@ public abstract class JUnitWithPoints {
 	private static String getShortDisplayName(Description d) {
 		String orig = d.getDisplayName();
 		int ix = orig.indexOf('(');
-		if (ix == -1) return orig;
+		if (ix == -1) {
+			return orig;
+		}
 		return orig.substring(0, ix);
 	}
 
@@ -67,9 +67,15 @@ public abstract class JUnitWithPoints {
 
 		// get sensible part/line of stack trace
 		private String getStackTrace() {
-			if (throwable == null || throwable instanceof AssertionError) return "";
+			if (throwable == null || throwable instanceof AssertionError) {
+				return "";
+			}
+
 			StackTraceElement st[] = throwable.getStackTrace();
-			if (st.length == 0) return "";
+			if (st.length == 0) {
+				return "";
+			}
+
 			StackTraceElement ste = st[0]; // TODO: maybe search for student code here
 			int i = 1;
 			while (ste.getClassName().indexOf('.') >= 0 && i < st.length) {
@@ -109,7 +115,6 @@ public abstract class JUnitWithPoints {
 	// helper class for logging purposes
 	protected static class PointsLogger extends TestWatcher {
 
-		private static PrintStream saveOut, saveErr;
 		private long startTime = 0;
 		private long endTime = 0;
 
@@ -151,20 +156,15 @@ public abstract class JUnitWithPoints {
 		@Override
 		protected void starting(Description description) {
 			startTime = System.currentTimeMillis();
-            // disable stdout/stderr to avoid timeouts due to large debugging outputs
-            if (saveOut == null) {
-                saveOut = System.out;
-                saveErr = System.err;
-
-                System.setOut(new PrintStream(new OutputStream() {
-                    public void write(int i) { }
-                }));
-                System.setErr(System.out);
-            }
 		}
 
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
+			// Reset security manager
+			try {
+				System.setSecurityManager(null);
+			} catch (final SecurityException e) { /* Ignore */ }
+			
 			endTime = System.currentTimeMillis();
 			long executionTime  = endTime - startTime;
 			Points pointsAnnotation = description.getAnnotation(Points.class);
@@ -190,6 +190,7 @@ public abstract class JUnitWithPoints {
 	// helper class for summaries
 	protected static class PointsSummary extends ExternalResource {
 		public static final int MAX_TIMEOUT_MS = 60_000;
+		private static PrintStream saveOut, saveErr;
 		private static boolean isSecretClass = false;
 
 		@Override
@@ -249,7 +250,7 @@ public abstract class JUnitWithPoints {
 							JSONObject reportJSON = reportEntry.toJSON();
 							// mark test method regarding origin
 							reportJSON.put("fromSecret", isSecretClass);
-							jsonTests.add(reportJSON);
+							jsonTests.add(new TreeMap<String, Object>(reportJSON));
 						}
 					}
 
@@ -257,18 +258,37 @@ public abstract class JUnitWithPoints {
 					JSONObject jsonExercise = new JSONObject();
 					jsonExercise.put("name", exerciseResults.getKey());
 					jsonExercise.put("tests", jsonTests);
-					jsonExercises.add(jsonExercise);
+					jsonExercises.add(new TreeMap<String, Object>(jsonExercise));
 				}
 
 				// add results to root node and write to stderr
 				JSONObject jsonSummary = new JSONObject();
 				jsonSummary.put("exercises", jsonExercises);
 				try {
-					PointsLogger.saveErr = new PrintStream(PointsLogger.saveErr, true, "utf-8");
+					saveErr = new PrintStream(saveErr, true, "utf-8");
 				} catch (UnsupportedEncodingException e) {
 					// silently ignore exception -> it's not that important after all
 				}
-				PointsLogger.saveErr.println(jsonSummary);
+				saveErr.println(jsonSummary);
+			}
+		}
+
+		@Override
+		protected final void before() {
+			// disable stdout/stderr to avoid timeouts due to large debugging outputs
+			if (saveOut == null) {
+				saveOut = System.out;
+				saveErr = System.err;
+
+				System.setOut(new PrintStream(new OutputStream() {
+					public void write(int i) { }
+				}));
+				System.setErr(System.out);
+
+				// Install security manager
+				try {
+					System.setSecurityManager(new TesterSecurityManager());
+				} catch (final SecurityException e) { /* Ignore */ }
 			}
 		}
 	}
