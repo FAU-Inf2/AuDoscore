@@ -1,0 +1,10 @@
+{ "vanilla" : 
+[
+{"exercises":[{"name":"GetDeclaredMethods","tests":[{"desc":"testEmpty","fromSecret":false,"id":"testEmpty","success":true}]}]}
+,
+{"exercises":[{"name":"GetDeclaredMethods","tests":[{"desc":"test","fromSecret":true,"id":"test","success":true}]}]}
+]
+, "replaced" : 
+[
+]
+}
