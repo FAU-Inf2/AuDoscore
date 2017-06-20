@@ -20,6 +20,7 @@ TESTCLASS = $(TEST:=.class)
 TESTSOURCE = $(TEST:=.java)
 SECRETCLASS = $(SECRETTEST:=.class)
 SECRETSOURCE = $(SECRETTEST:=.java)
+INTERFACESOURCE ?= $(filter %.java,$(INTERFACES))
 
 all: prepare
 
@@ -73,8 +74,8 @@ compile-stage1: miniclean
 	else \
 		STUDENTCLASSES=$$(find . -maxdepth 1 -iname "*.class" -a \! -name "$(TEST)*"); \
 	fi; \
-	if [ "x$(INTERFACES)" != "x" ]; then \
-		STUDENTCLASSES=$$(echo "$$STUDENTCLASSES" | grep -vE "$$(echo "$(INTERFACES)" | sed 's/\.java/(\\\$$[^.]*)?\.class/g' | tr " " "|")"); \
+	if [ "x$(INTERFACESOURCE)" != "x" ]; then \
+		STUDENTCLASSES=$$(echo "$$STUDENTCLASSES" | grep -vE "$$(echo "$(INTERFACESOURCE)" | sed 's/\.java/(\\\$$[^.]*)?\.class/g' | tr " " "|")"); \
 	fi; \
 	for i in $$STUDENTCLASSES; do \
 		rm -f javap.out; \
@@ -111,9 +112,9 @@ compile-stage2-secret:
 		cat $${i}.bak >> $$i; \
 	done
 	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(SECRETTEST) > compile2.sh
-	if [ "x$(INTERFACES)" != "x" ]; then \
+	if [ "x$(INTERFACESOURCE)" != "x" ]; then \
 		set -e ; \
-		for i in $(INTERFACES); do \
+		for i in $(INTERFACESOURCE); do \
 			/bin/echo -e "package cleanroom;\n" > cleanroom/$$i; \
 			cat $$i >> cleanroom/$$i; \
 		done; \
@@ -147,7 +148,7 @@ run: run-stage$(STAGE)
 
 
 $(TESTCLASS): $(TESTSOURCE) $(STUDENTSOURCE)
-	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACES)
+	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACESOURCE)
 
 $(SECRETCLASS): $(SECRETSOURCE) $(STUDENTSOURCE)
-	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(SECRETSOURCE) $(STUDENTSOURCE) $(INTERFACES)
+	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(SECRETSOURCE) $(STUDENTSOURCE) $(INTERFACESOURCE)
