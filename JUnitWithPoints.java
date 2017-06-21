@@ -192,6 +192,7 @@ public abstract class JUnitWithPoints {
 		public static final int MAX_TIMEOUT_MS = 60_000;
 		private static PrintStream saveOut, saveErr;
 		private static boolean isSecretClass = false;
+		private List<String> safeCallerList;
 
 		@Override
 		public final Statement apply(Statement base, Description description) {
@@ -205,6 +206,15 @@ public abstract class JUnitWithPoints {
 			for (Ex exercise : exercisesAnnotation.value()) {
 				reportHashMap.put(exercise.exID(), new ArrayList<ReportEntry>());
 				exerciseHashMap.put(exercise.exID(), exercise);
+			}
+
+			// Obtain a list of safe callers (i.e., callers that are known to
+			// contain no malicious code)
+			final SafeCallers safeCallerAnnotation = description.getAnnotation(SafeCallers.class);
+			if (safeCallerAnnotation == null) {
+				this.safeCallerList = Collections.emptyList();
+			} else {
+				this.safeCallerList = Arrays.asList(safeCallerAnnotation.value());
 			}
 
 			// start the real JUnit test
@@ -287,7 +297,7 @@ public abstract class JUnitWithPoints {
 
 				// Install security manager
 				try {
-					System.setSecurityManager(new TesterSecurityManager());
+					System.setSecurityManager(new TesterSecurityManager(this.safeCallerList));
 				} catch (final SecurityException e) { /* Ignore */ }
 			}
 		}

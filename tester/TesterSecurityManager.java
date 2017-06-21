@@ -5,12 +5,25 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ReflectPermission;
 import java.net.NetPermission;
+import java.util.Collections;
+import java.util.List;
 import java.util.PropertyPermission;
 import java.security.Permission;
 
 
 
 public class TesterSecurityManager extends SecurityManager {
+
+	private final List<String> safeCallerList;
+
+
+
+	public TesterSecurityManager(final List<String> safeCallerList) {
+		this.safeCallerList = safeCallerList;
+	}
+
+
+
 	@Override
 	public void checkAccess(final Thread t) {
 		// Allow access to threads
@@ -55,10 +68,15 @@ public class TesterSecurityManager extends SecurityManager {
 				}
 
 				case "accessDeclaredMembers": {
-					// Only grant this permission if the method is called by JUnit or by
-					// java.lang.Thread.<init>
+					// Only grant this permission if the method is called by a safe
+					// caller, JUnit or by java.lang.Thread.<init>
 					final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 					for (int i = 1; i < stackTrace.length; ++i) {
+						if (this.safeCallerList.contains(stackTrace[i].getClassName())) {
+							// Grant permission
+							return;
+						}
+
 						if (!this.getClass().getCanonicalName().equals(stackTrace[i].getClassName())
 								&& !"tools.SingleMethodRunner".equals(stackTrace[i].getClassName())
 								&& !stackTrace[i].getClassName().startsWith("java.")
@@ -112,7 +130,9 @@ public class TesterSecurityManager extends SecurityManager {
 
 				case "createClassLoader": {
 					// Only grant this permission if the method is called from JUnit
-					if (calledFromJUnit() || calledFrom("java.awt.Color", "java.")) {
+					if (calledFromJUnit()
+							|| calledFromSafeCallers()
+							|| calledFrom("java.awt.Color", "java.")) {
 						return;
 					}
 					break;
@@ -195,9 +215,14 @@ public class TesterSecurityManager extends SecurityManager {
 
 
 	private boolean checkReadPermissions(final String fileName) {
-		// Allow only if called from ClassLoader or from JUnit
+		// Allow only if called from a safe caller, ClassLoader or from JUnit
 		final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 		for (int i = 1; i < stackTrace.length; ++i) {
+			if (this.safeCallerList.contains(stackTrace[i].getClassName())) {
+				// Allow
+				return true;
+			}
+
 			if (!stackTrace[i].getClassName().startsWith("java.")
 					&& !stackTrace[i].getClassName().startsWith("sun.")
 					&& !stackTrace[i].getClassName().startsWith("org.junit.")
@@ -223,10 +248,18 @@ public class TesterSecurityManager extends SecurityManager {
 
 	private boolean checkNetPermission(final NetPermission perm) {
 		if ("specifyStreamHandler".equals(perm.getName())) {
-			// Allow only if called from JUnit
-			return calledFromJUnit() || calledFrom("java.awt.Toolkit", "java.", "sun.");
+			// Allow only if called from a safe caller or JUnit
+			return calledFromJUnit()
+					|| calledFromSafeCallers()
+					|| calledFrom("java.awt.Toolkit", "java.", "sun.");
 		}
 		return false;
+	}
+
+
+
+	private boolean calledFromSafeCallers() {
+		return calledFrom(this.safeCallerList, "java.", "sun.", "org.junit.");
 	}
 
 
@@ -239,6 +272,14 @@ public class TesterSecurityManager extends SecurityManager {
 
 	private boolean calledFrom(final String calledFromClassName,
 			final String ... allowedClassPrefixes) {
+		return calledFrom(Collections.singletonList(calledFromClassName), allowedClassPrefixes);
+	}
+
+
+
+	private boolean calledFrom(final List<String> calledFromNames,
+			final String ... allowedClassPrefixes) {
+
 		final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 		for (int i = 1; i < stackTrace.length; ++i) {
 			if (!this.getClass().getCanonicalName().equals(stackTrace[i].getClassName())) {
@@ -252,7 +293,7 @@ public class TesterSecurityManager extends SecurityManager {
 				}
 			}
 
-			if (calledFromClassName.equals(stackTrace[i].getClassName())) {
+			if (calledFromNames.contains(stackTrace[i].getClassName())) {
 				return true;
 			}
 		}
