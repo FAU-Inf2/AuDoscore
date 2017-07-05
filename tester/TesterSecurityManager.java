@@ -130,9 +130,11 @@ public class TesterSecurityManager extends SecurityManager {
 				}
 
 				case "createClassLoader": {
-					// Only grant this permission if the method is called from JUnit
+					// Only grant this permission if the method is called from JUnit or
+					// from the locale initialization mechanism
 					if (calledFromJUnit()
 							|| calledFromSafeCallers()
+							|| calledFrom("java.text.NumberFormat", "sun.", "java.")
 							|| calledFrom("java.awt.Color", "java.")) {
 						return;
 					}
@@ -216,7 +218,8 @@ public class TesterSecurityManager extends SecurityManager {
 
 
 	private boolean checkReadPermissions(final String fileName) {
-		// Allow only if called from a safe caller, ClassLoader or from JUnit
+		// Allow only if called from a safe caller, ClassLoader, for locale
+		// initialization, or from JUnit
 		final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 		for (int i = 1; i < stackTrace.length; ++i) {
 			if (this.safeCallerList.contains(stackTrace[i].getClassName())) {
@@ -235,6 +238,12 @@ public class TesterSecurityManager extends SecurityManager {
 			}
 			if ("java.lang.ClassLoader".equals(stackTrace[i].getClassName())
 					|| stackTrace[i].getClassName().startsWith("java.lang.ClassLoader$")) {
+				// Allow
+				return true;
+			}
+			if ("java.text.NumberFormat".equals(stackTrace[i].getClassName())
+					&& (fileName.endsWith("localedata.jar") || fileName.endsWith("currency.data")
+						|| fileName.endsWith("currency.properties"))) {
 				// Allow
 				return true;
 			}
