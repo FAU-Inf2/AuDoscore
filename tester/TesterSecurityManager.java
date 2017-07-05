@@ -262,6 +262,7 @@ public class TesterSecurityManager extends SecurityManager {
 		// Allow only if called from a safe caller or JUnit
 		return calledFromJUnit()
 				|| calledFromSafeCallers()
+				|| calledFrom("java.text.NumberFormat", "java.", "sun.")
 				|| calledFrom("java.awt.Toolkit", "java.", "sun.");
 	}
 
