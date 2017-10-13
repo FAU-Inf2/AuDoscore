@@ -20,12 +20,14 @@ import javax.lang.model.element.TypeElement;
 
 import com.sun.source.util.Trees;
 import com.sun.source.util.TreePath;
+import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.model.JavacElements;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCAnnotation;
-import com.sun.tools.javac.tree.JCTree.JCIdent;
 import com.sun.tools.javac.tree.JCTree.JCClassDecl;
+import com.sun.tools.javac.tree.JCTree.JCIdent;
+import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
 import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.Context;
@@ -94,6 +96,10 @@ public class PublicTestCleaner extends AbstractProcessor {
 
 class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 
+	private boolean inEnum = false;
+
+
+
 	public PrettyClean(Writer out, boolean sourceOutput) {
 		super(out, sourceOutput);
 	}
@@ -102,6 +108,9 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 
 	@Override
 	public void visitClassDef(JCClassDecl tree) {
+		final boolean oldInEnum = this.inEnum;
+		this.inEnum = (tree.mods.flags & Flags.ENUM) > 0;
+
 		if (tree.extending != null && "JUnitWithPoints".equals(tree.extending.toString())){
 			// Remove JUnitWithPoints
 			tree.extending = null;
@@ -128,6 +137,8 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 			tree.defs = List.from(Arrays.copyOf(resultDefs, resultSize));
 		}
 		super.visitClassDef(tree);
+
+		this.inEnum = oldInEnum;
 	}
 
 
@@ -155,5 +166,19 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 		} catch (IOException e) {
 			throw new Error("something failed while removing AuDoscore annotations: " + e);
 		}
+	}
+
+
+
+	@Override
+	public void visitApply(final JCMethodInvocation tree) {
+		if (inEnum && tree.meth instanceof JCIdent) {
+			JCIdent ident = (JCIdent) tree.meth;
+			if (ident.name == ident.name.table.names._super) {
+				return;
+			}
+		}
+
+		super.visitApply(tree);
 	}
 }
