@@ -133,7 +133,7 @@ run-stage0:
 	echo "alles gut"
 
 run-stage1:
-	java -XX:-OmitStackTraceInFastThrow -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	java -XX:-OmitStackTraceInFastThrow -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2

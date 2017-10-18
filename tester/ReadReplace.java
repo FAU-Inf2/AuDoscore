@@ -111,7 +111,7 @@ public class ReadReplace {
 				}else{
 					System.out.println("echo \",\" 1>&2");
 				}
-				System.out.println("java -XX:-OmitStackTraceInFastThrow -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dpub=" +pub+" -Djson=yes tools.SingleMethodRunner " + tcln + " "  + method);
+				System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:" + classpath + ":. -Dpub=" +pub+" -Djson=yes tools.SingleMethodRunner " + tcln + " "  + method);
 			}
 
 		}
