@@ -11,7 +11,7 @@ compiletest = \
 	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(1).java > $(1).java.tmp ; \
 	mv $(1).java.tmp $(1).java ; \
 	make -B $(2); \
-	javac cleanroom/*.java;
+	javac $(COMPILER_ARGS) cleanroom/*.java;
 
 ifndef SECRETCLASS
 	-include varsec.mk
@@ -62,7 +62,7 @@ clean-pubtest: $(FILE)
 	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(FILE) > $(FILE).tmp
 
 compile-stage0:
-	javac $(STUDENTSOURCE)	
+	javac $(COMPILER_ARGS) $(STUDENTSOURCE)
 
 compile-stage1: miniclean
 	$(call compiletest,$(TEST),$(TESTCLASS))
@@ -148,7 +148,7 @@ run: run-stage$(STAGE)
 
 
 $(TESTCLASS): $(TESTSOURCE) $(STUDENTSOURCE)
-	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACESOURCE)
+	javac $(COMPILER_ARGS) -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACESOURCE)
 
 $(SECRETCLASS): $(SECRETSOURCE) $(STUDENTSOURCE)
-	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(SECRETSOURCE) $(STUDENTSOURCE) $(INTERFACESOURCE)
+	javac $(COMPILER_ARGS) -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(SECRETSOURCE) $(STUDENTSOURCE) $(INTERFACESOURCE)
