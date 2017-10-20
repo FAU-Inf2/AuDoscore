@@ -1,0 +1,2 @@
+java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
+Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - Cannot replace unknown method: doesnotexist
