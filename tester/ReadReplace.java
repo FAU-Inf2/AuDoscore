@@ -59,13 +59,19 @@ public class ReadReplace {
 			SortedSet<String> meths = mMethsMap.get(cln);
 
 			try {
+				boolean foundMatch = false;
 				for (Method me : Class.forName(cln).getDeclaredMethods()) {
 					if (me.getName().matches(regex)) {
 						meths.add(me.getName());
+						foundMatch = true;
 					}
 				}
 				if ("<init>".matches(regex)) {
 					meths.add("<init>");
+					foundMatch = true;
+				}
+				if (!foundMatch) {
+					throw new AnnotationFormatError("ERROR - Cannot replace unknown method: " + regex);
 				}
 			} catch (ClassNotFoundException e) {
 				throw new AnnotationFormatError("ERROR - Cannot replace unknown class: " + cln);
