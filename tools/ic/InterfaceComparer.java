@@ -79,7 +79,7 @@ public class InterfaceComparer {
 						.append('.');
 			}
 
-			resultBuilder.append(paramType.getRawType().toString());
+			resultBuilder.append(paramType.getRawType().getTypeName());
 
 			final Type[] typeArguments = paramType.getActualTypeArguments();
 			if (typeArguments.length > 0) {
@@ -108,7 +108,7 @@ public class InterfaceComparer {
 			}
 			return resultBuilder.toString();
 		}
-		return type.toString();
+		return type.getTypeName();
 	}
 
 

@@ -23,7 +23,7 @@ import com.sun.tools.javac.util.List;
 
 @SupportedAnnotationTypes("*")
 @SupportedOptions("replaces")
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ReplaceMixer extends AbstractProcessor {
 	public final String CLEAN_PREFIX = "__clean";
 	private Trees trees;
@@ -61,7 +61,8 @@ public class ReplaceMixer extends AbstractProcessor {
 				} else {
 					isCleanroom = false;
 				}
-				if (each.getKind() == ElementKind.CLASS) {
+				if ((each.getKind() == ElementKind.CLASS)
+						|| (each.getKind() == ElementKind.INTERFACE)) {
 					classLevel = 0;
 					JCTree tree = (JCTree) trees.getTree(each);
 					tree.accept(new Merger());

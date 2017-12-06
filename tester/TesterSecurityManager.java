@@ -69,7 +69,8 @@ public class TesterSecurityManager extends SecurityManager {
 
 				case "accessDeclaredMembers": {
 					// Only grant this permission if the method is called by a safe
-					// caller, JUnit or by java.lang.Thread.<init>
+					// caller, JUnit, by java.lang.Thread.<init>, or by the lambda
+					// metafactory (Java 8)
 					final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 					for (int i = 1; i < stackTrace.length; ++i) {
 						if (this.safeCallerList.contains(stackTrace[i].getClassName())) {
@@ -101,6 +102,11 @@ public class TesterSecurityManager extends SecurityManager {
 
 							// Deny permission
 							super.checkPermission(perm);
+						}
+						if (stackTrace[i].getClassName().startsWith(
+									"java.lang.invoke.InnerClassLambdaMetafactory")) {
+							// lambda metafactory, grant permission
+							return;
 						}
 						if ("java.lang.Thread".equals(stackTrace[i].getClassName())
 								&& "<init>".equals(stackTrace[i].getMethodName())) {
