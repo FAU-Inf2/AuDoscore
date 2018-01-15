@@ -15,11 +15,11 @@ import com.sun.source.tree.Tree.Kind;
 import com.sun.source.util.Trees;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Symbol;
+import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.*;
-import com.sun.tools.javac.util.*;
 import com.sun.tools.javac.tree.JCTree.*;
-import com.sun.tools.javac.util.List;
+import com.sun.tools.javac.util.*;
 
 @SupportedAnnotationTypes("*")
 @SupportedOptions("replaces")
@@ -167,7 +167,27 @@ public class ReplaceMixer extends AbstractProcessor {
 				final Symbol paramTypeSymbol = TreeInfo.symbol(decl.vartype);
 				String fullyQualifiedType = decl.vartype.toString();
 				if (paramTypeSymbol != null) {
-					fullyQualifiedType = paramTypeSymbol.toString();
+					Type paramType = paramTypeSymbol.type;
+
+					if (paramType instanceof Type.TypeVar) {
+						paramType = ((Type.TypeVar) paramType).bound;
+						if (paramType instanceof Type.ClassType && paramType.isCompound()) {
+							paramType = ((Type.ClassType) paramType).supertype_field;
+						}
+					}
+					if (paramType instanceof Type.ClassType) {
+						final Type.ClassType ctype = (Type.ClassType) paramType;
+						if (ctype.getTypeArguments().nonEmpty()) {
+							paramType = ctype.tsym.erasure_field;
+						}
+					}
+
+					if (paramType == null) {
+						fullyQualifiedType = paramTypeSymbol.toString();
+					} else {
+						fullyQualifiedType = paramType.toString();
+					}
+
 					if (fullyQualifiedType.indexOf("cleanroom.") == 0) {
 						fullyQualifiedType = fullyQualifiedType.substring("cleanroom.".length());
 					}
