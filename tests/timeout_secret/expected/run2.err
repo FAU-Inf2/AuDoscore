@@ -23,7 +23,7 @@
                     "tests": [
                         {
                             "desc": "b",
-                            "error": "TimeoutException after 100 ms",
+                            "error": "TestTimedOutTimeoutException after 100 ms",
                             "fromSecret": true,
                             "id": "b",
                             "success": false

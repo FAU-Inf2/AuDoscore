@@ -3,7 +3,6 @@ import java.io.*;
 import java.lang.annotation.*;
 
 import org.junit.*;
-import org.junit.internal.*;
 import org.junit.rules.*;
 import org.junit.runner.*;
 import org.junit.runners.model.*;

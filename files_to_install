@@ -1,3 +1,4 @@
+./lib/hamcrest-core.jar
 ./lib/junit.jar
 ./lib/junitpoints.jar
 ./lib/json-simple-1.1.1.jar
