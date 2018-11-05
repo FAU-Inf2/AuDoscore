@@ -193,20 +193,30 @@ public class ReplaceMixer extends AbstractProcessor {
 		}
 
 		private Pattern getBoxingAwareMethodNamePattern(final String methodName) {
-			final int paramOffset = methodName.indexOf('[');
+			final String escapedMethodName = methodName.replaceAll("\\[", "\\\\[")
+					.replaceAll("\\]", "\\\\]");
+			String methodPattern = escapedMethodName;
 
-			String methodPattern = methodName;
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?B|b)oolean\\b", "((java\\.lang\\.)?B|b)oolean");
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?B|b)yte\\b", "((java\\.lang\\.)?B|b)yte");
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?S|s)hort\\b", "((java\\.lang\\.)?S|s)hort");
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?Character|char)\\b",
+						"((java\\.lang\\.)?Character|char)");
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?Integer|int)\\b",
+						"((java\\.lang\\.)?Integer|int)");
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?L|l)ong\\b", "((java\\.lang\\.)?L|l)ong");
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?F|f)loat\\b", "((java\\.lang\\.)?F|f)loat");
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?D|d)ouble\\b", "((java\\.lang\\.)?D|d)ouble");
 
-			methodPattern = methodPattern.replaceAll("\\b[Bb]oolean\\b", "[Bb]oolean");
-			methodPattern = methodPattern.replaceAll("\\b[Bb]yte\\b", "[Bb]yte");
-			methodPattern = methodPattern.replaceAll("\\b[Ss]hort\\b", "[Ss]hort");
-			methodPattern = methodPattern.replaceAll("\\b(Character|char)\\b", "(Character|char)");
-			methodPattern = methodPattern.replaceAll("\\b(Integer|int)\\b", "(Integer|int)");
-			methodPattern = methodPattern.replaceAll("\\b[Ll]ong\\b", "[Ll]ong");
-			methodPattern = methodPattern.replaceAll("\\b[Ff]loat\\b", "[Ff]loat");
-			methodPattern = methodPattern.replaceAll("\\b[Dd]ouble\\b", "[Dd]ouble");
-
-			if (methodPattern.equals(methodName)) {
+			if (methodPattern.equals(escapedMethodName)) {
 				return null;
 			} else {
 				return Pattern.compile(methodPattern);
@@ -217,13 +227,16 @@ public class ReplaceMixer extends AbstractProcessor {
 				final String methodName) {
 
 			if (replacements.containsKey(methodName)) {
-				return replacements.get(methodName);
+				// we use that method, so don't put it in later in
+				return replacements.remove(methodName);
 			}
 
 			final Pattern boxingAwareMethodNamePattern = getBoxingAwareMethodNamePattern(methodName);
 
 			if (boxingAwareMethodNamePattern != null) {
-				for (final Map.Entry<String, Replacement> entry : replacements.entrySet()) {
+				final Iterator<Map.Entry<String, Replacement>> iter = replacements.entrySet().iterator();
+				while (iter.hasNext()) {
+					final Map.Entry<String, Replacement> entry = iter.next();
 					if (boxingAwareMethodNamePattern.matcher(entry.getKey()).matches()) {
 						// Check that only one method matches
 						int matchingCount = 0;
@@ -246,6 +259,8 @@ public class ReplaceMixer extends AbstractProcessor {
 						}
 
 						if (matchingCount == 1) {
+							// we use that method, so don't put it in later in
+							iter.remove();
 							return entry.getValue();
 						} else {
 							return null;
@@ -283,8 +298,6 @@ public class ReplaceMixer extends AbstractProcessor {
 					} else {
 						System.err.println("duplicate method: " + name + ", taken from student");
 					}
-					// we use that method, so don't put it in later in
-					cleanMethods.remove(name);
 				}
 			}
 		}
