@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import javax.annotation.processing.*;
 import javax.lang.model.*;
 import javax.lang.model.element.Element;
@@ -114,6 +115,7 @@ public class ReplaceMixer extends AbstractProcessor {
 	private class Merger extends TreeTranslator {
 
 		private final ArrayDeque<List<JCTypeParameter>> typeParamStack = new ArrayDeque<>();
+		private final ArrayDeque<JCClassDecl> classStack = new ArrayDeque<>();
 
 		public boolean insideBlock = false;
 
@@ -154,14 +156,7 @@ public class ReplaceMixer extends AbstractProcessor {
 			return Arrays.toString(typesCopy.toArray());
 		}
 
-		@Override
-		public void visitMethodDef(JCMethodDecl tree) {
-			super.visitMethodDef(tree);
-
-			if (classLevel != 1 || !isPublic) {
-				return;
-			}
-
+		private ArrayList<String> getTypes(final JCMethodDecl tree) {
 			ArrayList<String> types = new ArrayList<>();
 			for (JCVariableDecl decl : tree.params) {
 				final Symbol paramTypeSymbol = TreeInfo.symbol(decl.vartype);
@@ -194,19 +189,95 @@ public class ReplaceMixer extends AbstractProcessor {
 				}
 				types.add(fullyQualifiedType);
 			}
+			return types;
+		}
+
+		private Pattern getBoxingAwareMethodNamePattern(final String methodName) {
+			final int paramOffset = methodName.indexOf('[');
+
+			String methodPattern = methodName;
+
+			methodPattern = methodPattern.replaceAll("\\b[Bb]oolean\\b", "[Bb]oolean");
+			methodPattern = methodPattern.replaceAll("\\b[Bb]yte\\b", "[Bb]yte");
+			methodPattern = methodPattern.replaceAll("\\b[Ss]hort\\b", "[Ss]hort");
+			methodPattern = methodPattern.replaceAll("\\b(Character|char)\\b", "(Character|char)");
+			methodPattern = methodPattern.replaceAll("\\b(Integer|int)\\b", "(Integer|int)");
+			methodPattern = methodPattern.replaceAll("\\b[Ll]ong\\b", "[Ll]ong");
+			methodPattern = methodPattern.replaceAll("\\b[Ff]loat\\b", "[Ff]loat");
+			methodPattern = methodPattern.replaceAll("\\b[Dd]ouble\\b", "[Dd]ouble");
+
+			if (methodPattern.equals(methodName)) {
+				return null;
+			} else {
+				return Pattern.compile(methodPattern);
+			}
+		}
+
+		private Replacement matchMethod(final Map<String, Replacement> replacements,
+				final String methodName) {
+
+			if (replacements.containsKey(methodName)) {
+				return replacements.get(methodName);
+			}
+
+			final Pattern boxingAwareMethodNamePattern = getBoxingAwareMethodNamePattern(methodName);
+
+			if (boxingAwareMethodNamePattern != null) {
+				for (final Map.Entry<String, Replacement> entry : replacements.entrySet()) {
+					if (boxingAwareMethodNamePattern.matcher(entry.getKey()).matches()) {
+						// Check that only one method matches
+						int matchingCount = 0;
+						for (final JCTree def : this.classStack.peek().getMembers()) {
+							if (def instanceof JCMethodDecl) {
+								final JCMethodDecl methodDecl = (JCMethodDecl) def;
+
+								final ArrayList<String> types = getTypes(methodDecl);
+
+								final List<JCTypeParameter> typeParams = typeParamStack.isEmpty()
+										? methodDecl.typarams
+										: typeParamStack.peek().appendList(methodDecl.typarams);
+								final String name = methodDecl.name.toString() + ": "
+										+ getTypesAsString(types, typeParams);
+
+								if (boxingAwareMethodNamePattern.matcher(name).matches()) {
+									matchingCount += 1;
+								}
+							}
+						}
+
+						if (matchingCount == 1) {
+							return entry.getValue();
+						} else {
+							return null;
+						}
+					}
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public void visitMethodDef(JCMethodDecl tree) {
+			super.visitMethodDef(tree);
+
+			if (classLevel != 1 || !isPublic) {
+				return;
+			}
+
+			final ArrayList<String> types = getTypes(tree);
 
 			final List<JCTypeParameter> typeParams = typeParamStack.isEmpty()
 					? tree.typarams
 					: typeParamStack.peek().appendList(tree.typarams);
-			String name = tree.name.toString() + ": " +  getTypesAsString(types, typeParams);
+			String name = tree.name.toString() + ": " + getTypesAsString(types, typeParams);
 			if (isCleanroom) {
 				cleanMethods.put(name, new Replacement(typeParamStack.peek(), tree));
 			} else {
-				if (cleanMethods.containsKey(name)) {
+				final Replacement replacement = matchMethod(cleanMethods, name);
+				if (replacement != null) {
 					if (isReplace(name)) {
 						System.err.println("duplicate method: " + name + ", taken from cleanroom");
 
-						final Replacement replacement = cleanMethods.get(name);
 						result = new TypeParameterTranslator(replacement.typeParams, typeParams)
 								.translate(replacement.tree);
 					} else {
@@ -231,6 +302,8 @@ public class ReplaceMixer extends AbstractProcessor {
 
 		@Override
 		public void visitClassDef(JCClassDecl tree) {
+			this.classStack.push(tree);
+
 			JCModifiers mods = tree.getModifiers();
 			boolean oldPublic = isPublic;
 			isPublic = mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC);
@@ -283,6 +356,7 @@ public class ReplaceMixer extends AbstractProcessor {
 			if (classLevel >= 1 // no outer class
 					|| !mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC) // no public class
 					|| isCleanroom) { // no student class
+				this.classStack.pop();
 				return;
 			}
 
@@ -291,6 +365,8 @@ public class ReplaceMixer extends AbstractProcessor {
 			tree.defs = appendAll(tree.defs, tree.typarams, cleanInnerClasses);
 			
 			result = tree;
+
+			this.classStack.pop();
 		}
 	}
 
