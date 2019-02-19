@@ -6,8 +6,9 @@ import org.junit.runner.Description;
 import tester.annotations.*;
 
 import java.lang.annotation.AnnotationFormatError;
-import java.lang.reflect.Method;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.net.URL;
@@ -187,6 +188,29 @@ public class CheckAnnotation {
 		}
 		if (!hasClassRule) {
 			throw new AnnotationFormatError("ERROR - found no valid @ClassRule annotation in test class");
+		}
+
+		// check @InitializeOnce annotations
+		for (final Field f : clazz.getDeclaredFields()) {
+			final InitializeOnce initOnce = f.getAnnotation(InitializeOnce.class);
+			if (initOnce != null) {
+				if ((f.getModifiers() & Modifier.STATIC) == 0) {
+					throw new AnnotationFormatError("ERROR - @InitializeOnce requires a static field");
+				}
+
+				// Search given method
+				try {
+					final Method method = clazz.getDeclaredMethod(initOnce.value());
+					if ((method.getModifiers() & Modifier.STATIC) == 0) {
+						throw new AnnotationFormatError("ERROR - @InitializeOnce requires a static method");
+					}
+					if (!f.getType().isAssignableFrom(method.getReturnType())) {
+						throw new AnnotationFormatError("ERROR - cannot assign result of @InitializeOnce");
+					}
+				} catch (final NoSuchMethodException e) {
+					throw new AnnotationFormatError("ERROR - invalid @InitializeOnce method \"" + initOnce.value() + "\"");
+				}
+			}
 		}
 	}
 

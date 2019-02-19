@@ -1,0 +1,6 @@
+Score: 0.5
+
+InitOnce_Really_Once (0.5 points):
+✗   0.00 | testSecret2 | AssertionError()
+✓   0.05 | test
+✓   0.48 | testSecret1

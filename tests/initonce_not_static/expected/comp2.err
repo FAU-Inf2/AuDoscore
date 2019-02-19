@@ -1,0 +1,2 @@
+make[1]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/initonce_not_static/test.30473'
+Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - @InitializeOnce requires a static method

@@ -1,0 +1,5 @@
+Score: 0.0
+
+InitOnce_Exception (0.0 points):
+✗   0.00 | testSecret | AssertionError(java.lang.NullPointerException)
+✓   0.09 | test

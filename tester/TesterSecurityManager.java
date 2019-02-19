@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.PropertyPermission;
 import java.security.Permission;
+import java.security.SecurityPermission;
 
 
 
@@ -140,6 +141,7 @@ public class TesterSecurityManager extends SecurityManager {
 					// from the locale initialization mechanism
 					if (calledFromJUnit()
 							|| calledFromSafeCallers()
+							|| calledFromInitOnce()
 							|| calledFrom("java.text.NumberFormat", "sun.", "java.")
 							|| calledFrom("java.awt.Color", "java.")) {
 						return;
@@ -163,10 +165,16 @@ public class TesterSecurityManager extends SecurityManager {
 				}
 
 				default: {
-					if (perm.getName().startsWith("loadLibrary.") && perm.getName().contains("awt")
-							&& calledFrom("java.awt.Toolkit", "java.")) {
-						// Grant permission
-						return;
+					if (perm.getName().startsWith("loadLibrary.")) {
+						if (perm.getName().contains("awt")
+								&& calledFrom("java.awt.Toolkit", "java.")) {
+							// Grant permission
+							return;
+						}
+						if (calledFromSafeCallers()) {
+							// Grant permission
+							return;
+						}
 					}
 				}
 			}
@@ -177,6 +185,9 @@ public class TesterSecurityManager extends SecurityManager {
 					super.checkPermission(perm);
 				}
 				// Grant permission
+				return;
+			} else if ("write".equals(filePerm.getActions()) && !calledFromInitOnce()) {
+				// Grant permission -> @InitializeOnce
 				return;
 			}
 		} else if (perm instanceof PropertyPermission) {
@@ -196,6 +207,15 @@ public class TesterSecurityManager extends SecurityManager {
 			}
 			// Grant permission
 			return;
+		} else if (perm instanceof SecurityPermission) {
+			final SecurityPermission secPerm = (SecurityPermission) perm;
+			if (secPerm.getName().startsWith("getProperty.") && calledFromSafeCallers()) {
+				// Grant permission
+				return;
+			} else if ("getProperty.jdk.serialFilter".equals(secPerm.getName())) {
+				// Serialization -> Grant permission
+				return;
+			}
 		} else if (perm instanceof ReflectPermission) {
 			// Reflection is already checked during stage1, so allow everything
 			return;
@@ -217,13 +237,21 @@ public class TesterSecurityManager extends SecurityManager {
 
 	@Override
 	public void checkWrite(final String file) {
-		// Forbid writing to a file
-		super.checkWrite(file);
+		// Check for @InitializeOnce
+		if (!calledFromInitOnce()) {
+			super.checkWrite(file);
+		}
 	}
 
 
 
 	private boolean checkReadPermissions(final String fileName) {
+		// Check for @InitializeOnce
+		if (calledFromInitOnce()) {
+			// Allow
+			return true;
+		}
+
 		// Allow only if called from a safe caller, ClassLoader, for locale
 		// initialization, or from JUnit
 		final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -270,6 +298,13 @@ public class TesterSecurityManager extends SecurityManager {
 				|| calledFromSafeCallers()
 				|| calledFrom("java.text.NumberFormat", "java.", "sun.")
 				|| calledFrom("java.awt.Toolkit", "java.", "sun.");
+	}
+
+
+
+	private boolean calledFromInitOnce() {
+		return calledFrom("JUnitWithPoints$PointsLogger$1InitOnceStatement",
+				"java.", "sun.", "org.junit.");
 	}
 
 
