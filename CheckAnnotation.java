@@ -197,6 +197,10 @@ public class CheckAnnotation {
 				if ((f.getModifiers() & Modifier.STATIC) == 0) {
 					throw new AnnotationFormatError("ERROR - @InitializeOnce requires a static field");
 				}
+				if (!f.getType().isPrimitive()
+						&& !java.io.Serializable.class.isAssignableFrom(f.getType())) {
+					throw new AnnotationFormatError("ERROR - @InitializeOnce requires Serializable type");
+				}
 
 				// Search given method
 				try {
