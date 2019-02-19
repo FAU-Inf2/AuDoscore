@@ -8,5 +8,4 @@ addons:
 language: java
 jdk:
   - openjdk8
-  - oraclejdk8
 script: make verify
