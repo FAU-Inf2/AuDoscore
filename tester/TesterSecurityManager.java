@@ -158,6 +158,14 @@ public class TesterSecurityManager extends SecurityManager {
 					break;
 				}
 
+				case "loadLibrary.management_ext": {
+					// Might be needed for management API
+					if (calledFromSafeCallers()) {
+						return;
+					}
+					break;
+				}
+
 				case "getenv.DISPLAY": {
 					if (calledFrom("java.awt.Toolkit", "java.")) {
 						// Grant permission
@@ -178,6 +186,10 @@ public class TesterSecurityManager extends SecurityManager {
 							return;
 						}
 					}
+					if (perm.getName().startsWith("sun.management.") && calledFromSafeCallers()) {
+						// Grant permission
+						return;
+					}
 				}
 			}
 		} else if (perm instanceof FilePermission) {
@@ -195,6 +207,11 @@ public class TesterSecurityManager extends SecurityManager {
 		} else if (perm instanceof PropertyPermission) {
 			final PropertyPermission propPerm = (PropertyPermission) perm;
 			if ("read".equals(propPerm.getActions())) {
+				// Grant permission
+				return;
+			}
+			if (("write".equals(propPerm.getActions()) || "read,write".equals(propPerm.getActions()))
+					&& calledFromSafeCallers()) {
 				// Grant permission
 				return;
 			}
@@ -307,19 +324,21 @@ public class TesterSecurityManager extends SecurityManager {
 
 	private boolean calledFromInitOnce() {
 		return calledFrom("JUnitWithPoints$PointsLogger$1InitOnceStatement",
-				"java.", "sun.", "org.junit.");
+				"java.", "sun.", "org.junit.", "jdk.internal.");
 	}
 
 
 
 	private boolean calledFromSafeCallers() {
-		return calledFrom(this.safeCallerList, "java.", "javax.", "com.sun.", "sun.", "org.junit.");
+		return calledFrom(this.safeCallerList, "java.", "javax.", "com.sun.", "sun.", "org.junit.",
+				"jdk.internal.");
 	}
 
 
 
 	private boolean calledFromJUnit() {
-		return calledFrom("org.junit.runner.JUnitCore", "java.", "sun.", "org.junit.");
+		return calledFrom("org.junit.runner.JUnitCore", "java.", "sun.", "org.junit.",
+				"jdk.internal.");
 	}
 
 
