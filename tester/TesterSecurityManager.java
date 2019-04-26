@@ -263,6 +263,7 @@ public class TesterSecurityManager extends SecurityManager {
 
 			if (!stackTrace[i].getClassName().startsWith("java.")
 					&& !stackTrace[i].getClassName().startsWith("javax.")
+					&& !stackTrace[i].getClassName().startsWith("jdk.internal.")
 					&& !stackTrace[i].getClassName().startsWith("sun.")
 					&& !stackTrace[i].getClassName().startsWith("com.sun.")
 					&& !stackTrace[i].getClassName().startsWith("org.junit.")
