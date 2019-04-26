@@ -136,7 +136,9 @@ public class TesterSecurityManager extends SecurityManager {
 					break;
 				}
 
-				case "createClassLoader": {
+				case "createClassLoader":
+				case "getClassLoader":
+				case "localeServiceProvider": {
 					// Only grant this permission if the method is called from JUnit or
 					// from the locale initialization mechanism
 					if (calledFromJUnit()
