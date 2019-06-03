@@ -9,8 +9,9 @@ import java.util.regex.Pattern;
 import javax.annotation.processing.*;
 import javax.lang.model.*;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 import javax.tools.*;
 import com.sun.source.tree.Tree.Kind;
 import com.sun.source.util.Trees;
@@ -118,6 +119,7 @@ public class ReplaceMixer extends AbstractProcessor {
 		private final ArrayDeque<JCClassDecl> classStack = new ArrayDeque<>();
 
 		public boolean insideBlock = false;
+		public boolean insideMethod = false;
 
 
 		@Override
@@ -135,6 +137,12 @@ public class ReplaceMixer extends AbstractProcessor {
 				String name = tree.name.toString();
 				if (isCleanroom && name.startsWith(CLEAN_PREFIX)) {
 					cleanFields.put(name, new Replacement(typeParamStack.peek(), tree));
+				} else if (!isCleanroom && !insideMethod && tree.mods.getFlags().contains(Modifier.FINAL)
+						&& tree.init == null) {
+					// In this case, there is an uninitialized final field in the
+					// student submission. To avoid a compilation error if a constructor
+					// is replaced, we simply drop the 'final' modifier.
+					tree.mods.flags &= ~16; // XXX: Hard-coded constant
 				}
 			}
 		}
@@ -273,7 +281,11 @@ public class ReplaceMixer extends AbstractProcessor {
 
 		@Override
 		public void visitMethodDef(JCMethodDecl tree) {
+			insideMethod = true;
+
 			super.visitMethodDef(tree);
+
+			insideMethod = false;
 
 			if (classLevel != 1 || !isPublic) {
 				return;
@@ -315,7 +327,12 @@ public class ReplaceMixer extends AbstractProcessor {
 
 		@Override
 		public void visitClassDef(JCClassDecl tree) {
+			final boolean oldInsideMethod = insideMethod;
+			insideMethod = false;
+
 			this.classStack.push(tree);
+
+			insideMethod = oldInsideMethod;
 
 			JCModifiers mods = tree.getModifiers();
 			boolean oldPublic = isPublic;
