@@ -136,6 +136,7 @@ public class TesterSecurityManager extends SecurityManager {
 					break;
 				}
 
+				case "accessSystemModules":
 				case "createClassLoader":
 				case "getClassLoader":
 				case "localeServiceProvider": {
@@ -144,7 +145,7 @@ public class TesterSecurityManager extends SecurityManager {
 					if (calledFromJUnit()
 							|| calledFromSafeCallers()
 							|| calledFromInitOnce()
-							|| calledFrom("java.text.NumberFormat", "sun.", "java.")
+							|| calledFrom("java.text.NumberFormat", "sun.", "java.", "jdk.")
 							|| calledFrom("java.awt.Color", "java.")) {
 						return;
 					}
@@ -331,7 +332,7 @@ public class TesterSecurityManager extends SecurityManager {
 
 	private boolean calledFromSafeCallers() {
 		return calledFrom(this.safeCallerList, "java.", "javax.", "com.sun.", "sun.", "org.junit.",
-				"jdk.internal.");
+				"jdk.internal.", "jdk.management.");
 	}
 
 
