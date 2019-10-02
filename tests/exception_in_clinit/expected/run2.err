@@ -4,7 +4,7 @@
 ,
 Exception in thread "main" java.lang.ExceptionInInitializerError
 	at java.base/java.lang.Class.forName0(Native Method)
-	at java.base/java.lang.Class.forName(Class.java:292)
+	at java.base/java.lang.Class.forName(Class.java:315)
 	at tools.SingleMethodRunner.main(SingleMethodRunner.java:18)
 Caused by: java.lang.NullPointerException
 	at ToTest.<init>(ToTest.java:3)
