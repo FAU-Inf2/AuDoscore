@@ -7,5 +7,6 @@ addons:
       - parallel
 language: java
 jdk:
-  - openjdk9
+  - openjdk11
+  - oraclejdk11
 script: make verify
