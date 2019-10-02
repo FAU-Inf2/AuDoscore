@@ -212,7 +212,8 @@ public class TesterSecurityManager extends SecurityManager {
 				return;
 			}
 			if (("write".equals(propPerm.getActions()) || "read,write".equals(propPerm.getActions()))
-					&& calledFromSafeCallers()) {
+					&& (calledFromSafeCallers()
+						|| calledFrom("java.lang.invoke.StringConcatFactory", "java.", "sun.")) {
 				// Grant permission
 				return;
 			}
