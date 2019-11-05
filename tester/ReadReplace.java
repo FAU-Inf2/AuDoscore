@@ -277,9 +277,17 @@ public class ReadReplace {
 						for(String me : e.getValue()) {
 							ncln.append('#').append(me.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>"));
 						}
+
+						String compilerArgs = System.getenv("COMPILER_ARGS");
+						if (compilerArgs == null) {
+							compilerArgs = "";
+						}
+
 						final String nclns = ncln.toString();
 						mids.add("mkdir -p " + nclns + "; "
-								+ "javac -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces="
+								+ "javac "
+								+ compilerArgs
+								+ " -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces="
 								+ nclns
 								+ " -proc:only -processor ReplaceMixer cleanroom/"
 								+ e.getKey() + ".java "
@@ -287,7 +295,9 @@ public class ReadReplace {
 								+ nclns
 								+ "/"
 								+ e.getKey() + ".java; "
-								+ "javac -cp . -d "
+								+ "javac "
+								+ compilerArgs
+								+ " -cp . -d "
 								+ nclns
 								+ " -sourcepath "
 								+ nclns
