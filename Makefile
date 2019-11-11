@@ -111,7 +111,7 @@ compile-stage2-secret:
 		/bin/echo -e "package cleanroom;" > $$i ; \
 		cat $${i}.bak >> $$i; \
 	done
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(SECRETTEST) > compile2.sh
+	COMPILER_ARGS="$(COMPILER_ARGS)" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace $(SECRETTEST) > compile2.sh
 	if [ "x$(INTERFACESOURCE)" != "x" ]; then \
 		set -e ; \
 		for i in $(INTERFACESOURCE); do \
@@ -120,7 +120,7 @@ compile-stage2-secret:
 		done; \
 	fi
 	$(SHELL) -ex ./compile2.sh
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p $(TEST) $(SECRETTEST) >> loop.sh	
+	COMPILER_ARGS="$(COMPILER_ARGS)" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p $(TEST) $(SECRETTEST) >> loop.sh	
 	echo "echo \"]\" 1>&2" >> loop.sh
 
 compile: compile-stage$(STAGE)
