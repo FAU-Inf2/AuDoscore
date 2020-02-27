@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
 import org.json.simple.*;
@@ -442,10 +443,11 @@ public class JUnitPointsMerger {
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write(summary);
-			bw.close();
+			try (final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(file.getAbsoluteFile()),
+					Charset.forName("UTF-8")))) {
+				bw.write(summary);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("invalid json");
