@@ -16,16 +16,20 @@ import javax.lang.model.element.TypeElement;
 
 import com.sun.source.util.Trees;
 import com.sun.source.util.TreePath;
+import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.model.JavacElements;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCAnnotation;
+import com.sun.tools.javac.tree.JCTree.JCClassDecl;
+import com.sun.tools.javac.tree.JCTree.JCIdent;
+import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.Context;
 
 @SupportedAnnotationTypes("*")
 @SupportedOptions("replaces")
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class FullQualifier extends AbstractProcessor {
 	private Trees trees;
 	private boolean imported = false;
@@ -73,11 +77,19 @@ public class FullQualifier extends AbstractProcessor {
 }
 
 class MyPretty extends com.sun.tools.javac.tree.Pretty {
+
+	private boolean inEnum = false;
+
+
+
 	public MyPretty(Writer out, boolean sourceOutput) {
 		super(out, sourceOutput);
 	}
 
-	public  void visitAnnotation(JCAnnotation tree) {
+
+
+	@Override
+	public void visitAnnotation(JCAnnotation tree) {
 		try {
 			print("@");
 			String before = tree.annotationType.toString();
@@ -122,5 +134,31 @@ class MyPretty extends com.sun.tools.javac.tree.Pretty {
 		} catch (IOException e) {
 			throw new Error("something failed while pretty printing annotations: " + e);
 		}
+	}
+
+
+
+	@Override
+	public void visitClassDef(final JCClassDecl tree) {
+		final boolean oldInEnum = this.inEnum;
+		this.inEnum = (tree.mods.flags & Flags.ENUM) > 0;
+
+		super.visitClassDef(tree);
+
+		this.inEnum = oldInEnum;
+	}
+
+
+
+	@Override
+	public void visitApply(final JCMethodInvocation tree) {
+		if (inEnum && tree.meth instanceof JCIdent) {
+			JCIdent ident = (JCIdent) tree.meth;
+			if (ident.name == ident.name.table.names._super) {
+				return;
+			}
+		}
+
+		super.visitApply(tree);
 	}
 }

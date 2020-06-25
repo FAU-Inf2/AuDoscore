@@ -1,16 +1,10 @@
+./lib/hamcrest-core.jar
 ./lib/junit.jar
 ./lib/junitpoints.jar
 ./lib/json-simple-1.1.1.jar
 ./lib/tools.jar
-./tools/jacoco/jacocoagent.jar
-./tools/jacoco/jacocoant.jar
-./tools/jacoco/report_task1.xml
-./tools/jacoco/report_task2.xml
-./tools/detect_junit.sh
 ./Makefile
 ./test.sh
-./README.md
 ./obfuscate
 ./install.sh
 ./files_to_install
-./GITREV

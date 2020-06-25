@@ -62,11 +62,9 @@ also prints the scored points.
 Branches
 =======
 
-There are currently three active branches in this repository. Development
-usually happens in the `master` branch. The `master` branch is periodically
-merged into the `java-1.8` branch, which contains additional fixes for Java 8.
-The `release` branch just contains the version of AuDoscore currently in use by
-us.
+There are currently two active branches in this repository. Development usually
+happens in the `master` branch. The `release` branch just contains the version
+of AuDoscore currently in use by us.
 
 License
 =======

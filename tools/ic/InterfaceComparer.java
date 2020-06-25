@@ -36,6 +36,28 @@ public class InterfaceComparer {
 	}
 
 
+
+	private static Method getDeclaredMethod(final Class<?> cls, final String name,
+			final Class<?> ... parameterTypes) throws NoSuchMethodException {
+
+		// We cannot use cls.getDeclaredMethod() here, because the parameter types
+		// may be loaded by a different ClassLoader. Hence, we compare the String
+		// representations of the parameters.
+		outer:
+		for (final Method m : cls.getDeclaredMethods()) {
+			if (m.getName().equals(name) && m.getParameterCount() == parameterTypes.length) {
+				for (int i = 0; i < parameterTypes.length; ++i) {
+					if (!m.getParameterTypes()[i].toString().equals(parameterTypes[i].toString())) {
+						continue outer;
+					}
+				}
+				return m;
+			}
+		}
+		throw new NoSuchMethodException();
+	}
+
+
 	// creates a Map of all type variables to replacement strings
 	private static Map<TypeVariable<? extends GenericDeclaration>, String>
 			getTypeVariableReplacements(final Member member) {
@@ -79,7 +101,7 @@ public class InterfaceComparer {
 						.append('.');
 			}
 
-			resultBuilder.append(paramType.getRawType().toString());
+			resultBuilder.append(paramType.getRawType().getTypeName());
 
 			final Type[] typeArguments = paramType.getActualTypeArguments();
 			if (typeArguments.length > 0) {
@@ -108,7 +130,7 @@ public class InterfaceComparer {
 			}
 			return resultBuilder.toString();
 		}
-		return type.toString();
+		return type.getTypeName();
 	}
 
 
@@ -224,7 +246,7 @@ public class InterfaceComparer {
 	private static boolean checkMethod(Method cleanroomMethod, Class<?> studentClass){
 		Method studentMethod = null;
 		try {	
-			studentMethod = studentClass.getMethod(cleanroomMethod.getName(),cleanroomMethod.getParameterTypes());
+			studentMethod = getDeclaredMethod(studentClass, cleanroomMethod.getName(), cleanroomMethod.getParameterTypes());
 			String cleanString   = toNormalizedString(cleanroomMethod);
 			String studentString = toNormalizedString(studentMethod);
 
@@ -244,7 +266,7 @@ public class InterfaceComparer {
 				return false;
 			}
 		} catch (NoSuchMethodException nsme){
-			System.err.println("ERROR - Method " +cleanroomMethod + "["+studentClass.getName() +"] does not match or does not exists in studentcode");
+			System.err.println("ERROR - Method " +cleanroomMethod + "["+studentClass.getName() +"] does not match or does not exist in studentcode");
 			return false;
 
 		}
@@ -376,14 +398,14 @@ public class InterfaceComparer {
 			Class<?> studentClass = null;
 			
 			try{
-				cleanroomClass = cleanroomLoader.loadClass(className);	
-			} catch (ClassNotFoundException cnfe) {	
+				cleanroomClass = cleanroomLoader.loadClass(className);
+			} catch (ClassNotFoundException cnfe) {
 				throw new Error("Error - cleanroom class [" + cnfe.getMessage()+"] not found");
 			}
 			
 			try{
 				studentClass = studentLoader.loadClass(className);
-			} catch (ClassNotFoundException cnfe) {	
+			} catch (ClassNotFoundException cnfe) {
 				throw new Error("Error - student class [" + cnfe.getMessage()+"] not found");
 			}
 			

@@ -11,7 +11,7 @@ compiletest = \
 	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(1).java > $(1).java.tmp ; \
 	mv $(1).java.tmp $(1).java ; \
 	make -B $(2); \
-	javac cleanroom/*.java;
+	javac $(COMPILER_ARGS) cleanroom/*.java;
 
 ifndef SECRETCLASS
 	-include varsec.mk
@@ -49,10 +49,10 @@ prepare: updategitrev lib/junitpoints.jar
 updategitrev:
 	git rev-parse HEAD > GITREV
 
-SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/annotations/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java tester/annotations/SecretCase.java tester/annotations/Bonus.java tester/annotations/Ex.java tester/annotations/Points.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/Malus.java tester/annotations/NotForbidden.java tools/jsondiff/JSONDiff.java FullQualifier.java tools/bomacon/BonusMalusConverter.java tools/sep/SingleExecutionPreparer.java CheckAnnotation.java tools/SingleMethodRunner.java tools/ic/InterfaceComparer.java tools/ptc/PublicTestCleaner.java tester/TesterSecurityManager.java tester/AuDoscoreUtils.java 
+SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/annotations/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java tester/annotations/SecretCase.java tester/annotations/Bonus.java tester/annotations/Ex.java tester/annotations/Points.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/Malus.java tester/annotations/NotForbidden.java tester/annotations/SafeCallers.java tools/jsondiff/JSONDiff.java FullQualifier.java tools/bomacon/BonusMalusConverter.java tools/sep/SingleExecutionPreparer.java CheckAnnotation.java tools/SingleMethodRunner.java tools/ic/InterfaceComparer.java tools/ptc/PublicTestCleaner.java tester/TesterSecurityManager.java tester/AuDoscoreUtils.java tester/annotations/InitializeOnce.java
 
 lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
-	javac -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/tools.jar:. $(SRCJUNITPOINTSJAR)
+	javac -source 1.8 -target 1.8 -encoding UTF-8 -d build -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/tools.jar:. $(SRCJUNITPOINTSJAR)
 	jar cvf lib/junitpoints.jar -C build .
 
 
@@ -62,7 +62,7 @@ clean-pubtest: $(FILE)
 	javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier $(FILE) > $(FILE).tmp
 
 compile-stage0:
-	javac $(STUDENTSOURCE)	
+	javac $(COMPILER_ARGS) $(STUDENTSOURCE)
 
 compile-stage1: miniclean
 	$(call compiletest,$(TEST),$(TESTCLASS))
@@ -96,7 +96,7 @@ compile-stage2: miniclean
 		java -cp lib/junit.jar:lib/junitpoints.jar:. -Dpub=$(TEST) CheckAnnotation $(SECRETTEST) ; \
 		echo "make run-stage1" > single_execution.sh ;\
 		echo "echo \",\" 1>&2" >> single_execution.sh;	\
-		java -cp lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=$(TEST)" $(SECRETTEST) >> single_execution.sh; \
+		java -cp lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=$(TEST)" $(SECRETTEST) >> single_execution.sh; \
 	else \
 		set -e ; \
 		echo "echo \"]\" 1>&2" >> loop.sh ; \
@@ -133,7 +133,7 @@ run-stage0:
 	echo "alles gut"
 
 run-stage1:
-	java -XX:-OmitStackTraceInFastThrow -XX:+UseConcMarkSweepGC -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
+	java -XX:-OmitStackTraceInFastThrow -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
@@ -148,7 +148,7 @@ run: run-stage$(STAGE)
 
 
 $(TESTCLASS): $(TESTSOURCE) $(STUDENTSOURCE)
-	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACESOURCE)
+	javac $(COMPILER_ARGS) -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(TESTSOURCE) $(STUDENTSOURCE) $(INTERFACESOURCE)
 
 $(SECRETCLASS): $(SECRETSOURCE) $(STUDENTSOURCE)
-	javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(SECRETSOURCE) $(STUDENTSOURCE) $(INTERFACESOURCE)
+	javac $(COMPILER_ARGS) -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. $(SECRETSOURCE) $(STUDENTSOURCE) $(INTERFACESOURCE)

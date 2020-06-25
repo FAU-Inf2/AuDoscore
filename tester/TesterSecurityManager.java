@@ -5,12 +5,26 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ReflectPermission;
 import java.net.NetPermission;
+import java.util.Collections;
+import java.util.List;
 import java.util.PropertyPermission;
 import java.security.Permission;
+import java.security.SecurityPermission;
 
 
 
 public class TesterSecurityManager extends SecurityManager {
+
+	private final List<String> safeCallerList;
+
+
+
+	public TesterSecurityManager(final List<String> safeCallerList) {
+		this.safeCallerList = safeCallerList;
+	}
+
+
+
 	@Override
 	public void checkAccess(final Thread t) {
 		// Allow access to threads
@@ -55,10 +69,16 @@ public class TesterSecurityManager extends SecurityManager {
 				}
 
 				case "accessDeclaredMembers": {
-					// Only grant this permission if the method is called by JUnit or by
-					// java.lang.Thread.<init>
+					// Only grant this permission if the method is called by a safe
+					// caller, JUnit, by java.lang.Thread.<init>, or by the lambda
+					// metafactory (Java 8)
 					final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 					for (int i = 1; i < stackTrace.length; ++i) {
+						if (this.safeCallerList.contains(stackTrace[i].getClassName())) {
+							// Grant permission
+							return;
+						}
+
 						if (!this.getClass().getCanonicalName().equals(stackTrace[i].getClassName())
 								&& !"tools.SingleMethodRunner".equals(stackTrace[i].getClassName())
 								&& !stackTrace[i].getClassName().startsWith("java.")
@@ -84,6 +104,11 @@ public class TesterSecurityManager extends SecurityManager {
 							// Deny permission
 							super.checkPermission(perm);
 						}
+						if (stackTrace[i].getClassName().startsWith(
+									"java.lang.invoke.InnerClassLambdaMetafactory")) {
+							// lambda metafactory, grant permission
+							return;
+						}
 						if ("java.lang.Thread".equals(stackTrace[i].getClassName())
 								&& "<init>".equals(stackTrace[i].getMethodName())) {
 							// Thread constructor, grant permission
@@ -99,9 +124,10 @@ public class TesterSecurityManager extends SecurityManager {
 					// the class JUnitWithPoints.PointsLogger
 					boolean allowed = true;
 					final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-					for (int i = 1; i < stackTrace.length
-							&& "JUnitWithPoints$PointsLogger".equals(stackTrace[i].getClassName()); ++i) {
-						allowed &= stackTrace[i].getClassName().startsWith("java.");
+					for (int i = 1; allowed && i < stackTrace.length
+							&& !"JUnitWithPoints$PointsLogger".equals(stackTrace[i].getClassName()); ++i) {
+						allowed &= stackTrace[i].getClassName().startsWith("java.")
+								|| this.getClass().getCanonicalName().equals(stackTrace[i].getClassName());
 					}
 					if (allowed) {
 						// Grant the permission
@@ -111,8 +137,13 @@ public class TesterSecurityManager extends SecurityManager {
 				}
 
 				case "createClassLoader": {
-					// Only grant this permission if the method is called from JUnit
-					if (calledFromJUnit() || calledFrom("java.awt.Color", "java.")) {
+					// Only grant this permission if the method is called from JUnit or
+					// from the locale initialization mechanism
+					if (calledFromJUnit()
+							|| calledFromSafeCallers()
+							|| calledFromInitOnce()
+							|| calledFrom("java.text.NumberFormat", "sun.", "java.")
+							|| calledFrom("java.awt.Color", "java.")) {
 						return;
 					}
 					break;
@@ -134,10 +165,16 @@ public class TesterSecurityManager extends SecurityManager {
 				}
 
 				default: {
-					if (perm.getName().startsWith("loadLibrary.") && perm.getName().contains("awt")
-							&& calledFrom("java.awt.Toolkit", "java.")) {
-						// Grant permission
-						return;
+					if (perm.getName().startsWith("loadLibrary.")) {
+						if (perm.getName().contains("awt")
+								&& calledFrom("java.awt.Toolkit", "java.")) {
+							// Grant permission
+							return;
+						}
+						if (calledFromSafeCallers()) {
+							// Grant permission
+							return;
+						}
 					}
 				}
 			}
@@ -148,6 +185,9 @@ public class TesterSecurityManager extends SecurityManager {
 					super.checkPermission(perm);
 				}
 				// Grant permission
+				return;
+			} else if ("write".equals(filePerm.getActions()) && !calledFromInitOnce()) {
+				// Grant permission -> @InitializeOnce
 				return;
 			}
 		} else if (perm instanceof PropertyPermission) {
@@ -167,6 +207,15 @@ public class TesterSecurityManager extends SecurityManager {
 			}
 			// Grant permission
 			return;
+		} else if (perm instanceof SecurityPermission) {
+			final SecurityPermission secPerm = (SecurityPermission) perm;
+			if (secPerm.getName().startsWith("getProperty.") && calledFromSafeCallers()) {
+				// Grant permission
+				return;
+			} else if ("getProperty.jdk.serialFilter".equals(secPerm.getName())) {
+				// Serialization -> Grant permission
+				return;
+			}
 		} else if (perm instanceof ReflectPermission) {
 			// Reflection is already checked during stage1, so allow everything
 			return;
@@ -188,18 +237,34 @@ public class TesterSecurityManager extends SecurityManager {
 
 	@Override
 	public void checkWrite(final String file) {
-		// Forbid writing to a file
-		super.checkWrite(file);
+		// Check for @InitializeOnce
+		if (!calledFromInitOnce()) {
+			super.checkWrite(file);
+		}
 	}
 
 
 
 	private boolean checkReadPermissions(final String fileName) {
-		// Allow only if called from ClassLoader or from JUnit
+		// Check for @InitializeOnce
+		if (calledFromInitOnce()) {
+			// Allow
+			return true;
+		}
+
+		// Allow only if called from a safe caller, ClassLoader, for locale
+		// initialization, or from JUnit
 		final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 		for (int i = 1; i < stackTrace.length; ++i) {
+			if (this.safeCallerList.contains(stackTrace[i].getClassName())) {
+				// Allow
+				return true;
+			}
+
 			if (!stackTrace[i].getClassName().startsWith("java.")
+					&& !stackTrace[i].getClassName().startsWith("javax.")
 					&& !stackTrace[i].getClassName().startsWith("sun.")
+					&& !stackTrace[i].getClassName().startsWith("com.sun.")
 					&& !stackTrace[i].getClassName().startsWith("org.junit.")
 					&& !this.getClass().getCanonicalName().equals(stackTrace[i].getClassName())) {
 				// Deny read
@@ -207,6 +272,12 @@ public class TesterSecurityManager extends SecurityManager {
 			}
 			if ("java.lang.ClassLoader".equals(stackTrace[i].getClassName())
 					|| stackTrace[i].getClassName().startsWith("java.lang.ClassLoader$")) {
+				// Allow
+				return true;
+			}
+			if ("java.text.NumberFormat".equals(stackTrace[i].getClassName())
+					&& (fileName.endsWith("localedata.jar") || fileName.endsWith("currency.data")
+						|| fileName.endsWith("currency.properties"))) {
 				// Allow
 				return true;
 			}
@@ -222,11 +293,24 @@ public class TesterSecurityManager extends SecurityManager {
 
 
 	private boolean checkNetPermission(final NetPermission perm) {
-		if ("specifyStreamHandler".equals(perm.getName())) {
-			// Allow only if called from JUnit
-			return calledFromJUnit() || calledFrom("java.awt.Toolkit", "java.", "sun.");
-		}
-		return false;
+		// Allow only if called from a safe caller or JUnit
+		return calledFromJUnit()
+				|| calledFromSafeCallers()
+				|| calledFrom("java.text.NumberFormat", "java.", "sun.")
+				|| calledFrom("java.awt.Toolkit", "java.", "sun.");
+	}
+
+
+
+	private boolean calledFromInitOnce() {
+		return calledFrom("JUnitWithPoints$PointsLogger$1InitOnceStatement",
+				"java.", "sun.", "org.junit.");
+	}
+
+
+
+	private boolean calledFromSafeCallers() {
+		return calledFrom(this.safeCallerList, "java.", "javax.", "com.sun.", "sun.", "org.junit.");
 	}
 
 
@@ -239,8 +323,20 @@ public class TesterSecurityManager extends SecurityManager {
 
 	private boolean calledFrom(final String calledFromClassName,
 			final String ... allowedClassPrefixes) {
+		return calledFrom(Collections.singletonList(calledFromClassName), allowedClassPrefixes);
+	}
+
+
+
+	private boolean calledFrom(final List<String> calledFromNames,
+			final String ... allowedClassPrefixes) {
+
 		final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 		for (int i = 1; i < stackTrace.length; ++i) {
+			if (calledFromNames.contains(stackTrace[i].getClassName())) {
+				return true;
+			}
+
 			if (!this.getClass().getCanonicalName().equals(stackTrace[i].getClassName())) {
 				boolean checkNext = true;
 				for (int j = 0; checkNext && j < allowedClassPrefixes.length; ++j) {
@@ -251,12 +347,8 @@ public class TesterSecurityManager extends SecurityManager {
 					return false;
 				}
 			}
-
-			if (calledFromClassName.equals(stackTrace[i].getClassName())) {
-				return true;
-			}
 		}
-		return false;
+		return true;
 	}
 }
 

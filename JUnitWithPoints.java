@@ -1,9 +1,9 @@
 import java.util.*;
 import java.io.*;
 import java.lang.annotation.*;
+import java.lang.reflect.*;
 
 import org.junit.*;
-import org.junit.internal.*;
 import org.junit.rules.*;
 import org.junit.runner.*;
 import org.junit.runners.model.*;
@@ -149,6 +149,9 @@ public abstract class JUnitWithPoints {
 			if (isIgnoredCase(description) || isSkippedCase(description)) {
 				// don't execute these test methods
 				base = new SkipStatement();
+			} else {
+				// Handle potential @InitializeOnce
+				base = performInitializeOnce(base, description);
 			}
 			return super.apply(base, description);
 		}
@@ -185,6 +188,67 @@ public abstract class JUnitWithPoints {
 		protected final void succeeded(Description description) {
 			failed(null, description);
 		}
+
+		private Statement performInitializeOnce(final Statement base, final Description description) {
+			Statement result = base;
+			for (final Field f : description.getTestClass().getDeclaredFields()) {
+				final InitializeOnce initOnce = f.getAnnotation(InitializeOnce.class);
+				if (initOnce != null) {
+					final Statement oldStmt = result;
+
+					// We need a named class here to allow it in the security manager
+
+					class InitOnceStatement extends Statement {
+						@Override
+						public void evaluate() throws Throwable {
+							// @InitializeOnce field found. First, check if the result is
+							// already computed
+							final File initFile = new File(description.getTestClass().getCanonicalName()
+									+ "-" + f.getName() + ".tmp");
+							boolean recompute = !initFile.exists();
+							if (!recompute) {
+								// The result has been computed, just restore it
+								try (final ObjectInputStream in
+										= new ObjectInputStream(new FileInputStream(initFile))) {
+									f.set(null, in.readObject());
+								} catch (final IOException e) {
+									recompute = true;
+								}
+							}
+							if (recompute) {
+								// The result must be computed, stored in the field, and saved in
+								// initFile
+								try {
+									final Object result = description.getTestClass()
+											.getDeclaredMethod(initOnce.value()).invoke(null);
+									f.set(null, result);
+
+									try (final ObjectOutputStream out
+											= new ObjectOutputStream(new FileOutputStream(initFile))) {
+										out.writeObject(result);
+									} catch (final IOException e) {
+										initFile.delete(); // Clean up
+									}
+								} catch (final NoSuchMethodException e) {
+									// Should be checked by CheckAnnotations
+									throw new IllegalStateException(e);
+								} catch (final InvocationTargetException e) {
+									// This may be an exception in student code, so we make this
+									// test fail
+									Assert.fail(String.valueOf(e.getCause()));
+								}
+							}
+
+							// Now proceed with the next statement
+							oldStmt.evaluate();
+						}
+					}
+
+					result = new InitOnceStatement();
+				}
+			}
+			return result;
+		}
 	}
 
 	// helper class for summaries
@@ -192,6 +256,7 @@ public abstract class JUnitWithPoints {
 		public static final int MAX_TIMEOUT_MS = 60_000;
 		private static PrintStream saveOut, saveErr;
 		private static boolean isSecretClass = false;
+		private List<String> safeCallerList;
 
 		@Override
 		public final Statement apply(Statement base, Description description) {
@@ -205,6 +270,15 @@ public abstract class JUnitWithPoints {
 			for (Ex exercise : exercisesAnnotation.value()) {
 				reportHashMap.put(exercise.exID(), new ArrayList<ReportEntry>());
 				exerciseHashMap.put(exercise.exID(), exercise);
+			}
+
+			// Obtain a list of safe callers (i.e., callers that are known to
+			// contain no malicious code)
+			final SafeCallers safeCallerAnnotation = description.getAnnotation(SafeCallers.class);
+			if (safeCallerAnnotation == null) {
+				this.safeCallerList = Collections.emptyList();
+			} else {
+				this.safeCallerList = Arrays.asList(safeCallerAnnotation.value());
 			}
 
 			// start the real JUnit test
@@ -287,7 +361,7 @@ public abstract class JUnitWithPoints {
 
 				// Install security manager
 				try {
-					System.setSecurityManager(new TesterSecurityManager());
+					System.setSecurityManager(new TesterSecurityManager(this.safeCallerList));
 				} catch (final SecurityException e) { /* Ignore */ }
 			}
 		}

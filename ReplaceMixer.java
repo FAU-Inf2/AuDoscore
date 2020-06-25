@@ -5,25 +5,27 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import javax.annotation.processing.*;
 import javax.lang.model.*;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 import javax.tools.*;
 import com.sun.source.tree.Tree.Kind;
 import com.sun.source.util.Trees;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Symbol;
+import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.*;
-import com.sun.tools.javac.util.*;
 import com.sun.tools.javac.tree.JCTree.*;
-import com.sun.tools.javac.util.List;
+import com.sun.tools.javac.util.*;
 
 @SupportedAnnotationTypes("*")
 @SupportedOptions("replaces")
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ReplaceMixer extends AbstractProcessor {
 	public final String CLEAN_PREFIX = "__clean";
 	private Trees trees;
@@ -61,7 +63,8 @@ public class ReplaceMixer extends AbstractProcessor {
 				} else {
 					isCleanroom = false;
 				}
-				if (each.getKind() == ElementKind.CLASS) {
+				if ((each.getKind() == ElementKind.CLASS)
+						|| (each.getKind() == ElementKind.INTERFACE)) {
 					classLevel = 0;
 					JCTree tree = (JCTree) trees.getTree(each);
 					tree.accept(new Merger());
@@ -113,8 +116,10 @@ public class ReplaceMixer extends AbstractProcessor {
 	private class Merger extends TreeTranslator {
 
 		private final ArrayDeque<List<JCTypeParameter>> typeParamStack = new ArrayDeque<>();
+		private final ArrayDeque<JCClassDecl> classStack = new ArrayDeque<>();
 
 		public boolean insideBlock = false;
+		public boolean insideMethod = false;
 
 
 		@Override
@@ -132,6 +137,12 @@ public class ReplaceMixer extends AbstractProcessor {
 				String name = tree.name.toString();
 				if (isCleanroom && name.startsWith(CLEAN_PREFIX)) {
 					cleanFields.put(name, new Replacement(typeParamStack.peek(), tree));
+				} else if (!isCleanroom && !insideMethod && tree.mods.getFlags().contains(Modifier.FINAL)
+						&& tree.init == null) {
+					// In this case, there is an uninitialized final field in the
+					// student submission. To avoid a compilation error if a constructor
+					// is replaced, we simply drop the 'final' modifier.
+					tree.mods.flags &= ~16; // XXX: Hard-coded constant
 				}
 			}
 		}
@@ -153,46 +164,152 @@ public class ReplaceMixer extends AbstractProcessor {
 			return Arrays.toString(typesCopy.toArray());
 		}
 
-		@Override
-		public void visitMethodDef(JCMethodDecl tree) {
-			super.visitMethodDef(tree);
-
-			if (classLevel != 1 || !isPublic) {
-				return;
-			}
-
+		private ArrayList<String> getTypes(final JCMethodDecl tree) {
 			ArrayList<String> types = new ArrayList<>();
 			for (JCVariableDecl decl : tree.params) {
 				final Symbol paramTypeSymbol = TreeInfo.symbol(decl.vartype);
 				String fullyQualifiedType = decl.vartype.toString();
 				if (paramTypeSymbol != null) {
-					fullyQualifiedType = paramTypeSymbol.toString();
+					Type paramType = paramTypeSymbol.type;
+
+					if (paramType instanceof Type.TypeVar) {
+						paramType = ((Type.TypeVar) paramType).bound;
+						if (paramType instanceof Type.ClassType && paramType.isCompound()) {
+							paramType = ((Type.ClassType) paramType).supertype_field;
+						}
+					}
+					if (paramType instanceof Type.ClassType) {
+						final Type.ClassType ctype = (Type.ClassType) paramType;
+						if (ctype.getTypeArguments().nonEmpty()) {
+							paramType = ctype.tsym.erasure_field;
+						}
+					}
+
+					if (paramType == null) {
+						fullyQualifiedType = paramTypeSymbol.toString();
+					} else {
+						fullyQualifiedType = paramType.toString();
+					}
+
 					if (fullyQualifiedType.indexOf("cleanroom.") == 0) {
 						fullyQualifiedType = fullyQualifiedType.substring("cleanroom.".length());
 					}
 				}
 				types.add(fullyQualifiedType);
 			}
+			return types;
+		}
+
+		private Pattern getBoxingAwareMethodNamePattern(final String methodName) {
+			final String escapedMethodName = methodName.replaceAll("\\[", "\\\\[")
+					.replaceAll("\\]", "\\\\]");
+			String methodPattern = escapedMethodName;
+
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?B|b)oolean\\b", "((java\\.lang\\.)?B|b)oolean");
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?B|b)yte\\b", "((java\\.lang\\.)?B|b)yte");
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?S|s)hort\\b", "((java\\.lang\\.)?S|s)hort");
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?Character|char)\\b",
+						"((java\\.lang\\.)?Character|char)");
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?Integer|int)\\b",
+						"((java\\.lang\\.)?Integer|int)");
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?L|l)ong\\b", "((java\\.lang\\.)?L|l)ong");
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?F|f)loat\\b", "((java\\.lang\\.)?F|f)loat");
+			methodPattern = methodPattern
+					.replaceAll("\\b((java\\.lang\\.)?D|d)ouble\\b", "((java\\.lang\\.)?D|d)ouble");
+
+			if (methodPattern.equals(escapedMethodName)) {
+				return null;
+			} else {
+				return Pattern.compile(methodPattern);
+			}
+		}
+
+		private Replacement matchMethod(final Map<String, Replacement> replacements,
+				final String methodName) {
+
+			if (replacements.containsKey(methodName)) {
+				// we use that method, so don't put it in later in
+				return replacements.remove(methodName);
+			}
+
+			final Pattern boxingAwareMethodNamePattern = getBoxingAwareMethodNamePattern(methodName);
+
+			if (boxingAwareMethodNamePattern != null) {
+				final Iterator<Map.Entry<String, Replacement>> iter = replacements.entrySet().iterator();
+				while (iter.hasNext()) {
+					final Map.Entry<String, Replacement> entry = iter.next();
+					if (boxingAwareMethodNamePattern.matcher(entry.getKey()).matches()) {
+						// Check that only one method matches
+						int matchingCount = 0;
+						for (final JCTree def : this.classStack.peek().getMembers()) {
+							if (def instanceof JCMethodDecl) {
+								final JCMethodDecl methodDecl = (JCMethodDecl) def;
+
+								final ArrayList<String> types = getTypes(methodDecl);
+
+								final List<JCTypeParameter> typeParams = typeParamStack.isEmpty()
+										? methodDecl.typarams
+										: typeParamStack.peek().appendList(methodDecl.typarams);
+								final String name = methodDecl.name.toString() + ": "
+										+ getTypesAsString(types, typeParams);
+
+								if (boxingAwareMethodNamePattern.matcher(name).matches()) {
+									matchingCount += 1;
+								}
+							}
+						}
+
+						if (matchingCount == 1) {
+							// we use that method, so don't put it in later in
+							iter.remove();
+							return entry.getValue();
+						} else {
+							return null;
+						}
+					}
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public void visitMethodDef(JCMethodDecl tree) {
+			insideMethod = true;
+
+			super.visitMethodDef(tree);
+
+			insideMethod = false;
+
+			if (classLevel != 1 || !isPublic) {
+				return;
+			}
+
+			final ArrayList<String> types = getTypes(tree);
 
 			final List<JCTypeParameter> typeParams = typeParamStack.isEmpty()
 					? tree.typarams
 					: typeParamStack.peek().appendList(tree.typarams);
-			String name = tree.name.toString() + ": " +  getTypesAsString(types, typeParams);
+			String name = tree.name.toString() + ": " + getTypesAsString(types, typeParams);
 			if (isCleanroom) {
 				cleanMethods.put(name, new Replacement(typeParamStack.peek(), tree));
 			} else {
-				if (cleanMethods.containsKey(name)) {
+				final Replacement replacement = matchMethod(cleanMethods, name);
+				if (replacement != null) {
 					if (isReplace(name)) {
 						System.err.println("duplicate method: " + name + ", taken from cleanroom");
 
-						final Replacement replacement = cleanMethods.get(name);
 						result = new TypeParameterTranslator(replacement.typeParams, typeParams)
 								.translate(replacement.tree);
 					} else {
 						System.err.println("duplicate method: " + name + ", taken from student");
 					}
-					// we use that method, so don't put it in later in
-					cleanMethods.remove(name);
 				}
 			}
 		}
@@ -210,6 +327,13 @@ public class ReplaceMixer extends AbstractProcessor {
 
 		@Override
 		public void visitClassDef(JCClassDecl tree) {
+			final boolean oldInsideMethod = insideMethod;
+			insideMethod = false;
+
+			this.classStack.push(tree);
+
+			insideMethod = oldInsideMethod;
+
 			JCModifiers mods = tree.getModifiers();
 			boolean oldPublic = isPublic;
 			isPublic = mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC);
@@ -262,6 +386,7 @@ public class ReplaceMixer extends AbstractProcessor {
 			if (classLevel >= 1 // no outer class
 					|| !mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC) // no public class
 					|| isCleanroom) { // no student class
+				this.classStack.pop();
 				return;
 			}
 
@@ -270,6 +395,8 @@ public class ReplaceMixer extends AbstractProcessor {
 			tree.defs = appendAll(tree.defs, tree.typarams, cleanInnerClasses);
 			
 			result = tree;
+
+			this.classStack.pop();
 		}
 	}
 

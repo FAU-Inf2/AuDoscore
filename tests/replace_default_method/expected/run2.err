@@ -1,0 +1,52 @@
+{
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "DefaultMethod",
+                    "tests": [
+                        {
+                            "desc": "testFoo",
+                            "fromSecret": true,
+                            "id": "testFoo",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "DefaultMethod",
+                    "tests": [
+                        {
+                            "desc": "testEmpty",
+                            "fromSecret": false,
+                            "id": "testEmpty",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "DefaultMethod",
+                    "tests": [
+                        {
+                            "desc": "testFoo",
+                            "error": "AssertionError(foo() is wrong expected:<42> but was:<21>)",
+                            "fromSecret": true,
+                            "id": "testFoo",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

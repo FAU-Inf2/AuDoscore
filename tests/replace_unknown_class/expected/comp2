@@ -37,7 +37,7 @@ if [ "xSecretTest" != "x" ]; then \
 	java -cp lib/junit.jar:lib/junitpoints.jar:. -Dpub=UnitTest CheckAnnotation SecretTest ; \
 	echo "make run-stage1" > single_execution.sh ;\
 	echo "echo \",\" 1>&2" >> single_execution.sh;	\
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=UnitTest" SecretTest >> single_execution.sh; \
+	java -cp lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=UnitTest" SecretTest >> single_execution.sh; \
 else \
 	set -e ; \
 	echo "echo \"]\" 1>&2" >> loop.sh ; \
@@ -56,8 +56,8 @@ for i in cleanroom/*.java; do \
 done
 java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
 Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - Cannot replace unknown class: UnkownClass
-	at tester.ReadReplace.getMap(ReadReplace.java:71)
-	at tester.ReadReplace.main(ReadReplace.java:138)
+	at tester.ReadReplace.getMap(ReadReplace.java:83)
+	at tester.ReadReplace.main(ReadReplace.java:271)
 Makefile:89: recipe for target 'compile-stage2-secret' failed
 make[2]: *** [compile-stage2-secret] Error 1
 make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.25265'

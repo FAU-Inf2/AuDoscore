@@ -11,6 +11,7 @@ import java.util.List;
 
 public final class AuDoscoreUtils {
 
+	@FunctionalInterface
 	private static interface Matcher<T> {
 		boolean match(T elem);
 	}
@@ -28,12 +29,7 @@ public final class AuDoscoreUtils {
 	 * @return array of declared fields
 	 */
 	public static Field[] getExplicitlyDeclaredFields(final Class<?> theClass) {
-		return getMatching(theClass.getDeclaredFields(), new Matcher<Field>() {
-			@Override
-			public boolean match(final Field elem) {
-				return !elem.isSynthetic();
-			}
-		});
+		return getMatching(theClass.getDeclaredFields(), elem -> !elem.isSynthetic());
 	}
 
 
@@ -45,12 +41,8 @@ public final class AuDoscoreUtils {
 	 * @return array of declared methods
 	 */
 	public static Method[] getExplicitlyDeclaredMethods(final Class<?> theClass) {
-		return getMatching(theClass.getDeclaredMethods(), new Matcher<Method>() {
-			@Override
-			public boolean match(final Method elem) {
-				return !elem.isBridge() && !elem.isSynthetic();
-			}
-		});
+		return getMatching(theClass.getDeclaredMethods(),
+				elem -> !elem.isBridge() && !elem.isSynthetic());
 	}
 
 
