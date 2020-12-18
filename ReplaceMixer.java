@@ -173,7 +173,7 @@ public class ReplaceMixer extends AbstractProcessor {
 					Type paramType = paramTypeSymbol.type;
 
 					if (paramType instanceof Type.TypeVar) {
-						paramType = ((Type.TypeVar) paramType).bound;
+						paramType = ((Type.TypeVar) paramType).getUpperBound();
 						if (paramType instanceof Type.ClassType && paramType.isCompound()) {
 							paramType = ((Type.ClassType) paramType).supertype_field;
 						}
