@@ -111,6 +111,20 @@ public class ReplaceMixer extends AbstractProcessor {
 			this.typeParams = typeParams;
 			this.tree = tree;
 		}
+
+		public boolean isStatic() {
+			if (this.tree instanceof JCMethodDecl) {
+				return ((JCMethodDecl) this.tree)
+						.getModifiers().getFlags().contains(javax.lang.model.element.Modifier.STATIC);
+			} else if (this.tree instanceof JCVariableDecl) {
+				return ((JCVariableDecl) this.tree)
+						.getModifiers().getFlags().contains(javax.lang.model.element.Modifier.STATIC);
+			} else if (this.tree instanceof JCClassDecl) {
+				return ((JCClassDecl) this.tree)
+						.getModifiers().getFlags().contains(javax.lang.model.element.Modifier.STATIC);
+			}
+			return false;
+		}
 	}
 
 	private class Merger extends TreeTranslator {
@@ -233,11 +247,19 @@ public class ReplaceMixer extends AbstractProcessor {
 		}
 
 		private Replacement matchMethod(final Map<String, Replacement> replacements,
-				final String methodName) {
+				final String methodName,
+				final boolean isStatic) {
 
 			if (replacements.containsKey(methodName)) {
-				// we use that method, so don't put it in later in
-				return replacements.remove(methodName);
+				// we use that method, so don't put it in later
+				final Replacement replacement = replacements.remove(methodName);
+				if (replacement.isStatic() == isStatic) {
+					return replacement;
+				} else {
+					// One of the methods is static, but the other is not
+					// -> do not replace
+					return null;
+				}
 			}
 
 			final Pattern boxingAwareMethodNamePattern = getBoxingAwareMethodNamePattern(methodName);
@@ -301,7 +323,10 @@ public class ReplaceMixer extends AbstractProcessor {
 			if (isCleanroom) {
 				cleanMethods.put(name, new Replacement(typeParamStack.peek(), tree));
 			} else {
-				final Replacement replacement = matchMethod(cleanMethods, name);
+				final boolean isStatic = tree.getModifiers().getFlags()
+						.contains(javax.lang.model.element.Modifier.STATIC);
+
+				final Replacement replacement = matchMethod(cleanMethods, name, isStatic);
 				if (replacement != null) {
 					if (isReplace(name)) {
 						System.err.println("duplicate method: " + name + ", taken from cleanroom");
