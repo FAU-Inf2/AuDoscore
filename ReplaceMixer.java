@@ -134,11 +134,12 @@ public class ReplaceMixer extends AbstractProcessor {
 			super.visitVarDef(tree);
 
 			if (!insideBlock) {
-				String name = tree.name.toString();
+				String name = tree.getName().toString();
 				if (isCleanroom && name.startsWith(CLEAN_PREFIX)) {
 					cleanFields.put(name, new Replacement(typeParamStack.peek(), tree));
-				} else if (!isCleanroom && !insideMethod && tree.mods.getFlags().contains(Modifier.FINAL)
-						&& tree.init == null) {
+				} else if (!isCleanroom && !insideMethod
+						&& tree.getModifiers().getFlags().contains(Modifier.FINAL)
+						&& tree.getInitializer() == null) {
 					// In this case, there is an uninitialized final field in the
 					// student submission. To avoid a compilation error if a constructor
 					// is replaced, we simply drop the 'final' modifier.
@@ -155,7 +156,7 @@ public class ReplaceMixer extends AbstractProcessor {
 				String typeAsString = typesCopy.get(i);
 				for (int j = 0; j < typeParameters.size(); ++j) {
 					typeAsString = typeAsString.replaceAll(
-							"\\b" + typeParameters.get(j).name.toString() + "\\b",
+							"\\b" + typeParameters.get(j).getName().toString() + "\\b",
 							"§_typeParam_" + j);
 				}
 				typesCopy.set(i, typeAsString);
@@ -166,11 +167,11 @@ public class ReplaceMixer extends AbstractProcessor {
 
 		private ArrayList<String> getTypes(final JCMethodDecl tree) {
 			ArrayList<String> types = new ArrayList<>();
-			for (JCVariableDecl decl : tree.params) {
-				final Symbol paramTypeSymbol = TreeInfo.symbol(decl.vartype);
-				String fullyQualifiedType = decl.vartype.toString();
+			for (JCVariableDecl decl : tree.getParameters()) {
+				final Symbol paramTypeSymbol = TreeInfo.symbol(decl.getType());
+				String fullyQualifiedType = decl.getType().toString();
 				if (paramTypeSymbol != null) {
-					Type paramType = paramTypeSymbol.type;
+					Type paramType = paramTypeSymbol.asType();
 
 					if (paramType instanceof Type.TypeVar) {
 						paramType = ((Type.TypeVar) paramType).getUpperBound();
@@ -181,7 +182,7 @@ public class ReplaceMixer extends AbstractProcessor {
 					if (paramType instanceof Type.ClassType) {
 						final Type.ClassType ctype = (Type.ClassType) paramType;
 						if (ctype.getTypeArguments().nonEmpty()) {
-							paramType = ctype.tsym.erasure_field;
+							paramType = ctype.asElement().erasure_field;
 						}
 					}
 
@@ -255,9 +256,9 @@ public class ReplaceMixer extends AbstractProcessor {
 								final ArrayList<String> types = getTypes(methodDecl);
 
 								final List<JCTypeParameter> typeParams = typeParamStack.isEmpty()
-										? methodDecl.typarams
-										: typeParamStack.peek().appendList(methodDecl.typarams);
-								final String name = methodDecl.name.toString() + ": "
+										? methodDecl.getTypeParameters()
+										: typeParamStack.peek().appendList(methodDecl.getTypeParameters());
+								final String name = methodDecl.getName().toString() + ": "
 										+ getTypesAsString(types, typeParams);
 
 								if (boxingAwareMethodNamePattern.matcher(name).matches()) {
@@ -294,9 +295,9 @@ public class ReplaceMixer extends AbstractProcessor {
 			final ArrayList<String> types = getTypes(tree);
 
 			final List<JCTypeParameter> typeParams = typeParamStack.isEmpty()
-					? tree.typarams
-					: typeParamStack.peek().appendList(tree.typarams);
-			String name = tree.name.toString() + ": " + getTypesAsString(types, typeParams);
+					? tree.getTypeParameters()
+					: typeParamStack.peek().appendList(tree.getTypeParameters());
+			String name = tree.getName().toString() + ": " + getTypesAsString(types, typeParams);
 			if (isCleanroom) {
 				cleanMethods.put(name, new Replacement(typeParamStack.peek(), tree));
 			} else {
@@ -337,23 +338,23 @@ public class ReplaceMixer extends AbstractProcessor {
 			JCModifiers mods = tree.getModifiers();
 			boolean oldPublic = isPublic;
 			isPublic = mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC);
-			System.err.println("class " + tree.name + " ispub " + isPublic);
-			if (isCleanroom && !isPublic && !tree.name.toString().startsWith(CLEAN_PREFIX)) {
+			System.err.println("class " + tree.getSimpleName() + " ispub " + isPublic);
+			if (isCleanroom && !isPublic && !tree.getSimpleName().toString().startsWith(CLEAN_PREFIX)) {
 				System.err.println("non-public class in cleanroom must be prefixed with " + CLEAN_PREFIX);
 				System.exit(-1);
 			}
 			insideBlock = false;
 			classLevel++;
 			if (classLevel > 1) {
-				System.err.println("found inner class: " + tree.name);
+				System.err.println("found inner class: " + tree.getSimpleName());
 			}
 			if (tree.getKind() == Kind.ENUM) {
 				// remove default constructor from *inner* enums to make code valid
 				List<JCTree> schlepp = null;
-				for (List<JCTree> t = tree.defs; t.nonEmpty(); t = t.tail) {
+				for (List<JCTree> t = tree.getMembers(); t.nonEmpty(); t = t.tail) {
 					if (t.head != null && t.head.getKind() == Kind.METHOD) {
 						JCTree.JCMethodDecl m = (JCTree.JCMethodDecl) t.head;
-						if (m.name.toString().equals("<init>") && m.params.size() == 0) {
+						if (m.getName().toString().equals("<init>") && m.getParameters().size() == 0) {
 							if (schlepp == null) {
 								tree.defs = t.tail;
 							} else {
@@ -365,18 +366,24 @@ public class ReplaceMixer extends AbstractProcessor {
 					schlepp = t;
 				}
 			}
-			typeParamStack.push(tree.typarams);
+			typeParamStack.push(tree.getTypeParameters());
 			super.visitClassDef(tree);
 			typeParamStack.pop();
 			classLevel--;
 			isPublic = oldPublic;
 
-			System.err.println("class " + tree.name + ", " + isCleanroom + ", " + classLevel + ", " + isPublic);
+			System.err.println("class " + tree.getSimpleName() + ", "
+					+ isCleanroom + ", "
+					+ classLevel + ", "
+					+ isPublic);
 
-			if (isCleanroom && classLevel >= 1 && tree.name.toString().startsWith(CLEAN_PREFIX)) {
+			if (isCleanroom && classLevel >= 1
+					&& tree.getSimpleName().toString().startsWith(CLEAN_PREFIX)) {
 				// remember additional inner classes of cleanroom
 				// those will be added later in student's public class
-				cleanInnerClasses.put(tree.name.toString(), new Replacement(tree.typarams, tree));
+				cleanInnerClasses.put(
+						tree.getSimpleName().toString(),
+						new Replacement(tree.getTypeParameters(), tree));
 			}
 
 			// only add methods, fields and inner classes in
@@ -390,9 +397,9 @@ public class ReplaceMixer extends AbstractProcessor {
 				return;
 			}
 
-			tree.defs = appendAll(tree.defs, tree.typarams, cleanMethods);
-			tree.defs = appendAll(tree.defs, tree.typarams, cleanFields);
-			tree.defs = appendAll(tree.defs, tree.typarams, cleanInnerClasses);
+			tree.defs = appendAll(tree.defs, tree.getTypeParameters(), cleanMethods);
+			tree.defs = appendAll(tree.defs, tree.getTypeParameters(), cleanFields);
+			tree.defs = appendAll(tree.defs, tree.getTypeParameters(), cleanInnerClasses);
 			
 			result = tree;
 
@@ -411,7 +418,7 @@ public class ReplaceMixer extends AbstractProcessor {
 				for (final Iterator<JCTypeParameter> cleanroomIt = cleanroomTypeParams.iterator(),
 						currentIt = currentTypeParams.iterator();
 						cleanroomIt.hasNext() && currentIt.hasNext();) {
-					this.typeParamMap.put(cleanroomIt.next().name, currentIt.next().name);
+					this.typeParamMap.put(cleanroomIt.next().getName(), currentIt.next().getName());
 				}
 			}
 		}
