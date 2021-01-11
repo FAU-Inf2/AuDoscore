@@ -142,6 +142,7 @@ public class ReadReplace {
 			case "int":     return int.class;
 			case "long":    return long.class;
 			case "short":   return short.class;
+			case "void":    return void.class;
 			default: {
 				try {
 					return Class.forName(desc);
