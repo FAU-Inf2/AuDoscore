@@ -21,6 +21,6 @@ public class UnitTest {
 	@Points(exID = "GA4.6a", bonus = 47.11)
 	public void test() {
 		// FIXME: in real life, we would never write this that way!
-		assertTrue("Should return 42", ToTest.toTest().equals(new Integer(42)));
+		assertTrue("Should return 42", ToTest.toTest().equals(Integer.valueOf(42)));
 	}
 }

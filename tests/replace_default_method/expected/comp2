@@ -54,7 +54,7 @@ for i in cleanroom/*.java; do \
 	/bin/echo -e "package cleanroom;" > $i ; \
 	cat ${i}.bak >> $i; \
 done
-java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
+COMPILER_ARGS="" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
 if [ "x" != "x" ]; then \
 	set -e ; \
 	for i in ; do \
@@ -71,7 +71,7 @@ class ToTest ispub true
 duplicate method: foo: [], taken from cleanroom
 class ToTest, false, 0, true
 + javac -cp . -d ToTest#foo -sourcepath ToTest#foo ToTest#foo/ToTest.java
-java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p UnitTest SecretTest >> loop.sh	
+COMPILER_ARGS="" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p UnitTest SecretTest >> loop.sh	
 echo "echo \"]\" 1>&2" >> loop.sh
 make[2]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/replace_default_method/test.17480'
 make[1]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/replace_default_method/test.17480'

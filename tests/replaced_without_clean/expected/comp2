@@ -54,7 +54,7 @@ for i in cleanroom/*.java; do \
 	/bin/echo -e "package cleanroom;" > $i ; \
 	cat ${i}.bak >> $i; \
 done
-java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
+COMPILER_ARGS="" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
 if [ "x" != "x" ]; then \
 	set -e ; \
 	for i in ; do \

@@ -1,5 +1,5 @@
 public class ToTest {
 	public static Integer toTest() {
-		return new Integer(42);
+		return Integer.valueOf(42);
 	}
 }

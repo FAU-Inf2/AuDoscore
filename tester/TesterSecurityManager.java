@@ -136,13 +136,16 @@ public class TesterSecurityManager extends SecurityManager {
 					break;
 				}
 
-				case "createClassLoader": {
+				case "accessSystemModules":
+				case "createClassLoader":
+				case "getClassLoader":
+				case "localeServiceProvider": {
 					// Only grant this permission if the method is called from JUnit or
 					// from the locale initialization mechanism
 					if (calledFromJUnit()
 							|| calledFromSafeCallers()
 							|| calledFromInitOnce()
-							|| calledFrom("java.text.NumberFormat", "sun.", "java.")
+							|| calledFrom("java.text.NumberFormat", "sun.", "java.", "jdk.")
 							|| calledFrom("java.awt.Color", "java.")) {
 						return;
 					}
@@ -151,6 +154,14 @@ public class TesterSecurityManager extends SecurityManager {
 
 				case "loadLibrary.awt": {
 					if (calledFrom("java.awt.Color", "java.")) {
+						return;
+					}
+					break;
+				}
+
+				case "loadLibrary.management_ext": {
+					// Might be needed for management API
+					if (calledFromSafeCallers()) {
 						return;
 					}
 					break;
@@ -176,6 +187,10 @@ public class TesterSecurityManager extends SecurityManager {
 							return;
 						}
 					}
+					if (perm.getName().startsWith("sun.management.") && calledFromSafeCallers()) {
+						// Grant permission
+						return;
+					}
 				}
 			}
 		} else if (perm instanceof FilePermission) {
@@ -193,6 +208,12 @@ public class TesterSecurityManager extends SecurityManager {
 		} else if (perm instanceof PropertyPermission) {
 			final PropertyPermission propPerm = (PropertyPermission) perm;
 			if ("read".equals(propPerm.getActions())) {
+				// Grant permission
+				return;
+			}
+			if (("write".equals(propPerm.getActions()) || "read,write".equals(propPerm.getActions()))
+					&& (calledFromSafeCallers()
+						|| calledFrom("java.lang.invoke.StringConcatFactory", "java.", "sun."))) {
 				// Grant permission
 				return;
 			}
@@ -263,6 +284,7 @@ public class TesterSecurityManager extends SecurityManager {
 
 			if (!stackTrace[i].getClassName().startsWith("java.")
 					&& !stackTrace[i].getClassName().startsWith("javax.")
+					&& !stackTrace[i].getClassName().startsWith("jdk.internal.")
 					&& !stackTrace[i].getClassName().startsWith("sun.")
 					&& !stackTrace[i].getClassName().startsWith("com.sun.")
 					&& !stackTrace[i].getClassName().startsWith("org.junit.")
@@ -304,19 +326,21 @@ public class TesterSecurityManager extends SecurityManager {
 
 	private boolean calledFromInitOnce() {
 		return calledFrom("JUnitWithPoints$PointsLogger$1InitOnceStatement",
-				"java.", "sun.", "org.junit.");
+				"java.", "sun.", "org.junit.", "jdk.internal.");
 	}
 
 
 
 	private boolean calledFromSafeCallers() {
-		return calledFrom(this.safeCallerList, "java.", "javax.", "com.sun.", "sun.", "org.junit.");
+		return calledFrom(this.safeCallerList, "java.", "javax.", "com.sun.", "sun.", "org.junit.",
+				"jdk.internal.", "jdk.management.");
 	}
 
 
 
 	private boolean calledFromJUnit() {
-		return calledFrom("org.junit.runner.JUnitCore", "java.", "sun.", "org.junit.");
+		return calledFrom("org.junit.runner.JUnitCore", "java.", "sun.", "org.junit.",
+				"jdk.internal.");
 	}
 
 
