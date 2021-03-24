@@ -9,9 +9,20 @@ make[2]: Leaving directory '/home/marius/Arbeit/AuDoscore/my-tests/test1/test.99
 java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
-javap -p -c Foo Z > javap.out
-sed -i -e 's/(.*//' javap.out
-! ( cat javap.out | ./forbidden 1>&2 )
+if [ "xSecretTest" != "x" ]; then \
+	STUDENTCLASSES=$(find . -maxdepth 1 -iname "*.class" -a \! \( -name "UnitTest*" -o -name "SecretTest*" \) ); \
+else \
+	STUDENTCLASSES=$(find . -maxdepth 1 -iname "*.class" -a \! -name "UnitTest*"); \
+fi; \
+if [ "x" != "x" ]; then \
+	STUDENTCLASSES=$(echo "$STUDENTCLASSES" | grep -vE "$(echo "" | sed 's/\.java/(\\\$[^.]*)?\.class/g' | tr " " "|")"); \
+fi; \
+for i in $STUDENTCLASSES; do \
+	rm -f javap.out; \
+	javap -p -c $i > javap.out; \
+	sed -i -e 's/(.*//' javap.out; \
+	! ( cat javap.out | ./forbidden 1>&2 ) || exit 1; \
+done
 rm forbidden
 make run-comparer
 make[2]: Entering directory '/home/marius/Arbeit/AuDoscore/my-tests/test1/test.9914'
@@ -25,7 +36,7 @@ if [ "xSecretTest" != "x" ]; then \
 	java -cp lib/junit.jar:lib/junitpoints.jar:. -Dpub=UnitTest CheckAnnotation SecretTest ; \
 	echo "make run-stage1" > single_execution.sh ;\
 	echo "echo \",\" 1>&2" >> single_execution.sh;	\
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=UnitTest" SecretTest >> single_execution.sh; \
+	java -cp lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=UnitTest" SecretTest >> single_execution.sh; \
 else \
 	set -e ; \
 	echo "echo \"]\" 1>&2" >> loop.sh ; \
@@ -42,7 +53,7 @@ for i in cleanroom/*.java; do \
 	/bin/echo -e "package cleanroom;" > $i ; \
 	cat ${i}.bak >> $i; \
 done
-java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
+COMPILER_ARGS="" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
 if [ "x" != "x" ]; then \
 	set -e ; \
 	for i in ; do \
@@ -52,7 +63,7 @@ if [ "x" != "x" ]; then \
 fi
 /bin/dash -ex ./compile2.sh
 + mkdir -p Foo#getBars
-+ javac -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=Foo#getBars -proc:only -processor ReplaceMixer cleanroom/Foo.java Foo.java
++ javac -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=Foo#getBars -proc:only -processor ReplaceMixer cleanroom/Foo.java Foo.java
 class Foo ispub true
 class Foo, true, 0, true
 class Foo ispub true
@@ -60,6 +71,6 @@ duplicate method: <init>: [], taken from student
 duplicate method: getBars: [], taken from cleanroom
 class Foo, false, 0, true
 + javac -cp . -d Foo#getBars -sourcepath Foo#getBars Foo#getBars/Foo.java
-java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p UnitTest SecretTest >> loop.sh	
+COMPILER_ARGS="" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p UnitTest SecretTest >> loop.sh	
 echo "echo \"]\" 1>&2" >> loop.sh
 make[1]: Leaving directory '/home/marius/Arbeit/AuDoscore/my-tests/test1/test.9914'

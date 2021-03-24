@@ -6,9 +6,20 @@ make[1]: Leaving directory '/home/marius/Arbeit/AuDoscore/my-tests/test1/test.91
 java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
-javap -p -c Foo Z > javap.out
-sed -i -e 's/(.*//' javap.out
-! ( cat javap.out | ./forbidden 1>&2 )
+if [ "xSecretTest" != "x" ]; then \
+	STUDENTCLASSES=$(find . -maxdepth 1 -iname "*.class" -a \! \( -name "UnitTest*" -o -name "SecretTest*" \) ); \
+else \
+	STUDENTCLASSES=$(find . -maxdepth 1 -iname "*.class" -a \! -name "UnitTest*"); \
+fi; \
+if [ "x" != "x" ]; then \
+	STUDENTCLASSES=$(echo "$STUDENTCLASSES" | grep -vE "$(echo "" | sed 's/\.java/(\\\$[^.]*)?\.class/g' | tr " " "|")"); \
+fi; \
+for i in $STUDENTCLASSES; do \
+	rm -f javap.out; \
+	javap -p -c $i > javap.out; \
+	sed -i -e 's/(.*//' javap.out; \
+	! ( cat javap.out | ./forbidden 1>&2 ) || exit 1; \
+done
 rm forbidden
 make run-comparer
 make[1]: Entering directory '/home/marius/Arbeit/AuDoscore/my-tests/test1/test.9183'
