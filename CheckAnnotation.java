@@ -25,7 +25,7 @@ public class CheckAnnotation {
 	// checks if given class exists in cleanroom
 	private static Class<?> getCleanroomClass(String name){
 		String pathToCleanroom = cwd + "/cleanroom/";
-		ClassLoader cleanroomLoader = null;
+		ClassLoader cleanroomLoader;
 
 		try{
 			cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL(), new File(cwd).toURI().toURL()});
@@ -33,7 +33,7 @@ public class CheckAnnotation {
 			throw new Error("Error - " + mfue.getMessage());
 		}
 
-		Class<?> cleanroomClass = null;
+		Class<?> cleanroomClass;
 
 		try{
 			cleanroomClass = cleanroomLoader.loadClass(name);
@@ -93,7 +93,7 @@ public class CheckAnnotation {
 						// method does not exists check Field
 
 						try{
-							Field field = cleanroomClass.getField(parts[1]);
+							cleanroomClass.getField(parts[1]);
 						} catch (NoSuchFieldException nsfe){
 							throw new IllegalArgumentException("ERROR - " + arg + " specified in @CompareInterface could not be found in cleanroom");
 						}
@@ -102,14 +102,15 @@ public class CheckAnnotation {
 				}else{
 					// delim is not "." assume is a whole class
 					// check if class exists in cleanroom
-					Class<?> cleanroomClass = getCleanroomClass(arg);
+					getCleanroomClass(arg);
 				}
 			}
 		}
 
 		// check annotations on method level
 		long timeoutSum = 0;
-		HashSet<String> usedExercises = new HashSet<>(), bonusExercises = new HashSet<>();
+		HashSet<String> usedExercises = new HashSet<>();
+		HashSet<String> bonusExercises = new HashSet<>();
 		for (Method m : clazz.getMethods()) {
 			Test test = m.getAnnotation(Test.class);
 			if (test == null) {
@@ -160,7 +161,8 @@ public class CheckAnnotation {
 		}
 
 		// check for @Rule and @ClassRule
-		boolean hasRule = false, hasClassRule = false;
+		boolean hasRule = false;
+		boolean hasClassRule = false;
 		for (Field f : clazz.getFields()) {
 			if (JUnitWithPoints.PointsLogger.class.isAssignableFrom(f.getType())) {
 				if (hasRule) {
@@ -219,14 +221,14 @@ public class CheckAnnotation {
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException {
-		ClassLoader unitLoader = null;
+		ClassLoader unitLoader;
 		try{
 			unitLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()});
 		} catch (MalformedURLException mfue) {
 			throw new Error("Error " + mfue.getMessage());
 		}
 
-		Class<?> clazz = null;
+		Class<?> clazz;
 
 		try{
 			clazz = unitLoader.loadClass(args[0]);

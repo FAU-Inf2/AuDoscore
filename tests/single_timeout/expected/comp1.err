@@ -1,4 +1,4 @@
 Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - total timeout sum is too high, please reduce to max. 60000ms: [60001ms]
-	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:159)
-	at CheckAnnotation.main(CheckAnnotation.java:239)
+	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:160)
+	at CheckAnnotation.main(CheckAnnotation.java:241)
 make[1]: *** [compile-stage1] Error 1

@@ -16,8 +16,7 @@ public class InterfaceComparer {
 	// retrieves a Field from a Class
 	private static Field getField(Class<?> clazz, String name){
 		try{
-			Field field = clazz.getField(name);
-			return field;
+			return clazz.getField(name);
 		} catch(NoSuchFieldException nsfe) {
 			// Do nothing
 		}
@@ -244,9 +243,9 @@ public class InterfaceComparer {
 
 	// checks two methods and print err msg. If error occurs false is returned
 	private static boolean checkMethod(Method cleanroomMethod, Class<?> studentClass){
-		Method studentMethod = null;
 		try {	
-			studentMethod = getDeclaredMethod(studentClass, cleanroomMethod.getName(), cleanroomMethod.getParameterTypes());
+			final Method studentMethod = getDeclaredMethod(studentClass, cleanroomMethod.getName(),
+					cleanroomMethod.getParameterTypes());
 			String cleanString   = toNormalizedString(cleanroomMethod);
 			String studentString = toNormalizedString(studentMethod);
 
@@ -277,7 +276,7 @@ public class InterfaceComparer {
 	// checks everything
 	private static void checkAll(Class<?> cleanroomClass, Class<?> studentClass){
 		// check all Methods
-		HashMap<String,Method> studentMethodMap = getMethodMapForClass(studentClass);
+		getMethodMapForClass(studentClass);
 		for(Method cleanroomMethod : cleanroomClass.getDeclaredMethods()){
 			if(!Modifier.isPublic(cleanroomMethod.getModifiers())){
 				continue;
@@ -306,7 +305,7 @@ public class InterfaceComparer {
 	// check for specified cleanroom methods with student counterpart
 	private static void compareClasses(Class<?> cleanroomClass, Class<?> studentClass) {
 		HashMap<String,Boolean> fieldMethodMap = checkMap.get(cleanroomClass.getName());
-		if(fieldMethodMap.size() == 0){
+		if(fieldMethodMap.isEmpty()){
 			// only class was given
 			checkAll(cleanroomClass,studentClass);
 			return;
@@ -358,7 +357,7 @@ public class InterfaceComparer {
 	}
 
 	private static String[] extractValueFromUnitTest(String className, ClassLoader classLoader){
-		Class<?> clazz = null;
+		Class<?> clazz;
 		try{
 			clazz = classLoader.loadClass(className);	
 		} catch (ClassNotFoundException cnfe) {					
@@ -381,8 +380,8 @@ public class InterfaceComparer {
 
 		String cwd = System.getProperty("user.dir");
 		String pathToCleanroom = cwd + "/cleanroom/";
-		ClassLoader cleanroomLoader = null;
-		ClassLoader studentLoader = null;
+		ClassLoader cleanroomLoader;
+		ClassLoader studentLoader;
 		try{
 			cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL(), new File(cwd).toURI().toURL()});
 			studentLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()});
@@ -394,8 +393,8 @@ public class InterfaceComparer {
 		String[] annotationValue = extractValueFromUnitTest(args[0], studentLoader);
 		valuesToMap(annotationValue);
 		for(String className : checkMap.keySet()){
-			Class<?> cleanroomClass = null;
-			Class<?> studentClass = null;
+			Class<?> cleanroomClass;
+			Class<?> studentClass;
 			
 			try{
 				cleanroomClass = cleanroomLoader.loadClass(className);

@@ -1,7 +1,6 @@
 package tools.sep;
 
 import java.util.*;
-import java.lang.*;
 import java.lang.reflect.*;
 import java.lang.annotation.*;
 import org.junit.*;

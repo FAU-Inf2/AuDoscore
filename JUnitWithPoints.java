@@ -62,6 +62,7 @@ public abstract class JUnitWithPoints {
 
 		// we did skip this test method
 		public ReportEntry(Description description) {
+			this.description = description;
 			this.skipped = true;
 		}
 
@@ -86,7 +87,7 @@ public abstract class JUnitWithPoints {
 		}
 
 		// determine comment for students
-		protected String getComment(String comment, Description description) {
+		private String getComment(String comment, Description description) {
 			if (comment.equals("<n.a.>")) { // default value -> use short method name
 				return getShortDisplayName(description);
 			} else {
@@ -95,7 +96,7 @@ public abstract class JUnitWithPoints {
 		}
 
 		// converts collected result to JSON
-		final JSONObject toJSON() {
+		private JSONObject toJSON() {
 			boolean success = (throwable == null);
 			JSONObject jsonTest = new JSONObject();
 			jsonTest.put("id", getShortDisplayName(description));
@@ -208,7 +209,7 @@ public abstract class JUnitWithPoints {
 							boolean recompute = !initFile.exists();
 							if (!recompute) {
 								// The result has been computed, just restore it
-								try (final ObjectInputStream in
+								try (ObjectInputStream in
 										= new ObjectInputStream(new FileInputStream(initFile))) {
 									f.set(null, in.readObject());
 								} catch (final IOException e) {
@@ -223,7 +224,7 @@ public abstract class JUnitWithPoints {
 											.getDeclaredMethod(initOnce.value()).invoke(null);
 									f.set(null, result);
 
-									try (final ObjectOutputStream out
+									try (ObjectOutputStream out
 											= new ObjectOutputStream(new FileOutputStream(initFile))) {
 										out.writeObject(result);
 									} catch (final IOException e) {
@@ -254,7 +255,8 @@ public abstract class JUnitWithPoints {
 	// helper class for summaries
 	protected static class PointsSummary extends ExternalResource {
 		public static final int MAX_TIMEOUT_MS = 60_000;
-		private static PrintStream saveOut, saveErr;
+		private static PrintStream saveOut;
+		private static PrintStream saveErr;
 		private static boolean isSecretClass = false;
 		private List<String> safeCallerList;
 

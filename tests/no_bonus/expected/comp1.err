@@ -1,4 +1,4 @@
 Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - found @Ex declaration without test method with bonus values: [UnitTest]
-	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:156)
-	at CheckAnnotation.main(CheckAnnotation.java:239)
+	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:157)
+	at CheckAnnotation.main(CheckAnnotation.java:241)
 make[1]: *** [compile-stage1] Error 1

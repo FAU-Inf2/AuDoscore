@@ -63,20 +63,19 @@ public class JUnitPointsMerger {
 	// extract points annotation from either secret or public class and calculate the point
 	private static double getLocalPoint(Boolean success, String id, Boolean fromSecret) {
 
-		Method method = null;
-		Points points = null;
+		Points points;
 
 		if (fromSecret) {
 			// test method originated from a secret test
 			try {
-				method = secret.getMethod(id);
+				final Method method = secret.getMethod(id);
 				points = (Points) method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException nsme) {
 				throw new Error("WARNING - Method " + id + " was not found in secret test class " + secret.getName());
 			}
 		} else {
 			try {
-				method = pub.getMethod(id);
+				final Method method = pub.getMethod(id);
 				points = (Points) method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException nsme) {
 				throw new Error("WARNING - Method " + id + " was not found in public test class " + pub.getName());
@@ -257,7 +256,7 @@ public class JUnitPointsMerger {
 		return (obj instanceof JSONArray);
 	}
 
-	private static void preparePointsCalc(JSONArray vanillaex) {
+	private static void preparePointsCalc() {
 		exerciseHashMap.clear();
 		Exercises exercisesAnnotation;
 
@@ -376,8 +375,7 @@ public class JUnitPointsMerger {
 		if (!isJSONArray(rawVanilla)) {
 			return (JSONObject) rawVanilla;
 		}
-		JSONObject result = recursiveMergeJArray((JSONArray) rawVanilla);
-		return result;
+		return recursiveMergeJArray((JSONArray) rawVanilla);
 	}
 
 	private static JSONArray mergeReplaced(JSONArray rawReplaced) {
@@ -404,7 +402,7 @@ public class JUnitPointsMerger {
 
 			JSONObject vanilla = mergeVanilla(rawVanilla);
 			JSONArray vanillaex = (JSONArray) vanilla.get("exercises");
-			preparePointsCalc(vanillaex);
+			preparePointsCalc();
 
 			JSONArray replaceds = mergeReplaced((JSONArray) obj.get("replaced"));
 
@@ -443,7 +441,7 @@ public class JUnitPointsMerger {
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			try (final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
+			try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(file.getAbsoluteFile()),
 					Charset.forName("UTF-8")))) {
 				bw.write(summary);

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Set;
-import java.util.HashSet;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -87,18 +86,15 @@ class PointsPretty extends com.sun.tools.javac.tree.Pretty {
 
 		List<JCExpression> bonusArgs = bonus.args;
 		List<JCExpression> malusArgs = malus.args;
-		for(int i = 0; i < malusArgs.size();i++){
+		for (final JCExpression ex1 : malusArgs) {
 			boolean equal = false;
-			JCExpression ex1 = malusArgs.get(i);
-			JCExpression ex2 = null;
-			for(int j = 0; j < bonusArgs.size();j++){
-				ex2 = bonusArgs.get(i);
-				if(ex1.toString().equals(ex2.toString())){
+			for (final JCExpression ex2 : bonusArgs) {
+				if (ex1.toString().equals(ex2.toString())){
 					equal = true;
 					break;
 				}	
 			}
-			if(!equal){
+			if (!equal){
 				bonusArgs = bonusArgs.append(ex1);
 			}
 		}

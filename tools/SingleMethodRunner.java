@@ -18,7 +18,7 @@ public class SingleMethodRunner {
 		Request request = Request.method(Class.forName(clazz), method);
 		JUnitCore juc = new JUnitCore();
 		juc.addListener(new TextListener(new RealSystem()));
-		Result result = juc.run(request);
+		juc.run(request);
 		System.exit(0);
 	}
 }

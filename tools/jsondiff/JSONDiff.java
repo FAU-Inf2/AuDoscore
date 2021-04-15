@@ -1,6 +1,5 @@
 package tools.jsondiff;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
@@ -60,11 +59,9 @@ public class JSONDiff {
 	 * 
 	 * */
 	private static boolean isJSONElement(Object obj) {
-		if ((obj instanceof String) || (obj instanceof Number)
-				|| (obj instanceof Boolean)) {
-			return true;
-		}
-		return false;
+		return obj instanceof String
+				|| obj instanceof Number
+				|| obj instanceof Boolean;
 	}
 
 	/**
@@ -159,13 +156,7 @@ public class JSONDiff {
 			int equal = compare(obj1, obj2);
 			System.exit(equal);
 
-		} catch (FileNotFoundException e) {
-			System.err.println(e.getMessage());
-			System.exit(-1);
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-			System.exit(-1);
-		} catch (ParseException e) {
+		} catch (IOException|ParseException e) {
 			System.err.println(e.getMessage());
 			System.exit(-1);
 		}

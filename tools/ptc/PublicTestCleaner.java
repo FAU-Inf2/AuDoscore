@@ -50,13 +50,8 @@ public class PublicTestCleaner extends AbstractProcessor {
 	}
 
 	private boolean importToBeSkipped(Object o){
-		if(o.toString().contains("import tester.")) {
-			return true;
-		}
-		if(o.toString().contains("import org.junit.rules.")){
-			return true;
-		}
-		return false;
+		return o.toString().contains("import tester.")
+				|| o.toString().contains("import org.junit.rules.");
 	}
 
 	@Override

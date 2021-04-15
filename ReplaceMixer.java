@@ -18,7 +18,6 @@ import com.sun.source.util.Trees;
 import com.sun.source.util.TreePath;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
-import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.*;
 import com.sun.tools.javac.tree.JCTree.*;
 import com.sun.tools.javac.util.*;
@@ -27,7 +26,7 @@ import com.sun.tools.javac.util.*;
 @SupportedOptions("replaces")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ReplaceMixer extends AbstractProcessor {
-	public final String CLEAN_PREFIX = "__clean";
+	public static final String CLEAN_PREFIX = "__clean";
 	private Trees trees;
 
 	private HashMap<String, Replacement> cleanMethods = new HashMap<>();
@@ -43,11 +42,10 @@ public class ReplaceMixer extends AbstractProcessor {
 	@Override
 	public synchronized void init(ProcessingEnvironment env) {
 		super.init(env);
-		trees = Trees.instance(env);
-		Context context = ((JavacProcessingEnvironment) env).getContext();
+		this.trees = Trees.instance(env);
 		String repString = env.getOptions().get("replaces");
 		if (repString != null) {
-			replaces = repString.split("#");
+			this.replaces = repString.split("#");
 		}
 	}
 
@@ -114,14 +112,11 @@ public class ReplaceMixer extends AbstractProcessor {
 
 		public boolean isStatic() {
 			if (this.tree instanceof JCMethodDecl) {
-				return ((JCMethodDecl) this.tree)
-						.getModifiers().getFlags().contains(javax.lang.model.element.Modifier.STATIC);
+				return ((JCMethodDecl) this.tree).getModifiers().getFlags().contains(Modifier.STATIC);
 			} else if (this.tree instanceof JCVariableDecl) {
-				return ((JCVariableDecl) this.tree)
-						.getModifiers().getFlags().contains(javax.lang.model.element.Modifier.STATIC);
+				return ((JCVariableDecl) this.tree).getModifiers().getFlags().contains(Modifier.STATIC);
 			} else if (this.tree instanceof JCClassDecl) {
-				return ((JCClassDecl) this.tree)
-						.getModifiers().getFlags().contains(javax.lang.model.element.Modifier.STATIC);
+				return ((JCClassDecl) this.tree).getModifiers().getFlags().contains(Modifier.STATIC);
 			}
 			return false;
 		}
@@ -323,8 +318,7 @@ public class ReplaceMixer extends AbstractProcessor {
 			if (isCleanroom) {
 				cleanMethods.put(name, new Replacement(typeParamStack.peek(), tree));
 			} else {
-				final boolean isStatic = tree.getModifiers().getFlags()
-						.contains(javax.lang.model.element.Modifier.STATIC);
+				final boolean isStatic = tree.getModifiers().getFlags().contains(Modifier.STATIC);
 
 				final Replacement replacement = matchMethod(cleanMethods, name, isStatic);
 				if (replacement != null) {
@@ -362,7 +356,7 @@ public class ReplaceMixer extends AbstractProcessor {
 
 			JCModifiers mods = tree.getModifiers();
 			boolean oldPublic = isPublic;
-			isPublic = mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC);
+			isPublic = mods.getFlags().contains(Modifier.PUBLIC);
 			System.err.println("class " + tree.getSimpleName() + " ispub " + isPublic);
 			if (isCleanroom && !isPublic && !tree.getSimpleName().toString().startsWith(CLEAN_PREFIX)) {
 				System.err.println("non-public class in cleanroom must be prefixed with " + CLEAN_PREFIX);
@@ -416,7 +410,7 @@ public class ReplaceMixer extends AbstractProcessor {
 			// public class
 			// of student
 			if (classLevel >= 1 // no outer class
-					|| !mods.getFlags().contains(javax.lang.model.element.Modifier.PUBLIC) // no public class
+					|| !mods.getFlags().contains(Modifier.PUBLIC) // no public class
 					|| isCleanroom) { // no student class
 				this.classStack.pop();
 				return;
