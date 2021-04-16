@@ -210,8 +210,8 @@ public abstract class JUnitWithPoints {
 							boolean recompute = !initFile.exists();
 							if (!recompute) {
 								// The result has been computed, just restore it
-								try (final ObjectInputStream in = new ObjectInputStream(
-											Files.newInputStream(initFile.toPath()))) {
+								try (ObjectInputStream in
+										= new ObjectInputStream(new FileInputStream(initFile))) {
 									f.set(null, in.readObject());
 								} catch (final IOException e) {
 									recompute = true;
@@ -225,8 +225,8 @@ public abstract class JUnitWithPoints {
 											.getDeclaredMethod(initOnce.value()).invoke(null);
 									f.set(null, result);
 
-									try (final ObjectOutputStream out = new ObjectOutputStream(
-												Files.newOutputStream(initFile.toPath()))) {
+									try (ObjectOutputStream out
+											= new ObjectOutputStream(new FileOutputStream(initFile))) {
 										out.writeObject(result);
 									} catch (final IOException e) {
 										initFile.delete(); // Clean up
