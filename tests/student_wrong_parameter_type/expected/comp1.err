@@ -1,5 +1,5 @@
 ERROR - Method public static long ToTest.toTest(long,long)[ToTest] does not match or does not exist in studentcode
 Exception in thread "main" java.lang.Error
-	at tools.ic.InterfaceComparer.main(InterfaceComparer.java:415)
+	at tools.ic.InterfaceComparer.main(InterfaceComparer.java:414)
 make[1]: *** [run-comparer] Error 1
 make: *** [compile-stage1] Error 2

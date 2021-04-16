@@ -55,12 +55,12 @@ public class CheckAnnotation {
 
 	// checks (almost) all annotation conditions
 	public static void checkAnnotations(Description description, Exercises exercisesAnnotation) {
-		HashMap<String, Ex> exerciseHashMap = new HashMap<>();
-
 		// check annotations on class level
 		if (exercisesAnnotation == null || exercisesAnnotation.value().length == 0) {
 			throw new AnnotationFormatError("ERROR - did not find valid @Exercises declaration: [" + description.getDisplayName() + "]");
 		}
+
+		final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 		for (Ex exercise : exercisesAnnotation.value()) {
 			if (exercise.exID().trim().length() == 0) {
 				throw new AnnotationFormatError("ERROR - found @Exercises annotation with empty exercise name and following points: [" + exercise.points() + "]");

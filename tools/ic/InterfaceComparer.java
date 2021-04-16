@@ -392,26 +392,25 @@ public class InterfaceComparer {
 		// extract content from @CompareInterface Annotation
 		String[] annotationValue = extractValueFromUnitTest(args[0], studentLoader);
 		valuesToMap(annotationValue);
-		for(String className : checkMap.keySet()){
+		for (String className : checkMap.keySet()) {
 			Class<?> cleanroomClass;
-			Class<?> studentClass;
-			
-			try{
+			try {
 				cleanroomClass = cleanroomLoader.loadClass(className);
 			} catch (ClassNotFoundException cnfe) {
 				throw new Error("Error - cleanroom class [" + cnfe.getMessage()+"] not found");
 			}
 			
-			try{
+			Class<?> studentClass;
+			try {
 				studentClass = studentLoader.loadClass(className);
 			} catch (ClassNotFoundException cnfe) {
 				throw new Error("Error - student class [" + cnfe.getMessage()+"] not found");
 			}
 			
-			compareClasses(cleanroomClass,studentClass);
+			compareClasses(cleanroomClass, studentClass);
 		}
 
-		if(error){
+		if (error) {
 			throw new Error();
 		}
 	}

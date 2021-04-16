@@ -7,12 +7,12 @@ import java.util.*;
 import org.json.simple.*;
 import org.json.simple.parser.*;
 
-import java.lang.annotation.*;
 import java.lang.reflect.*;
 
 import tester.annotations.*;
 
 public class JUnitPointsMerger {
+
 	private static final class SingleReport {
 		boolean success;
 		String description;

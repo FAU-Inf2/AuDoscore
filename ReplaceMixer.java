@@ -12,7 +12,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.tools.*;
 import com.sun.source.tree.Tree.Kind;
 import com.sun.source.util.Trees;
 import com.sun.source.util.TreePath;

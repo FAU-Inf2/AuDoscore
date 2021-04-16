@@ -4,7 +4,6 @@ import org.junit.internal.RealSystem;
 import org.junit.internal.TextListener;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
-import org.junit.runner.Result;
 
 public class SingleMethodRunner {
 	public static void main(String... args) throws ClassNotFoundException {
