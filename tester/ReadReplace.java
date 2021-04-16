@@ -47,22 +47,22 @@ public class ReadReplace {
 
 	public static Map<String, SortedSet<String>> getMap(Replace r) {
 		Map<String, SortedSet<String>> mMethsMap = new TreeMap<>();
-		for(int i=0; i<r.value().length; ++i) {
-			int s = r.value()[i].indexOf('.');
+		for (final String vstr : r.value()) {
+			final int s = vstr.indexOf('.');
 			String cln;
 			String regex;
-			if(s == -1) {
-				cln = r.value()[i];
+			if (s == -1) {
+				cln = vstr;
 				regex = ".*";
 			} else {
-				cln = r.value()[i].substring(0, s);
-				regex = r.value()[i].substring(s+1);
+				cln = vstr.substring(0, s);
+				regex = vstr.substring(s + 1);
 			}
 
 			if (!mMethsMap.containsKey(cln)) {
 				mMethsMap.put(cln, new TreeSet<String>());
 			}
-			SortedSet<String> meths = mMethsMap.get(cln);
+			final SortedSet<String> meths = mMethsMap.get(cln);
 
 			try {
 				boolean foundMatch = false;
@@ -72,6 +72,7 @@ public class ReadReplace {
 						foundMatch = true;
 					}
 				}
+
 				if ("<init>".matches(regex)) {
 					meths.add("<init>");
 					foundMatch = true;

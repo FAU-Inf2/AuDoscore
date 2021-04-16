@@ -56,8 +56,8 @@ for i in cleanroom/*.java; do \
 done
 COMPILER_ARGS="" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
 Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - Cannot replace unknown class: UnkownClass
-	at tester.ReadReplace.getMap(ReadReplace.java:83)
-	at tester.ReadReplace.main(ReadReplace.java:272)
+	at tester.ReadReplace.getMap(ReadReplace.java:84)
+	at tester.ReadReplace.main(ReadReplace.java:273)
 Makefile:89: recipe for target 'compile-stage2-secret' failed
 make[2]: *** [compile-stage2-secret] Error 1
 make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_unknown_class/test.25265'

@@ -91,13 +91,13 @@ public class JSONDiff {
 			if (a1.size() != a2.size()) {
 				return 1;
 			}
-			int equal = 1;
 
 			/*
 			 * compare each element of a1 with each element of a2, because the
 			 * order is maybe not the same
 			 */
 			for (int i = 0; i < a1.size(); i++) {
+				int equal = 1;
 				for (int j = 0; j < a2.size(); j++) {
 					equal = compare(a1.get(i), a2.get(j));
 					if (equal == 0) {
