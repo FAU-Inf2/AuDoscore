@@ -1,7 +1,9 @@
 package tools.jsondiff;
 
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -149,9 +151,10 @@ public class JSONDiff {
 		String pathToJson1 = args[0];
 		String pathToJson2 = args[1];
 
-		try {
-			Object obj1 = new JSONParser().parse(new FileReader(pathToJson1));
-			Object obj2 = new JSONParser().parse(new FileReader(pathToJson2));
+		try (final Reader reader1 = Files.newBufferedReader(Paths.get(pathToJson1));
+				final Reader reader2 = Files.newBufferedReader(Paths.get(pathToJson2))) {
+			Object obj1 = new JSONParser().parse(reader1);
+			Object obj2 = new JSONParser().parse(reader2);
 
 			int equal = compare(obj1, obj2);
 			System.exit(equal);

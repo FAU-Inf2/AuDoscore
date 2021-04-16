@@ -2,6 +2,7 @@ import java.util.*;
 import java.io.*;
 import java.lang.annotation.*;
 import java.lang.reflect.*;
+import java.nio.file.Files;
 
 import org.junit.*;
 import org.junit.rules.*;
@@ -209,8 +210,8 @@ public abstract class JUnitWithPoints {
 							boolean recompute = !initFile.exists();
 							if (!recompute) {
 								// The result has been computed, just restore it
-								try (ObjectInputStream in
-										= new ObjectInputStream(new FileInputStream(initFile))) {
+								try (final InputStream is = Files.newInputStream(initFile.toPath());
+										final ObjectInputStream in = new ObjectInputStream(is)) {
 									f.set(null, in.readObject());
 								} catch (final IOException e) {
 									recompute = true;
@@ -224,8 +225,8 @@ public abstract class JUnitWithPoints {
 											.getDeclaredMethod(initOnce.value()).invoke(null);
 									f.set(null, result);
 
-									try (ObjectOutputStream out
-											= new ObjectOutputStream(new FileOutputStream(initFile))) {
+									try (final OutputStream os = Files.newOutputStream(initFile.toPath());
+											final ObjectOutputStream out = new ObjectOutputStream(os)) {
 										out.writeObject(result);
 									} catch (final IOException e) {
 										initFile.delete(); // Clean up

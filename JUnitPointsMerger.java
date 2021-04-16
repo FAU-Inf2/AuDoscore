@@ -1,5 +1,7 @@
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import org.json.simple.*;
@@ -396,8 +398,8 @@ public class JUnitPointsMerger {
 		String inputFile = (args.length == 2) ? args[0] : "result.json";
 		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
 		JSONParser parser = new JSONParser();
-		try {
-			JSONObject obj = (JSONObject) parser.parse(new FileReader(inputFile));
+		try (final Reader reader = Files.newBufferedReader(Paths.get(inputFile))) {
+			JSONObject obj = (JSONObject) parser.parse(reader);
 			Object rawVanilla = obj.get("vanilla");
 
 			JSONObject vanilla = mergeVanilla(rawVanilla);
@@ -441,9 +443,9 @@ public class JUnitPointsMerger {
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(file.getAbsoluteFile()),
-					Charset.forName("UTF-8")))) {
+			try (final Writer bw = Files.newBufferedWriter(
+					file.getAbsoluteFile().toPath(),
+					Charset.forName("UTF-8"))) {
 				bw.write(summary);
 			}
 		} catch (Exception e) {
