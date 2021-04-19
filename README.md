@@ -76,5 +76,5 @@ Contact
 
 Please report bugs via the issue tracker.
 
-Feedback: [aud@i2.cs.fau.de](mailto:aud@i2.cs.fau.de)
+Feedback: [cs2-aud@fau.de](mailto:cs2-aud@fau.de)
 
