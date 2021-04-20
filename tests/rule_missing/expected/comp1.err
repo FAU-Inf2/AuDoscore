@@ -1,4 +1,4 @@
-Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - found PointsLogger but @Rule annotation is missing
-	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:173)
-	at CheckAnnotation.main(CheckAnnotation.java:241)
+Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - found PointsLogger but @RegisterExtension annotation is missing
+	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:184)
+	at CheckAnnotation.main(CheckAnnotation.java:251)
 make: *** [compile-stage1] Error 1

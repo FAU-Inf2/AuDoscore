@@ -1,26 +1,27 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.*;
 
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import tester.annotations.SecretClass;
 import tester.annotations.Points;
 
 @SecretClass
 public class SecretTest {
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=500)
+	@Test
+	@Timeout(value = 500, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "ReflectionInTest", bonus = 1)
 	public void test() {
 		Method[] methods = ToTest.class.getDeclaredMethods();
-		assertEquals("Should return 1", 1, methods.length);
+		assertEquals(1, methods.length, "Should return 1");
 	}
 }
 

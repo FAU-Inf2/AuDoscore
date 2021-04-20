@@ -2,7 +2,7 @@ package tools.sep;
 
 import java.util.*;
 import java.lang.reflect.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 public class SingleExecutionPreparer {

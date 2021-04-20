@@ -8,6 +8,7 @@ import java.net.NetPermission;
 import java.util.Collections;
 import java.util.List;
 import java.util.PropertyPermission;
+import java.util.logging.LoggingPermission;
 import java.security.Permission;
 import java.security.SecurityPermission;
 
@@ -102,6 +103,8 @@ public class TesterSecurityManager extends SecurityManager {
 							}
 
 							// Deny permission
+							System.out.println("DENY " + perm);
+							new Exception().printStackTrace(System.out);
 							super.checkPermission(perm);
 						}
 						if (stackTrace[i].getClassName().startsWith(
@@ -125,7 +128,7 @@ public class TesterSecurityManager extends SecurityManager {
 					boolean allowed = true;
 					final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 					for (int i = 1; allowed && i < stackTrace.length
-							&& !"JUnitWithPoints$PointsLogger".equals(stackTrace[i].getClassName()); ++i) {
+							&& !"JUnitWithPoints$PointsSummary".equals(stackTrace[i].getClassName()); ++i) {
 						allowed &= stackTrace[i].getClassName().startsWith("java.")
 								|| this.getClass().getCanonicalName().equals(stackTrace[i].getClassName());
 					}
@@ -147,6 +150,13 @@ public class TesterSecurityManager extends SecurityManager {
 							|| calledFromInitOnce()
 							|| calledFrom("java.text.NumberFormat", "sun.", "java.", "jdk.")
 							|| calledFrom("java.awt.Color", "java.")) {
+						return;
+					}
+					break;
+				}
+
+				case "reflectionFactoryAccess": {
+					if (calledFromInitOnce()) {
 						return;
 					}
 					break;
@@ -201,7 +211,7 @@ public class TesterSecurityManager extends SecurityManager {
 				}
 				// Grant permission
 				return;
-			} else if ("write".equals(filePerm.getActions()) && !calledFromInitOnce()) {
+			} else if ("write".equals(filePerm.getActions()) && calledFromInitOnce()) {
 				// Grant permission -> @InitializeOnce
 				return;
 			}
@@ -219,6 +229,11 @@ public class TesterSecurityManager extends SecurityManager {
 			}
 			if ("sun.font.fontmanager".equals(propPerm.getName())
 					&& calledFrom("java.awt.Toolkit", "java.")) {
+				// Grant permission
+				return;
+			}
+		} else if (perm instanceof LoggingPermission) {
+			if (calledFrom("java.util.logging.LogManager", "java.")) {
 				// Grant permission
 				return;
 			}
@@ -242,6 +257,8 @@ public class TesterSecurityManager extends SecurityManager {
 			return;
 		}
 		// Deny all other permissions
+		System.out.println("DENY " + perm);
+		new Exception().printStackTrace(System.out);
 		super.checkPermission(perm);
 	}
 
@@ -303,7 +320,7 @@ public class TesterSecurityManager extends SecurityManager {
 				// Allow
 				return true;
 			}
-			if ("org.junit.runner.JUnitCore".equals(stackTrace[i].getClassName())) {
+			if ("org.junit.platform.launcher.core.DefaultLauncher".equals(stackTrace[i].getClassName())) {
 				// Allow
 				return true;
 			}
@@ -325,7 +342,7 @@ public class TesterSecurityManager extends SecurityManager {
 
 
 	private boolean calledFromInitOnce() {
-		return calledFrom("JUnitWithPoints$PointsLogger$1InitOnceStatement",
+		return calledFrom("JUnitWithPoints$PointsLogger",
 				"java.", "sun.", "org.junit.", "jdk.internal.");
 	}
 
@@ -339,8 +356,8 @@ public class TesterSecurityManager extends SecurityManager {
 
 
 	private boolean calledFromJUnit() {
-		return calledFrom("org.junit.runner.JUnitCore", "java.", "sun.", "org.junit.",
-				"jdk.internal.");
+		return calledFrom("org.junit.platform.launcher.core.DefaultLauncher",
+				"java.", "sun.", "org.junit.", "jdk.internal.");
 	}
 
 

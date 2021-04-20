@@ -2,7 +2,7 @@
 [
 {"exercises":[{"name":"ReplaceGeneric3","tests":[{"desc":"test","fromSecret":false,"id":"test","success":true}]}]}
 ,
-{"exercises":[{"name":"ReplaceGeneric3","tests":[{"desc":"testFoo","error":"AssertionError()","fromSecret":true,"id":"testFoo","success":false}]}]}
+{"exercises":[{"name":"ReplaceGeneric3","tests":[{"desc":"testFoo","error":"AssertionFailedError(expected: not <null>)","fromSecret":true,"id":"testFoo","success":false}]}]}
 ]
 , "replaced" : 
 [

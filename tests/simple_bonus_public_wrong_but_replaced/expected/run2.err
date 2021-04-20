@@ -1,21 +1,4 @@
 {
-    "replaced": [
-        {
-            "exercises": [
-                {
-                    "name": "GA4.6a",
-                    "tests": [
-                        {
-                            "desc": "test2",
-                            "fromSecret": true,
-                            "id": "test2",
-                            "success": true
-                        }
-                    ]
-                }
-            ]
-        }
-    ],
     "vanilla": [
         {
             "exercises": [
@@ -39,10 +22,27 @@
                     "tests": [
                         {
                             "desc": "test2",
-                            "error": "AssertionError(Should return 42 expected:<42> but was:<23>)",
+                            "error": "AssertionFailedError(Should return 42 ==> expected:<42> but was:<23>)",
                             "fromSecret": true,
                             "id": "test2",
                             "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "GA4.6a",
+                    "tests": [
+                        {
+                            "desc": "test2",
+                            "fromSecret": true,
+                            "id": "test2",
+                            "success": true
                         }
                     ]
                 }

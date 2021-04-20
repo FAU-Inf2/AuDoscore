@@ -1,6 +1,6 @@
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import tester.annotations.Ex;
 import tester.annotations.Exercises;
@@ -10,18 +10,20 @@ import tester.annotations.Points;
 public class UnitTest {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=300)
+	@Test
+	@Timeout(value = 300, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GA4.6a", bonus = 4)
 	public void stdout() {
 		ToTest.toTest(true);
 	}
 
-	@Test(timeout=300)
+	@Test
+	@Timeout(value = 300, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GA4.6a", bonus = 7)
 	public void stderr() {
 		ToTest.toTest(false);

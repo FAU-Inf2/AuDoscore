@@ -1,5 +1,4 @@
 {
-    "replaced": [],
     "vanilla": [
         {
             "exercises": [
@@ -26,7 +25,7 @@
                         },
                         {
                             "desc": "test3",
-                            "error": "AssertionError(Should return 3 expected:<3> but was:<333>)",
+                            "error": "AssertionFailedError(Should return 3 ==> expected:<3> but was:<333>)",
                             "fromSecret": false,
                             "id": "test3",
                             "success": false
@@ -123,7 +122,7 @@
                     "tests": [
                         {
                             "desc": "test14",
-                            "error": "AssertionError(Should return 14 expected:<14> but was:<11>)",
+                            "error": "AssertionFailedError(Should return 14 ==> expected:<14> but was:<11>)",
                             "fromSecret": true,
                             "id": "test14",
                             "success": false
@@ -139,7 +138,7 @@
                     "tests": [
                         {
                             "desc": "test15",
-                            "error": "AssertionError(Should return 15 expected:<15> but was:<150>)",
+                            "error": "AssertionFailedError(Should return 15 ==> expected:<15> but was:<150>)",
                             "fromSecret": true,
                             "id": "test15",
                             "success": false
@@ -185,7 +184,7 @@
                     "tests": [
                         {
                             "desc": "test18",
-                            "error": "AssertionError(Should return 18 expected:<18> but was:<188>)",
+                            "error": "AssertionFailedError(Should return 18 ==> expected:<18> but was:<188>)",
                             "fromSecret": true,
                             "id": "test18",
                             "success": false
@@ -224,5 +223,6 @@
                 }
             ]
         }
-    ]
+    ],
+    "replaced": []
 }

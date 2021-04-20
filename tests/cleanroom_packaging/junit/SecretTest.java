@@ -1,16 +1,18 @@
-import org.junit.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import tester.annotations.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SecretClass
 public class SecretTest {
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout = 300)
+	@Test
+	@Timeout(value = 300, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "Test1", bonus = 2)
 	@Replace("Foo.getBars")
 	public void testSecret() {

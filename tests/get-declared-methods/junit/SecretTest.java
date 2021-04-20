@@ -1,8 +1,8 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import tester.annotations.*;
 import tester.AuDoscoreUtils;
@@ -11,12 +11,13 @@ import tester.AuDoscoreUtils;
 public class SecretTest {
 	/* IGNORE_FOR_PTC */
 
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public static final PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=500)
+	@Test
+	@Timeout(value = 500, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GetDeclaredMethods", bonus = 1)
 	public void test() {
 		assertEquals(0, AuDoscoreUtils.getExplicitlyDeclaredMethods(ToTest.class).length);

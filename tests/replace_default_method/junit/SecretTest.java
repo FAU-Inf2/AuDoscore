@@ -1,8 +1,8 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import tester.annotations.Points;
 import tester.annotations.Replace;
@@ -10,19 +10,20 @@ import tester.annotations.SecretClass;
 
 @SecretClass
 public class SecretTest {
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public static final PointsSummary pointsSummary = new PointsSummary();
 
 	private static class Foo implements ToTest {
 	}
 
-	@Test(timeout=100)
+	@Test
+	@Timeout(value = 100, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "DefaultMethod", bonus = 0.5)
 	@Replace({"ToTest.foo"})
 	public void testFoo() {
-		assertEquals("foo() is wrong", 42, new Foo().foo());
+		assertEquals(42, new Foo().foo(), "foo() is wrong");
 	}
 }
 

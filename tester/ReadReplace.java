@@ -1,12 +1,29 @@
 package tester;
 
 import tester.annotations.*;
+import java.io.File;
 import java.util.*;
 import java.lang.reflect.*;
 import java.lang.annotation.*;
-import org.junit.runner.*;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 public class ReadReplace {
+
+	private static final String JUNIT5_JARS;
+
+	static {
+		final StringJoiner jarJoiner = new StringJoiner(":");
+		for (final File f : new File("lib/junit5").listFiles()) {
+			if (f.getName().endsWith(".jar")) {
+				jarJoiner.add("lib/junit5/" + f.getName());
+			}
+		}
+		jarJoiner.add("lib/apiguardian-api.jar");
+		jarJoiner.add("lib/opentest4j.jar");
+		JUNIT5_JARS = jarJoiner.toString();
+	}
+
+
 
 	public static Method[] getMethodsSorted(final Class cls) {
 		final Method[] methods = cls.getMethods();
@@ -35,9 +52,9 @@ public class ReadReplace {
 
 
 
-	public static String getCanonicalReplacement(Description description) {
-		if (description.getAnnotation(Replace.class) != null) {
-			Replace r = description.getAnnotation(Replace.class);
+	public static String getCanonicalReplacement(final ExtensionContext ctx) {
+		if (ctx.getRequiredTestClass().getAnnotation(Replace.class) != null) {
+			Replace r = ctx.getRequiredTestClass().getAnnotation(Replace.class);
 			return getCanonicalReplacement(r);
 		}
 		return "";
@@ -245,7 +262,7 @@ public class ReadReplace {
 				}else{
 					System.out.println("echo \",\" 1>&2");
 				}
-				System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + classpath + ":. -Dpub=" +pub+" -Djson=yes tools.SingleMethodRunner " + tcln + " "  + method);
+				System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m -cp lib/json-simple-1.1.1.jar:" + JUNIT5_JARS + ":lib/hamcrest-core.jar:lib/junitpoints.jar:" + classpath + ":. -Dpub=" +pub+" -Djson=yes tools.SingleMethodRunner " + tcln + " "  + method);
 			}
 
 		}
@@ -289,7 +306,7 @@ public class ReadReplace {
 						mids.add("mkdir -p " + nclns + "; "
 								+ "javac "
 								+ compilerArgs
-								+ " -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces="
+								+ " -Xprefer:source -cp .:" + JUNIT5_JARS + ":lib/junitpoints.jar -Areplaces="
 								+ nclns
 								+ " -proc:only -processor ReplaceMixer cleanroom/"
 								+ e.getKey() + ".java "

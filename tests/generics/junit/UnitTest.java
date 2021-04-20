@@ -1,18 +1,18 @@
-import static org.junit.Assert.assertEquals;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import tester.annotations.*;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 @Exercises({ @Ex(exID = "Generics", points = 1) })
 public class UnitTest {
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout = 100)
+	@Test
+	@Timeout(value  =  100, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "Generics", bonus = 0.1)
 	public void test() { }
 }

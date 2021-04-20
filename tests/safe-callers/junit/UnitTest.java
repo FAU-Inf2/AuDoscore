@@ -1,10 +1,10 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.Method;
 
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import tester.annotations.*;
 
@@ -22,12 +22,13 @@ public class UnitTest extends UnitTestBase {
 		}
 	}
 
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public static final PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=100)
+	@Test
+	@Timeout(value = 100, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "SafeCallers", bonus = 1)
 	public void test() {
 		super.check(cl);

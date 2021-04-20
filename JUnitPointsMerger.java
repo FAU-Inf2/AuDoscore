@@ -96,33 +96,56 @@ public class JUnitPointsMerger {
 
 
 	private static String getFormattedErrorString(String error) {
-		if (error.length() <= 1000 || !error.startsWith("ComparisonFailure")) {
+		if (error.length() <= 1000 || !error.startsWith("AssertionFailedError")) {
 			return error;
 		}
 
 		// We have a very long ComparisonFailure -> try to "compress" it
-		final int expectedPos = error.indexOf("expected:<");
+		final int expectedPos = error.indexOf("expected: <");
 		if (expectedPos < 0) {
 			return error; // Unexpected error format
 		}
 
-		final int butWasPos = error.indexOf("> but was:<", expectedPos);
+		final int butWasPos = error.indexOf("> but was: <", expectedPos);
 		if (butWasPos < 0) {
 			return error; // Unexpected error format
 		}
 
-		final int expectedDiffStart = error.indexOf('[', expectedPos);
-		final int expectedDiffEnd = expectedDiffStart < 0 ? -1 : error.lastIndexOf(']', butWasPos);
+		int beforeSameSize = 0;
+		while (expectedPos + 11 + beforeSameSize < butWasPos
+				&& butWasPos + 12 + beforeSameSize < error.length() - 2
+				&& error.charAt(expectedPos + 11 + beforeSameSize)
+					== error.charAt(butWasPos + 12 + beforeSameSize)) {
 
-		final int butWasDiffStart = error.indexOf('[', butWasPos);
-		final int butWasDiffEnd = butWasDiffStart < 0 ? -1 : error.lastIndexOf(']');
+			beforeSameSize += 1;
+		}
+
+		int afterSameSize = 0;
+		while (butWasPos - 1 - afterSameSize > expectedPos + 11
+				&& error.length() - 2 - afterSameSize > butWasPos + 12
+				&& error.charAt(butWasPos - 1 - afterSameSize)
+					== error.charAt(error.length() - 3 - afterSameSize)) {
+
+			afterSameSize += 1;
+		}
+
+		final int expectedDiffStart = expectedPos + 11 + beforeSameSize;
+		final int expectedDiffEnd = butWasPos - afterSameSize;
+
+		final int butWasDiffStart = butWasPos + 12 + beforeSameSize;
+		final int butWasDiffEnd = error.length() - 2 - afterSameSize;
 
 		final StringBuilder resultBuilder = new StringBuilder();
-		resultBuilder.append(error.substring(0, expectedPos + 10));
+		resultBuilder.append(error.substring(0, expectedPos + 11));
 
 		// Expected:
 		if (expectedDiffEnd > expectedPos) {
-			resultBuilder.append(error.substring(expectedPos + 10, expectedDiffStart));
+			if (expectedDiffStart - expectedPos - 11 > 20) {
+				resultBuilder.append("...")
+						.append(error.substring(expectedDiffStart - 20, expectedDiffStart));
+			} else {
+				resultBuilder.append(error.substring(expectedPos + 11, expectedDiffStart));
+			}
 
 			if (expectedDiffEnd - expectedDiffStart > 50) {
 				resultBuilder
@@ -133,27 +156,42 @@ public class JUnitPointsMerger {
 				resultBuilder.append(error.substring(expectedDiffStart, expectedDiffEnd));
 			}
 
-			resultBuilder.append(error.substring(expectedDiffEnd, butWasPos));
+			if (butWasPos - expectedDiffEnd > 20) {
+				resultBuilder.append(error.substring(expectedDiffEnd, expectedDiffEnd + 20))
+						.append("...");
+			} else {
+				resultBuilder.append(error.substring(expectedDiffEnd, butWasPos));
+			}
 		} else {
 			resultBuilder.append(error.substring(expectedPos + 10, butWasPos));
 		}
 
-		resultBuilder.append(error.substring(butWasPos, butWasPos + 11));
+		resultBuilder.append(error.substring(butWasPos, butWasPos + 12));
 
 		if (butWasDiffEnd > butWasPos) {
 			// But Was:
-			resultBuilder.append(error.substring(butWasPos + 11, butWasDiffStart));
+			if (butWasDiffStart - butWasPos - 12 > 20) {
+				resultBuilder.append("...")
+						.append(error.substring(butWasDiffStart - 20, butWasDiffStart));
+			} else {
+				resultBuilder.append(error.substring(butWasPos + 12, butWasDiffStart));
+			}
 
 			if (butWasDiffEnd - butWasDiffStart > 50) {
 				resultBuilder
-						.append(error.substring(butWasDiffStart, butWasDiffStart + 11))
+						.append(error.substring(butWasDiffStart, butWasDiffStart + 12))
 						.append(">...<")
 						.append(error.substring(butWasDiffEnd - 10, butWasDiffEnd));
 			} else {
 				resultBuilder.append(error.substring(butWasDiffStart, butWasDiffEnd));
 			}
 
-			resultBuilder.append(error.substring(butWasDiffEnd));
+			if (error.length() - butWasDiffEnd - 2 > 20) {
+				resultBuilder.append(error.substring(butWasDiffEnd, butWasDiffEnd + 20))
+						.append("...>)");
+			} else {
+				resultBuilder.append(error.substring(butWasDiffEnd));
+			}
 		} else {
 			resultBuilder.append(error.substring(butWasPos + 11));
 		}

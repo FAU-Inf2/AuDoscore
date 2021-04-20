@@ -51,7 +51,7 @@ public class PublicTestCleaner extends AbstractProcessor {
 
 	private boolean importToBeSkipped(Object o){
 		return o.toString().contains("import tester.")
-				|| o.toString().contains("import org.junit.rules.");
+				|| o.toString().contains("import org.junit.jupiter.api.extension.");
 	}
 
 	@Override
@@ -151,12 +151,12 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 			print("@");
 			printExpr(tree.annotationType);
 			print("(");
-			if (before.equals("RunWith") && tree.args.head.toString().equals("value = Parameterized.class")) {
-				// Dead code?
-				print("value = org.junit.runners.Parameterized.class");
-			} else {
+			//if (before.equals("RunWith") && tree.args.head.toString().equals("value = Parameterized.class")) {
+			//	// Dead code?
+			//	print("value = org.junit.runners.Parameterized.class");
+			//} else {
 				printExprs(tree.args);
-			}
+			//}
 			print(")");
 		} catch (IOException e) {
 			throw new Error("something failed while removing AuDoscore annotations: " + e);

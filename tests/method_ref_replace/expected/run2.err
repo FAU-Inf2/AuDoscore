@@ -1,21 +1,4 @@
 {
-    "replaced": [
-        {
-            "exercises": [
-                {
-                    "name": "TestMethodRef",
-                    "tests": [
-                        {
-                            "desc": "testFoo",
-                            "fromSecret": true,
-                            "id": "testFoo",
-                            "success": true
-                        }
-                    ]
-                }
-            ]
-        }
-    ],
     "vanilla": [
         {
             "exercises": [
@@ -51,7 +34,7 @@
                     "tests": [
                         {
                             "desc": "testFoo",
-                            "error": "AssertionError(foo() is wrong expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(foo() is wrong ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "testFoo",
                             "success": false
@@ -82,10 +65,27 @@
                     "tests": [
                         {
                             "desc": "testBaz",
-                            "error": "AssertionError(baz() is wrong expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(baz() is wrong ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "testBaz",
                             "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "TestMethodRef",
+                    "tests": [
+                        {
+                            "desc": "testFoo",
+                            "fromSecret": true,
+                            "id": "testFoo",
+                            "success": true
                         }
                     ]
                 }

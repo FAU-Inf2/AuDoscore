@@ -1,8 +1,8 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import tester.annotations.Ex;
 import tester.annotations.Exercises;
@@ -12,20 +12,22 @@ import tester.annotations.Points;
 public class UnitTest {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=200)
+	@Test
+	@Timeout(value = 200, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GA4.6a", bonus = 47)
 	public void test() {
-		assertEquals("Should return 42", 42, new ToTest().toTest());
+		assertEquals(42, new ToTest().toTest(), "Should return 42");
 	}
 
-	@Test(timeout=200)
+	@Test
+	@Timeout(value = 200, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GA4.6a", malus = 11)
 	public void test2() {
-		assertEquals("Should return true", true, new ToTest2().toTest2());
+		assertEquals(true, new ToTest2().toTest2(), "Should return true");
 	}
 }

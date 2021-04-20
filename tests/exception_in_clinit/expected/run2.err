@@ -2,13 +2,55 @@
 [
 {"exercises":[{"name":"clinit bug","tests":[{"desc":"test","fromSecret":false,"id":"test","success":true}]}]}
 ,
-Exception in thread "main" java.lang.ExceptionInInitializerError
-	at java.base/java.lang.Class.forName0(Native Method)
-	at java.base/java.lang.Class.forName(Class.java:315)
-	at tools.SingleMethodRunner.main(SingleMethodRunner.java:17)
+java.lang.ExceptionInInitializerError
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized0(Native Method)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized(Unsafe.java:1042)
+	at java.base/jdk.internal.reflect.UnsafeFieldAccessorFactory.newFieldAccessor(UnsafeFieldAccessorFactory.java:43)
+	at java.base/jdk.internal.reflect.ReflectionFactory.newFieldAccessor(ReflectionFactory.java:186)
+	at java.base/java.lang.reflect.Field.acquireFieldAccessor(Field.java:1105)
+	at java.base/java.lang.reflect.Field.getFieldAccessor(Field.java:1086)
+	at java.base/java.lang.reflect.Field.get(Field.java:418)
+	at org.junit.platform.commons.util.ReflectionUtils.lambda$tryToReadFieldValue$5(ReflectionUtils.java:621)
+	at org.junit.platform.commons.function.Try.lambda$call$0(Try.java:57)
+	at org.junit.platform.commons.function.Try.of(Try.java:93)
+	at org.junit.platform.commons.function.Try.call(Try.java:57)
+	at org.junit.platform.commons.util.ReflectionUtils.tryToReadFieldValue(ReflectionUtils.java:621)
+	at org.junit.jupiter.engine.descriptor.ExtensionUtils.lambda$registerExtensionsFromFields$3(ExtensionUtils.java:109)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541)
+	at org.junit.jupiter.engine.descriptor.ExtensionUtils.registerExtensionsFromFields(ExtensionUtils.java:104)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.prepare(ClassBasedTestDescriptor.java:147)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.prepare(ClassBasedTestDescriptor.java:77)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$prepare$1(NodeTestTask.java:107)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.prepare(NodeTestTask.java:107)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:75)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:38)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$null$5(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$null$7(NodeTestTask.java:125)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:135)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:122)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:80)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:32)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:51)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:229)
+	at org.junit.platform.launcher.core.DefaultLauncher.lambda$execute$6(DefaultLauncher.java:197)
+	at org.junit.platform.launcher.core.DefaultLauncher.withInterceptedStreams(DefaultLauncher.java:211)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:191)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:128)
+	at tools.SingleMethodRunner.main(SingleMethodRunner.java:40)
 Caused by: java.lang.NullPointerException
 	at ToTest.<init>(ToTest.java:3)
-	at SecretTest.<clinit>(SecretTest.java:15)
-	... 3 more
+	at SecretTest.<clinit>(SecretTest.java:13)
+	... 40 more
+]
+, "replaced" : 
+[
+]
+}
 make: *** [run-stage2] Error 1
 Above JSON is broken

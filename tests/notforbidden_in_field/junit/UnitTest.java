@@ -1,11 +1,13 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import tester.annotations.Ex;
 import tester.annotations.Exercises;
+import tester.annotations.Forbidden;
+import tester.annotations.NotForbidden;
 import tester.annotations.Points;
 
 @Forbidden({ "java." })
@@ -13,12 +15,13 @@ import tester.annotations.Points;
 @Exercises({ @Ex(exID = "NotForbiddenInField", points = 12.5)})
 public class UnitTest {
 
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=200)
+	@Test
+	@Timeout(value = 200, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "NotForbiddenInField", bonus = 47.11)
 	public void test() {
 		final ToTest t = new ToTest();

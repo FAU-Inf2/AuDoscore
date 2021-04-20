@@ -42,7 +42,8 @@ for t in tests/*; do
 					currentdir=$(pwd)
 					comperr=$(mktemp)
 					cd "$testdir"
-					javac -cp ".:$currentdir/lib/junit.jar" "$testname" >"$comperr" 2>&1
+					junit5_jars=$(find $currentdir/lib/junit5 -name "*.jar" -printf "%p:" | sed 's/.$//'):$currentdir/lib/apiguardian-api.jar
+					javac -cp ".:$junit5_jars" "$testname" >"$comperr" 2>&1
 					if [ $? -eq 0 ]; then
 						echo -n -e "."
 						successes=$(($successes+1))

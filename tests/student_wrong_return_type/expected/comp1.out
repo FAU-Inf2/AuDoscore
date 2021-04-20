@@ -1,10 +1,10 @@
 make[1]: Entering directory '/home/sitowert/AuDoscore/tests/student_wrong_return_type/test.2164'
 rm -f *.class */*.class
-javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac cleanroom/*.java;
+javac -cp lib/junit5/junit-platform-commons.jar:lib/junit5/junit-platform-suite-api.jar:lib/junit5/junit-vintage-engine.jar:lib/junit5/junit-jupiter-api.jar:lib/junit5/junit-jupiter-engine.jar:lib/junit5/junit-jupiter-migrationsupport.jar:lib/junit5/junit-jupiter-params.jar:lib/junit5/junit-platform-reporting.jar:lib/junit5/junit-platform-launcher.jar:lib/junit5/junit-platform-engine.jar:lib/junit5/junit-platform-runner.jar:lib/apiguardian-api.jar:lib/opentest4j.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java
 make[2]: Entering directory '/home/sitowert/AuDoscore/tests/student_wrong_return_type/test.2164'
-javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
+javac -cp lib/json-simple-1.1.1.jar:lib/junit5/junit-platform-commons.jar:lib/junit5/junit-platform-suite-api.jar:lib/junit5/junit-vintage-engine.jar:lib/junit5/junit-jupiter-api.jar:lib/junit5/junit-jupiter-engine.jar:lib/junit5/junit-jupiter-migrationsupport.jar:lib/junit5/junit-jupiter-params.jar:lib/junit5/junit-platform-reporting.jar:lib/junit5/junit-platform-launcher.jar:lib/junit5/junit-platform-engine.jar:lib/junit5/junit-platform-runner.jar:lib/apiguardian-api.jar:lib/opentest4j.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
 make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/student_wrong_return_type/test.2164'
-java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
+java -cp lib/junit5/junit-platform-commons.jar:lib/junit5/junit-platform-suite-api.jar:lib/junit5/junit-vintage-engine.jar:lib/junit5/junit-jupiter-api.jar:lib/junit5/junit-jupiter-engine.jar:lib/junit5/junit-jupiter-migrationsupport.jar:lib/junit5/junit-jupiter-params.jar:lib/junit5/junit-platform-reporting.jar:lib/junit5/junit-platform-launcher.jar:lib/junit5/junit-platform-engine.jar:lib/junit5/junit-platform-runner.jar:lib/apiguardian-api.jar:lib/opentest4j.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
 if [ "x" != "x" ]; then \

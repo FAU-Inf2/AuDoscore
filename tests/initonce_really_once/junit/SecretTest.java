@@ -1,10 +1,10 @@
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.management.ManagementFactory;
 
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import tester.annotations.*;
 
@@ -13,9 +13,9 @@ import tester.annotations.*;
 public class SecretTest {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
 	@InitializeOnce("getPid")
@@ -42,13 +42,15 @@ public class SecretTest {
 
 	// One of the tests below *must* fail
 
-	@Test(timeout=500)
+	@Test
+	@Timeout(value = 500, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "InitOnce_Really_Once", bonus = 1.0)
 	public void testSecret1() {
 		assertTrue(pid == getPid());
 	}
 
-	@Test(timeout=500)
+	@Test
+	@Timeout(value = 500, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "InitOnce_Really_Once", bonus = 1.0)
 	public void testSecret2() {
 		assertTrue(pid == getPid());

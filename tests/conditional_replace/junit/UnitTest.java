@@ -1,15 +1,17 @@
-import org.junit.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import tester.annotations.*;
 
 @Exercises({ @Ex(exID = "ConditionalReplace", points = 1) })
 public class UnitTest {
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
 
-	@Test(timeout = 500)
+	@Test
+	@Timeout(value = 500, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "ConditionalReplace", bonus = 0.5)
 	public void testEmpty() { }
 }

@@ -1,6 +1,6 @@
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import tester.annotations.Points;
 import tester.annotations.Replace;
@@ -8,12 +8,13 @@ import tester.annotations.SecretClass;
 
 @SecretClass
 public class SecretTest {
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public static final PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout = 100)
+	@Test
+	@Timeout(value  =  100, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "ReplaceUnknownMethod", bonus = 1)
 	@Replace({"ToTest.doesnotexist"})
 	public void testBroken() { }

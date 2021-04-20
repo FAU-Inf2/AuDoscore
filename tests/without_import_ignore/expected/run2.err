@@ -1,5 +1,4 @@
 {
-    "replaced": [],
     "vanilla": [
         {
             "exercises": [
@@ -23,7 +22,7 @@
                     "tests": [
                         {
                             "desc": "test2",
-                            "error": "AssertionError(Should return 23 expected:<23> but was:<42>)",
+                            "error": "AssertionFailedError(Should return 23 ==> expected:<23> but was:<42>)",
                             "fromSecret": true,
                             "id": "test2",
                             "success": false
@@ -32,5 +31,6 @@
                 }
             ]
         }
-    ]
+    ],
+    "replaced": []
 }

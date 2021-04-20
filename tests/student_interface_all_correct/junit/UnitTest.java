@@ -1,8 +1,8 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import tester.annotations.CompareInterface;
 import tester.annotations.Ex;
@@ -14,68 +14,78 @@ import tester.annotations.Points;
 public class UnitTest {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=200)
+	@Test
+	@Timeout(value = 200, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GA4.6a", bonus = 0.0000001)
 	public void test() {
-		assertEquals("Should return 1", 1, ToTest.toTest());
+		assertEquals(1, ToTest.toTest(), "Should return 1");
 	}
 
-	@Test(timeout=200)
+	@Test
+	@Timeout(value = 200, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GA4.6a", bonus = 0.0000001)
 	public void test2() {
-		assertEquals("Should return 2", 2, ToTest.toTest2());
+		assertEquals(2, ToTest.toTest2(), "Should return 2");
 	}
 
-	@Test(timeout=200)
+	@Test
+	@Timeout(value = 200, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GA4.6a", bonus = 0.0000001)
 	public void test3() {
-		assertEquals("Should return 3", 3, ToTest.toTest3());
+		assertEquals(3, ToTest.toTest3(), "Should return 3");
 	}
 
-	@Test(timeout=200)
+	@Test
+	@Timeout(value = 200, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GA4.6a", bonus = 0.0000001)
 	public void test4() {
-		assertEquals("Should return 4", 4, ToTest.toTest4());
+		assertEquals(4, ToTest.toTest4(), "Should return 4");
 	}
 	
-	@Test(timeout=200)
+	@Test
+	@Timeout(value = 200, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GA4.6a", bonus = 0.0000001)
 	public void test5() {
-		assertEquals("Should return 5", 5, ToTest.toTest5());
+		assertEquals(5, ToTest.toTest5(), "Should return 5");
 	}
 
-	@Test(timeout=200)
+	@Test
+	@Timeout(value = 200, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GA4.6a", bonus = 0.0000001)
 	public void test6() {
-		assertEquals("Should return 6", 6, ToTest.toTest6());
+		assertEquals(6, ToTest.toTest6(), "Should return 6");
 	}
 
-	@Test(timeout=200)
+	@Test
+	@Timeout(value = 200, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GA4.6a", bonus = 0.0000001)
 	public void test7() {
-		assertEquals("Should return 7", 7, ToTest.toTest7());
+		assertEquals(7, ToTest.toTest7(), "Should return 7");
 	}
 
-	@Test(timeout=200)
+	@Test
+	@Timeout(value = 200, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GA4.6a", bonus = 0.0000001)
 	public void test8() {
-		assertEquals("Should return 8", 8, ToTest.toTest8());
+		assertEquals(8, ToTest.toTest8(), "Should return 8");
 	}
 
-	@Test(timeout=200)
+	@Test
+	@Timeout(value = 200, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GA4.6a", bonus = 0.0000001)
 	public void test9() {
-		assertEquals("Should return 9", 9, ToTest.toTest9());
+		assertEquals(9, ToTest.toTest9(), "Should return 9");
 	}
 
-	@Test(timeout=200)
+	@Test
+	@Timeout(value = 200, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "GA4.6a", bonus = 0.0000001)
 	public void test10() {
-		assertEquals("Should return 10", 10, ToTest.toTest10());
+		assertEquals(10, ToTest.toTest10(), "Should return 10");
 	}
 }

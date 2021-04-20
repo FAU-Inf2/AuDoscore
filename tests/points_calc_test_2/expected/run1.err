@@ -5,7 +5,7 @@
             "tests": [
                 {
                     "desc": "test10",
-                    "error": "AssertionError(Should return 10 expected:<10> but was:<100>)",
+                    "error": "AssertionFailedError(Should return 10 ==> expected:<10> but was:<100>)",
                     "fromSecret": false,
                     "id": "test10",
                     "success": false
@@ -24,7 +24,7 @@
                 },
                 {
                     "desc": "test3",
-                    "error": "AssertionError(Should return 3 expected:<3> but was:<47>)",
+                    "error": "AssertionFailedError(Should return 3 ==> expected:<3> but was:<47>)",
                     "fromSecret": false,
                     "id": "test3",
                     "success": false
@@ -43,7 +43,7 @@
                 },
                 {
                     "desc": "test6",
-                    "error": "AssertionError(Should return 6 expected:<6> but was:<23>)",
+                    "error": "AssertionFailedError(Should return 6 ==> expected:<6> but was:<23>)",
                     "fromSecret": false,
                     "id": "test6",
                     "success": false

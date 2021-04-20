@@ -1,16 +1,17 @@
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import tester.annotations.*;
 
 @Exercises({ @Ex(exID = "ReplaceWithStatic", points = 1) })
 public class UnitTest {
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout = 100)
+	@Test
+	@Timeout(value  =  100, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "ReplaceWithStatic", bonus = 0.1)
 	public void test() { }
 }

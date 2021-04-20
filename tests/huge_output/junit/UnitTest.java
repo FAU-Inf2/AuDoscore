@@ -1,14 +1,14 @@
-import static org.junit.Assert.assertEquals;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import tester.annotations.*;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 @Exercises({ @Ex(exID = "HugeOutput", points = 3) })
 public class UnitTest {
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
 	private static String getExpected() {
@@ -19,22 +19,25 @@ public class UnitTest {
 		return resultBuilder.toString();
 	}
 
-	@Test(timeout = 1000)
+	@Test
+	@Timeout(value  =  1000, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "HugeOutput", bonus = 1)
 	public void testFoo() {
-		assertEquals("foo() is wrong!", getExpected(), ToTest.foo());
+		assertEquals(getExpected(), ToTest.foo(), "foo() is wrong!");
 	}
 
-	@Test(timeout = 1000)
+	@Test
+	@Timeout(value  =  1000, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "HugeOutput", bonus = 1)
 	public void testBar() {
-		assertEquals("bar() is wrong!", "a", ToTest.bar());
+		assertEquals("a", ToTest.bar(), "bar() is wrong!");
 	}
 
-	@Test(timeout = 1000)
+	@Test
+	@Timeout(value  =  1000, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "HugeOutput", bonus = 1)
 	public void testBaz() {
-		assertEquals("baz() is wrong!", getExpected(), ToTest.baz());
+		assertEquals(getExpected(), ToTest.baz(), "baz() is wrong!");
 	}
 }
 

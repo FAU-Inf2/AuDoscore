@@ -1,5 +1,6 @@
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import static org.junit.jupiter.api.Assertions.*;
 
 import tester.annotations.*;
 
@@ -7,7 +8,8 @@ import tester.annotations.*;
 public class SecretTest extends JUnitWithPoints {
 
 	@Points(exID = "test", bonus = 1)
-	@Test(timeout = 100)
+	@Test
+	@Timeout(value  =  100, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	public void b() {
 		assertEquals(42, ToTest.test());
 	}

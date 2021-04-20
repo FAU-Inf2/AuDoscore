@@ -2,7 +2,7 @@
 [
 {"exercises":[{"name":"InitOnce_Exception","tests":[{"desc":"test","fromSecret":false,"id":"test","success":true}]}]}
 ,
-{"exercises":[{"name":"InitOnce_Exception","tests":[{"desc":"testSecret","error":"AssertionError(java.lang.NullPointerException)","fromSecret":true,"id":"testSecret","success":false}]}]}
+{"exercises":[{"name":"InitOnce_Exception","tests":[{"desc":"testSecret","error":"AssertionFailedError(java.lang.NullPointerException)","fromSecret":true,"id":"testSecret","success":false}]}]}
 ]
 , "replaced" : 
 [

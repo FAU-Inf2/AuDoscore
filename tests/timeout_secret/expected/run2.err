@@ -1,5 +1,4 @@
 {
-    "replaced": [],
     "vanilla": [
         {
             "exercises": [
@@ -23,7 +22,7 @@
                     "tests": [
                         {
                             "desc": "b",
-                            "error": "TestTimedOutTimeoutException after 100 ms",
+                            "error": "TimeoutException(b() timed out after 100 milliseconds)",
                             "fromSecret": true,
                             "id": "b",
                             "success": false
@@ -32,5 +31,6 @@
                 }
 ]
         }
-]
+],
+    "replaced": []
 }

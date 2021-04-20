@@ -1,8 +1,8 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import tester.annotations.*;
 
@@ -10,9 +10,9 @@ import tester.annotations.*;
 public class SecretTest {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
 	@InitializeOnce("getValue")
@@ -22,7 +22,8 @@ public class SecretTest {
 		return 1;
 	}
 
-	@Test(timeout=500)
+	@Test
+	@Timeout(value = 500, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "InitOnce_Not_Static", bonus = 1.0)
 	public void testSecret() {
 		assertEquals(value, getValue());

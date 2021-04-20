@@ -1,8 +1,8 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import tester.annotations.Ex;
 import tester.annotations.Exercises;
@@ -10,12 +10,13 @@ import tester.annotations.Points;
 
 @Exercises({ @Ex(exID = "DefaultMethod", points = 2.0) })
 public class UnitTest {
-	@Rule
+	@RegisterExtension
 	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
+	@RegisterExtension
 	public static final PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=1000)
+	@Test
+	@Timeout(value = 1000, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 	@Points(exID = "DefaultMethod", bonus = 0.00001)
 	public void testEmpty() {
 	}

@@ -1,7 +1,6 @@
-import org.junit.Test;
-import org.junit.Rule;
-import org.junit.ClassRule;
-import org.junit.runner.Description;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import tester.annotations.*;
 
@@ -11,6 +10,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Optional;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.MalformedURLException;
@@ -54,10 +54,10 @@ public class CheckAnnotation {
 	}
 
 	// checks (almost) all annotation conditions
-	public static void checkAnnotations(Description description, Exercises exercisesAnnotation) {
+	public static void checkAnnotations(Class<?> clazz, Exercises exercisesAnnotation) {
 		// check annotations on class level
 		if (exercisesAnnotation == null || exercisesAnnotation.value().length == 0) {
-			throw new AnnotationFormatError("ERROR - did not find valid @Exercises declaration: [" + description.getDisplayName() + "]");
+			throw new AnnotationFormatError("ERROR - did not find valid @Exercises declaration: [" + clazz.getName() + "]");
 		}
 
 		final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
@@ -73,7 +73,6 @@ public class CheckAnnotation {
 			}
 		}
 
-		Class<?> clazz = description.getTestClass();
 		SecretClass secretClassAnnotation = clazz.getAnnotation(SecretClass.class);
 		boolean isSecretClass = secretClassAnnotation != null;
 
@@ -107,6 +106,14 @@ public class CheckAnnotation {
 			}
 		}
 
+		final Optional<Long> classTimeout;
+		if (clazz.getAnnotation(Timeout.class) != null) {
+			final Timeout timeout = clazz.getAnnotation(Timeout.class);
+			classTimeout = Optional.of(timeout.unit().toMillis(timeout.value()));
+		} else {
+			classTimeout = Optional.empty();
+		}
+
 		// check annotations on method level
 		long timeoutSum = 0;
 		HashSet<String> usedExercises = new HashSet<>();
@@ -116,10 +123,14 @@ public class CheckAnnotation {
 			if (test == null) {
 				continue;
 			}
-			if (test.timeout() <= 0) {
-				throw new AnnotationFormatError("ERROR - found test case without 'timeout' in @Test annotation: [" + description.getDisplayName() + "]");
+			final Timeout timeout = m.getAnnotation(Timeout.class);
+			if (timeout != null && timeout.value() >= 0) {
+				timeoutSum += timeout.unit().toMillis(timeout.value());
+			} else if (classTimeout.isPresent() && classTimeout.get() >= 0) {
+				timeoutSum += classTimeout.get();
+			} else {
+				throw new AnnotationFormatError("ERROR - found test case without @Timeout annotation: [" + clazz.getName() + "]");
 			}
-			timeoutSum += test.timeout();
 
 			Bonus bonusAnnotation = m.getAnnotation(Bonus.class);
 			Malus malusAnnotation = m.getAnnotation(Malus.class);
@@ -128,68 +139,68 @@ public class CheckAnnotation {
 			SecretCase secretCaseAnnotation = m.getAnnotation(SecretCase.class);
 
 			if(secretCaseAnnotation != null && !isSecretClass){
-				throw new AnnotationFormatError("ERROR - found test case with deprecated @SecretCase annotation in public test [" + description.getDisplayName() + "]");
+				throw new AnnotationFormatError("ERROR - found test case with deprecated @SecretCase annotation in public test [" + clazz.getName() + "]");
 			}
 
 			if (bonusAnnotation != null || malusAnnotation != null) {
-				throw new AnnotationFormatError("ERROR - found test case with deprecated @Bonus/@Malus annotation [" + description.getDisplayName() + "]");
+				throw new AnnotationFormatError("ERROR - found test case with deprecated @Bonus/@Malus annotation [" + clazz.getName() + "]");
 			} else if (pointsAnnotation == null) {
-				throw new AnnotationFormatError("ERROR - found test case without @Points annotation [" + description.getDisplayName() + "]");
+				throw new AnnotationFormatError("ERROR - found test case without @Points annotation [" + clazz.getName() + "]");
 			} else if (!isSecretClass && replaceAnnotation != null) {
-				throw new AnnotationFormatError("ERROR - found test case with @Replace in a public test class: [" + description.getDisplayName() + "]");
+				throw new AnnotationFormatError("ERROR - found test case with @Replace in a public test class: [" + clazz.getName() + "]");
 			} else if (pointsAnnotation.exID().trim().length() == 0) {
-				throw new AnnotationFormatError("ERROR - found test case with empty exercise id in @Points annotation: [" + description.getDisplayName() + "]");
+				throw new AnnotationFormatError("ERROR - found test case with empty exercise id in @Points annotation: [" + clazz.getName() + "]");
 			} else if (!exerciseHashMap.containsKey(pointsAnnotation.exID())) {
-				throw new AnnotationFormatError("ERROR - found test case with non-declared exercise id in @Points annotation: [" + description.getDisplayName() + "]");
+				throw new AnnotationFormatError("ERROR - found test case with non-declared exercise id in @Points annotation: [" + clazz.getName() + "]");
 			} else if (pointsAnnotation.malus() == 0 || pointsAnnotation.bonus() == 0) {
-				throw new AnnotationFormatError("ERROR - found test case with illegal bonus/malus value in @Points annotation: [" + description.getDisplayName() + "]");
+				throw new AnnotationFormatError("ERROR - found test case with illegal bonus/malus value in @Points annotation: [" + clazz.getName() + "]");
 			} else if (pointsAnnotation.malus() == -1 && pointsAnnotation.bonus() == -1) {
-				throw new AnnotationFormatError("ERROR - found test case without bonus/malus value in @Points annotation: [" + description.getDisplayName() + "]");
+				throw new AnnotationFormatError("ERROR - found test case without bonus/malus value in @Points annotation: [" + clazz.getName() + "]");
 			} else if (pointsAnnotation.bonus() != -1) {
 				bonusExercises.add(pointsAnnotation.exID());
 			}
 			usedExercises.add(pointsAnnotation.exID());
 		}
 		if (!isSecretClass && usedExercises.size() != exerciseHashMap.size()) {
-			throw new AnnotationFormatError("ERROR - found @Ex declaration without corresponding test method: [" + description.getDisplayName() + "]");
+			throw new AnnotationFormatError("ERROR - found @Ex declaration without corresponding test method: [" + clazz.getName() + "]");
 		}
 		if (!isSecretClass && bonusExercises.size() != exerciseHashMap.size()) {
-			throw new AnnotationFormatError("ERROR - found @Ex declaration without test method with bonus values: [" + description.getDisplayName() + "]");
+			throw new AnnotationFormatError("ERROR - found @Ex declaration without test method with bonus values: [" + clazz.getName() + "]");
 		}
 		if (timeoutSum > MAX_TIMEOUT_MS) {
 			throw new AnnotationFormatError("ERROR - total timeout sum is too high, please reduce to max. " + MAX_TIMEOUT_MS + "ms: [" + timeoutSum + "ms]");
 		}
 
-		// check for @Rule and @ClassRule
-		boolean hasRule = false;
-		boolean hasClassRule = false;
+		// check for PointsLogger and PointsSummary
+		boolean hasLogger = false;
+		boolean hasSummary = false;
 		for (Field f : clazz.getFields()) {
 			if (JUnitWithPoints.PointsLogger.class.isAssignableFrom(f.getType())) {
-				if (hasRule) {
+				if (hasLogger) {
 					throw new AnnotationFormatError("ERROR - found PointsLogger twice; what are you trying to do?");
 				}
-				Rule rule = f.getAnnotation(Rule.class);
+				RegisterExtension rule = f.getAnnotation(RegisterExtension.class);
 				if (rule == null) {
-					throw new AnnotationFormatError("ERROR - found PointsLogger but @Rule annotation is missing");
+					throw new AnnotationFormatError("ERROR - found PointsLogger but @RegisterExtension annotation is missing");
 				}
-				hasRule = true;
+				hasLogger = true;
 			}
 			if (JUnitWithPoints.PointsSummary.class.isAssignableFrom(f.getType())) {
-				if (hasClassRule) {
+				if (hasSummary) {
 					throw new AnnotationFormatError("ERROR - found PointsSummary twice; what are you trying to do?");
 				}
-				ClassRule rule = f.getAnnotation(ClassRule.class);
+				RegisterExtension rule = f.getAnnotation(RegisterExtension.class);
 				if (rule == null) {
-					throw new AnnotationFormatError("ERROR - found PointsSummary but @ClassRule annotation is missing");
+					throw new AnnotationFormatError("ERROR - found PointsSummary but @RegisterExtension annotation is missing");
 				}
-				hasClassRule = true;
+				hasSummary = true;
 			}
 		}
-		if (!hasRule) {
-			throw new AnnotationFormatError("ERROR - found no valid @Rule annotation in test class");
+		if (!hasLogger) {
+			throw new AnnotationFormatError("ERROR - found no valid PointsLogger in test class");
 		}
-		if (!hasClassRule) {
-			throw new AnnotationFormatError("ERROR - found no valid @ClassRule annotation in test class");
+		if (!hasSummary) {
+			throw new AnnotationFormatError("ERROR - found no valid PointsSummary in test class");
 		}
 
 		// check @InitializeOnce annotations
@@ -236,8 +247,7 @@ public class CheckAnnotation {
 			throw new IllegalArgumentException("ERROR - Class ["+cnfe.getMessage() +"] specified in @CompareInterface does not exist");
 		}
 
-		Description description = Description.createSuiteDescription(clazz);
-		Exercises exercisesAnnotation = JUnitWithPoints.PointsSummary.getExercisesAnnotation(description);
-		checkAnnotations(description, exercisesAnnotation);
+		Exercises exercisesAnnotation = JUnitWithPoints.PointsSummary.getExercisesAnnotation(clazz);
+		checkAnnotations(clazz, exercisesAnnotation);
 	}
 }
