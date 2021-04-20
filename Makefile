@@ -5,7 +5,7 @@ ifneq ("$(wildcard /bin/dash)","")
 	SHELL=/bin/dash
 endif
 
-JUNIT5_JARS=$(shell find lib/junit5 -name "*.jar" -printf "%p:" | sed 's/.$$//'):lib/apiguardian-api.jar:lib/opentest4j.jar
+JUNIT5_JARS=$(shell find lib/junit5 -name "*.jar" | sort -d | tr '\n' ':' | sed 's/.$$//'):lib/apiguardian-api.jar:lib/opentest4j.jar
 
 compiletest = \
 	javac -cp $(JUNIT5_JARS):lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter $(1).java > $(1).java.tmp ; \

@@ -13,7 +13,9 @@ public class ReadReplace {
 
 	static {
 		final StringJoiner jarJoiner = new StringJoiner(":");
-		for (final File f : new File("lib/junit5").listFiles()) {
+		final File[] files = new File("lib/junit5").listFiles();
+		Arrays.sort(files, (f1, f2) -> f1.getName().compareTo(f2.getName()));
+		for (final File f : files) {
 			if (f.getName().endsWith(".jar")) {
 				jarJoiner.add("lib/junit5/" + f.getName());
 			}
