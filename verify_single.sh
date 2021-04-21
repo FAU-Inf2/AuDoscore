@@ -13,6 +13,8 @@ for i in `find expected/ -type f`; do
 	if [[ -r "$testfile" ]]; then
 		sed -i -e 's/Exception(test timed out after \([^ ]*\) milliseconds): [^"]*/TimeoutException after \1 ms/g' $testfile
 		sed -i -e 's/StackOverflowError(): [^"]*/StackOverflowError()/g' $testfile
+		# JDK11 on travis-ci/Xenial might not be up to date and uses different line numbers -> fix this
+		sed -i -E -e 's/java\.util\.ArrayList\.forEach\(ArrayList\.java:1540\)/java.util.ArrayList.forEach(ArrayList.java:1541)/g' $testfile
 		if [[ "$i" == expected/run*.err ]] && [[ -s "$testfile" ]]; then
 			# pretty print as json before diffing (if size > 0)
 			cat $testfile | python -m json.tool > ${testfile}.new
