@@ -118,44 +118,33 @@ public class JUnitPointsMerger {
 		final int butWasDiffEnd = butWasDiffStart < 0 ? -1 : error.lastIndexOf(']');
 
 		final StringBuilder resultBuilder = new StringBuilder();
-		resultBuilder.append(error.substring(0, expectedPos + 10));
 
 		// Expected:
 		if (expectedDiffEnd > expectedPos) {
-			resultBuilder.append(error.substring(expectedPos + 10, expectedDiffStart));
-
 			if (expectedDiffEnd - expectedDiffStart > 50) {
 				resultBuilder
-						.append(error.substring(expectedDiffStart, expectedDiffStart + 11))
+						.append(error.substring(0, expectedDiffStart + 11))
 						.append(">...<")
-						.append(error.substring(expectedDiffEnd - 10, expectedDiffEnd));
+						.append(error.substring(expectedDiffEnd - 10, butWasPos));
 			} else {
-				resultBuilder.append(error.substring(expectedDiffStart, expectedDiffEnd));
+				resultBuilder.append(error.substring(0, butWasPos));
 			}
-
-			resultBuilder.append(error.substring(expectedDiffEnd, butWasPos));
 		} else {
-			resultBuilder.append(error.substring(expectedPos + 10, butWasPos));
+			resultBuilder.append(error.substring(0, butWasPos));
 		}
-
-		resultBuilder.append(error.substring(butWasPos, butWasPos + 11));
 
 		if (butWasDiffEnd > butWasPos) {
 			// But Was:
-			resultBuilder.append(error.substring(butWasPos + 11, butWasDiffStart));
-
 			if (butWasDiffEnd - butWasDiffStart > 50) {
 				resultBuilder
-						.append(error.substring(butWasDiffStart, butWasDiffStart + 11))
+						.append(error.substring(butWasPos, butWasDiffStart + 11))
 						.append(">...<")
-						.append(error.substring(butWasDiffEnd - 10, butWasDiffEnd));
+						.append(error.substring(butWasDiffEnd - 10));
 			} else {
-				resultBuilder.append(error.substring(butWasDiffStart, butWasDiffEnd));
+				resultBuilder.append(error.substring(butWasPos));
 			}
-
-			resultBuilder.append(error.substring(butWasDiffEnd));
 		} else {
-			resultBuilder.append(error.substring(butWasPos + 11));
+			resultBuilder.append(error.substring(butWasPos));
 		}
 
 		return resultBuilder.toString();
