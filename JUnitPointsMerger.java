@@ -71,14 +71,14 @@ public class JUnitPointsMerger {
 			// test method originated from a secret test
 			try {
 				final Method method = secret.getMethod(id);
-				points = (Points) method.getAnnotation(Points.class);
+				points = method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException nsme) {
 				throw new Error("WARNING - Method " + id + " was not found in secret test class " + secret.getName());
 			}
 		} else {
 			try {
 				final Method method = pub.getMethod(id);
-				points = (Points) method.getAnnotation(Points.class);
+				points = method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException nsme) {
 				throw new Error("WARNING - Method " + id + " was not found in public test class " + pub.getName());
 			}
@@ -235,7 +235,7 @@ public class JUnitPointsMerger {
 		localpoints = Math.floor(2. * localpoints) / 2; // round down to half points
 		localpoints = Math.min(localpoints, exerciseHashMap.get(vex.get("name")).points());
 		points += localpoints;
-		summary += "\n" + (String) vex.get("name");
+		summary += "\n" + vex.get("name");
 		summary += String.format(" (%1$.1f points):", localpoints) + "\n";
 		Collections.sort(reps, new SingleReportComparator());
 		for (SingleReport r : reps) {
@@ -266,7 +266,7 @@ public class JUnitPointsMerger {
 				// get sum of bonus
 				for (Method method : pub.getMethods()) {
 					if (method.isAnnotationPresent(Points.class)) {
-						Points points = (Points) method.getAnnotation(Points.class);
+						Points points = method.getAnnotation(Points.class);
 						if (points.bonus() != -1) {
 							double bonusPts = bonusPerExHashMap.get(points.exID());
 							bonusPts += points.bonus();
@@ -286,7 +286,7 @@ public class JUnitPointsMerger {
 				secret = cl.loadClass(System.getProperty("secret"));
 				for (Method method : secret.getMethods()) {
 					if (method.isAnnotationPresent(Points.class)) {
-						Points points = (Points) method.getAnnotation(Points.class);
+						Points points = method.getAnnotation(Points.class);
 						if (points.bonus() != -1) {
 							double bonusPts = bonusPerExHashMap.get(points.exID());
 							bonusPts += points.bonus();
