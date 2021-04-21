@@ -441,7 +441,9 @@ public class JUnitPointsMerger {
 			summary = "Score: " + String.format("%1$.1f\n", points) + summary;
 			File file = new File(outputFile);
 			if (!file.exists()) {
-				file.createNewFile();
+				if (!file.createNewFile()) {
+					throw new IOException("Cannot create file '" + file + "'");
+				}
 			}
 			try (final Writer bw = Files.newBufferedWriter(
 					file.getAbsoluteFile().toPath(),
