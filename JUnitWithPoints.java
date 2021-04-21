@@ -27,7 +27,6 @@ public abstract class JUnitWithPoints {
 	public static final PointsSummary pointsSummary = new PointsSummary();
 
 	// backend data structures
-	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 	private static final HashMap<String, List<ReportEntry>> reportHashMap = new HashMap<>();
 
 	static {
@@ -265,14 +264,12 @@ public abstract class JUnitWithPoints {
 		public final Statement apply(Statement base, Description description) {
 			// reset states
 			reportHashMap.clear();
-			exerciseHashMap.clear();
 
 			Exercises exercisesAnnotation = getExercisesAnnotation(description);
 
 			// fill data structures
 			for (Ex exercise : exercisesAnnotation.value()) {
 				reportHashMap.put(exercise.exID(), new ArrayList<ReportEntry>());
-				exerciseHashMap.put(exercise.exID(), exercise);
 			}
 
 			// Obtain a list of safe callers (i.e., callers that are known to
