@@ -22,7 +22,7 @@
                     "tests": [
                         {
                             "desc": "testFoo",
-                            "error": "AssertionFailedError(foo() is wrong ==> expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(foo() is wrong ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "testFoo",
                             "success": false

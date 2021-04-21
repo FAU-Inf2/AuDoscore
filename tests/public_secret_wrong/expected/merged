@@ -1,5 +1,5 @@
 Score: 0.0
 
 GA4.6a (0.0 points):
-✗   0.00 | test | AssertionFailedError(Should return 42 ==> expected:<42> but was:<23>)
-✗   0.00 | test2 | AssertionFailedError(Should return 23 ==> expected:<23> but was:<42>)
+✗   0.00 | test | AssertionFailedError(Should return 42 ==> expected: <42> but was: <23>)
+✗   0.00 | test2 | AssertionFailedError(Should return 23 ==> expected: <23> but was: <42>)

@@ -1,9 +1,9 @@
 Score: 4.0
 
 GA4.6a (4.0 points):
-✗  -1.00 | test10 | AssertionFailedError(Should return 10 ==> expected:<10> but was:<100>)
-✗  -1.00 | test3 | AssertionFailedError(Should return 3 ==> expected:<3> but was:<47>)
-✗  -1.00 | test6 | AssertionFailedError(Should return 6 ==> expected:<6> but was:<23>)
+✗  -1.00 | test10 | AssertionFailedError(Should return 10 ==> expected: <10> but was: <100>)
+✗  -1.00 | test3 | AssertionFailedError(Should return 3 ==> expected: <3> but was: <47>)
+✗  -1.00 | test6 | AssertionFailedError(Should return 6 ==> expected: <6> but was: <23>)
 ✓   1.00 | test
 ✓   1.00 | test2
 ✓   1.00 | test4

@@ -22,7 +22,7 @@
                     "tests": [
                         {
                             "desc": "test",
-                            "error": "AssertionFailedError(Should return 42 ==> expected:<42> but was:<65>)",
+                            "error": "AssertionFailedError(Should return 42 ==> expected: <42> but was: <65>)",
                             "fromSecret": true,
                             "id": "test",
                             "success": false

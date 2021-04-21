@@ -23,7 +23,7 @@
                 },
                 {
                     "desc": "test3",
-                    "error": "AssertionFailedError(Should return 3 ==> expected:<3> but was:<333>)",
+                    "error": "AssertionFailedError(Should return 3 ==> expected: <3> but was: <333>)",
                     "fromSecret": false,
                     "id": "test3",
                     "success": false

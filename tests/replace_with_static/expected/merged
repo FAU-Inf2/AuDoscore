@@ -1,5 +1,5 @@
 Score: 0.0
 
 ReplaceWithStatic (0.0 points):
-✗   0.00 | test1 | AssertionFailedError(expected:<42> but was:<21>)
+✗   0.00 | test1 | AssertionFailedError(expected: <42> but was: <21>)
 ✓   0.09 | test
