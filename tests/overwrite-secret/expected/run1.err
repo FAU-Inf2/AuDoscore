@@ -1,0 +1,1 @@
+{"exercises":[{"name":"OverwriteSecret","tests":[{"desc":"publicTest","error":"AccessControlException(cannot exploit :'(): ToTest.pub(line 14)","fromSecret":false,"id":"publicTest","success":false}]}]}

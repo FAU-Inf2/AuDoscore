@@ -201,7 +201,7 @@ public class TesterSecurityManager extends SecurityManager {
 				}
 				// Grant permission
 				return;
-			} else if ("write".equals(filePerm.getActions()) && !calledFromInitOnce()) {
+			} else if ("write".equals(filePerm.getActions()) && calledFromInitOnce()) {
 				// Grant permission -> @InitializeOnce
 				return;
 			}
