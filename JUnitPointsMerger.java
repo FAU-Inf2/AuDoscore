@@ -71,14 +71,14 @@ public class JUnitPointsMerger {
 			// test method originated from a secret test
 			try {
 				final Method method = secret.getMethod(id);
-				points = (Points) method.getAnnotation(Points.class);
+				points = method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException nsme) {
 				throw new Error("WARNING - Method " + id + " was not found in secret test class " + secret.getName());
 			}
 		} else {
 			try {
 				final Method method = pub.getMethod(id);
-				points = (Points) method.getAnnotation(Points.class);
+				points = method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException nsme) {
 				throw new Error("WARNING - Method " + id + " was not found in public test class " + pub.getName());
 			}
@@ -136,15 +136,15 @@ public class JUnitPointsMerger {
 		final int butWasDiffEnd = error.length() - 2 - afterSameSize;
 
 		final StringBuilder resultBuilder = new StringBuilder();
-		resultBuilder.append(error.substring(0, expectedPos + 11));
 
 		// Expected:
 		if (expectedDiffEnd > expectedPos) {
 			if (expectedDiffStart - expectedPos - 11 > 20) {
-				resultBuilder.append("...")
+				resultBuilder.append(error.substring(0, expectedPos + 11))
+						.append("...")
 						.append(error.substring(expectedDiffStart - 20, expectedDiffStart));
 			} else {
-				resultBuilder.append(error.substring(expectedPos + 11, expectedDiffStart));
+				resultBuilder.append(error.substring(0, expectedDiffStart));
 			}
 
 			if (expectedDiffEnd - expectedDiffStart > 50) {
@@ -163,18 +163,17 @@ public class JUnitPointsMerger {
 				resultBuilder.append(error.substring(expectedDiffEnd, butWasPos));
 			}
 		} else {
-			resultBuilder.append(error.substring(expectedPos + 10, butWasPos));
+			resultBuilder.append(error.substring(0, butWasPos));
 		}
-
-		resultBuilder.append(error.substring(butWasPos, butWasPos + 12));
 
 		if (butWasDiffEnd > butWasPos) {
 			// But Was:
 			if (butWasDiffStart - butWasPos - 12 > 20) {
-				resultBuilder.append("...")
+				resultBuilder.append(error.substring(butWasPos, butWasPos + 12))
+						.append("...")
 						.append(error.substring(butWasDiffStart - 20, butWasDiffStart));
 			} else {
-				resultBuilder.append(error.substring(butWasPos + 12, butWasDiffStart));
+				resultBuilder.append(error.substring(butWasPos, butWasDiffStart));
 			}
 
 			if (butWasDiffEnd - butWasDiffStart > 50) {
@@ -193,7 +192,7 @@ public class JUnitPointsMerger {
 				resultBuilder.append(error.substring(butWasDiffEnd));
 			}
 		} else {
-			resultBuilder.append(error.substring(butWasPos + 11));
+			resultBuilder.append(error.substring(butWasPos));
 		}
 
 		return resultBuilder.toString();
@@ -284,7 +283,7 @@ public class JUnitPointsMerger {
 		localpoints = Math.floor(2. * localpoints) / 2; // round down to half points
 		localpoints = Math.min(localpoints, exerciseHashMap.get(vex.get("name")).points());
 		points += localpoints;
-		summary += "\n" + (String) vex.get("name");
+		summary += "\n" + vex.get("name");
 		summary += String.format(" (%1$.1f points):", localpoints) + "\n";
 		Collections.sort(reps, new SingleReportComparator());
 		for (SingleReport r : reps) {
@@ -315,7 +314,7 @@ public class JUnitPointsMerger {
 				// get sum of bonus
 				for (Method method : pub.getMethods()) {
 					if (method.isAnnotationPresent(Points.class)) {
-						Points points = (Points) method.getAnnotation(Points.class);
+						Points points = method.getAnnotation(Points.class);
 						if (points.bonus() != -1) {
 							double bonusPts = bonusPerExHashMap.get(points.exID());
 							bonusPts += points.bonus();
@@ -335,7 +334,7 @@ public class JUnitPointsMerger {
 				secret = cl.loadClass(System.getProperty("secret"));
 				for (Method method : secret.getMethods()) {
 					if (method.isAnnotationPresent(Points.class)) {
-						Points points = (Points) method.getAnnotation(Points.class);
+						Points points = method.getAnnotation(Points.class);
 						if (points.bonus() != -1) {
 							double bonusPts = bonusPerExHashMap.get(points.exID());
 							bonusPts += points.bonus();
@@ -479,7 +478,9 @@ public class JUnitPointsMerger {
 			summary = "Score: " + String.format("%1$.1f\n", points) + summary;
 			File file = new File(outputFile);
 			if (!file.exists()) {
-				file.createNewFile();
+				if (!file.createNewFile()) {
+					throw new IOException("Cannot create file '" + file + "'");
+				}
 			}
 			try (final Writer bw = Files.newBufferedWriter(
 					file.getAbsoluteFile().toPath(),

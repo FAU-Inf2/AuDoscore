@@ -90,12 +90,10 @@ public class TesterSecurityManager extends SecurityManager {
 							try {
 								final Method method = Class.forName(stackTrace[i].getClassName())
 										.getMethod(stackTrace[i].getMethodName());
-								if (method != null) {
-									for (final Annotation annotation : method.getDeclaredAnnotations()) {
-										if ("org.junit.Test".equals(annotation.annotationType().getCanonicalName())) {
-											// Called from JUnit test case, grant permission
-											return;
-										}
+								for (final Annotation annotation : method.getDeclaredAnnotations()) {
+									if ("org.junit.Test".equals(annotation.annotationType().getCanonicalName())) {
+										// Called from JUnit test case, grant permission
+										return;
 									}
 								}
 							} catch (final NoSuchMethodException|ClassNotFoundException e) {
@@ -103,7 +101,6 @@ public class TesterSecurityManager extends SecurityManager {
 							}
 
 							// Deny permission
-							System.out.println("DENY " + perm);
 							new Exception().printStackTrace(System.out);
 							super.checkPermission(perm);
 						}
@@ -129,7 +126,7 @@ public class TesterSecurityManager extends SecurityManager {
 					final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 					for (int i = 1; allowed && i < stackTrace.length
 							&& !"JUnitWithPoints$PointsSummary".equals(stackTrace[i].getClassName()); ++i) {
-						allowed &= stackTrace[i].getClassName().startsWith("java.")
+						allowed = stackTrace[i].getClassName().startsWith("java.")
 								|| this.getClass().getCanonicalName().equals(stackTrace[i].getClassName());
 					}
 					if (allowed) {
@@ -257,7 +254,6 @@ public class TesterSecurityManager extends SecurityManager {
 			return;
 		}
 		// Deny all other permissions
-		System.out.println("DENY " + perm);
 		new Exception().printStackTrace(System.out);
 		super.checkPermission(perm);
 	}
@@ -381,7 +377,7 @@ public class TesterSecurityManager extends SecurityManager {
 			if (!this.getClass().getCanonicalName().equals(stackTrace[i].getClassName())) {
 				boolean checkNext = true;
 				for (int j = 0; checkNext && j < allowedClassPrefixes.length; ++j) {
-					checkNext &= !stackTrace[i].getClassName().startsWith(allowedClassPrefixes[j]);
+					checkNext = !stackTrace[i].getClassName().startsWith(allowedClassPrefixes[j]);
 				}
 
 				if (checkNext) {

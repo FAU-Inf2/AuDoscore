@@ -176,7 +176,8 @@ public class ReadReplace {
 
 
 	private static boolean canProcess(final Replace replace) {
-		if (replace.onlyIf() == null || replace.onlyIf().isEmpty()) {
+		// replace.onlyIf() is never 'null' because 'null' is not an allowed ElementValue
+		if (replace.onlyIf().isEmpty()) {
 			return true;
 		}
 
