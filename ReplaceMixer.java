@@ -346,6 +346,16 @@ public class ReplaceMixer extends AbstractProcessor {
 			return list;
 		}
 
+		private boolean isAnonymousClassInClassStack() {
+			for (final JCClassDecl tree : this.classStack) {
+				if (tree.getSimpleName().isEmpty()) {
+					// anonymous class found
+					return true;
+				}
+			}
+			return false;
+		}
+
 		@Override
 		public void visitClassDef(JCClassDecl tree) {
 			final boolean oldInsideMethod = insideMethod;
@@ -353,13 +363,14 @@ public class ReplaceMixer extends AbstractProcessor {
 
 			this.classStack.push(tree);
 
-			insideMethod = oldInsideMethod;
-
 			JCModifiers mods = tree.getModifiers();
 			boolean oldPublic = isPublic;
 			isPublic = mods.getFlags().contains(Modifier.PUBLIC);
 			System.err.println("class " + tree.getSimpleName() + " ispub " + isPublic);
-			if (isCleanroom && !isPublic && !tree.getSimpleName().toString().startsWith(CLEAN_PREFIX)) {
+			if (isCleanroom
+					&& !isAnonymousClassInClassStack()
+					&& !isPublic
+					&& !tree.getSimpleName().toString().startsWith(CLEAN_PREFIX)) {
 				System.err.println("non-public class in cleanroom must be prefixed with " + CLEAN_PREFIX);
 				System.exit(-1);
 			}
@@ -391,6 +402,8 @@ public class ReplaceMixer extends AbstractProcessor {
 			typeParamStack.pop();
 			classLevel--;
 			isPublic = oldPublic;
+
+			insideMethod = oldInsideMethod;
 
 			System.err.println("class " + tree.getSimpleName() + ", "
 					+ isCleanroom + ", "
