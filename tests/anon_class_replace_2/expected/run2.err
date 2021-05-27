@@ -1,0 +1,11 @@
+{ "vanilla" : 
+[
+{"exercises":[{"name":"AnonClassReplace2","tests":[{"desc":"testPublic","fromSecret":false,"id":"testPublic","success":true}]}]}
+,
+{"exercises":[{"name":"AnonClassReplace2","tests":[{"desc":"testSecret","error":"AssertionError(Should return 0 expected:<0> but was:<42>)","fromSecret":true,"id":"testSecret","success":false}]}]}
+]
+, "replaced" : 
+[
+{"exercises":[{"name":"AnonClassReplace2","tests":[{"desc":"testSecret","fromSecret":true,"id":"testSecret","success":true}]}]}
+]
+}
