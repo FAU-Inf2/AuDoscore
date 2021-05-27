@@ -363,6 +363,8 @@ public class ReplaceMixer extends AbstractProcessor {
 
 			this.classStack.push(tree);
 
+			insideMethod = oldInsideMethod;
+
 			JCModifiers mods = tree.getModifiers();
 			boolean oldPublic = isPublic;
 			isPublic = mods.getFlags().contains(Modifier.PUBLIC);
