@@ -237,20 +237,6 @@ function testIt {
 	cp ${studentsource} "${testdir}"/ || die "failed"
 	popd > /dev/null
 
-	info "- copy cleanroom sources"
-	mkdir cleanroom || die "failed"
-	pushd ../cleanroom > /dev/null || die "failed"
-	cp ${studentsource} "${testdir}"/cleanroom || die "failed"
-	popd > /dev/null
-
-	info "- copy test sources"
-	pushd ../junit > /dev/null || die "failed"
-	cp ${testclass}.java "${testdir}"/ || die "failed"
-	if [ "x$secretclass" != "x" ]; then
-		cp ${secretclass}.java "${testdir}"/ || die "failed"
-	fi
-	popd > /dev/null
-
 	if [ "x${interfaces}" != "x" ]; then
 		info "- copy interfaces"
 		if [ -r ../interfaces ]; then
@@ -266,6 +252,20 @@ function testIt {
 	info "- compiling"
 	( make compile-stage0 ) > comp0 2>&1
 	checkexit $? "\nstudent result: ☠\n" comp0
+
+	info "- copy cleanroom sources"
+	mkdir cleanroom || die "failed"
+	pushd ../cleanroom > /dev/null || die "failed"
+	cp ${studentsource} "${testdir}"/cleanroom || die "failed"
+	popd > /dev/null
+
+	info "- copy test sources"
+	pushd ../junit > /dev/null || die "failed"
+	cp ${testclass}.java "${testdir}"/ || die "failed"
+	if [ "x$secretclass" != "x" ]; then
+		cp ${secretclass}.java "${testdir}"/ || die "failed"
+	fi
+	popd > /dev/null
 
 	info "\nstage1 (with public test case)"
 	info "- compiling"
