@@ -1,0 +1,6 @@
+Score: 0.0
+
+HugeOutput (0.0 points):
+✗   0.00 | testBar | ComparisonFailure(bar() is wrong! expected:<a[]> but was:<a[bcdefghijk>...<wxyzabcdef]>)
+✗   0.00 | testBaz | ComparisonFailure(baz() is wrong! expected:<...yzabcdefghijklmnopqr[stuvwxyzab>...<pqrstuvwxy]zabcdefghijklmnopqrs...> but was:<...yzabcdefghijklmnopqr[0000000000>...<0000000000]zabcdefghijklmnopqrs...>)
+✗   0.00 | testFoo | ComparisonFailure(foo() is wrong! expected:<[abcdefghij>...<efghijklmn]> but was:<[f]>)

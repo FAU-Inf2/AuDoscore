@@ -1,11 +1,10 @@
-import java.lang.reflect.Method;
 import java.util.*;
 import java.io.*;
 import java.lang.annotation.*;
-import java.util.concurrent.SynchronousQueue;
+import java.lang.reflect.*;
+import java.nio.file.Files;
 
 import org.junit.*;
-import org.junit.internal.*;
 import org.junit.rules.*;
 import org.junit.runner.*;
 import org.junit.runners.model.*;
@@ -25,10 +24,9 @@ public abstract class JUnitWithPoints {
 	@Rule
 	public final PointsLogger pointsLogger = new PointsLogger();
 	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
+	public static final PointsSummary pointsSummary = new PointsSummary();
 
 	// backend data structures
-	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 	private static final HashMap<String, List<ReportEntry>> reportHashMap = new HashMap<>();
 
 	static {
@@ -40,7 +38,9 @@ public abstract class JUnitWithPoints {
 	private static String getShortDisplayName(Description d) {
 		String orig = d.getDisplayName();
 		int ix = orig.indexOf('(');
-		if (ix == -1) return orig;
+		if (ix == -1) {
+			return orig;
+		}
 		return orig.substring(0, ix);
 	}
 
@@ -62,14 +62,21 @@ public abstract class JUnitWithPoints {
 
 		// we did skip this test method
 		public ReportEntry(Description description) {
+			this.description = description;
 			this.skipped = true;
 		}
 
 		// get sensible part/line of stack trace
 		private String getStackTrace() {
-			if (throwable == null || throwable instanceof AssertionError) return "";
+			if (throwable == null || throwable instanceof AssertionError) {
+				return "";
+			}
+
 			StackTraceElement st[] = throwable.getStackTrace();
-			if (st.length == 0) return "";
+			if (st.length == 0) {
+				return "";
+			}
+
 			StackTraceElement ste = st[0]; // TODO: maybe search for student code here
 			int i = 1;
 			while (ste.getClassName().indexOf('.') >= 0 && i < st.length) {
@@ -80,7 +87,7 @@ public abstract class JUnitWithPoints {
 		}
 
 		// determine comment for students
-		protected String getComment(String comment, Description description) {
+		private String getComment(String comment, Description description) {
 			if (comment.equals("<n.a.>")) { // default value -> use short method name
 				return getShortDisplayName(description);
 			} else {
@@ -89,7 +96,7 @@ public abstract class JUnitWithPoints {
 		}
 
 		// converts collected result to JSON
-		final JSONObject toJSON() {
+		private JSONObject toJSON() {
 			boolean success = (throwable == null);
 			JSONObject jsonTest = new JSONObject();
 			jsonTest.put("id", getShortDisplayName(description));
@@ -109,7 +116,6 @@ public abstract class JUnitWithPoints {
 	// helper class for logging purposes
 	protected static class PointsLogger extends TestWatcher {
 
-		private static PrintStream saveOut, saveErr;
 		private long startTime = 0;
 		private long endTime = 0;
 
@@ -144,6 +150,9 @@ public abstract class JUnitWithPoints {
 			if (isIgnoredCase(description) || isSkippedCase(description)) {
 				// don't execute these test methods
 				base = new SkipStatement();
+			} else {
+				// Handle potential @InitializeOnce
+				base = performInitializeOnce(base, description);
 			}
 			return super.apply(base, description);
 		}
@@ -151,21 +160,6 @@ public abstract class JUnitWithPoints {
 		@Override
 		protected void starting(Description description) {
 			startTime = System.currentTimeMillis();
-			// disable stdout/stderr to avoid timeouts due to large debugging outputs
-			if (saveOut == null) {
-				saveOut = System.out;
-				saveErr = System.err;
-
-				System.setOut(new PrintStream(new OutputStream() {
-					public void write(int i) { }
-				}));
-				System.setErr(System.out);
-
-				// Install security manager
-				try {
-					System.setSecurityManager(new TesterSecurityManager());
-				} catch (final SecurityException e) { /* Ignore */ }
-			}
 		}
 
 		@Override
@@ -195,25 +189,96 @@ public abstract class JUnitWithPoints {
 		protected final void succeeded(Description description) {
 			failed(null, description);
 		}
+
+		private Statement performInitializeOnce(final Statement base, final Description description) {
+			Statement result = base;
+			for (final Field f : description.getTestClass().getDeclaredFields()) {
+				final InitializeOnce initOnce = f.getAnnotation(InitializeOnce.class);
+				if (initOnce != null) {
+					final Statement oldStmt = result;
+
+					// We need a named class here to allow it in the security manager
+
+					class InitOnceStatement extends Statement {
+						@Override
+						public void evaluate() throws Throwable {
+							// @InitializeOnce field found. First, check if the result is
+							// already computed
+							final File initFile = new File(description.getTestClass().getCanonicalName()
+									+ "-" + f.getName() + ".tmp");
+							boolean recompute = !initFile.exists();
+							if (!recompute) {
+								// The result has been computed, just restore it
+								try (ObjectInputStream in
+										= new ObjectInputStream(new FileInputStream(initFile))) {
+									f.set(null, in.readObject());
+								} catch (final IOException e) {
+									recompute = true;
+								}
+							}
+							if (recompute) {
+								// The result must be computed, stored in the field, and saved in
+								// initFile
+								try {
+									final Object result = description.getTestClass()
+											.getDeclaredMethod(initOnce.value()).invoke(null);
+									f.set(null, result);
+
+									try (ObjectOutputStream out
+											= new ObjectOutputStream(new FileOutputStream(initFile))) {
+										out.writeObject(result);
+									} catch (final IOException e) {
+										initFile.delete(); // Clean up
+									}
+								} catch (final NoSuchMethodException e) {
+									// Should be checked by CheckAnnotations
+									throw new IllegalStateException(e);
+								} catch (final InvocationTargetException e) {
+									// This may be an exception in student code, so we make this
+									// test fail
+									Assert.fail(String.valueOf(e.getCause()));
+								}
+							}
+
+							// Now proceed with the next statement
+							oldStmt.evaluate();
+						}
+					}
+
+					result = new InitOnceStatement();
+				}
+			}
+			return result;
+		}
 	}
 
 	// helper class for summaries
 	protected static class PointsSummary extends ExternalResource {
 		public static final int MAX_TIMEOUT_MS = 60_000;
+		private static PrintStream saveOut;
+		private static PrintStream saveErr;
 		private static boolean isSecretClass = false;
+		private List<String> safeCallerList;
 
 		@Override
 		public final Statement apply(Statement base, Description description) {
 			// reset states
 			reportHashMap.clear();
-			exerciseHashMap.clear();
 
 			Exercises exercisesAnnotation = getExercisesAnnotation(description);
 
 			// fill data structures
 			for (Ex exercise : exercisesAnnotation.value()) {
 				reportHashMap.put(exercise.exID(), new ArrayList<ReportEntry>());
-				exerciseHashMap.put(exercise.exID(), exercise);
+			}
+
+			// Obtain a list of safe callers (i.e., callers that are known to
+			// contain no malicious code)
+			final SafeCallers safeCallerAnnotation = description.getAnnotation(SafeCallers.class);
+			if (safeCallerAnnotation == null) {
+				this.safeCallerList = Collections.emptyList();
+			} else {
+				this.safeCallerList = Arrays.asList(safeCallerAnnotation.value());
 			}
 
 			// start the real JUnit test
@@ -274,11 +339,30 @@ public abstract class JUnitWithPoints {
 				JSONObject jsonSummary = new JSONObject();
 				jsonSummary.put("exercises", jsonExercises);
 				try {
-					PointsLogger.saveErr = new PrintStream(PointsLogger.saveErr, true, "utf-8");
+					saveErr = new PrintStream(saveErr, true, "utf-8");
 				} catch (UnsupportedEncodingException e) {
 					// silently ignore exception -> it's not that important after all
 				}
-				PointsLogger.saveErr.println(jsonSummary);
+				saveErr.println(jsonSummary);
+			}
+		}
+
+		@Override
+		protected final void before() {
+			// disable stdout/stderr to avoid timeouts due to large debugging outputs
+			if (saveOut == null) {
+				saveOut = System.out;
+				saveErr = System.err;
+
+				System.setOut(new PrintStream(new OutputStream() {
+					public void write(int i) { }
+				}));
+				System.setErr(System.out);
+
+				// Install security manager
+				try {
+					System.setSecurityManager(new TesterSecurityManager(this.safeCallerList));
+				} catch (final SecurityException e) { /* Ignore */ }
 			}
 		}
 	}

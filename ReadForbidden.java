@@ -1,6 +1,3 @@
-import java.util.*;
-import java.lang.*;
-import java.lang.reflect.*;
 import java.lang.annotation.*;
 import tester.annotations.*;
 
@@ -12,7 +9,7 @@ public class ReadForbidden {
 		}
 
 		final StringBuilder grep = new StringBuilder(
-			"egrep '(java(\\.|/)lang(\\.|/)ClassLoader|java(\\.|/)lang(\\.|/)reflect|java(\\.|/)lang(\\.|/)System(\\.|/)exit"
+			"egrep '(java(\\.|/)lang(\\.|/)ClassLoader|java(\\.|/)lang(\\.|/)reflect|java(\\.|/)lang(\\.|/)System(\\.|/)exit|java(\\.|/)awt(\\.|/)|javax(\\.|/)swing(\\.|/)"
 		);
 		final StringBuilder grep2 = new StringBuilder("egrep -v '(");
 		String sep = "";
@@ -21,15 +18,20 @@ public class ReadForbidden {
 		for (String tcln : args) {
 			Class newClass = cl.loadClass(tcln);
 			Forbidden forbidden = (Forbidden) newClass.getAnnotation(Forbidden.class);
-			if (forbidden == null) continue;
+			if (forbidden == null) {
+				continue;
+			}
 			for (String s : forbidden.value()) {
 				grep.append('|').append(getRegex(s, forbidden.type()));
 			}
+
 			NotForbidden notforbidden = (NotForbidden) newClass.getAnnotation(NotForbidden.class);
-			if (notforbidden == null) continue;
+			if (notforbidden == null) {
+				continue;
+			}
 			for (String s : notforbidden.value()) {
 				hasNotForbidden = true;
-				grep2.append(sep).append("\\W").append(getRegex(s, notforbidden.type()));
+				grep2.append(sep).append("(\\W|:L|\\[L)").append(getRegex(s, notforbidden.type()));
 				sep = "|";
 			}
 		}

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Set;
-import java.util.HashSet;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -83,69 +82,65 @@ class PointsPretty extends com.sun.tools.javac.tree.Pretty {
 		super(out, sourceOutput);
 	}
 
-	private List<JCExpression> mergeAnnotations(JCAnnotation bonus, JCAnnotation malus) throws IOException{
+	private List<JCExpression> mergeAnnotations(JCAnnotation bonus, JCAnnotation malus) throws IOException {
 
 		List<JCExpression> bonusArgs = bonus.args;
 		List<JCExpression> malusArgs = malus.args;
-		for(int i = 0; i < malusArgs.size();i++){
+		for (final JCExpression ex1 : malusArgs) {
 			boolean equal = false;
-			JCExpression ex1 = malusArgs.get(i);
-			JCExpression ex2 = null;
-			for(int j = 0; j < bonusArgs.size();j++){
-				ex2 = bonusArgs.get(i);
-				if(ex1.toString().equals(ex2.toString())){
+			for (final JCExpression ex2 : bonusArgs) {
+				if (ex1.toString().equals(ex2.toString())) {
 					equal = true;
 					break;
 				}	
 			}
-			if(!equal){
+			if (!equal) {
 				bonusArgs = bonusArgs.append(ex1);
 			}
 		}
 		return bonusArgs;	
 	}
-	private void printPoints(List<JCExpression> args) throws IOException{
+
+	private void printPoints(List<JCExpression> args) throws IOException {
 		print("@");
 		print("Points");
 		print("(");
 		printExprs(args);
 		print(")");
 	}
+
 	public void visitModifiers(JCModifiers mods){
 		try{
 			JCAnnotation bonus = null;
 			JCAnnotation malus = null;
 
 			List<JCAnnotation> trees = mods.annotations;
-			for(List<JCAnnotation> l = trees;l.nonEmpty(); l = l.tail){
+			for (List<JCAnnotation> l = trees;l.nonEmpty(); l = l.tail) {
 				JCAnnotation a = l.head;
-				if(a.annotationType.toString().equals("Bonus") || a.annotationType.toString().equals("tester.annotations.Bonus")){
+				if (a.annotationType.toString().equals("Bonus")
+						|| a.annotationType.toString().equals("tester.annotations.Bonus")) {
 					bonus = a;
-
-				}else if (a.annotationType.toString().equals("Malus") || a.annotationType.toString().equals("tester.annotations.Malus")){
+				} else if (a.annotationType.toString().equals("Malus")
+						|| a.annotationType.toString().equals("tester.annotations.Malus")) {
 					malus = a;
-				}else{		
+				} else {
 					printStat(l.head);
 					println();
-					//			align();	
 				}
 			}
-			if(bonus != null && malus != null){
-				List<JCExpression> args = mergeAnnotations(bonus,malus);
+			if (bonus != null && malus != null) {
+				List<JCExpression> args = mergeAnnotations(bonus, malus);
 				printPoints(args);
-			}else if(bonus != null){
+			} else if (bonus != null) {
 				printPoints(bonus.args);
-			}else if(malus != null){
+			} else if (malus != null) {
 				printPoints(malus.args);
 			}
 			println();
-			//	align();	
 
 			printFlags(mods.flags);
-		}catch (IOException e){
+		} catch (IOException e) {
 			throw new Error("something went wrong while converting BONUS/MALUS to POINTS annotation: " + e);
 		}
-
-
 	}
 }

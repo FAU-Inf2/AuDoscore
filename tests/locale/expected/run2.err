@@ -1,0 +1,8 @@
+{ "vanilla" : 
+[
+{"exercises":[{"name":"Locale","tests":[{"desc":"test","fromSecret":false,"id":"test","success":true}]}]}
+]
+, "replaced" : 
+[
+]
+}

@@ -1,0 +1,10 @@
+{ "vanilla" : 
+[
+{"exercises":[{"name":"OverwriteSecret","tests":[{"desc":"publicTest","error":"AccessControlException(cannot exploit :'(): ToTest.pub(line 14)","fromSecret":false,"id":"publicTest","success":false}]}]}
+,
+{"exercises":[{"name":"OverwriteSecret","tests":[{"desc":"secretTest","error":"AssertionError(expected:<23> but was:<-1>)","fromSecret":true,"id":"secretTest","success":false}]}]}
+]
+, "replaced" : 
+[
+]
+}

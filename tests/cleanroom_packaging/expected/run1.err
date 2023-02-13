@@ -1,0 +1,15 @@
+{
+    "exercises": [
+        {
+            "name": "Test1",
+            "tests": [
+                {
+                    "desc": "testPublic",
+                    "fromSecret": false,
+                    "id": "testPublic",
+                    "success": true
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+rm -f *.class */*.class
+javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac cleanroom/*.java;
+make[1]: Entering directory '/home/mkamp/projects/AuDoscore/tests/extends-jframe/test.25150'
+javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
+make[1]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/extends-jframe/test.25150'
+java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
+java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
+chmod +x forbidden
+if [ "xSecretTest" != "x" ]; then \
+	STUDENTCLASSES=$(find . -maxdepth 1 -iname "*.class" -a \! \( -name "UnitTest*" -o -name "SecretTest*" \) ); \
+else \
+	STUDENTCLASSES=$(find . -maxdepth 1 -iname "*.class" -a \! -name "UnitTest*"); \
+fi; \
+if [ "x" != "x" ]; then \
+	STUDENTCLASSES=$(echo "$STUDENTCLASSES" | grep -vE "$(echo "" | sed 's/\.java/(\\\$[^.]*)?\.class/g' | tr " " "|")"); \
+fi; \
+for i in $STUDENTCLASSES; do \
+	rm -f javap.out; \
+	javap -p -c $i > javap.out; \
+	sed -i -e 's/(.*//' javap.out; \
+	! ( cat javap.out | ./forbidden 1>&2 ) || exit 1; \
+done
+Makefile:64: recipe for target 'compile-stage1' failed

@@ -1,10 +1,8 @@
 package tools.sep;
 
 import java.util.*;
-import java.lang.*;
 import java.lang.reflect.*;
-import java.lang.annotation.*;
-import org.junit.*;
+import org.junit.Test;
 
 
 public class SingleExecutionPreparer {
@@ -35,7 +33,7 @@ public class SingleExecutionPreparer {
 						System.out.println("echo \",\" 1>&2");
 					}
 					String methodName = method.getName();
-					System.out.println("java -XX:+UseConcMarkSweepGC -Xmx1024m -cp "+cp + dparam + " tools.SingleMethodRunner " + className + " " + methodName);
+					System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m -cp "+cp + dparam + " tools.SingleMethodRunner " + className + " " + methodName);
 					counter++;
 				}
 			

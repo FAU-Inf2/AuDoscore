@@ -1,0 +1,36 @@
+{
+    "replaced": [],
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "ConditionalReplace",
+                    "tests": [
+                        {
+                            "desc": "testEmpty",
+                            "fromSecret": false,
+                            "id": "testEmpty",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "ConditionalReplace",
+                    "tests": [
+                        {
+                            "desc": "testSecret",
+                            "error": "AssertionError()",
+                            "fromSecret": true,
+                            "id": "testSecret",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

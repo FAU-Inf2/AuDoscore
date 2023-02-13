@@ -1,8 +1,9 @@
 package tools.jsondiff;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -60,11 +61,9 @@ public class JSONDiff {
 	 * 
 	 * */
 	private static boolean isJSONElement(Object obj) {
-		if ((obj instanceof String) || (obj instanceof Number)
-				|| (obj instanceof Boolean)) {
-			return true;
-		}
-		return false;
+		return obj instanceof String
+				|| obj instanceof Number
+				|| obj instanceof Boolean;
 	}
 
 	/**
@@ -94,13 +93,13 @@ public class JSONDiff {
 			if (a1.size() != a2.size()) {
 				return 1;
 			}
-			int equal = 1;
 
 			/*
 			 * compare each element of a1 with each element of a2, because the
 			 * order is maybe not the same
 			 */
 			for (int i = 0; i < a1.size(); i++) {
+				int equal = 1;
 				for (int j = 0; j < a2.size(); j++) {
 					equal = compare(a1.get(i), a2.get(j));
 					if (equal == 0) {
@@ -152,20 +151,15 @@ public class JSONDiff {
 		String pathToJson1 = args[0];
 		String pathToJson2 = args[1];
 
-		try {
-			Object obj1 = new JSONParser().parse(new FileReader(pathToJson1));
-			Object obj2 = new JSONParser().parse(new FileReader(pathToJson2));
+		try (final Reader reader1 = Files.newBufferedReader(Paths.get(pathToJson1));
+				final Reader reader2 = Files.newBufferedReader(Paths.get(pathToJson2))) {
+			Object obj1 = new JSONParser().parse(reader1);
+			Object obj2 = new JSONParser().parse(reader2);
 
 			int equal = compare(obj1, obj2);
 			System.exit(equal);
 
-		} catch (FileNotFoundException e) {
-			System.err.println(e.getMessage());
-			System.exit(-1);
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-			System.exit(-1);
-		} catch (ParseException e) {
+		} catch (IOException|ParseException e) {
 			System.err.println(e.getMessage());
 			System.exit(-1);
 		}

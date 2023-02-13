@@ -15,19 +15,19 @@ public class UnitTest {
 	@ClassRule
 	public static final PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=500)
+	@Test(timeout=1000)
 	@Points(exID = "TestMethodRef", bonus = 0.00001)
 	public void testInterfaceFoo() {
 		new ToTest().foo();
 	}
 
-	@Test(timeout=500)
+	@Test(timeout=1000)
 	@Points(exID = "TestMethodRef", bonus = 0.00001)
 	public void testInterfaceBar() {
 		new ToTest().bar(() -> 13);
 	}
 
-	@Test(timeout=500)
+	@Test(timeout=1000)
 	@Points(exID = "TestMethodRef", bonus = 0.00001)
 	public void testInterfaceBaz() {
 		final int i = new ToTest().baz();

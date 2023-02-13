@@ -1,15 +1,18 @@
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import org.json.simple.*;
 import org.json.simple.parser.*;
 
-import java.lang.annotation.*;
 import java.lang.reflect.*;
 
 import tester.annotations.*;
 
 public class JUnitPointsMerger {
+
 	private static final class SingleReport {
 		boolean success;
 		String description;
@@ -19,9 +22,15 @@ public class JUnitPointsMerger {
 
 	private static final class SingleReportComparator implements Comparator<SingleReport> {
 		public int compare(SingleReport r1, SingleReport r2) {
-			if (r1 == null && r2 == null) return 0;
-			if (r1 == null) return -1;
-			if (r2 == null) return 1;
+			if (r1 == null && r2 == null) {
+				return 0;
+			}
+			if (r1 == null) {
+				return -1;
+			}
+			if (r2 == null) {
+				return 1;
+			}
 			boolean t1 = r1.success;
 			boolean t2 = r2.success;
 			if (t1 == t2) {
@@ -30,7 +39,9 @@ public class JUnitPointsMerger {
 				}
 				return r1.description.compareTo(r2.description);
 			}
-			if (t1) return +1;
+			if (t1) {
+				return +1;
+			}
 			return -1;
 		}
 	}
@@ -54,21 +65,20 @@ public class JUnitPointsMerger {
 	// extract points annotation from either secret or public class and calculate the point
 	private static double getLocalPoint(Boolean success, String id, Boolean fromSecret) {
 
-		Method method = null;
-		Points points = null;
+		Points points;
 
 		if (fromSecret) {
 			// test method originated from a secret test
 			try {
-				method = secret.getMethod(id);
-				points = (Points) method.getAnnotation(Points.class);
+				final Method method = secret.getMethod(id);
+				points = method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException nsme) {
 				throw new Error("WARNING - Method " + id + " was not found in secret test class " + secret.getName());
 			}
 		} else {
 			try {
-				method = pub.getMethod(id);
-				points = (Points) method.getAnnotation(Points.class);
+				final Method method = pub.getMethod(id);
+				points = method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException nsme) {
 				throw new Error("WARNING - Method " + id + " was not found in public test class " + pub.getName());
 			}
@@ -82,6 +92,62 @@ public class JUnitPointsMerger {
 			score = -getPoints(points.malus(), exerciseHashMap.get(points.exID()).points(), bonusPerExHashMap.get(points.exID()));
 		}
 		return score;
+	}
+
+
+	private static String getFormattedErrorString(String error) {
+		if (error.length() <= 1000 || !error.startsWith("ComparisonFailure")) {
+			return error;
+		}
+
+		// We have a very long ComparisonFailure -> try to "compress" it
+		final int expectedPos = error.indexOf("expected:<");
+		if (expectedPos < 0) {
+			return error; // Unexpected error format
+		}
+
+		final int butWasPos = error.indexOf("> but was:<", expectedPos);
+		if (butWasPos < 0) {
+			return error; // Unexpected error format
+		}
+
+		final int expectedDiffStart = error.indexOf('[', expectedPos);
+		final int expectedDiffEnd = expectedDiffStart < 0 ? -1 : error.lastIndexOf(']', butWasPos);
+
+		final int butWasDiffStart = error.indexOf('[', butWasPos);
+		final int butWasDiffEnd = butWasDiffStart < 0 ? -1 : error.lastIndexOf(']');
+
+		final StringBuilder resultBuilder = new StringBuilder();
+
+		// Expected:
+		if (expectedDiffEnd > expectedPos) {
+			if (expectedDiffEnd - expectedDiffStart > 50) {
+				resultBuilder
+						.append(error.substring(0, expectedDiffStart + 11))
+						.append(">...<")
+						.append(error.substring(expectedDiffEnd - 10, butWasPos));
+			} else {
+				resultBuilder.append(error.substring(0, butWasPos));
+			}
+		} else {
+			resultBuilder.append(error.substring(0, butWasPos));
+		}
+
+		if (butWasDiffEnd > butWasPos) {
+			// But Was:
+			if (butWasDiffEnd - butWasDiffStart > 50) {
+				resultBuilder
+						.append(error.substring(butWasPos, butWasDiffStart + 11))
+						.append(">...<")
+						.append(error.substring(butWasDiffEnd - 10));
+			} else {
+				resultBuilder.append(error.substring(butWasPos));
+			}
+		} else {
+			resultBuilder.append(error.substring(butWasPos));
+		}
+
+		return resultBuilder.toString();
 	}
 
 
@@ -136,7 +202,7 @@ public class JUnitPointsMerger {
 			localSummary += (String) usedresult.get("desc");
 			Object error = usedresult.get("error");
 			if (error != null) {
-				localSummary += " | " + (String) error;
+				localSummary += " | " + getFormattedErrorString((String) error);
 			}
 
 			String replaceErrorProperty = System.getProperty("replaceError");
@@ -144,7 +210,7 @@ public class JUnitPointsMerger {
 				if (rexCounterpart != null) {
 					Object replaceError = rexCounterpart.get("error");
 					if (replaceError != null) {
-						localSummary += " | " + (String) replaceError;
+						localSummary += " | " + getFormattedErrorString((String) replaceError);
 					}
 				}
 
@@ -169,7 +235,7 @@ public class JUnitPointsMerger {
 		localpoints = Math.floor(2. * localpoints) / 2; // round down to half points
 		localpoints = Math.min(localpoints, exerciseHashMap.get(vex.get("name")).points());
 		points += localpoints;
-		summary += "\n" + (String) vex.get("name");
+		summary += "\n" + vex.get("name");
 		summary += String.format(" (%1$.1f points):", localpoints) + "\n";
 		Collections.sort(reps, new SingleReportComparator());
 		for (SingleReport r : reps) {
@@ -181,7 +247,7 @@ public class JUnitPointsMerger {
 		return (obj instanceof JSONArray);
 	}
 
-	private static void preparePointsCalc(JSONArray vanillaex) {
+	private static void preparePointsCalc() {
 		exerciseHashMap.clear();
 		Exercises exercisesAnnotation;
 
@@ -200,7 +266,7 @@ public class JUnitPointsMerger {
 				// get sum of bonus
 				for (Method method : pub.getMethods()) {
 					if (method.isAnnotationPresent(Points.class)) {
-						Points points = (Points) method.getAnnotation(Points.class);
+						Points points = method.getAnnotation(Points.class);
 						if (points.bonus() != -1) {
 							double bonusPts = bonusPerExHashMap.get(points.exID());
 							bonusPts += points.bonus();
@@ -220,7 +286,7 @@ public class JUnitPointsMerger {
 				secret = cl.loadClass(System.getProperty("secret"));
 				for (Method method : secret.getMethods()) {
 					if (method.isAnnotationPresent(Points.class)) {
-						Points points = (Points) method.getAnnotation(Points.class);
+						Points points = method.getAnnotation(Points.class);
 						if (points.bonus() != -1) {
 							double bonusPts = bonusPerExHashMap.get(points.exID());
 							bonusPts += points.bonus();
@@ -300,8 +366,7 @@ public class JUnitPointsMerger {
 		if (!isJSONArray(rawVanilla)) {
 			return (JSONObject) rawVanilla;
 		}
-		JSONObject result = recursiveMergeJArray((JSONArray) rawVanilla);
-		return result;
+		return recursiveMergeJArray((JSONArray) rawVanilla);
 	}
 
 	private static JSONArray mergeReplaced(JSONArray rawReplaced) {
@@ -322,13 +387,13 @@ public class JUnitPointsMerger {
 		String inputFile = (args.length == 2) ? args[0] : "result.json";
 		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
 		JSONParser parser = new JSONParser();
-		try {
-			JSONObject obj = (JSONObject) parser.parse(new FileReader(inputFile));
+		try (final Reader reader = Files.newBufferedReader(Paths.get(inputFile))) {
+			JSONObject obj = (JSONObject) parser.parse(reader);
 			Object rawVanilla = obj.get("vanilla");
 
 			JSONObject vanilla = mergeVanilla(rawVanilla);
 			JSONArray vanillaex = (JSONArray) vanilla.get("exercises");
-			preparePointsCalc(vanillaex);
+			preparePointsCalc();
 
 			JSONArray replaceds = mergeReplaced((JSONArray) obj.get("replaced"));
 
@@ -365,12 +430,15 @@ public class JUnitPointsMerger {
 			summary = "Score: " + String.format("%1$.1f\n", points) + summary;
 			File file = new File(outputFile);
 			if (!file.exists()) {
-				file.createNewFile();
+				if (!file.createNewFile()) {
+					throw new IOException("Cannot create file '" + file + "'");
+				}
 			}
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write(summary);
-			bw.close();
+			try (final Writer bw = Files.newBufferedWriter(
+					file.getAbsoluteFile().toPath(),
+					Charset.forName("UTF-8"))) {
+				bw.write(summary);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("invalid json");

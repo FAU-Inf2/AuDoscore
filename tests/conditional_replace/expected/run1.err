@@ -1,0 +1,15 @@
+{
+    "exercises": [
+        {
+            "name": "ConditionalReplace",
+            "tests": [
+                {
+                    "desc": "testEmpty",
+                    "fromSecret": false,
+                    "id": "testEmpty",
+                    "success": true
+                }
+            ]
+        }
+    ]
+}

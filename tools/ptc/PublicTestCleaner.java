@@ -3,6 +3,7 @@ package tools.ptc;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Set;
 
 
@@ -19,15 +20,18 @@ import javax.lang.model.element.TypeElement;
 
 import com.sun.source.util.Trees;
 import com.sun.source.util.TreePath;
+import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.model.JavacElements;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCAnnotation;
-import com.sun.tools.javac.tree.JCTree.JCImport;
 import com.sun.tools.javac.tree.JCTree.JCClassDecl;
+import com.sun.tools.javac.tree.JCTree.JCIdent;
+import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
+import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.Context;
-import com.sun.tools.javac.util.Name;
+import com.sun.tools.javac.util.List;
 
 @SupportedAnnotationTypes("*")
 @SupportedOptions("replaces")
@@ -46,16 +50,8 @@ public class PublicTestCleaner extends AbstractProcessor {
 	}
 
 	private boolean importToBeSkipped(Object o){
-		if(o.toString().contains("import tester.")) {
-			return true;
-		}
-		if(o.toString().contains("import org.junit.rules.")){
-			return true;
-		}
-		if(o.toString().contains("import java.lang.reflect.")){
-			return true;
-		}
-		return false;
+		return o.toString().contains("import tester.")
+				|| o.toString().contains("import org.junit.rules.");
 	}
 
 	@Override
@@ -95,9 +91,8 @@ public class PublicTestCleaner extends AbstractProcessor {
 
 class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 
-	Name enclClassName;
-	public static final int ENUM = 1 << 14;
-	public static final int INTERFACE = 1 << 9;
+	private boolean inEnum = false;
+
 
 
 	public PrettyClean(Writer out, boolean sourceOutput) {
@@ -105,50 +100,40 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 	}
 
 
+
 	@Override
 	public void visitClassDef(JCClassDecl tree) {
-		try {
-			println();
-			printDocComment(tree);
-			printAnnotations(tree.mods.annotations);
-			printFlags(tree.mods.flags & ~INTERFACE);
-			Name enclClassNamePrev = enclClassName;
-			enclClassName = tree.name;
-			if ((tree.mods.flags & INTERFACE) != 0) {
-				print("interface " + tree.name);
-				printTypeParameters(tree.typarams);
-				if (tree.implementing.nonEmpty()) {
-					print(" extends ");
-					printExprs(tree.implementing);
-				}
-			} else {
-				if ((tree.mods.flags & ENUM) != 0)
-					print("enum " + tree.name);
-				else
-					print("class " + tree.name);
-				printTypeParameters(tree.typarams);
-				if (tree.extending != null) {
-					if(!tree.extending.toString().equals("JUnitWithPoints")){
-						print(" extends ");
-						printExpr(tree.extending);
+		final boolean oldInEnum = this.inEnum;
+		this.inEnum = (tree.mods.flags & Flags.ENUM) > 0;
+
+		if (tree.extending != null && "JUnitWithPoints".equals(tree.extending.toString())){
+			// Remove JUnitWithPoints
+			tree.extending = null;
+		}
+		if (tree.defs != null) {
+			// resultDefs holds the resulting definitions
+			final JCTree[] resultDefs = new JCTree[tree.defs.size()];
+			int resultSize = 0;
+
+			for (final JCTree def : tree.defs) {
+				if (def instanceof JCVariableDecl) {
+					final JCVariableDecl varDecl = (JCVariableDecl) def;
+					if (varDecl.vartype instanceof JCIdent) {
+						final String typeName = ((JCIdent) varDecl.vartype).name.toString();
+						if ("PointsLogger".equals(typeName) || "PointsSummary".equals(typeName)) {
+							// Remove variable decl
+							continue;
+						}
 					}
 				}
-				if (tree.implementing.nonEmpty()) {
-					print(" implements ");
-					printExprs(tree.implementing);
-				}
+				resultDefs[resultSize++] = def;
 			}
-			print(" ");
-			if ((tree.mods.flags & ENUM) != 0) {
-				printEnumBody(tree.defs);
-			} else {
-				printBlock(tree.defs);
-			}
-			enclClassName = enclClassNamePrev;
-		} catch (IOException e) {
-			// FIXME: should be UncheckedIOException
-			throw new Error("something failed while removing AuDoscore annotations: " + e);
+
+			tree.defs = List.from(Arrays.copyOf(resultDefs, resultSize));
 		}
+		super.visitClassDef(tree);
+
+		this.inEnum = oldInEnum;
 	}
 
 
@@ -159,7 +144,7 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 		// FIXME: prefix??
 		if(!before.equals("Test")){
 			// TODO handle @Rule and @ClassRule
-			return;		
+			return;
 		}
 
 		try {
@@ -167,6 +152,7 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 			printExpr(tree.annotationType);
 			print("(");
 			if (before.equals("RunWith") && tree.args.head.toString().equals("value = Parameterized.class")) {
+				// Dead code?
 				print("value = org.junit.runners.Parameterized.class");
 			} else {
 				printExprs(tree.args);
@@ -175,5 +161,19 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 		} catch (IOException e) {
 			throw new Error("something failed while removing AuDoscore annotations: " + e);
 		}
+	}
+
+
+
+	@Override
+	public void visitApply(final JCMethodInvocation tree) {
+		if (inEnum && tree.meth instanceof JCIdent) {
+			JCIdent ident = (JCIdent) tree.meth;
+			if (ident.name == ident.name.table.names._super) {
+				return;
+			}
+		}
+
+		super.visitApply(tree);
 	}
 }

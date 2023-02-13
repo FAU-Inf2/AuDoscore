@@ -1,0 +1,2 @@
+make[1]: Leaving directory '/home/mkamp/projects/AuDoscore/tests/initonce_wrong_type/test.31186'
+Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - cannot assign result of @InitializeOnce

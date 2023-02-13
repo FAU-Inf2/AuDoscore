@@ -6,11 +6,11 @@ import org.junit.runner.Description;
 import tester.annotations.*;
 
 import java.lang.annotation.AnnotationFormatError;
-import java.lang.reflect.Method;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.MalformedURLException;
@@ -25,7 +25,7 @@ public class CheckAnnotation {
 	// checks if given class exists in cleanroom
 	private static Class<?> getCleanroomClass(String name){
 		String pathToCleanroom = cwd + "/cleanroom/";
-		ClassLoader cleanroomLoader = null;
+		ClassLoader cleanroomLoader;
 
 		try{
 			cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL(), new File(cwd).toURI().toURL()});
@@ -33,7 +33,7 @@ public class CheckAnnotation {
 			throw new Error("Error - " + mfue.getMessage());
 		}
 
-		Class<?> cleanroomClass = null;
+		Class<?> cleanroomClass;
 
 		try{
 			cleanroomClass = cleanroomLoader.loadClass(name);
@@ -55,12 +55,12 @@ public class CheckAnnotation {
 
 	// checks (almost) all annotation conditions
 	public static void checkAnnotations(Description description, Exercises exercisesAnnotation) {
-		HashMap<String, Ex> exerciseHashMap = new HashMap<>();
-
 		// check annotations on class level
 		if (exercisesAnnotation == null || exercisesAnnotation.value().length == 0) {
 			throw new AnnotationFormatError("ERROR - did not find valid @Exercises declaration: [" + description.getDisplayName() + "]");
 		}
+
+		final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 		for (Ex exercise : exercisesAnnotation.value()) {
 			if (exercise.exID().trim().length() == 0) {
 				throw new AnnotationFormatError("ERROR - found @Exercises annotation with empty exercise name and following points: [" + exercise.points() + "]");
@@ -93,29 +93,30 @@ public class CheckAnnotation {
 						// method does not exists check Field
 
 						try{
-							Field field = cleanroomClass.getField(parts[1]);
+							cleanroomClass.getField(parts[1]);
 						} catch (NoSuchFieldException nsfe){
-							throw new IllegalArgumentException("ERROR - " + arg + " specified in @CompareInterface could not be found in cleanroom" );
+							throw new IllegalArgumentException("ERROR - " + arg + " specified in @CompareInterface could not be found in cleanroom");
 						}
 					}
 
 				}else{
 					// delim is not "." assume is a whole class
 					// check if class exists in cleanroom
-					Class<?> cleanroomClass = getCleanroomClass(arg);
+					getCleanroomClass(arg);
 				}
 			}
 		}
 
 		// check annotations on method level
 		long timeoutSum = 0;
-		HashSet<String> usedExercises = new HashSet<>(), bonusExercises = new HashSet<>();
+		HashSet<String> usedExercises = new HashSet<>();
+		HashSet<String> bonusExercises = new HashSet<>();
 		for (Method m : clazz.getMethods()) {
 			Test test = m.getAnnotation(Test.class);
 			if (test == null) {
 				continue;
 			}
-			if (test.timeout() == 0) {
+			if (test.timeout() <= 0) {
 				throw new AnnotationFormatError("ERROR - found test case without 'timeout' in @Test annotation: [" + description.getDisplayName() + "]");
 			}
 			timeoutSum += test.timeout();
@@ -160,7 +161,8 @@ public class CheckAnnotation {
 		}
 
 		// check for @Rule and @ClassRule
-		boolean hasRule = false, hasClassRule = false;
+		boolean hasRule = false;
+		boolean hasClassRule = false;
 		for (Field f : clazz.getFields()) {
 			if (JUnitWithPoints.PointsLogger.class.isAssignableFrom(f.getType())) {
 				if (hasRule) {
@@ -189,17 +191,44 @@ public class CheckAnnotation {
 		if (!hasClassRule) {
 			throw new AnnotationFormatError("ERROR - found no valid @ClassRule annotation in test class");
 		}
+
+		// check @InitializeOnce annotations
+		for (final Field f : clazz.getDeclaredFields()) {
+			final InitializeOnce initOnce = f.getAnnotation(InitializeOnce.class);
+			if (initOnce != null) {
+				if ((f.getModifiers() & Modifier.STATIC) == 0) {
+					throw new AnnotationFormatError("ERROR - @InitializeOnce requires a static field");
+				}
+				if (!f.getType().isPrimitive()
+						&& !java.io.Serializable.class.isAssignableFrom(f.getType())) {
+					throw new AnnotationFormatError("ERROR - @InitializeOnce requires Serializable type");
+				}
+
+				// Search given method
+				try {
+					final Method method = clazz.getDeclaredMethod(initOnce.value());
+					if ((method.getModifiers() & Modifier.STATIC) == 0) {
+						throw new AnnotationFormatError("ERROR - @InitializeOnce requires a static method");
+					}
+					if (!f.getType().isAssignableFrom(method.getReturnType())) {
+						throw new AnnotationFormatError("ERROR - cannot assign result of @InitializeOnce");
+					}
+				} catch (final NoSuchMethodException e) {
+					throw new AnnotationFormatError("ERROR - invalid @InitializeOnce method \"" + initOnce.value() + "\"");
+				}
+			}
+		}
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException {
-		ClassLoader unitLoader = null;
+		ClassLoader unitLoader;
 		try{
 			unitLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()});
 		} catch (MalformedURLException mfue) {
 			throw new Error("Error " + mfue.getMessage());
 		}
 
-		Class<?> clazz = null;
+		Class<?> clazz;
 
 		try{
 			clazz = unitLoader.loadClass(args[0]);

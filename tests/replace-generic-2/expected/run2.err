@@ -1,0 +1,11 @@
+{ "vanilla" : 
+[
+{"exercises":[{"name":"ReplaceGeneric2","tests":[{"desc":"test","fromSecret":false,"id":"test","success":true}]}]}
+,
+{"exercises":[{"name":"ReplaceGeneric2","tests":[{"desc":"testFoo","error":"AssertionError(expected:<1> but was:<null>)","fromSecret":true,"id":"testFoo","success":false}]}]}
+]
+, "replaced" : 
+[
+{"exercises":[{"name":"ReplaceGeneric2","tests":[{"desc":"testFoo","fromSecret":true,"id":"testFoo","success":true}]}]}
+]
+}
