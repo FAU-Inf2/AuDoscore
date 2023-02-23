@@ -1,4 +1,4 @@
 Note: ToTest.java uses unchecked or unsafe operations.
 Note: Recompile with -Xlint:unchecked for details.
-      18: invokevirtual #7                  // Method java/lang/reflect/Method.getName:
-make[1]: *** [compile-stage1] Error 1
+      18: invokevirtual #21                 // Method java/lang/reflect/Method.getName:
+make: *** [Makefile:90: compile-stage1] Fehler 1

@@ -231,7 +231,7 @@ public class TesterSecurityManager extends SecurityManager {
 			if (secPerm.getName().startsWith("getProperty.") && calledFromSafeCallers()) {
 				// Grant permission
 				return;
-			} else if ("getProperty.jdk.serialFilter".equals(secPerm.getName())) {
+			} else if ("getProperty.jdk.serialFilter".equals(secPerm.getName()) || "getProperty.jdk.serialFilterFactory".equals(secPerm.getName())) {
 				// Serialization -> Grant permission
 				return;
 			}

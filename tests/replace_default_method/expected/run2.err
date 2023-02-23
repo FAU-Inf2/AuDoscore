@@ -1,21 +1,4 @@
 {
-    "replaced": [
-        {
-            "exercises": [
-                {
-                    "name": "DefaultMethod",
-                    "tests": [
-                        {
-                            "desc": "testFoo",
-                            "fromSecret": true,
-                            "id": "testFoo",
-                            "success": true
-                        }
-                    ]
-                }
-            ]
-        }
-    ],
     "vanilla": [
         {
             "exercises": [
@@ -43,6 +26,23 @@
                             "fromSecret": true,
                             "id": "testFoo",
                             "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "DefaultMethod",
+                    "tests": [
+                        {
+                            "desc": "testFoo",
+                            "fromSecret": true,
+                            "id": "testFoo",
+                            "success": true
                         }
                     ]
                 }
