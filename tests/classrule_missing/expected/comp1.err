@@ -1,4 +1,4 @@
 Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - found PointsSummary but @ClassRule annotation is missing
-	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:183)
-	at CheckAnnotation.main(CheckAnnotation.java:241)
-make: *** [compile-stage1] Error 1
+	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:146)
+	at CheckAnnotation.main(CheckAnnotation.java:193)
+make: *** [Makefile:85: compile-stage1] Fehler 1

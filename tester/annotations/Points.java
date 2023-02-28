@@ -3,8 +3,8 @@ package tester.annotations;
 import java.lang.annotation.*;
 
 /**
- * Use this annotation to define the effect of a test method. The effect can
- * be positive (bonus) or negative (malus), but not both.
+ * Use this annotation to define the effect of a test method.
+ * The effect can be positive (bonus) or negative (malus), but not both at the same time.
  */
 @Inherited
 @Target(java.lang.annotation.ElementType.METHOD)
@@ -26,9 +26,8 @@ public @interface Points {
 	double malus() default -1;
 
 	/**
-	 * An optional informative comment. If given, it will be used in place of
-	 * the test method name in the summary.
+	 * An optional informative comment.
+	 * If given, it will be used in place of the test method name in the summary.
 	 */
 	String comment() default "<n.a.>";
 }
-

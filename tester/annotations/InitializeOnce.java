@@ -3,11 +3,9 @@ package tester.annotations;
 import java.lang.annotation.*;
 
 /**
- * This annotation can be used to perform some initialization task once in the
- * secret test. A field can be annotated with this annotation. The field is
- * initialized with the result of the method whose name is an argument to the
- * annotation. The method is called once and its result is cached for
- * subsequent initializations.
+ * This annotation can be used to perform initialization tasks in the secret test exactly once.
+ * The field annotated with this annotation is initialized with the result of the method whose name is an argument to the annotation.
+ * The method is called once and its result is cached for subsequent initializations.
  */
 @Target(java.lang.annotation.ElementType.FIELD)
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
@@ -17,4 +15,3 @@ public @interface InitializeOnce {
 	 */
 	String value();
 }
-

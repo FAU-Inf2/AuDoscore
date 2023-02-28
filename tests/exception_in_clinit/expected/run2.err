@@ -5,10 +5,10 @@
 Exception in thread "main" java.lang.ExceptionInInitializerError
 	at java.base/java.lang.Class.forName0(Native Method)
 	at java.base/java.lang.Class.forName(Class.java:375)
-	at tools.SingleMethodRunner.main(SingleMethodRunner.java:17)
+	at tools.SingleMethodRunner.main(SingleMethodRunner.java:14)
 Caused by: java.lang.NullPointerException
 	at ToTest.<init>(ToTest.java:3)
 	at SecretTest.<clinit>(SecretTest.java:15)
 	... 3 more
-make: *** [Makefile:159: run-stage2] Fehler 1
+make: *** [Makefile:157: run-stage2] Fehler 1
 Above JSON is broken

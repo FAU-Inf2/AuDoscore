@@ -1,31 +1,18 @@
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedOptions;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.TypeElement;
+import javax.annotation.processing.*;
+import javax.lang.model.*;
+import javax.lang.model.element.*;
 
-import com.sun.source.util.Trees;
-import com.sun.source.util.TreePath;
-import com.sun.tools.javac.code.Flags;
-import com.sun.tools.javac.model.JavacElements;
-import com.sun.tools.javac.processing.JavacProcessingEnvironment;
-import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.tree.JCTree.JCAnnotation;
-import com.sun.tools.javac.tree.JCTree.JCClassDecl;
-import com.sun.tools.javac.tree.JCTree.JCIdent;
-import com.sun.tools.javac.tree.JCTree.JCMethodInvocation;
-import com.sun.tools.javac.tree.TreeMaker;
-import com.sun.tools.javac.util.Context;
+import com.sun.source.tree.*;
+import com.sun.source.util.*;
+import com.sun.tools.javac.code.*;
+import com.sun.tools.javac.model.*;
+import com.sun.tools.javac.processing.*;
+import com.sun.tools.javac.tree.*;
+import com.sun.tools.javac.tree.JCTree.*;
+import com.sun.tools.javac.util.*;
 
 @SupportedAnnotationTypes("*")
 @SupportedOptions("replaces")
@@ -50,22 +37,21 @@ public class FullQualifier extends AbstractProcessor {
 			for (Element each : elements) {
 				if (each.getKind() == ElementKind.CLASS) {
 					JCTree tree = (JCTree) trees.getTree(each);
-					if (!imported) { 
+					if (!imported) {
 						imported = true;
 						TreePath path = trees.getPath(each);
-						java.util.List imports = path.getCompilationUnit().getImports();
+						java.util.List<? extends ImportTree> imports = path.getCompilationUnit().getImports();
 						for (Object o : imports) {
 							System.out.print(o);
 						}
 					}
-
-					StringWriter s = new StringWriter();
+					StringWriter stringWriter = new StringWriter();
 					try {
-						new MyPretty(s, false).printExpr(tree);
+						new MyPretty(stringWriter, false).printExpr(tree);
 					} catch (IOException e) {
 						throw new AssertionError(e);
 					}
-					System.out.println(s.toString());
+					System.out.println(stringWriter);
 				}
 			}
 			// even with -proc:only the javac does some semantic checking
@@ -77,16 +63,11 @@ public class FullQualifier extends AbstractProcessor {
 }
 
 class MyPretty extends com.sun.tools.javac.tree.Pretty {
-
 	private boolean inEnum = false;
-
-
 
 	public MyPretty(Writer out, boolean sourceOutput) {
 		super(out, sourceOutput);
 	}
-
-
 
 	@Override
 	public void visitAnnotation(JCAnnotation tree) {
@@ -94,34 +75,10 @@ class MyPretty extends com.sun.tools.javac.tree.Pretty {
 			print("@");
 			String before = tree.annotationType.toString();
 			switch (before) {
-				case "After":
-				case "Before":
-				case "Ignore":
-				case "FixMethodOrder":
-				case "Rule":
-				case "ClassRule":
-				case "Test":
-					print("org.junit.");
-					break;
-				case "RunWith":
-					print("org.junit.runner.");
-					break;
-				case "Parameters":
-					print("org.junit.runners.Parameterized.");
-					break;
-				case "Bonus":
-				case "Malus":
-				case "Points":
-				case "SecretCase":
-				case "Ex":
-				case "Exercises":
-				case "Forbidden":
-				case "NotForbidden":
-				case "CompareInterface":
-				case "Replace": 
-				case "SecretClass":
-					print("tester.annotations.");
-					break;
+				case "After", "Before", "Ignore", "FixMethodOrder", "Rule", "ClassRule", "Test" -> print("org.junit.");
+				case "RunWith" -> print("org.junit.runner.");
+				case "Parameters" -> print("org.junit.runners.Parameterized.");
+				case "CompareInterface", "Ex", "Exercises", "Forbidden", "InitializeOnce", "NotForbidden", "Points", "Replace", "SafeCallers", "SecretClass" -> print("tester.annotations.");
 			}
 			printExpr(tree.annotationType);
 			print("(");
@@ -136,29 +93,21 @@ class MyPretty extends com.sun.tools.javac.tree.Pretty {
 		}
 	}
 
-
-
 	@Override
 	public void visitClassDef(final JCClassDecl tree) {
 		final boolean oldInEnum = this.inEnum;
 		this.inEnum = (tree.mods.flags & Flags.ENUM) > 0;
-
 		super.visitClassDef(tree);
-
 		this.inEnum = oldInEnum;
 	}
 
-
-
 	@Override
 	public void visitApply(final JCMethodInvocation tree) {
-		if (inEnum && tree.meth instanceof JCIdent) {
-			JCIdent ident = (JCIdent) tree.meth;
+		if (inEnum && tree.meth instanceof JCIdent ident) {
 			if (ident.name == ident.name.table.names._super) {
 				return;
 			}
 		}
-
 		super.visitApply(tree);
 	}
 }

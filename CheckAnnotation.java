@@ -1,52 +1,33 @@
-import org.junit.Test;
-import org.junit.Rule;
-import org.junit.ClassRule;
-import org.junit.runner.Description;
-
+import org.junit.*;
+import org.junit.runner.*;
 import tester.annotations.*;
-
-import java.lang.annotation.AnnotationFormatError;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.net.MalformedURLException;
-import java.io.File;
+import java.io.*;
+import java.lang.annotation.*;
+import java.lang.reflect.*;
+import java.util.*;
+import java.net.*;
 
 public class CheckAnnotation {
-
 	public static final int MAX_TIMEOUT_MS = 60_000;
-	private static String cwd = System.getProperty("user.dir");
-
+	private static final String cwd = System.getProperty("user.dir");
 
 	// checks if given class exists in cleanroom
-	private static Class<?> getCleanroomClass(String name){
+	private static Class<?> getCleanroomClass(String name) {
 		String pathToCleanroom = cwd + "/cleanroom/";
-		ClassLoader cleanroomLoader;
-
-		try{
-			cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL(), new File(cwd).toURI().toURL()});
-		} catch (MalformedURLException mfue) {
-			throw new Error("Error - " + mfue.getMessage());
+		try (URLClassLoader cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL(), new File(cwd).toURI().toURL()})) {
+			try {
+				return cleanroomLoader.loadClass(name);
+			} catch (ClassNotFoundException classNotFoundException) {
+				throw new IllegalArgumentException("ERROR - Class [" + classNotFoundException.getMessage() + "] specified in @CompareInterface does not exist in cleanroom");
+			}
+		} catch (IOException exception) {
+			throw new Error("Error - " + exception.getMessage());
 		}
-
-		Class<?> cleanroomClass;
-
-		try{
-			cleanroomClass = cleanroomLoader.loadClass(name);
-		} catch (ClassNotFoundException cnfe) {
-			throw new IllegalArgumentException("ERROR - Class ["+cnfe.getMessage() +"] specified in @CompareInterface does not exist in cleanroom");
-		}
-
-		return cleanroomClass;
 	}
 
-	private static Method getMethod(Class<?> cleanroomClass, String methodName){
-		for(Method cleanroomMethod : cleanroomClass.getDeclaredMethods()){
-			if(cleanroomMethod.getName().equals(methodName)){
+	private static Method getMethod(Class<?> cleanroomClass, String methodName) {
+		for (Method cleanroomMethod : cleanroomClass.getDeclaredMethods()) {
+			if (cleanroomMethod.getName().equals(methodName)) {
 				return cleanroomMethod;
 			}
 		}
@@ -59,7 +40,6 @@ public class CheckAnnotation {
 		if (exercisesAnnotation == null || exercisesAnnotation.value().length == 0) {
 			throw new AnnotationFormatError("ERROR - did not find valid @Exercises declaration: [" + description.getDisplayName() + "]");
 		}
-
 		final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 		for (Ex exercise : exercisesAnnotation.value()) {
 			if (exercise.exID().trim().length() == 0) {
@@ -72,41 +52,36 @@ public class CheckAnnotation {
 				exerciseHashMap.put(exercise.exID(), exercise);
 			}
 		}
-
 		Class<?> clazz = description.getTestClass();
 		SecretClass secretClassAnnotation = clazz.getAnnotation(SecretClass.class);
 		boolean isSecretClass = secretClassAnnotation != null;
-
-		// check if there are methods to compare with cleanroom counteparts
+		// check if there are methods to compare with cleanroom counterparts
 		CompareInterface compareInterfaceAnnotation = clazz.getAnnotation(CompareInterface.class);
-		if(compareInterfaceAnnotation != null){
-			for(String arg : compareInterfaceAnnotation.value()){
-				if(arg.contains(".")){
+		if (compareInterfaceAnnotation != null) {
+			for (String arg : compareInterfaceAnnotation.value()) {
+				if (arg.contains(".")) {
 					String[] parts = arg.split("\\.");
-					if(parts.length != 2){
+					if (parts.length != 2) {
 						throw new IllegalArgumentException("ERROR - @CompareInterface must look like this: Class, Class.Method or Class.Field, found: " + arg);
 					}
-					// first part is classname, second part method or field
+					// first part is class name, second part method or field
 					Class<?> cleanroomClass = getCleanroomClass(parts[0]);
 					// TODO avoid reloading same class
-					if(getMethod(cleanroomClass,parts[1]) == null){
-						// method does not exists check Field
-
-						try{
+					if (getMethod(cleanroomClass, parts[1]) == null) {
+						// method does not exist check Field
+						try {
 							cleanroomClass.getField(parts[1]);
-						} catch (NoSuchFieldException nsfe){
+						} catch (NoSuchFieldException noSuchFieldException) {
 							throw new IllegalArgumentException("ERROR - " + arg + " specified in @CompareInterface could not be found in cleanroom");
 						}
 					}
-
-				}else{
+				} else {
 					// delim is not "." assume is a whole class
 					// check if class exists in cleanroom
 					getCleanroomClass(arg);
 				}
 			}
 		}
-
 		// check annotations on method level
 		long timeoutSum = 0;
 		HashSet<String> usedExercises = new HashSet<>();
@@ -120,20 +95,9 @@ public class CheckAnnotation {
 				throw new AnnotationFormatError("ERROR - found test case without 'timeout' in @Test annotation: [" + description.getDisplayName() + "]");
 			}
 			timeoutSum += test.timeout();
-
-			Bonus bonusAnnotation = m.getAnnotation(Bonus.class);
-			Malus malusAnnotation = m.getAnnotation(Malus.class);
 			Points pointsAnnotation = m.getAnnotation(Points.class);
 			Replace replaceAnnotation = m.getAnnotation(Replace.class);
-			SecretCase secretCaseAnnotation = m.getAnnotation(SecretCase.class);
-
-			if(secretCaseAnnotation != null && !isSecretClass){
-				throw new AnnotationFormatError("ERROR - found test case with deprecated @SecretCase annotation in public test [" + description.getDisplayName() + "]");
-			}
-
-			if (bonusAnnotation != null || malusAnnotation != null) {
-				throw new AnnotationFormatError("ERROR - found test case with deprecated @Bonus/@Malus annotation [" + description.getDisplayName() + "]");
-			} else if (pointsAnnotation == null) {
+			if (pointsAnnotation == null) {
 				throw new AnnotationFormatError("ERROR - found test case without @Points annotation [" + description.getDisplayName() + "]");
 			} else if (!isSecretClass && replaceAnnotation != null) {
 				throw new AnnotationFormatError("ERROR - found test case with @Replace in a public test class: [" + description.getDisplayName() + "]");
@@ -159,7 +123,6 @@ public class CheckAnnotation {
 		if (timeoutSum > MAX_TIMEOUT_MS) {
 			throw new AnnotationFormatError("ERROR - total timeout sum is too high, please reduce to max. " + MAX_TIMEOUT_MS + "ms: [" + timeoutSum + "ms]");
 		}
-
 		// check for @Rule and @ClassRule
 		boolean hasRule = false;
 		boolean hasClassRule = false;
@@ -191,7 +154,6 @@ public class CheckAnnotation {
 		if (!hasClassRule) {
 			throw new AnnotationFormatError("ERROR - found no valid @ClassRule annotation in test class");
 		}
-
 		// check @InitializeOnce annotations
 		for (final Field f : clazz.getDeclaredFields()) {
 			final InitializeOnce initOnce = f.getAnnotation(InitializeOnce.class);
@@ -199,12 +161,10 @@ public class CheckAnnotation {
 				if ((f.getModifiers() & Modifier.STATIC) == 0) {
 					throw new AnnotationFormatError("ERROR - @InitializeOnce requires a static field");
 				}
-				if (!f.getType().isPrimitive()
-						&& !java.io.Serializable.class.isAssignableFrom(f.getType())) {
+				if (!f.getType().isPrimitive() && !java.io.Serializable.class.isAssignableFrom(f.getType())) {
 					throw new AnnotationFormatError("ERROR - @InitializeOnce requires Serializable type");
 				}
-
-				// Search given method
+				// search given method
 				try {
 					final Method method = clazz.getDeclaredMethod(initOnce.value());
 					if ((method.getModifiers() & Modifier.STATIC) == 0) {
@@ -220,24 +180,19 @@ public class CheckAnnotation {
 		}
 	}
 
-	public static void main(String[] args) throws ClassNotFoundException {
-		ClassLoader unitLoader;
-		try{
-			unitLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()});
-		} catch (MalformedURLException mfue) {
-			throw new Error("Error " + mfue.getMessage());
+	public static void main(String[] args) {
+		try (URLClassLoader unitLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()})) {
+			Class<?> clazz;
+			try {
+				clazz = unitLoader.loadClass(args[0]);
+			} catch (ClassNotFoundException classNotFoundException) {
+				throw new IllegalArgumentException("ERROR - Class [" + classNotFoundException.getMessage() + "] specified in @CompareInterface does not exist");
+			}
+			Description description = Description.createSuiteDescription(clazz);
+			Exercises exercisesAnnotation = JUnitWithPoints.PointsSummary.getExercisesAnnotation(description);
+			checkAnnotations(description, exercisesAnnotation);
+		} catch (IOException malformedURLException) {
+			throw new Error("Error " + malformedURLException.getMessage());
 		}
-
-		Class<?> clazz;
-
-		try{
-			clazz = unitLoader.loadClass(args[0]);
-		} catch (ClassNotFoundException cnfe) {
-			throw new IllegalArgumentException("ERROR - Class ["+cnfe.getMessage() +"] specified in @CompareInterface does not exist");
-		}
-
-		Description description = Description.createSuiteDescription(clazz);
-		Exercises exercisesAnnotation = JUnitWithPoints.PointsSummary.getExercisesAnnotation(description);
-		checkAnnotations(description, exercisesAnnotation);
 	}
 }

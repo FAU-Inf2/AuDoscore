@@ -1,11 +1,11 @@
 rm -f *.class */*.class
 make compile-stage1
-make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.184871“ wird betreten
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.96707“ wird betreten
 rm -f *.class */*.class
-javac --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; javac --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac  cleanroom/*.java;
-make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.184871“ wird betreten
+javac --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac  cleanroom/*.java;
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.96707“ wird betreten
 javac  -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
-make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.184871“ wird verlassen
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.96707“ wird verlassen
 java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
@@ -25,10 +25,10 @@ for i in $STUDENTCLASSES; do \
 done
 rm forbidden
 make run-comparer
-make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.184871“ wird betreten
-java -cp lib/junitpoints.jar tools.ic.InterfaceComparer UnitTest
-make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.184871“ wird verlassen
-make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.184871“ wird verlassen
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.96707“ wird betreten
+java -cp lib/junitpoints.jar tools.ic.InterfaceComparator UnitTest
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.96707“ wird verlassen
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.96707“ wird verlassen
 echo "echo \"[\" 1>&2" > loop.sh
 if [ "xSecretTest" != "x" ]; then \
 	set -e ; \
@@ -42,12 +42,12 @@ else \
 	echo "echo \"]\" 1>&2" >> loop.sh ; \
 	echo "make run-stage1" > single_execution.sh ; \
 fi
-make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.184871“ wird betreten
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.96707“ wird betreten
 ./obfuscate
-javac --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter SecretTest.java > SecretTest.java.tmp ; mv SecretTest.java.tmp SecretTest.java ; javac --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier SecretTest.java > SecretTest.java.tmp ; mv SecretTest.java.tmp SecretTest.java ; make -B SecretTest.class; javac  cleanroom/*.java;
-make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.184871“ wird betreten
+javac --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier SecretTest.java > SecretTest.java.tmp ; mv SecretTest.java.tmp SecretTest.java ; make -B SecretTest.class; javac  cleanroom/*.java;
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.96707“ wird betreten
 javac  -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. SecretTest.java ToTest.java 
-make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.184871“ wird verlassen
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.96707“ wird verlassen
 for i in cleanroom/*.java; do \
 	cp $i ${i}.bak; \
 	/bin/echo -e "package cleanroom;" > $i ; \
@@ -72,4 +72,4 @@ class ToTest, false, 0, true
 + javac -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp . -d ToTest#foo -sourcepath ToTest#foo ToTest#foo/ToTest.java
 COMPILER_ARGS="" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p UnitTest SecretTest >> loop.sh
 echo "echo \"]\" 1>&2" >> loop.sh
-make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.184871“ wird verlassen
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_default_method/test.96707“ wird verlassen

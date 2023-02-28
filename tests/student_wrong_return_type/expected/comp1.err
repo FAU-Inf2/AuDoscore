@@ -2,6 +2,6 @@ ERROR - Method does not match with student counterpart:
 	 * student: public static long ToTest.toTest2()
 	 *   clean: public static double ToTest.toTest2()
 Exception in thread "main" java.lang.Error
-	at tools.ic.InterfaceComparer.main(InterfaceComparer.java:414)
-make[1]: *** [run-comparer] Error 1
-make: *** [compile-stage1] Error 2
+	at tools.ic.InterfaceComparator.main(InterfaceComparator.java:336)
+make[1]: *** [Makefile:146: run-comparer] Fehler 1
+make: *** [Makefile:90: compile-stage1] Fehler 2

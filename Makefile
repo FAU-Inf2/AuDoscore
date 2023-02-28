@@ -24,8 +24,6 @@ ifneq ("$(wildcard /bin/dash)","")
 endif
 
 compiletest = \
-	javac $(JAVAMODULEEXPORTS) $(JAVAMODULEOPENS) -cp $(LIBJUNIT):$(LIBJUNITPOINTS) -proc:only -processor tools.bomacon.BonusMalusConverter $(1).java > $(1).java.tmp ; \
-	mv $(1).java.tmp $(1).java ; \
 	javac $(JAVAMODULEEXPORTS) $(JAVAMODULEOPENS) -cp $(LIBJUNIT):$(LIBJUNITPOINTS) -proc:only -processor FullQualifier $(1).java > $(1).java.tmp ; \
 	mv $(1).java.tmp $(1).java ; \
 	make -B $(2); \
@@ -67,7 +65,7 @@ prepare: updategitrev lib/junitpoints.jar
 updategitrev:
 	git rev-parse HEAD > GITREV
 
-SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/annotations/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java tester/annotations/SecretCase.java tester/annotations/Bonus.java tester/annotations/Ex.java tester/annotations/Points.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/Malus.java tester/annotations/NotForbidden.java tester/annotations/SafeCallers.java tools/jsondiff/JSONDiff.java FullQualifier.java tools/bomacon/BonusMalusConverter.java tools/sep/SingleExecutionPreparer.java CheckAnnotation.java tools/SingleMethodRunner.java tools/ic/InterfaceComparer.java tools/ptc/PublicTestCleaner.java tester/TesterSecurityManager.java tester/AuDoscoreUtils.java tester/annotations/InitializeOnce.java
+SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/annotations/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java tester/annotations/Ex.java tester/annotations/Points.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/NotForbidden.java tester/annotations/SafeCallers.java tools/jsondiff/JSONDiff.java FullQualifier.java tools/sep/SingleExecutionPreparer.java CheckAnnotation.java tools/SingleMethodRunner.java tools/ic/InterfaceComparator.java tools/ptc/PublicTestCleaner.java tester/TesterSecurityManager.java tester/annotations/InitializeOnce.java
 
 lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 	javac -source 17 -target 17 $(JAVAMODULEEXPORTS) -encoding UTF-8 -d build -cp $(LIBJUNIT):$(LIBJSONSIMPLE):. $(SRCJUNITPOINTSJAR)
@@ -145,7 +143,7 @@ compile: compile-stage$(STAGE)
 
 
 run-comparer:
-	java -cp $(LIBJUNITPOINTS) tools.ic.InterfaceComparer $(TEST)
+	java -cp $(LIBJUNITPOINTS) tools.ic.InterfaceComparator $(TEST)
 
 run-stage0:
 	echo "alles gut"

@@ -7,33 +7,20 @@ import java.lang.annotation.*;
 import org.junit.runner.*;
 
 public class ReadReplace {
-
-	public static Method[] getMethodsSorted(final Class cls) {
-		final Method[] methods = cls.getMethods();
-		Arrays.sort(methods, new Comparator<Method>() {
-			@Override
-			public int compare(final Method method1, final Method method2) {
-				return method1.getName().compareTo(method2.getName());
-			}
-		});
-		return methods;
-	}
-
-
-
-	public static String getCanonicalReplacement(Replace r) {
-		Map<String, SortedSet<String>> mMethsMap = getMap(r);
-		final StringBuilder ncln = new StringBuilder();
-		for(Map.Entry<String, SortedSet<String>> e : mMethsMap.entrySet()) {
-			ncln.append('@').append(e.getKey());
-			for(String me : e.getValue()) {
-				ncln.append('#').append(me);
-			}
+	// usage:
+	// 1) ReadReplace <secret test class>
+	// 2) ReadReplace --loop -p <public test class> <secret test class>
+	public static void main(String[] args) throws Exception {
+		if (args.length < 1) {
+			System.err.println("missing argument: secret test class name or option --loop");
+			System.exit(-1);
 		}
-		return ncln.toString();
+		if (args[0].equals("--loop")) {
+			generateSecretTestRunLoopScript(args[3], args[2]);
+		} else {
+			generateSecretTestCompileScript(args[0]);
+		}
 	}
-
-
 
 	public static String getCanonicalReplacement(Description description) {
 		if (description.getAnnotation(Replace.class) != null) {
@@ -43,66 +30,103 @@ public class ReadReplace {
 		return "";
 	}
 
+	private static void generateSecretTestCompileScript(String secretTestClassName) throws ClassNotFoundException {
+		String compilerArgs = System.getenv("COMPILER_ARGS");
+		if (compilerArgs == null) {
+			compilerArgs = "";
+		}
+		Class<?> secretTestClass = ClassLoader.getSystemClassLoader().loadClass(secretTestClassName);
+		LinkedHashSet<String> compileInstructions = new LinkedHashSet<>();
+		for (Method testCaseMethod : getMethodsSorted(secretTestClass)) {
+			if (testCaseMethod.isAnnotationPresent(Replace.class)) {
+				Replace r = testCaseMethod.getAnnotation(Replace.class);
+				if (canProcess(r)) {
+					Map<String, SortedSet<String>> methodsMap = getMap(r);
+					for (Map.Entry<String, SortedSet<String>> entry : methodsMap.entrySet()) {
+						final StringBuilder replacedSourceFolderNameSB = new StringBuilder(entry.getKey());
+						if (entry.getValue().size() == 0) {
+							continue;
+						}
+						for (String method : entry.getValue()) {
+							replacedSourceFolderNameSB.append('#').append(method.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>"));
+						}
+						final String replacedSourceFolderName = replacedSourceFolderNameSB.toString();
+						compileInstructions.add("mkdir -p " + replacedSourceFolderName + "; " + "javac " + compilerArgs + " -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=" + replacedSourceFolderName + " -proc:only -processor ReplaceMixer cleanroom/" + entry.getKey() + ".java " + entry.getKey() + ".java > " + replacedSourceFolderName + "/" + entry.getKey() + ".java; " + "javac " + compilerArgs + " -cp . -d " + replacedSourceFolderName + " -sourcepath " + replacedSourceFolderName + " " + replacedSourceFolderName + "/" + entry.getKey() + ".java;");
+					}
+				}
+			}
+		}
+		for (String compileInstruction : compileInstructions) {
+			System.out.println(compileInstruction);
+		}
+	}
 
+	private static Method[] getMethodsSorted(final Class<?> clazz) {
+		final Method[] methods = clazz.getMethods();
+		Arrays.sort(methods, Comparator.comparing(Method::getName));
+		return methods;
+	}
 
-	public static Map<String, SortedSet<String>> getMap(Replace r) {
+	private static String getCanonicalReplacement(Replace r) {
+		Map<String, SortedSet<String>> mMethsMap = getMap(r);
+		final StringBuilder canonicalRepresentation = new StringBuilder();
+		for (Map.Entry<String, SortedSet<String>> entry : mMethsMap.entrySet()) {
+			canonicalRepresentation.append('@').append(entry.getKey()); // class
+			for (String method : entry.getValue()) {
+				canonicalRepresentation.append('#').append(method);
+			}
+		}
+		return canonicalRepresentation.toString();
+	}
+
+	private static Map<String, SortedSet<String>> getMap(Replace r) {
 		Map<String, SortedSet<String>> mMethsMap = new TreeMap<>();
-		for (final String vstr : r.value()) {
-			final int s = vstr.indexOf('.');
-			String cln;
+		for (final String valueString : r.value()) {
+			final int s = valueString.indexOf('.');
+			String className;
 			String regex;
 			if (s == -1) {
-				cln = vstr;
+				className = valueString;
 				regex = ".*";
 			} else {
-				cln = vstr.substring(0, s);
-				regex = vstr.substring(s + 1);
+				className = valueString.substring(0, s);
+				regex = valueString.substring(s + 1);
 			}
-
-			if (!mMethsMap.containsKey(cln)) {
-				mMethsMap.put(cln, new TreeSet<String>());
+			if (!mMethsMap.containsKey(className)) {
+				mMethsMap.put(className, new TreeSet<>());
 			}
-			final SortedSet<String> meths = mMethsMap.get(cln);
-
+			final SortedSet<String> methods = mMethsMap.get(className);
 			try {
 				boolean foundMatch = false;
-				for (Method me : Class.forName(cln).getDeclaredMethods()) {
-					if (me.getName().matches(regex)) {
-						meths.add(me.getName());
+				for (Method method : Class.forName(className).getDeclaredMethods()) {
+					if (method.getName().matches(regex)) {
+						methods.add(method.getName());
 						foundMatch = true;
 					}
 				}
-
 				if ("<init>".matches(regex)) {
-					meths.add("<init>");
+					methods.add("<init>");
 					foundMatch = true;
 				}
 				if (!foundMatch) {
 					throw new AnnotationFormatError("ERROR - Cannot replace unknown method: " + regex);
 				}
 			} catch (ClassNotFoundException e) {
-				throw new AnnotationFormatError("ERROR - Cannot replace unknown class: " + cln);
+				throw new AnnotationFormatError("ERROR - Cannot replace unknown class: " + className);
 			}
 		}
 		return mMethsMap;
 	}
 
-
-
 	private static Class<?> getClassFromDescriptor(final String[] descParts) {
 		final String[] classParts = new String[descParts.length - 1];
 		System.arraycopy(descParts, 0, classParts, 0, classParts.length);
-
 		try {
 			return Class.forName(String.join(".", classParts));
 		} catch (final ClassNotFoundException e) {
-			throw new AnnotationFormatError("ERROR - Class '"
-					+ String.join(".", classParts)
-					+ "' does not exist");
+			throw new AnnotationFormatError("ERROR - Class '" + String.join(".", classParts) + "' does not exist");
 		}
 	}
-
-
 
 	private static Field getFieldFromDescriptor(final String[] descParts) {
 		final Class<?> cls = getClassFromDescriptor(descParts);
@@ -112,7 +136,6 @@ public class ReadReplace {
 			return null;
 		}
 	}
-
 
 
 	private static List<Method> getMethodsFromDescriptor(final String[] descParts) {
@@ -127,24 +150,40 @@ public class ReadReplace {
 	}
 
 
-
 	private static Class<?> getTypeFromDescriptor(final String desc) {
 		if (desc.endsWith("[]")) {
 			final Class<?> componentType = getTypeFromDescriptor(desc.substring(0, desc.length() - 2));
 			return Array.newInstance(componentType, 0).getClass();
 		}
-
 		switch (desc) {
-			case "byte":    return byte.class;
-			case "boolean": return boolean.class;
-			case "char":    return char.class;
-			case "double":  return double.class;
-			case "float":   return float.class;
-			case "int":     return int.class;
-			case "long":    return long.class;
-			case "short":   return short.class;
-			case "void":    return void.class;
-			default: {
+			case "byte" -> {
+				return byte.class;
+			}
+			case "boolean" -> {
+				return boolean.class;
+			}
+			case "char" -> {
+				return char.class;
+			}
+			case "double" -> {
+				return double.class;
+			}
+			case "float" -> {
+				return float.class;
+			}
+			case "int" -> {
+				return int.class;
+			}
+			case "long" -> {
+				return long.class;
+			}
+			case "short" -> {
+				return short.class;
+			}
+			case "void" -> {
+				return void.class;
+			}
+			default -> {
 				try {
 					return Class.forName(desc);
 				} catch (final ClassNotFoundException e) {
@@ -154,40 +193,32 @@ public class ReadReplace {
 		}
 	}
 
-
-
 	private static boolean canProcess(final Replace replace) {
 		// replace.onlyIf() is never 'null' because 'null' is not an allowed ElementValue
 		if (replace.onlyIf().isEmpty()) {
 			return true;
 		}
-
 		final String[] parts = replace.onlyIf().split(";");
 		if (parts.length < 3) {
 			throw new AnnotationFormatError("ERROR - Invalid 'onlyIf' value: " + replace.onlyIf());
 		}
-
 		final String[] descParts = parts[1].split("\\.");
 		if (descParts.length < 2) {
 			throw new AnnotationFormatError("ERROR - Invalid 'onlyIf' descriptor: " + parts[1]);
 		}
-
 		switch (parts[0]) {
-			case "field": {
+			case "field" -> {
 				final Field field = getFieldFromDescriptor(descParts);
 				if (field == null) {
 					return false;
 				}
 				return field.getType().equals(getTypeFromDescriptor(parts[2]));
 			}
-
-			case "method": {
+			case "method" -> {
 				final List<Method> methods = getMethodsFromDescriptor(descParts);
 				outer:
 				for (final Method method : methods) {
-					if (parts.length - 3 == method.getParameterCount()
-							&& method.getReturnType().equals(getTypeFromDescriptor(parts[2]))) {
-
+					if (parts.length - 3 == method.getParameterCount() && method.getReturnType().equals(getTypeFromDescriptor(parts[2]))) {
 						int i = 0;
 						for (final Class<?> paramType : method.getParameterTypes()) {
 							if (!paramType.equals(getTypeFromDescriptor(parts[3 + i++]))) {
@@ -199,121 +230,46 @@ public class ReadReplace {
 				}
 				return false;
 			}
-
-			default:
-				throw new AnnotationFormatError("ERROR - Invalid 'onlyIf' type: " + parts[0]);
+			default -> throw new AnnotationFormatError("ERROR - Invalid 'onlyIf' type: " + parts[0]);
 		}
 	}
 
-
-
-	public static void loopSecret(String tcln, String pub) throws Exception {
-		LinkedHashMap<String,List<String>> rmap = new LinkedHashMap<String,List<String>>();
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
-		Class c = cl.loadClass(tcln);
-		for (Method meth : getMethodsSorted(c)) {
-			if (meth.isAnnotationPresent(Replace.class)) {
-				Replace r = meth.getAnnotation(Replace.class);
+	private static void generateSecretTestRunLoopScript(String secretTestClassName, String publicTestClassName) throws ClassNotFoundException {
+		LinkedHashMap<String, List<String>> replacementMap = new LinkedHashMap<>();
+		Class<?> secretTestClass = ClassLoader.getSystemClassLoader().loadClass(secretTestClassName);
+		for (Method testCaseMethod : getMethodsSorted(secretTestClass)) {
+			if (testCaseMethod.isAnnotationPresent(Replace.class)) {
+				Replace r = testCaseMethod.getAnnotation(Replace.class);
 				if (canProcess(r)) {
 					String cr = getCanonicalReplacement(r);
-					List<String> methods = rmap.get(cr);
+					List<String> methods = replacementMap.get(cr);
 					if (methods == null) {
-						methods = new ArrayList<String>();
+						methods = new ArrayList<>();
 					}
-					methods.add(meth.getName());
-					rmap.put(cr, methods);
+					methods.add(testCaseMethod.getName());
+					replacementMap.put(cr, methods);
 				}
 			}
 		}
-
 		boolean needSep = false;
-		Iterator it = rmap.entrySet().iterator();
-		while(it.hasNext()) {
+		for (Map.Entry<String, List<String>> pair : replacementMap.entrySet()) {
 			if (needSep) {
 				System.out.println("echo \",\" 1>&2");
 			} else {
 				needSep = true;
 			}
-			Map.Entry pair = (Map.Entry) it.next();
-			String s = (String) pair.getKey();
-			List<String> methods = (List<String>) pair.getValue();
+			String s = pair.getKey();
+			List<String> methods = pair.getValue();
 			String classpath = s.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
-		
 			boolean first = true;
-			for(String method : methods) {
-				if(first) {
+			for (String method : methods) {
+				if (first) {
 					first = false;
-				}else{
+				} else {
 					System.out.println("echo \",\" 1>&2");
 				}
-				System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + classpath + ":. -Dpub=" +pub+" -Djson=yes tools.SingleMethodRunner " + tcln + " "  + method);
+				System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + classpath + ":. -Dpub=" + publicTestClassName + " -Djson=yes tools.SingleMethodRunner " + secretTestClassName + " " + method);
 			}
-
-		}
-	}
-
-	public static void main(String args[]) throws Exception{
-
-		if(args.length < 1){
-			System.err.println("missing class argument");
-			System.exit(-1);
-		}
-		if (args[0].equals("--loop")) {
-			loopSecret(args[3],args[2]);
-			return;
-		}
-
-		String tcln = args[0];
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
-		Class c = cl.loadClass(tcln);
-		LinkedHashSet<String> mids = new LinkedHashSet<>();
-		for (Method meth : getMethodsSorted(c)) {
-			if (meth.isAnnotationPresent(Replace.class)) {
-				Replace r = meth.getAnnotation(Replace.class);
-				if (canProcess(r)) {
-					Map<String, SortedSet<String>> methsMap = getMap(r);
-					for (Map.Entry<String, SortedSet<String>> e : methsMap.entrySet()) {
-						final StringBuilder ncln = new StringBuilder(e.getKey());
-						if(e.getValue().size() == 0) {
-							continue;
-						}
-						for(String me : e.getValue()) {
-							ncln.append('#').append(me.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>"));
-						}
-
-						String compilerArgs = System.getenv("COMPILER_ARGS");
-						if (compilerArgs == null) {
-							compilerArgs = "";
-						}
-
-						final String nclns = ncln.toString();
-						mids.add("mkdir -p " + nclns + "; "
-								+ "javac "
-								+ compilerArgs
-								+ " -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces="
-								+ nclns
-								+ " -proc:only -processor ReplaceMixer cleanroom/"
-								+ e.getKey() + ".java "
-								+ e.getKey() + ".java > "
-								+ nclns
-								+ "/"
-								+ e.getKey() + ".java; "
-								+ "javac "
-								+ compilerArgs
-								+ " -cp . -d "
-								+ nclns
-								+ " -sourcepath "
-								+ nclns
-								+ " "
-								+ nclns
-								+ "/"
-								+ e.getKey() + ".java;");
-					}
-				}
-			}
-		}
-		for (String mid : mids) {
-			System.out.println(mid);
 		}
 	}
 }
