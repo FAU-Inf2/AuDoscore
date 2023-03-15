@@ -1,0 +1,51 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "pubTest",
+                            "fromSecret": false,
+                            "id": "pubTest",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "secTest",
+                            "fromSecret": true,
+                            "id": "secTest",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "secTest",
+                            "fromSecret": true,
+                            "id": "secTest",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.*;
 import java.util.regex.*;
 import javax.annotation.processing.*;
@@ -12,7 +14,7 @@ import com.sun.tools.javac.tree.JCTree.*;
 
 @SupportedAnnotationTypes("*")
 @SupportedOptions("replaces")
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 public class ReplaceMixer extends AbstractProcessor {
 	public static final String CLEAN_PREFIX = "__clean";
 	private Trees trees;
@@ -60,7 +62,13 @@ public class ReplaceMixer extends AbstractProcessor {
 						}
 					}
 					if (!isCleanroom) {
-						System.out.println(tree);
+						StringWriter stringWriter = new StringWriter();
+						try {
+							new JavaSourcePrettyPrinter(stringWriter, false).printExpr(tree);
+						} catch (IOException e) {
+							throw new AssertionError(e);
+						}
+						System.out.println(stringWriter);
 					}
 				}
 			}
@@ -128,7 +136,7 @@ public class ReplaceMixer extends AbstractProcessor {
 				} else if (!isCleanroom && !insideMethod && tree.getModifiers().getFlags().contains(Modifier.FINAL) && tree.getInitializer() == null) {
 					// in this case, there is an uninitialized final field in the student submission.
 					// To avoid a compilation error if a constructor is replaced, we simply drop the 'final' modifier.
-					tree.mods.flags &= ~16; // XXX: Hard-coded constant
+					tree.mods.flags &= ~com.sun.tools.javac.code.Flags.FINAL;
 				}
 			}
 		}

@@ -1,0 +1,53 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "PublicTest: Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<0> but was:<42>)",
+                            "fromSecret": false,
+                            "id": "pubTest",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "SecretTest: Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<0> but was:<42>)",
+                            "fromSecret": true,
+                            "id": "secTest",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "SecretTest: Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

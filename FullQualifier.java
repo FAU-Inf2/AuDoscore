@@ -7,16 +7,14 @@ import javax.lang.model.element.*;
 
 import com.sun.source.tree.*;
 import com.sun.source.util.*;
-import com.sun.tools.javac.code.*;
 import com.sun.tools.javac.model.*;
 import com.sun.tools.javac.processing.*;
 import com.sun.tools.javac.tree.*;
-import com.sun.tools.javac.tree.JCTree.*;
 import com.sun.tools.javac.util.*;
 
 @SupportedAnnotationTypes("*")
 @SupportedOptions("replaces")
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 public class FullQualifier extends AbstractProcessor {
 	private Trees trees;
 	private boolean imported = false;
@@ -47,7 +45,7 @@ public class FullQualifier extends AbstractProcessor {
 					}
 					StringWriter stringWriter = new StringWriter();
 					try {
-						new MyPretty(stringWriter, false).printExpr(tree);
+						new FullQualifierPrettyPrinter(stringWriter, false).printExpr(tree);
 					} catch (IOException e) {
 						throw new AssertionError(e);
 					}
@@ -60,54 +58,34 @@ public class FullQualifier extends AbstractProcessor {
 		}
 		return false;
 	}
-}
 
-class MyPretty extends com.sun.tools.javac.tree.Pretty {
-	private boolean inEnum = false;
-
-	public MyPretty(Writer out, boolean sourceOutput) {
-		super(out, sourceOutput);
-	}
-
-	@Override
-	public void visitAnnotation(JCAnnotation tree) {
-		try {
-			print("@");
-			String before = tree.annotationType.toString();
-			switch (before) {
-				case "After", "Before", "Ignore", "FixMethodOrder", "Rule", "ClassRule", "Test" -> print("org.junit.");
-				case "RunWith" -> print("org.junit.runner.");
-				case "Parameters" -> print("org.junit.runners.Parameterized.");
-				case "CompareInterface", "Ex", "Exercises", "Forbidden", "InitializeOnce", "NotForbidden", "Points", "Replace", "SafeCallers", "SecretClass" -> print("tester.annotations.");
-			}
-			printExpr(tree.annotationType);
-			print("(");
-			if (before.equals("RunWith") && tree.args.head.toString().equals("value = Parameterized.class")) {
-				print("value = org.junit.runners.Parameterized.class");
-			} else {
-				printExprs(tree.args);
-			}
-			print(")");
-		} catch (IOException e) {
-			throw new Error("something failed while pretty printing annotations: " + e);
+	private static class FullQualifierPrettyPrinter extends JavaSourcePrettyPrinter {
+		public FullQualifierPrettyPrinter(Writer out, boolean sourceOutput) {
+			super(out, sourceOutput);
 		}
-	}
 
-	@Override
-	public void visitClassDef(final JCClassDecl tree) {
-		final boolean oldInEnum = this.inEnum;
-		this.inEnum = (tree.mods.flags & Flags.ENUM) > 0;
-		super.visitClassDef(tree);
-		this.inEnum = oldInEnum;
-	}
-
-	@Override
-	public void visitApply(final JCMethodInvocation tree) {
-		if (inEnum && tree.meth instanceof JCIdent ident) {
-			if (ident.name == ident.name.table.names._super) {
-				return;
+		@Override
+		public void visitAnnotation(JCTree.JCAnnotation tree) {
+			try {
+				print("@");
+				String before = tree.annotationType.toString();
+				switch (before) {
+					case "After", "Before", "Ignore", "FixMethodOrder", "Rule", "ClassRule", "Test" -> print("org.junit.");
+					case "RunWith" -> print("org.junit.runner.");
+					case "Parameters" -> print("org.junit.runners.Parameterized.");
+					case "CompareInterface", "Ex", "Exercises", "Forbidden", "InitializeOnce", "NotForbidden", "Points", "Replace", "SafeCallers", "SecretClass" -> print("tester.annotations.");
+				}
+				printExpr(tree.annotationType);
+				print("(");
+				if (before.equals("RunWith") && tree.args.head.toString().equals("value = Parameterized.class")) {
+					print("value = org.junit.runners.Parameterized.class");
+				} else {
+					printExprs(tree.args);
+				}
+				print(")");
+			} catch (IOException e) {
+				throw new Error("something failed while pretty printing annotations: " + e);
 			}
 		}
-		super.visitApply(tree);
 	}
 }

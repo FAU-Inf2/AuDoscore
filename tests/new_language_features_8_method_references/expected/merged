@@ -1,0 +1,7 @@
+Score: 23.5
+
+Lambda (23.5 points):
+✗   0.00 | PublicTest "non-static": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<24>)
+✗   0.00 | PublicTest "static": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<24>)
+✓  11.78 | SecretTest "non-static": Should pass in "replaced" because with @Replace now.
+✓  11.78 | SecretTest "static": Should pass in "replaced" because with @Replace now.
