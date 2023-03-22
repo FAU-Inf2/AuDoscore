@@ -116,14 +116,15 @@ public class TesterSecurityManager extends SecurityManager {
 					}
 				}
 				case "getenv.DISPLAY" -> {
-					if (calledFrom("java.awt.Toolkit", "java.")) {
+					if (calledFrom("java.awt.Toolkit", "java.", "sun.awt.") //
+							|| calledFrom("java.awt.Color", "java.", "sun.awt.")) {
 						// grant permission
 						return;
 					}
 				}
 				default -> {
 					if (perm.getName().startsWith("loadLibrary.")) {
-						if (perm.getName().contains("awt") && calledFrom("java.awt.Toolkit", "java.")) {
+						if (perm.getName().contains("awt") && calledFrom("java.awt.Toolkit", "java.", "jdk.")) {
 							// grant permission
 							return;
 						}
@@ -156,9 +157,10 @@ public class TesterSecurityManager extends SecurityManager {
 				// grant permission
 				return;
 			}
-			if (("write".equals(propPerm.getActions()) //
-					|| "read,write".equals(propPerm.getActions())) && (calledFromSafeCallers() //
-					|| calledFrom("java.lang.invoke.StringConcatFactory", "java.", "sun."))) {
+			if (("write".equals(propPerm.getActions()) || "read,write".equals(propPerm.getActions())) //
+					&& (calledFromSafeCallers() //
+					|| calledFrom("java.lang.invoke.StringConcatFactory", "java.", "sun.")) //
+					|| calledFrom("java.awt.Color", "java.", "sun.", "jdk.")) {
 				// grant permission
 				return;
 			}
