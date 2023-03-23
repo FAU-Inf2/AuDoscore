@@ -1,8 +1,8 @@
-import com.sun.tools.javac.code.*;
-import com.sun.tools.javac.tree.*;
+import com.sun.tools.javac.code.Flags;
+import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.*;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.Writer;
 
 public class JavaSourcePrettyPrinter extends com.sun.tools.javac.tree.Pretty {
 	private boolean inEnum = false;
@@ -144,8 +144,28 @@ public class JavaSourcePrettyPrinter extends com.sun.tools.javac.tree.Pretty {
 				print(statement.expr);
 			}
 			print(") ");
-			if (forLoop.body instanceof JCBlock body) super.visitBlock(body);
-			if (forLoop.body instanceof JCSkip noBody) super.visitSkip(noBody);
+			if (forLoop.body instanceof JCAssert body) super.visitAssert(body);
+			else if (forLoop.body instanceof JCBlock body) super.visitBlock(body);
+			else if (forLoop.body instanceof JCBreak body) super.visitBreak(body);
+			else if (forLoop.body instanceof JCCase body) super.visitCase(body);
+			else if (forLoop.body instanceof JCClassDecl body) super.visitClassDef(body);
+			else if (forLoop.body instanceof JCContinue body) super.visitContinue(body);
+			else if (forLoop.body instanceof JCDoWhileLoop body) super.visitDoLoop(body);
+			else if (forLoop.body instanceof JCEnhancedForLoop body) super.visitForeachLoop(body);
+			else if (forLoop.body instanceof JCExpressionStatement body) super.visitExec(body);
+			else if (forLoop.body instanceof JCForLoop body) super.visitForLoop(body);
+			else if (forLoop.body instanceof JCIf body) super.visitIf(body);
+			else if (forLoop.body instanceof JCLabeledStatement body) super.visitLabelled(body);
+			else if (forLoop.body instanceof JCReturn body) super.visitReturn(body);
+			else if (forLoop.body instanceof JCSkip body) super.visitSkip(body);
+			else if (forLoop.body instanceof JCSwitch body) super.visitSwitch(body);
+			else if (forLoop.body instanceof JCSynchronized body) super.visitSynchronized(body);
+			else if (forLoop.body instanceof JCThrow body) super.visitThrow(body);
+			else if (forLoop.body instanceof JCTry body) super.visitTry(body);
+			else if (forLoop.body instanceof JCVariableDecl body) super.visitVarDef(body);
+			else if (forLoop.body instanceof JCWhileLoop body) super.visitWhileLoop(body);
+			else if (forLoop.body instanceof JCYield body) super.visitYield(body);
+			else print(forLoop.body); // FIXME: missing anything else here? try best effort if so...
 		} catch (IOException e) {
 			throw new Error("something failed while pretty printing: " + e);
 		}
