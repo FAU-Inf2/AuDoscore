@@ -1,0 +1,91 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "PublicTest \"normal\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<25> but was:<20>)",
+                            "fromSecret": false,
+                            "id": "pubTest",
+                            "success": false
+                        },
+                        {
+                            "desc": "PublicTest \"regression\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<25> but was:<20>)",
+                            "fromSecret": false,
+                            "id": "pubTest__regression",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"normal\": Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<25> but was:<20>)",
+                            "fromSecret": true,
+                            "id": "secTest",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"regression\": Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<25> but was:<20>)",
+                            "fromSecret": true,
+                            "id": "secTest__regression",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"normal\": Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"regression\": Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest__regression",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

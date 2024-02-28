@@ -1,12 +1,11 @@
-make[1]: Entering directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
 rm -f *.class */*.class
 make compile-stage1
-make[2]: Entering directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_with_fqn/test.87677“ wird betreten
 rm -f *.class */*.class
-javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac cleanroom/*.java;
-make[3]: Entering directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
-javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
-make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
+javac --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac  cleanroom/*.java;
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_with_fqn/test.87677“ wird betreten
+javac  -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_with_fqn/test.87677“ wird verlassen
 java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
@@ -26,10 +25,10 @@ for i in $STUDENTCLASSES; do \
 done
 rm forbidden
 make run-comparer
-make[3]: Entering directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
-java -cp lib/junitpoints.jar tools.ic.InterfaceComparer UnitTest
-make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
-make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_with_fqn/test.87677“ wird betreten
+java -cp lib/junitpoints.jar tools.ic.InterfaceComparator UnitTest
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_with_fqn/test.87677“ wird verlassen
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_with_fqn/test.87677“ wird verlassen
 echo "echo \"[\" 1>&2" > loop.sh
 if [ "xSecretTest" != "x" ]; then \
 	set -e ; \
@@ -42,19 +41,19 @@ else \
 	set -e ; \
 	echo "echo \"]\" 1>&2" >> loop.sh ; \
 	echo "make run-stage1" > single_execution.sh ; \
-fi		
-make[2]: Entering directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
+fi
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_with_fqn/test.87677“ wird betreten
 ./obfuscate
-javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter SecretTest.java > SecretTest.java.tmp ; mv SecretTest.java.tmp SecretTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier SecretTest.java > SecretTest.java.tmp ; mv SecretTest.java.tmp SecretTest.java ; make -B SecretTest.class; javac cleanroom/*.java;
-make[3]: Entering directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
-javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. SecretTest.java ToTest.java 
-make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
+javac --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier SecretTest.java > SecretTest.java.tmp ; mv SecretTest.java.tmp SecretTest.java ; make -B SecretTest.class; javac  cleanroom/*.java;
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_with_fqn/test.87677“ wird betreten
+javac  -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. SecretTest.java ToTest.java 
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_with_fqn/test.87677“ wird verlassen
 for i in cleanroom/*.java; do \
 	cp $i ${i}.bak; \
 	/bin/echo -e "package cleanroom;" > $i ; \
 	cat ${i}.bak >> $i; \
 done
-COMPILER_ARGS="" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
+COMPILER_ARGS=" -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
 if [ "x" != "x" ]; then \
 	set -e ; \
 	for i in ; do \
@@ -64,15 +63,14 @@ if [ "x" != "x" ]; then \
 fi
 /bin/dash -ex ./compile2.sh
 + mkdir -p ToTest#test
-+ javac -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#test -proc:only -processor ReplaceMixer cleanroom/ToTest.java ToTest.java
++ javac -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#test -proc:only -processor ReplaceMixer cleanroom/ToTest.java ToTest.java
 class ToTest ispub true
 class ToTest, true, 0, true
 class ToTest ispub true
 duplicate method: <init>: [], taken from student
 duplicate method: test: [java.util.List], taken from cleanroom
 class ToTest, false, 0, true
-+ javac -cp . -d ToTest#test -sourcepath ToTest#test ToTest#test/ToTest.java
-COMPILER_ARGS="" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p UnitTest SecretTest >> loop.sh	
++ javac -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp . -d ToTest#test -sourcepath ToTest#test ToTest#test/ToTest.java
+COMPILER_ARGS="" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p UnitTest SecretTest >> loop.sh
 echo "echo \"]\" 1>&2" >> loop.sh
-make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
-make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/replace_with_fqn/test.6299'
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/replace_with_fqn/test.87677“ wird verlassen

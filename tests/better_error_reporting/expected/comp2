@@ -1,12 +1,11 @@
-make[1]: Entering directory '/home/sitowert/AuDoscore/tests/better_error_reporting/test.18793'
 rm -f *.class */*.class
 make compile-stage1
-make[2]: Entering directory '/home/sitowert/AuDoscore/tests/better_error_reporting/test.18793'
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/better_error_reporting/test.112311“ wird betreten
 rm -f *.class */*.class
-javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac cleanroom/*.java;
-make[3]: Entering directory '/home/sitowert/AuDoscore/tests/better_error_reporting/test.18793'
-javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
-make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/better_error_reporting/test.18793'
+javac --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac  cleanroom/*.java;
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/better_error_reporting/test.112311“ wird betreten
+javac  -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/better_error_reporting/test.112311“ wird verlassen
 java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
@@ -26,10 +25,10 @@ for i in $STUDENTCLASSES; do \
 done
 rm forbidden
 make run-comparer
-make[3]: Entering directory '/home/sitowert/AuDoscore/tests/better_error_reporting/test.18793'
-java -cp lib/junitpoints.jar tools.ic.InterfaceComparer UnitTest
-make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/better_error_reporting/test.18793'
-make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/better_error_reporting/test.18793'
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/better_error_reporting/test.112311“ wird betreten
+java -cp lib/junitpoints.jar tools.ic.InterfaceComparator UnitTest
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/better_error_reporting/test.112311“ wird verlassen
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/better_error_reporting/test.112311“ wird verlassen
 echo "echo \"[\" 1>&2" > loop.sh
 if [ "xSecretTest" != "x" ]; then \
 	set -e ; \
@@ -42,19 +41,19 @@ else \
 	set -e ; \
 	echo "echo \"]\" 1>&2" >> loop.sh ; \
 	echo "make run-stage1" > single_execution.sh ; \
-fi		
-make[2]: Entering directory '/home/sitowert/AuDoscore/tests/better_error_reporting/test.18793'
+fi
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/better_error_reporting/test.112311“ wird betreten
 ./obfuscate
-javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter SecretTest.java > SecretTest.java.tmp ; mv SecretTest.java.tmp SecretTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier SecretTest.java > SecretTest.java.tmp ; mv SecretTest.java.tmp SecretTest.java ; make -B SecretTest.class; javac cleanroom/*.java;
-make[3]: Entering directory '/home/sitowert/AuDoscore/tests/better_error_reporting/test.18793'
-javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. SecretTest.java ToTest.java 
-make[3]: Leaving directory '/home/sitowert/AuDoscore/tests/better_error_reporting/test.18793'
+javac --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier SecretTest.java > SecretTest.java.tmp ; mv SecretTest.java.tmp SecretTest.java ; make -B SecretTest.class; javac  cleanroom/*.java;
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/better_error_reporting/test.112311“ wird betreten
+javac  -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. SecretTest.java ToTest.java 
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/better_error_reporting/test.112311“ wird verlassen
 for i in cleanroom/*.java; do \
 	cp $i ${i}.bak; \
 	/bin/echo -e "package cleanroom;" > $i ; \
 	cat ${i}.bak >> $i; \
 done
-COMPILER_ARGS="" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
+COMPILER_ARGS=" -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
 if [ "x" != "x" ]; then \
 	set -e ; \
 	for i in ; do \
@@ -64,7 +63,7 @@ if [ "x" != "x" ]; then \
 fi
 /bin/dash -ex ./compile2.sh
 + mkdir -p ToTest#toTest2
-+ javac -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#toTest2 -proc:only -processor ReplaceMixer cleanroom/ToTest.java ToTest.java
++ javac -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#toTest2 -proc:only -processor ReplaceMixer cleanroom/ToTest.java ToTest.java
 class ToTest ispub true
 class ToTest, true, 0, true
 class ToTest ispub true
@@ -72,16 +71,13 @@ duplicate method: <init>: [], taken from student
 duplicate method: toTest: [], taken from student
 duplicate method: toTest2: [], taken from cleanroom
 class ToTest, false, 0, true
-+ javac -cp . -d ToTest#toTest2 -sourcepath ToTest#toTest2 ToTest#toTest2/ToTest.java
++ javac -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp . -d ToTest#toTest2 -sourcepath ToTest#toTest2 ToTest#toTest2/ToTest.java
 ToTest#toTest2/ToTest.java:13: error: cannot find symbol
         return doesnotexistinstudicode;
                ^
   symbol:   variable doesnotexistinstudicode
   location: class ToTest
 1 error
-Makefile:94: recipe for target 'compile-stage2-secret' failed
-make[2]: *** [compile-stage2-secret] Error 1
-make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/better_error_reporting/test.18793'
-Makefile:78: recipe for target 'compile-stage2' failed
-make[1]: *** [compile-stage2] Error 2
-make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/better_error_reporting/test.18793'
+make[1]: *** [Makefile:128: compile-stage2-secret] Fehler 1
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/better_error_reporting/test.112311“ wird verlassen
+make: *** [Makefile:109: compile-stage2] Fehler 2

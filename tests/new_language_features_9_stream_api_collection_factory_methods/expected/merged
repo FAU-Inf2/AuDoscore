@@ -1,0 +1,13 @@
+Score: 23.5
+
+Lambda (23.5 points):
+✗   0.00 | PublicTest "toTest__List_of__Stream_dropWhile": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<17> but was:<30>)
+✗   0.00 | PublicTest "toTest__List_of__Stream_takeWhile": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<28> but was:<15>)
+✗   0.00 | PublicTest "toTest__Map_of": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<35> but was:<25>)
+✗   0.00 | PublicTest "toTest__Set_of__Stream_filter": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<28> but was:<15>)
+✗   0.00 | PublicTest "toTest__Stream_iterate_with_condition": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<28> but was:<15>)
+✓   4.71 | SecretTest "toTest__List_of__Stream_dropWhile": Should pass in "replaced" because with @Replace now.
+✓   4.71 | SecretTest "toTest__List_of__Stream_takeWhile": Should pass in "replaced" because with @Replace now.
+✓   4.71 | SecretTest "toTest__Map_of": Should pass in "vanilla" because without @Replace.
+✓   4.71 | SecretTest "toTest__Set_of__Stream_filter": Should pass in "replaced" because with @Replace now.
+✓   4.71 | SecretTest "toTest__Stream_iterate_with_condition": Should pass in "vanilla" because without @Replace.

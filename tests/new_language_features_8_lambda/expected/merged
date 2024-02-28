@@ -1,0 +1,5 @@
+Score: 23.5
+
+Lambda (23.5 points):
+✗   0.00 | PublicTest: Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<25> but was:<20>)
+✓  23.56 | SecretTest: Should pass in "replaced" because with @Replace now.

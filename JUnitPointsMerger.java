@@ -1,24 +1,20 @@
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.lang.reflect.*;
+import java.nio.charset.*;
+import java.nio.file.*;
 import java.util.*;
 
 import org.json.simple.*;
 import org.json.simple.parser.*;
 
-import java.lang.reflect.*;
-
 import tester.annotations.*;
 
 public class JUnitPointsMerger {
-
 	private static final class SingleReport {
 		boolean success;
 		String description;
 		String message;
 	}
-
 
 	private static final class SingleReportComparator implements Comparator<SingleReport> {
 		public int compare(SingleReport r1, SingleReport r2) {
@@ -52,11 +48,10 @@ public class JUnitPointsMerger {
 
 	private static String summary = "";
 	private static double points = 0;
-	private static Class pub = null;
-	private static Class secret = null;
+	private static Class<?> pub = null;
+	private static Class<?> secret = null;
 	private static final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 	private static final HashMap<String, Double> bonusPerExHashMap = new HashMap<>();
-
 
 	private static double getPoints(double pts, double pointsDeclaredPerExercise, double bonusDeclaredPerExercise) {
 		return pointsDeclaredPerExercise * Math.abs(pts) / bonusDeclaredPerExercise;
@@ -64,26 +59,23 @@ public class JUnitPointsMerger {
 
 	// extract points annotation from either secret or public class and calculate the point
 	private static double getLocalPoint(Boolean success, String id, Boolean fromSecret) {
-
 		Points points;
-
 		if (fromSecret) {
 			// test method originated from a secret test
 			try {
 				final Method method = secret.getMethod(id);
 				points = method.getAnnotation(Points.class);
-			} catch (NoSuchMethodException nsme) {
+			} catch (NoSuchMethodException noSuchMethodException) {
 				throw new Error("WARNING - Method " + id + " was not found in secret test class " + secret.getName());
 			}
 		} else {
 			try {
 				final Method method = pub.getMethod(id);
 				points = method.getAnnotation(Points.class);
-			} catch (NoSuchMethodException nsme) {
+			} catch (NoSuchMethodException noSuchMethodException) {
 				throw new Error("WARNING - Method " + id + " was not found in public test class " + pub.getName());
 			}
 		}
-
 		double score = 0;
 		if (points.bonus() != -1 && success) {
 			score = getPoints(points.bonus(), exerciseHashMap.get(points.exID()).points(), bonusPerExHashMap.get(points.exID()));
@@ -94,117 +86,97 @@ public class JUnitPointsMerger {
 		return score;
 	}
 
-
 	private static String getFormattedErrorString(String error) {
 		if (error.length() <= 1000 || !error.startsWith("ComparisonFailure")) {
 			return error;
 		}
-
-		// We have a very long ComparisonFailure -> try to "compress" it
+		// we have a very long ComparisonFailure -> try to "compress" it
 		final int expectedPos = error.indexOf("expected:<");
 		if (expectedPos < 0) {
-			return error; // Unexpected error format
+			return error; // unexpected error format
 		}
-
 		final int butWasPos = error.indexOf("> but was:<", expectedPos);
 		if (butWasPos < 0) {
-			return error; // Unexpected error format
+			return error; // unexpected error format
 		}
-
 		final int expectedDiffStart = error.indexOf('[', expectedPos);
 		final int expectedDiffEnd = expectedDiffStart < 0 ? -1 : error.lastIndexOf(']', butWasPos);
-
 		final int butWasDiffStart = error.indexOf('[', butWasPos);
 		final int butWasDiffEnd = butWasDiffStart < 0 ? -1 : error.lastIndexOf(']');
-
 		final StringBuilder resultBuilder = new StringBuilder();
-
-		// Expected:
+		// expected:
 		if (expectedDiffEnd > expectedPos) {
 			if (expectedDiffEnd - expectedDiffStart > 50) {
-				resultBuilder
-						.append(error.substring(0, expectedDiffStart + 11))
-						.append(">...<")
-						.append(error.substring(expectedDiffEnd - 10, butWasPos));
+				resultBuilder.append(error, 0, expectedDiffStart + 11).append(">...<").append(error, expectedDiffEnd - 10, butWasPos);
 			} else {
-				resultBuilder.append(error.substring(0, butWasPos));
+				resultBuilder.append(error, 0, butWasPos);
 			}
 		} else {
-			resultBuilder.append(error.substring(0, butWasPos));
+			resultBuilder.append(error, 0, butWasPos);
 		}
-
+		// but was:
 		if (butWasDiffEnd > butWasPos) {
-			// But Was:
 			if (butWasDiffEnd - butWasDiffStart > 50) {
-				resultBuilder
-						.append(error.substring(butWasPos, butWasDiffStart + 11))
-						.append(">...<")
-						.append(error.substring(butWasDiffEnd - 10));
+				resultBuilder.append(error, butWasPos, butWasDiffStart + 11).append(">...<").append(error.substring(butWasDiffEnd - 10));
 			} else {
 				resultBuilder.append(error.substring(butWasPos));
 			}
 		} else {
 			resultBuilder.append(error.substring(butWasPos));
 		}
-
 		return resultBuilder.toString();
 	}
 
-
-	private static void merge(ArrayList<JSONObject> rexs, JSONObject vex) { // merges two exercises
-		ArrayList<SingleReport> reps = new ArrayList<>();
-		double localpoints = 0;
-		JSONArray vextests = (JSONArray) vex.get("tests");
+	private static void merge(ArrayList<JSONObject> replacedExercises, JSONObject vanillaExercise) { // merges two exercises
+		ArrayList<SingleReport> reports = new ArrayList<>();
+		double localPoints = 0;
+		JSONArray vanillaExerciseTests = (JSONArray) vanillaExercise.get("tests");
 		/* FIXME: this is not longer true, try to create a better check soon ;-)
 		   int cnt = 0;
-		   for (JSONObject rex : rexs) {
+		   for (JSONObject rex : replacedExercises) {
 		   cnt++;
 		   JSONArray rextests = (JSONArray) rex.get("tests");
-		   if (rextests.size() != vextests.size()) {
-		   throw new RuntimeException("vanilla and #" + cnt + " of replaced do have different number of tests (" + vextests.size() + " vs. " + rextests.size() + ") for exercise " + rex.get("name"));
+		   if (rextests.size() != vanillaExerciseTests.size()) {
+		   throw new RuntimeException("vanilla and #" + cnt + " of replaced do have different number of tests (" + vanillaExerciseTests.size() + " vs. " + rextests.size() + ") for exercise " + rex.get("name"));
 		   }
 		   }
 		 */
-
 		JSONObject rexCounterpart = null;
-		for (int i = 0; i < vextests.size(); i++) {
-			JSONObject vextest = (JSONObject) vextests.get(i);
-			JSONObject usedresult = vextest;
-			for (JSONObject rexIt : rexs) {
+		for (Object exerciseTest : vanillaExerciseTests) {
+			JSONObject vanillaExerciseTest = (JSONObject) exerciseTest;
+			JSONObject usedResult = vanillaExerciseTest;
+			for (JSONObject rexIt : replacedExercises) {
 				boolean found = false;
-				JSONArray rextests = (JSONArray) rexIt.get("tests");
-				for (int j = 0; !found && j < rextests.size(); j++) {
-					JSONObject rextest = (JSONObject) rextests.get(j);
-					if (rextest.get("id").equals(vextest.get("id"))) {
-						rexCounterpart = rextest;
-						if ((Boolean) rextest.get("success")) {
-							usedresult = rextest;
+				JSONArray replacedExerciseTests = (JSONArray) rexIt.get("tests");
+				for (int j = 0; !found && j < replacedExerciseTests.size(); j++) {
+					JSONObject replacedExerciseTest = (JSONObject) replacedExerciseTests.get(j);
+					if (replacedExerciseTest.get("id").equals(vanillaExerciseTest.get("id"))) {
+						rexCounterpart = replacedExerciseTest;
+						if ((Boolean) replacedExerciseTest.get("success")) {
+							usedResult = replacedExerciseTest;
 						}
 						found = true;
 					}
 				}
 				/* FIXME: this is not longer true, see above
 				   if (!found) {
-				   throw new RuntimeException("could not find " + vextest.get("id") + " in replaced tests");
+				   throw new RuntimeException("could not find " + vanillaExerciseTest.get("id") + " in replaced tests");
 				   }
 				 */
 			}
 			String localSummary = "";
-			if ((Boolean) vextest.get("success")) {
-				usedresult = vextest;
+			if ((Boolean) vanillaExerciseTest.get("success")) {
+				usedResult = vanillaExerciseTest;
 			}
-
-			double localscore = getLocalPoint((Boolean) usedresult.get("success"), (String) usedresult.get("id"), (Boolean) usedresult.get("fromSecret"));
-			localpoints += localscore;
-			localSummary += ((Boolean) usedresult.get("success")) ? "✓" : "✗";
-
-			localSummary += String.format(" %1$6.2f", localscore) + " | ";
-			localSummary += (String) usedresult.get("desc");
-			Object error = usedresult.get("error");
+			double localScore = getLocalPoint((Boolean) usedResult.get("success"), (String) usedResult.get("id"), (Boolean) usedResult.get("fromSecret"));
+			localPoints += localScore;
+			localSummary += ((Boolean) usedResult.get("success")) ? "✓" : "✗";
+			localSummary += String.format(" %1$6.2f", localScore) + " | ";
+			localSummary += (String) usedResult.get("desc");
+			Object error = usedResult.get("error");
 			if (error != null) {
 				localSummary += " | " + getFormattedErrorString((String) error);
 			}
-
 			String replaceErrorProperty = System.getProperty("replaceError");
 			if (replaceErrorProperty != null && replaceErrorProperty.equals("true")) {
 				if (rexCounterpart != null) {
@@ -215,32 +187,31 @@ public class JUnitPointsMerger {
 				}
 
 			}
-
-			Long execTime = (Long)usedresult.get("executionTimeInMS");
+			Long execTime = (Long) usedResult.get("executionTimeInMS");
 			if (execTime != null) {
-				Long timeout = (Long)usedresult.get("timeout");
+				Long timeout = (Long) usedResult.get("timeout");
 				localSummary += " | " + execTime + "ms (of " + timeout + "ms)";
 			}
-
 			localSummary += "\n";
-
 			SingleReport r = new SingleReport();
-			r.success = ((Boolean) usedresult.get("success"));
+			r.success = ((Boolean) usedResult.get("success"));
 			r.message = localSummary;
-			r.description = (String) usedresult.get("id");
-			reps.add(r);
+			r.description = (String) usedResult.get("id");
+			reports.add(r);
 		}
-		localpoints += 0.00001; // XXX: add epsilon here
-		localpoints = Math.max(0., localpoints);
-		localpoints = Math.floor(2. * localpoints) / 2; // round down to half points
-		localpoints = Math.min(localpoints, exerciseHashMap.get(vex.get("name")).points());
-		points += localpoints;
-		summary += "\n" + vex.get("name");
-		summary += String.format(" (%1$.1f points):", localpoints) + "\n";
-		Collections.sort(reps, new SingleReportComparator());
-		for (SingleReport r : reps) {
-			summary += r.message;
+		localPoints += 0.00001; // XXX: add epsilon here
+		localPoints = Math.max(0., localPoints);
+		localPoints = Math.floor(2. * localPoints) / 2; // round down to half points
+		localPoints = Math.min(localPoints, exerciseHashMap.get((String) vanillaExercise.get("name")).points());
+		points += localPoints;
+		summary += "\n" + vanillaExercise.get("name");
+		summary += String.format(" (%1$.1f points):", localPoints) + "\n";
+		reports.sort(new SingleReportComparator());
+		StringBuilder reportMessages = new StringBuilder();
+		for (SingleReport report : reports) {
+			reportMessages.append(report.message);
 		}
+		summary += reportMessages;
 	}
 
 	private static boolean isJSONArray(Object obj) {
@@ -250,14 +221,13 @@ public class JUnitPointsMerger {
 	private static void preparePointsCalc() {
 		exerciseHashMap.clear();
 		Exercises exercisesAnnotation;
-
 		// get the public class name via -D param
 		if (System.getProperty("pub") != null) {
 			// load public test
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			try {
 				pub = cl.loadClass(System.getProperty("pub"));
-				exercisesAnnotation = (Exercises) pub.getAnnotation(Exercises.class);
+				exercisesAnnotation = pub.getAnnotation(Exercises.class);
 				for (Ex exercise : exercisesAnnotation.value()) {
 					// save Exercises in HashMap
 					exerciseHashMap.put(exercise.exID(), exercise);
@@ -274,13 +244,12 @@ public class JUnitPointsMerger {
 						}
 					}
 				}
-			} catch (ClassNotFoundException cnfe) {
+			} catch (ClassNotFoundException classNotFoundException) {
 				throw new Error("WARNING - public test class not found: " + System.getProperty("pub"));
 			}
 		}
-
 		if (System.getProperty("secret") != null) {
-			//load secret test
+			// load secret test
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			try {
 				secret = cl.loadClass(System.getProperty("secret"));
@@ -294,66 +263,56 @@ public class JUnitPointsMerger {
 						}
 					}
 				}
-			} catch (ClassNotFoundException cnfe) {
+			} catch (ClassNotFoundException classNotFoundException) {
 				throw new Error("WARNING - secret test class not found");
 			}
-
 		}
 	}
 
-
+	@SuppressWarnings("unchecked")
 	private static JSONObject recursiveMergeJArray(JSONArray raw) {
 		if (raw.size() < 1) {
 			return new JSONObject();
 		}
-
 		if (raw.size() == 1) {
 			return (JSONObject) raw.get(0);
 		}
-
 		if (raw.size() == 2) {
 			return baseMergeJArray((JSONObject) raw.get(0), (JSONObject) raw.get(1));
 		}
-
 		int half = raw.size() / 2;
-		JSONArray firsthalf = new JSONArray();
-		JSONArray secondhalf = new JSONArray();
-
+		JSONArray firstHalf = new JSONArray();
+		JSONArray secondHalf = new JSONArray();
 		for (int i = 0; i < half; i++) {
-			firsthalf.add(raw.get(i));
+			firstHalf.add(raw.get(i));
 		}
-
 		for (int i = 0; i < raw.size() - half; i++) {
-			secondhalf.add(raw.get(half + i));
+			secondHalf.add(raw.get(half + i));
 		}
-
-		JSONObject a = recursiveMergeJArray(firsthalf);
-		JSONObject b = recursiveMergeJArray(secondhalf);
-
+		JSONObject a = recursiveMergeJArray(firstHalf);
+		JSONObject b = recursiveMergeJArray(secondHalf);
 		return baseMergeJArray(a, b);
-
 	}
 
+	@SuppressWarnings("unchecked")
 	private static JSONObject baseMergeJArray(JSONObject o1, JSONObject o2) {
-
 		if (o1 == null || o1.isEmpty()) {
 			return o2;
 		}
-
 		if (o2 == null || o2.isEmpty()) {
 			return o1;
 		}
-		JSONArray vanillaex1 = (JSONArray) o1.get("exercises");
-		JSONArray vanillaex2 = (JSONArray) o2.get("exercises");
-		for (int i = 0; i < vanillaex1.size(); i++) {
-			JSONObject vex1 = (JSONObject) vanillaex1.get(i);
-			for (int j = 0; j < vanillaex2.size(); j++) {
-				JSONObject vex2 = (JSONObject) vanillaex2.get(j);
-				if (vex1.get("name").equals(vex2.get("name"))) {
-					// if the name of the exercises matches
-					JSONArray tests = (JSONArray) vex1.get("tests");
-					tests.addAll((JSONArray) vex2.get("tests"));
-					vanillaex2.remove(vex2);
+		JSONArray vanillaExercises1 = (JSONArray) o1.get("exercises");
+		JSONArray vanillaExercises2 = (JSONArray) o2.get("exercises");
+		for (Object vanillaExercise1_Object : vanillaExercises1) {
+			JSONObject vanillaExercise1 = (JSONObject) vanillaExercise1_Object;
+			for (int j = 0; j < vanillaExercises2.size(); j++) {
+				JSONObject vanillaExercise2 = (JSONObject) vanillaExercises2.get(j);
+				if (vanillaExercise1.get("name").equals(vanillaExercise2.get("name"))) {
+					// if the names of the exercises match
+					JSONArray tests = (JSONArray) vanillaExercise1.get("tests");
+					tests.addAll((JSONArray) vanillaExercise2.get("tests"));
+					vanillaExercises2.remove(vanillaExercise2);
 					break;
 				}
 			}
@@ -362,24 +321,23 @@ public class JUnitPointsMerger {
 	}
 
 	private static JSONObject mergeVanilla(Object rawVanilla) {
-
 		if (!isJSONArray(rawVanilla)) {
 			return (JSONObject) rawVanilla;
 		}
 		return recursiveMergeJArray((JSONArray) rawVanilla);
 	}
 
+	@SuppressWarnings("unchecked")
 	private static JSONArray mergeReplaced(JSONArray rawReplaced) {
 		JSONArray replaced = new JSONArray();
-		for (int i = 0; i < rawReplaced.size(); i++) {
-			if (isJSONArray(rawReplaced.get(i))) {
-				JSONObject result = recursiveMergeJArray((JSONArray) rawReplaced.get(i));
+		for (Object o : rawReplaced) {
+			if (isJSONArray(o)) {
+				JSONObject result = recursiveMergeJArray((JSONArray) o);
 				replaced.add(result);
 			} else {
-				replaced.add(rawReplaced.get(i));
+				replaced.add(o);
 			}
 		}
-
 		return replaced;
 	}
 
@@ -388,29 +346,23 @@ public class JUnitPointsMerger {
 		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
 		JSONParser parser = new JSONParser();
 		try (final Reader reader = Files.newBufferedReader(Paths.get(inputFile))) {
-			JSONObject obj = (JSONObject) parser.parse(reader);
-			Object rawVanilla = obj.get("vanilla");
-
-			JSONObject vanilla = mergeVanilla(rawVanilla);
-			JSONArray vanillaex = (JSONArray) vanilla.get("exercises");
+			JSONObject jsonObject = (JSONObject) parser.parse(reader);
+			JSONArray vanillaResultsJSON = (JSONArray) mergeVanilla(jsonObject.get("vanilla")).get("exercises");
 			preparePointsCalc();
-
-			JSONArray replaceds = mergeReplaced((JSONArray) obj.get("replaced"));
-
-			TreeMap<String,Integer> sortedEx = new TreeMap<>();
-			for (int i = 0; i < vanillaex.size(); i++) {
-				JSONObject vex = (JSONObject) vanillaex.get(i);
+			JSONArray replacedResultsJSON = mergeReplaced((JSONArray) jsonObject.get("replaced"));
+			TreeMap<String, Integer> sortedEx = new TreeMap<>();
+			for (int i = 0; i < vanillaResultsJSON.size(); i++) {
+				JSONObject vex = (JSONObject) vanillaResultsJSON.get(i);
 				String name = (String) vex.get("name");
 				sortedEx.put(name + "__" + i, i);
 			}
-
 			for (Integer i : sortedEx.values()) {
-				JSONObject vex = (JSONObject) vanillaex.get(i);
+				JSONObject vex = (JSONObject) vanillaResultsJSON.get(i);
 				ArrayList<JSONObject> rexs = new ArrayList<>();
-				for (int k = 0; k < replaceds.size(); k++) {
-					JSONObject replaced = (JSONObject) replaceds.get(k);
+				for (int k = 0; k < replacedResultsJSON.size(); k++) {
+					JSONObject replaced = (JSONObject) replacedResultsJSON.get(k);
 					JSONArray replacedex = (JSONArray) replaced.get("exercises");
-					if (vanillaex.size() != replacedex.size()) {
+					if (vanillaResultsJSON.size() != replacedex.size()) {
 						throw new RuntimeException("vanilla and replaced #" + k + " do have different number of exercises");
 					}
 					boolean found = false;
@@ -434,9 +386,7 @@ public class JUnitPointsMerger {
 					throw new IOException("Cannot create file '" + file + "'");
 				}
 			}
-			try (final Writer bw = Files.newBufferedWriter(
-					file.getAbsoluteFile().toPath(),
-					Charset.forName("UTF-8"))) {
+			try (final Writer bw = Files.newBufferedWriter(file.getAbsoluteFile().toPath(), StandardCharsets.UTF_8)) {
 				bw.write(summary);
 			}
 		} catch (Exception e) {

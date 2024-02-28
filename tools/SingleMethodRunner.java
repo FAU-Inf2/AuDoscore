@@ -1,9 +1,7 @@
 package tools;
 
-import org.junit.internal.RealSystem;
-import org.junit.internal.TextListener;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Request;
+import org.junit.internal.*;
+import org.junit.runner.*;
 
 public class SingleMethodRunner {
 	public static void main(String... args) throws ClassNotFoundException {
@@ -11,7 +9,6 @@ public class SingleMethodRunner {
 			System.err.println("Usage: class method FIXME");
 			return;
 		}
-
 		String clazz = args[0];
 		String method = args[1];
 		Request request = Request.method(Class.forName(clazz), method);

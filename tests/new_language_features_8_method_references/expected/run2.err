@@ -1,0 +1,91 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "PublicTest \"non-static\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<24>)",
+                            "fromSecret": false,
+                            "id": "pubTest__nonstatic",
+                            "success": false
+                        },
+                        {
+                            "desc": "PublicTest \"static\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<24>)",
+                            "fromSecret": false,
+                            "id": "pubTest__static",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"non-static\": Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<24>)",
+                            "fromSecret": true,
+                            "id": "secTest__nonstatic",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"static\": Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<24>)",
+                            "fromSecret": true,
+                            "id": "secTest__static",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"non-static\": Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest__nonstatic",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"static\": Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest__static",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

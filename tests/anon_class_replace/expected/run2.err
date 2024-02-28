@@ -1,11 +1,52 @@
-{ "vanilla" : 
-[
-{"exercises":[{"name":"AnonClassReplace","tests":[{"desc":"testPublic","fromSecret":false,"id":"testPublic","success":true}]}]}
-,
-{"exercises":[{"name":"AnonClassReplace","tests":[{"desc":"testSecret","error":"NullPointerException(): SecretTest.testSecret(line 24)","fromSecret":true,"id":"testSecret","success":false}]}]}
-]
-, "replaced" : 
-[
-{"exercises":[{"name":"AnonClassReplace","tests":[{"desc":"testSecret","fromSecret":true,"id":"testSecret","success":true}]}]}
-]
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "AnonClassReplace",
+                    "tests": [
+                        {
+                            "desc": "testPublic",
+                            "fromSecret": false,
+                            "id": "testPublic",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "AnonClassReplace",
+                    "tests": [
+                        {
+                            "desc": "testSecret",
+                            "error": "NullPointerException(Cannot invoke \"java.util.Iterator.next()\" because the return value of \"ToTest.foo()\" is null): SecretTest.testSecret(line 24)",
+                            "fromSecret": true,
+                            "id": "testSecret",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "AnonClassReplace",
+                    "tests": [
+                        {
+                            "desc": "testSecret",
+                            "fromSecret": true,
+                            "id": "testSecret",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }

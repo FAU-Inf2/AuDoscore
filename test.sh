@@ -277,6 +277,7 @@ function testIt {
 	info "- testing"	
 	( make run-stage1 ) > run1.out 2> run1.err
 	ec=$?
+	( sed -i '/^WARNING: A terminally deprecated method in java.lang.System has been called\|^WARNING: System::setSecurityManager has been called by JUnitWithPoints\|^WARNING: Please consider reporting this to the maintainers of JUnitWithPoints\|^WARNING: System::setSecurityManager will be removed in a future release/d' run1.err )
 	cat run1.out run1.err > run1
 	checkexit $ec "\ninternal error\n" run1
 	cat run1.out | grep -v "^$$" | grep -v "^make" | tail -2 | grep "OK ("
@@ -298,6 +299,7 @@ function testIt {
 	
 	info "- testing"
 	( make run-stage2 ) > run2.out 2> run2.err
+	( sed -i '/^WARNING: A terminally deprecated method in java.lang.System has been called\|^WARNING: System::setSecurityManager has been called by JUnitWithPoints\|^WARNING: Please consider reporting this to the maintainers of JUnitWithPoints\|^WARNING: System::setSecurityManager will be removed in a future release/d' run2.err )
 
 	if [ $? -ne 0 ]; then
 		err "failed, stdout:"

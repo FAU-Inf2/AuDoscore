@@ -1,8 +1,8 @@
+import java.nio.charset.*;
 import java.util.*;
 import java.io.*;
 import java.lang.annotation.*;
 import java.lang.reflect.*;
-import java.nio.file.Files;
 
 import org.junit.*;
 import org.junit.rules.*;
@@ -14,10 +14,12 @@ import org.json.simple.*;
 import tester.*;
 import tester.annotations.*;
 
-
 // rules helpers to shorten code
-final class PointsLogger extends JUnitWithPoints.PointsLogger {}
-final class PointsSummary extends JUnitWithPoints.PointsSummary {}
+final class PointsLogger extends JUnitWithPoints.PointsLogger {
+}
+
+final class PointsSummary extends JUnitWithPoints.PointsSummary {
+}
 
 public abstract class JUnitWithPoints {
 	// these rules help to collect necessary information from test methods
@@ -71,12 +73,10 @@ public abstract class JUnitWithPoints {
 			if (throwable == null || throwable instanceof AssertionError) {
 				return "";
 			}
-
-			StackTraceElement st[] = throwable.getStackTrace();
+			StackTraceElement[] st = throwable.getStackTrace();
 			if (st.length == 0) {
 				return "";
 			}
-
 			StackTraceElement ste = st[0]; // TODO: maybe search for student code here
 			int i = 1;
 			while (ste.getClassName().indexOf('.') >= 0 && i < st.length) {
@@ -96,6 +96,7 @@ public abstract class JUnitWithPoints {
 		}
 
 		// converts collected result to JSON
+		@SuppressWarnings("unchecked")
 		private JSONObject toJSON() {
 			boolean success = (throwable == null);
 			JSONObject jsonTest = new JSONObject();
@@ -115,19 +116,15 @@ public abstract class JUnitWithPoints {
 
 	// helper class for logging purposes
 	protected static class PointsLogger extends TestWatcher {
-
 		private long startTime = 0;
-		private long endTime = 0;
 
 		// test methods are ignored if their replace set is different to the specified one
 		// FIXME: is that still necessary with single execution?
 		protected boolean isIgnoredCase(Description description) {
 			String doReplace = System.getProperty("replace");
 			if ((doReplace != null && !doReplace.equals(""))) {
-				String ncln = ReadReplace.getCanonicalReplacement(description);
-				if (!doReplace.equals(ncln)) {
-					return true;
-				}
+				String replacementSet = ReadReplace.getCanonicalReplacement(description);
+				return !doReplace.equals(replacementSet);
 			}
 			return false;
 		}
@@ -135,13 +132,10 @@ public abstract class JUnitWithPoints {
 		// test methods are skipped during single test method execution
 		protected boolean isSkippedCase(Description description) {
 			String methodToBeExecuted = System.getProperty("method");
-			if((methodToBeExecuted != null && !methodToBeExecuted.equals(""))){
+			if ((methodToBeExecuted != null && !methodToBeExecuted.equals(""))) {
 				String method = getShortDisplayName(description);
-				if(!method.equals(methodToBeExecuted)){
-					return true;
-				}
+				return !method.equals(methodToBeExecuted);
 			}
-
 			return false;
 		}
 
@@ -151,7 +145,7 @@ public abstract class JUnitWithPoints {
 				// don't execute these test methods
 				base = new SkipStatement();
 			} else {
-				// Handle potential @InitializeOnce
+				// handle potential @InitializeOnce
 				base = performInitializeOnce(base, description);
 			}
 			return super.apply(base, description);
@@ -164,19 +158,17 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
-			// Reset security manager
+			// reset security manager
 			try {
 				System.setSecurityManager(null);
 			} catch (final SecurityException e) { /* Ignore */ }
-			
-			endTime = System.currentTimeMillis();
-			long executionTime  = endTime - startTime;
+			long executionTime = System.currentTimeMillis() - startTime;
 			Points pointsAnnotation = description.getAnnotation(Points.class);
 			String exID = pointsAnnotation.exID();
 			if (isIgnoredCase(description) || isSkippedCase(description)) {
 				reportHashMap.get(exID).add(new ReportEntry(description));
 			} else {
-				reportHashMap.get(exID).add(new ReportEntry(description, pointsAnnotation, throwable,executionTime));
+				reportHashMap.get(exID).add(new ReportEntry(description, pointsAnnotation, throwable, executionTime));
 			}
 		}
 
@@ -196,55 +188,43 @@ public abstract class JUnitWithPoints {
 				final InitializeOnce initOnce = f.getAnnotation(InitializeOnce.class);
 				if (initOnce != null) {
 					final Statement oldStmt = result;
-
-					// We need a named class here to allow it in the security manager
-
+					// we need a named class here to allow it in the security manager
 					class InitOnceStatement extends Statement {
 						@Override
 						public void evaluate() throws Throwable {
-							// @InitializeOnce field found. First, check if the result is
-							// already computed
-							final File initFile = new File(description.getTestClass().getCanonicalName()
-									+ "-" + f.getName() + ".tmp");
+							// @InitializeOnce field found. First, check if the result is already computed
+							final File initFile = new File(description.getTestClass().getCanonicalName() + "-" + f.getName() + ".tmp");
 							boolean recompute = !initFile.exists();
 							if (!recompute) {
-								// The result has been computed, just restore it
-								try (ObjectInputStream in
-										= new ObjectInputStream(new FileInputStream(initFile))) {
+								// the result has been computed, just restore it
+								try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(initFile))) {
 									f.set(null, in.readObject());
 								} catch (final IOException e) {
 									recompute = true;
 								}
 							}
 							if (recompute) {
-								// The result must be computed, stored in the field, and saved in
-								// initFile
+								// the result must be computed, stored in the field, and saved in initFile
 								try {
-									final Object result = description.getTestClass()
-											.getDeclaredMethod(initOnce.value()).invoke(null);
+									final Object result = description.getTestClass().getDeclaredMethod(initOnce.value()).invoke(null);
 									f.set(null, result);
-
-									try (ObjectOutputStream out
-											= new ObjectOutputStream(new FileOutputStream(initFile))) {
+									try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(initFile))) {
 										out.writeObject(result);
 									} catch (final IOException e) {
-										initFile.delete(); // Clean up
+										assert initFile.delete(); // clean up
 									}
 								} catch (final NoSuchMethodException e) {
-									// Should be checked by CheckAnnotations
+									// should be checked by CheckAnnotations
 									throw new IllegalStateException(e);
 								} catch (final InvocationTargetException e) {
-									// This may be an exception in student code, so we make this
-									// test fail
+									// this may be an exception in student code, so we make this test fail
 									Assert.fail(String.valueOf(e.getCause()));
 								}
 							}
-
-							// Now proceed with the next statement
+							// now proceed with the next statement
 							oldStmt.evaluate();
 						}
 					}
-
 					result = new InitOnceStatement();
 				}
 			}
@@ -254,7 +234,6 @@ public abstract class JUnitWithPoints {
 
 	// helper class for summaries
 	protected static class PointsSummary extends ExternalResource {
-		public static final int MAX_TIMEOUT_MS = 60_000;
 		private static PrintStream saveOut;
 		private static PrintStream saveErr;
 		private static boolean isSecretClass = false;
@@ -264,23 +243,18 @@ public abstract class JUnitWithPoints {
 		public final Statement apply(Statement base, Description description) {
 			// reset states
 			reportHashMap.clear();
-
 			Exercises exercisesAnnotation = getExercisesAnnotation(description);
-
 			// fill data structures
 			for (Ex exercise : exercisesAnnotation.value()) {
-				reportHashMap.put(exercise.exID(), new ArrayList<ReportEntry>());
+				reportHashMap.put(exercise.exID(), new ArrayList<>());
 			}
-
-			// Obtain a list of safe callers (i.e., callers that are known to
-			// contain no malicious code)
+			// obtain a list of safe callers (i.e., callers that are known to contain no malicious code)
 			final SafeCallers safeCallerAnnotation = description.getAnnotation(SafeCallers.class);
 			if (safeCallerAnnotation == null) {
 				this.safeCallerList = Collections.emptyList();
 			} else {
 				this.safeCallerList = Arrays.asList(safeCallerAnnotation.value());
 			}
-
 			// start the real JUnit test
 			return super.apply(base, description);
 		}
@@ -310,6 +284,7 @@ public abstract class JUnitWithPoints {
 		}
 
 		@Override
+		@SuppressWarnings("unchecked")
 		// create and print JSON summary to stderr (if requested)
 		protected final void after() {
 			if (System.getProperty("json") != null && System.getProperty("json").equals("yes")) {
@@ -317,7 +292,6 @@ public abstract class JUnitWithPoints {
 				JSONArray jsonExercises = new JSONArray();
 				for (Map.Entry<String, List<ReportEntry>> exerciseResults : reportHashMap.entrySet()) {
 					JSONArray jsonTests = new JSONArray();
-
 					// loop over all results for that exercise
 					for (ReportEntry reportEntry : exerciseResults.getValue()) {
 						if (!reportEntry.skipped) {
@@ -327,22 +301,16 @@ public abstract class JUnitWithPoints {
 							jsonTests.add(new TreeMap<String, Object>(reportJSON));
 						}
 					}
-
 					// collect result
 					JSONObject jsonExercise = new JSONObject();
 					jsonExercise.put("name", exerciseResults.getKey());
 					jsonExercise.put("tests", jsonTests);
 					jsonExercises.add(new TreeMap<String, Object>(jsonExercise));
 				}
-
 				// add results to root node and write to stderr
 				JSONObject jsonSummary = new JSONObject();
 				jsonSummary.put("exercises", jsonExercises);
-				try {
-					saveErr = new PrintStream(saveErr, true, "utf-8");
-				} catch (UnsupportedEncodingException e) {
-					// silently ignore exception -> it's not that important after all
-				}
+				saveErr = new PrintStream(saveErr, true, StandardCharsets.UTF_8);
 				saveErr.println(jsonSummary);
 			}
 		}
@@ -353,12 +321,11 @@ public abstract class JUnitWithPoints {
 			if (saveOut == null) {
 				saveOut = System.out;
 				saveErr = System.err;
-
 				System.setOut(new PrintStream(new OutputStream() {
-					public void write(int i) { }
+					public void write(int i) {
+					}
 				}));
 				System.setErr(System.out);
-
 				// Install security manager
 				try {
 					System.setSecurityManager(new TesterSecurityManager(this.safeCallerList));
@@ -371,6 +338,6 @@ public abstract class JUnitWithPoints {
 // helper class to skip test methods
 class SkipStatement extends Statement {
 	public void evaluate() {
-		Assume.assumeTrue(false);
+		Assume.assumeNotNull(null, null); // must "fail" in order to "force" jUnit to ignore this test
 	}
 }

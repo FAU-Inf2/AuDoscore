@@ -1,0 +1,7 @@
+Score: 23.5
+
+Lambda (23.5 points):
+✗   0.00 | PublicTest "normal": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<25> but was:<20>)
+✗   0.00 | PublicTest "regression": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<25> but was:<20>)
+✓  11.78 | SecretTest "normal": Should pass in "replaced" because with @Replace now.
+✓  11.78 | SecretTest "regression": Should pass in "replaced" because with @Replace now.

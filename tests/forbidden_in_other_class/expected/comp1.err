@@ -1,2 +1,2 @@
-       2: invokestatic  #3                  // Method java/lang/Integer.parseInt:
-make: *** [compile-stage1] Error 1
+       2: invokestatic  #9                  // Method java/lang/Integer.parseInt:
+make: *** [Makefile:90: compile-stage1] Fehler 1
