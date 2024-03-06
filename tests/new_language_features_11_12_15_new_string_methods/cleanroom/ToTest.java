@@ -52,8 +52,9 @@ public class ToTest {
 		if (!translated.equals("\t")) {
 			throw new IllegalStateException("translateEscapes");
 		}
+		java.util.Locale.setDefault(java.util.Locale.GERMAN);
 		var formatted = "|%1$-4d|%2$1.4f|%3$5s|".formatted(42, 0.815, "4711");
-		if (!formatted.equals("|42  |0.8150| 4711|")) {
+		if (!formatted.equals("|42  |0,8150| 4711|")) {
 			throw new IllegalStateException("formatted");
 		}
 

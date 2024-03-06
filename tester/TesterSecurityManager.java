@@ -100,6 +100,10 @@ public class TesterSecurityManager extends SecurityManager {
 					// only grant this permission if the method is called from JUnit or from the locale initialization mechanism
 					if (calledFromJUnit() || calledFromSafeCallers() || calledFromInitOnce() //
 							|| calledFrom("java.text.NumberFormat", "sun.", "java.", "jdk.") //
+							|| calledFrom("java.util.ServiceLoader", "java.", "sun.") //
+							|| calledFrom("jdk.internal.module.SystemModuleFinders$SystemModuleReader", "java.", "sun.", "jdk.") //
+							|| calledFrom("java.util.spi.LocaleServiceProvider", "java.", "sun.") //
+							|| calledFrom("sun.util.resources.Bundles", "java.", "sun.") //
 							|| calledFrom("java.awt.Color", "java.")) {
 						return;
 					}
@@ -159,8 +163,9 @@ public class TesterSecurityManager extends SecurityManager {
 			}
 			if (("write".equals(propPerm.getActions()) || "read,write".equals(propPerm.getActions())) //
 					&& (calledFromSafeCallers() //
-					|| calledFrom("java.lang.invoke.StringConcatFactory", "java.", "sun.")) //
-					|| calledFrom("java.awt.Color", "java.", "sun.", "jdk.")) {
+					|| calledFrom("java.lang.invoke.StringConcatFactory", "java.", "sun.") //
+					|| calledFrom("java.util.Locale", "java.", "sun.") //
+					|| calledFrom("java.awt.Color", "java.", "sun.", "jdk."))) {
 				// grant permission
 				return;
 			}

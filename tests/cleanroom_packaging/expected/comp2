@@ -1,11 +1,11 @@
 rm -f *.class */*.class
 make compile-stage1
-make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.106531“ wird betreten
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.166241“ wird betreten
 rm -f *.class */*.class
 javac --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac  cleanroom/*.java;
-make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.106531“ wird betreten
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.166241“ wird betreten
 javac  -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java Foo.java Z.java 
-make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.106531“ wird verlassen
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.166241“ wird verlassen
 java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
 chmod +x forbidden
@@ -25,10 +25,10 @@ for i in $STUDENTCLASSES; do \
 done
 rm forbidden
 make run-comparer
-make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.106531“ wird betreten
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.166241“ wird betreten
 java -cp lib/junitpoints.jar tools.ic.InterfaceComparator UnitTest
-make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.106531“ wird verlassen
-make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.106531“ wird verlassen
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.166241“ wird verlassen
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.166241“ wird verlassen
 echo "echo \"[\" 1>&2" > loop.sh
 if [ "xSecretTest" != "x" ]; then \
 	set -e ; \
@@ -36,18 +36,18 @@ if [ "xSecretTest" != "x" ]; then \
 	java -cp lib/junit.jar:lib/junitpoints.jar:. -Dpub=UnitTest CheckAnnotation SecretTest ; \
 	echo "make run-stage1" > single_execution.sh ;\
 	echo "echo \",\" 1>&2" >> single_execution.sh;	\
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=UnitTest" SecretTest >> single_execution.sh; \
+	java -cp lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:." "-Djson=yes -Djava.security.manager=\"allow\" -Dpub=UnitTest" SecretTest >> single_execution.sh; \
 else \
 	set -e ; \
 	echo "echo \"]\" 1>&2" >> loop.sh ; \
 	echo "make run-stage1" > single_execution.sh ; \
 fi
-make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.106531“ wird betreten
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.166241“ wird betreten
 ./obfuscate
 javac --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier SecretTest.java > SecretTest.java.tmp ; mv SecretTest.java.tmp SecretTest.java ; make -B SecretTest.class; javac  cleanroom/*.java;
-make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.106531“ wird betreten
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.166241“ wird betreten
 javac  -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. SecretTest.java Foo.java Z.java 
-make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.106531“ wird verlassen
+make[2]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.166241“ wird verlassen
 for i in cleanroom/*.java; do \
 	cp $i ${i}.bak; \
 	/bin/echo -e "package cleanroom;" > $i ; \
@@ -73,4 +73,4 @@ class Foo, false, 0, true
 + javac -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp . -d Foo#getBars -sourcepath Foo#getBars Foo#getBars/Foo.java
 COMPILER_ARGS="" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace --loop -p UnitTest SecretTest >> loop.sh
 echo "echo \"]\" 1>&2" >> loop.sh
-make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.106531“ wird verlassen
+make[1]: Verzeichnis „/home/norbert/LOCAL/LEHRE/GIT-TEACHING/AuDoscore/tests/cleanroom_packaging/test.166241“ wird verlassen

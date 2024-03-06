@@ -1,4 +1,4 @@
-Note: ToTest.java uses unchecked or unsafe operations.
-Note: Recompile with -Xlint:unchecked for details.
+Hinweis: ToTest.java verwendet nicht geprüfte oder unsichere Vorgänge.
+Hinweis: Wiederholen Sie die Kompilierung mit -Xlint:unchecked, um Details zu erhalten.
       18: invokevirtual #21                 // Method java/lang/reflect/Method.getName:
-make: *** [Makefile:90: compile-stage1] Fehler 1
+make: *** [Makefile:88: compile-stage1] Fehler 1

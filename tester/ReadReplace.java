@@ -268,7 +268,7 @@ public class ReadReplace {
 				} else {
 					System.out.println("echo \",\" 1>&2");
 				}
-				System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + classpath + ":. -Dpub=" + publicTestClassName + " -Djson=yes tools.SingleMethodRunner " + secretTestClassName + " " + method);
+				System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + classpath + ":. -Dpub=" + publicTestClassName + " -Djson=yes -Djava.security.manager=\"allow\" tools.SingleMethodRunner " + secretTestClassName + " " + method);
 			}
 		}
 	}

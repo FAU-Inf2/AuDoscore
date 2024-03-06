@@ -14,7 +14,7 @@ import com.sun.tools.javac.util.*;
 
 @SupportedAnnotationTypes("*")
 @SupportedOptions("replaces")
-@SupportedSourceVersion(SourceVersion.RELEASE_17)
+@SupportedSourceVersion(SourceVersion.RELEASE_21)
 public class FullQualifier extends AbstractProcessor {
 	private Trees trees;
 	private boolean imported = false;

@@ -10,6 +10,20 @@ touch "$failoutput"
 
 failures=0
 successes=0
+
+JAVAMODULEEXPORTS="\
+    --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED \
+    --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED \
+    --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
+    --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED \
+    --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED"
+JAVAMODULEOPENS="\
+    -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED \
+    -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED \
+    -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
+    -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED \
+    -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED"
+
 for t in tests/*; do
 	if [ -d "$t/junit" ]; then
 		# Check if the test name matches "compile_error" -> if yes, use cleanroom
@@ -36,7 +50,7 @@ for t in tests/*; do
 				testname=$(basename "$testpath")
 				destpath="$testdir/$testname"
 				procerr=$(mktemp)
-				javac -cp lib/junitpoints.jar -proc:only -processor tools.ptc.PublicTestCleaner "$testpath" \
+				javac $JAVAMODULEEXPORTS $JAVAMODULEOPENS -cp lib/junitpoints.jar -proc:only -processor tools.ptc.PublicTestCleaner "$testpath" \
 						> "$destpath" 2>"$procerr"
 				if [ $? -eq 0 ]; then
 					currentdir=$(pwd)
