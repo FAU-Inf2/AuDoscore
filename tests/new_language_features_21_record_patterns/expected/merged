@@ -1,0 +1,21 @@
+Score: 23.5
+
+Record Patterns (23.5 points):
+✗   0.00 | PublicTest "generic": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<84> but was:<750>)
+✗   0.00 | PublicTest "generic_unapply_type": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<84> but was:<750>)
+✗   0.00 | PublicTest "generic_unapply_var": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<84> but was:<750>)
+✗   0.00 | PublicTest "nested_unapply_type": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<84> but was:<750>)
+✗   0.00 | PublicTest "nested_unapply_var": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<84> but was:<750>)
+✗   0.00 | PublicTest "simple": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<84> but was:<750>)
+✗   0.00 | PublicTest "simple_unapply_type": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<84> but was:<750>)
+✗   0.00 | PublicTest "simple_unapply_var": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<84> but was:<750>)
+✗   0.00 | PublicTest "simple_variable": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<84> but was:<750>)
+✓   2.62 | SecretTest "generic": Should pass in "replaced" because with @Replace now.
+✓   2.62 | SecretTest "generic_unapply_type": Should pass in "replaced" because with @Replace now.
+✓   2.62 | SecretTest "generic_unapply_var": Should pass in "replaced" because with @Replace now.
+✓   2.62 | SecretTest "nested_unapply_type": Should pass in "replaced" because with @Replace now.
+✓   2.62 | SecretTest "nested_unapply_var": Should pass in "replaced" because with @Replace now.
+✓   2.62 | SecretTest "simple": Should pass in "replaced" because with @Replace now.
+✓   2.62 | SecretTest "simple_unapply_type": Should pass in "replaced" because with @Replace now.
+✓   2.62 | SecretTest "simple_unapply_var": Should pass in "replaced" because with @Replace now.
+✓   2.62 | SecretTest "simple_variable": Should pass in "replaced" because with @Replace now.

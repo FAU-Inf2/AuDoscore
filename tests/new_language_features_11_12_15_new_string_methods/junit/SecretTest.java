@@ -9,7 +9,7 @@ public class SecretTest {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout = 200)
+	@Test(timeout = 6666)
 	@Points(exID = "Lambda", bonus = 0.815, comment = "SecretTest: Should pass in \"replaced\" because with @Replace now.")
 	@Replace("ToTest.toTest")
 	public void secTest() {

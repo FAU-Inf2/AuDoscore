@@ -1,0 +1,15 @@
+Score: 23.5
+
+Record Patterns (23.5 points):
+✗   0.00 | PublicTest "enum_switch_expression": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<2> but was:<668>)
+✗   0.00 | PublicTest "generic_switch_expression_type": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<708> but was:<1374>)
+✗   0.00 | PublicTest "generic_switch_expression_var": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<708> but was:<1374>)
+✗   0.00 | PublicTest "simple_switch_expression": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<708> but was:<1374>)
+✗   0.00 | PublicTest "simple_switch_statement": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<708> but was:<1374>)
+✗   0.00 | PublicTest "switch_expression_with_when": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<708> but was:<1374>)
+✓   3.93 | SecretTest "enum_switch_expression": Should pass in "replaced" because with @Replace now.
+✓   3.93 | SecretTest "generic_switch_expression_type": Should pass in "replaced" because with @Replace now.
+✓   3.93 | SecretTest "generic_switch_expression_var": Should pass in "replaced" because with @Replace now.
+✓   3.93 | SecretTest "simple_switch_expression": Should pass in "replaced" because with @Replace now.
+✓   3.93 | SecretTest "simple_switch_statement": Should pass in "replaced" because with @Replace now.
+✓   3.93 | SecretTest "switch_expression_with_when": Should pass in "replaced" because with @Replace now.

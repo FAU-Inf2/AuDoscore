@@ -172,6 +172,36 @@ public class JavaSourcePrettyPrinter extends com.sun.tools.javac.tree.Pretty {
 	}
 
 	@Override
+	public void visitTypeTest(JCTree.JCInstanceOf instanceOfExp) {
+		// FIXME: hacky workaround to get rid of "/*missing*/" printed instead of "var"
+		try {
+			String s = instanceOfExp.toString();
+			if (s.contains("/*missing*/")) {
+				print(s.replace("/*missing*/", "var"));
+			} else {
+				super.visitTypeTest(instanceOfExp);
+			}
+		} catch (IOException e) {
+			throw new Error("something failed while pretty printing: " + e);
+		}
+	}
+
+	@Override
+	public void visitPatternCaseLabel(JCTree.JCPatternCaseLabel patternCaseLabel) {
+		// FIXME: hacky workaround to get rid of "/*missing*/" printed instead of "var"
+		try {
+			String s = patternCaseLabel.toString();
+			if (s.contains("/*missing*/")) {
+				print(s.replace("/*missing*/", "var"));
+			} else {
+				super.visitPatternCaseLabel(patternCaseLabel);
+			}
+		} catch (IOException e) {
+			throw new Error("something failed while pretty printing: " + e);
+		}
+	}
+
+	@Override
 	public void visitYield(JCYield tree) {
 		// FIXME: hacky workaround to get rid of "yield" printed without block parenthesis "{yield ...;}"
 		try {

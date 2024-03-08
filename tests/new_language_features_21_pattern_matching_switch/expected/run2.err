@@ -1,0 +1,243 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "Record Patterns",
+                    "tests": [
+                        {
+                            "desc": "PublicTest \"switch_expression_with_when\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<1374>)",
+                            "fromSecret": false,
+                            "id": "pubTest_switch_expression_with_when",
+                            "success": false
+                        },
+                        {
+                            "desc": "PublicTest \"simple_switch_statement\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<1374>)",
+                            "fromSecret": false,
+                            "id": "pubTest_simple_switch_statement",
+                            "success": false
+                        },
+                        {
+                            "desc": "PublicTest \"generic_switch_expression_type\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<1374>)",
+                            "fromSecret": false,
+                            "id": "pubTest_generic_switch_expression_type",
+                            "success": false
+                        },
+                        {
+                            "desc": "PublicTest \"generic_switch_expression_var\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<1374>)",
+                            "fromSecret": false,
+                            "id": "pubTest_generic_switch_expression_var",
+                            "success": false
+                        },
+                        {
+                            "desc": "PublicTest \"simple_switch_expression\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<1374>)",
+                            "fromSecret": false,
+                            "id": "pubTest_simple_switch_expression",
+                            "success": false
+                        },
+                        {
+                            "desc": "PublicTest \"enum_switch_expression\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<2> but was:<668>)",
+                            "fromSecret": false,
+                            "id": "pubTest_enum_switch_expression",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Record Patterns",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"enum_switch_expression\": Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should not fail. expected:<1> but was:<667>)",
+                            "fromSecret": true,
+                            "id": "secTest_enum_switch_expression",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Record Patterns",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"generic_switch_expression_type\": Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<708> but was:<1374>)",
+                            "fromSecret": true,
+                            "id": "secTest_generic_switch_expression_type",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Record Patterns",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"generic_switch_expression_var\": Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<708> but was:<1374>)",
+                            "fromSecret": true,
+                            "id": "secTest_generic_switch_expression_var",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Record Patterns",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"simple_switch_expression\": Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<708> but was:<1374>)",
+                            "fromSecret": true,
+                            "id": "secTest_simple_switch_expression",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Record Patterns",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"simple_switch_statement\": Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<708> but was:<1374>)",
+                            "fromSecret": true,
+                            "id": "secTest_simple_switch_statement",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Record Patterns",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"switch_expression_with_when\": Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should not fail. expected:<42> but was:<708>)",
+                            "fromSecret": true,
+                            "id": "secTest_switch_expression_with_when",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "Record Patterns",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"enum_switch_expression\": Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_enum_switch_expression",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Record Patterns",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"generic_switch_expression_type\": Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_generic_switch_expression_type",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Record Patterns",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"generic_switch_expression_var\": Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_generic_switch_expression_var",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Record Patterns",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"simple_switch_expression\": Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_simple_switch_expression",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Record Patterns",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"simple_switch_statement\": Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_simple_switch_statement",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Record Patterns",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"switch_expression_with_when\": Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_switch_expression_with_when",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

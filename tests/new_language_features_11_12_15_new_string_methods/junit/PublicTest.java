@@ -9,7 +9,7 @@ public class PublicTest {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout = 200)
+	@Test(timeout = 6666)
 	@Points(exID = "Lambda", bonus = 0.815, comment = "PublicTest: Should fail in \"vanilla\" because without @Replace.")
 	public void pubTest() {
 		assertEquals("Should fail in \"vanilla\" because without @Replace.", 0, ToTest.toTest());
