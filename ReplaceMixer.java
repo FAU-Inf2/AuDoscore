@@ -64,7 +64,7 @@ public class ReplaceMixer extends AbstractProcessor {
 					if (!isCleanroom) {
 						StringWriter stringWriter = new StringWriter();
 						try {
-							new JavaSourcePrettyPrinter(stringWriter, false).printExpr(tree);
+							new tools.JavaSourcePrettyPrinter(stringWriter, false).printExpr(tree);
 						} catch (IOException e) {
 							throw new AssertionError(e);
 						}

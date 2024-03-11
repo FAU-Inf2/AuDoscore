@@ -59,7 +59,7 @@ public class FullQualifier extends AbstractProcessor {
 		return false;
 	}
 
-	private static class FullQualifierPrettyPrinter extends JavaSourcePrettyPrinter {
+	private static class FullQualifierPrettyPrinter extends tools.JavaSourcePrettyPrinter {
 		public FullQualifierPrettyPrinter(Writer out, boolean sourceOutput) {
 			super(out, sourceOutput);
 		}

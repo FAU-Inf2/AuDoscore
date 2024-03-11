@@ -70,7 +70,7 @@ public class PublicTestCleaner extends AbstractProcessor {
 	}
 }
 
-class PrettyClean extends com.sun.tools.javac.tree.Pretty {
+class PrettyClean extends tools.JavaSourcePrettyPrinter {
 	private boolean inEnum = false;
 
 	public PrettyClean(Writer out, boolean sourceOutput) {
@@ -129,15 +129,5 @@ class PrettyClean extends com.sun.tools.javac.tree.Pretty {
 		} catch (IOException e) {
 			throw new Error("something failed while removing AuDoscore annotations: " + e);
 		}
-	}
-
-	@Override
-	public void visitApply(final JCMethodInvocation tree) {
-		if (inEnum && tree.meth instanceof JCIdent ident) {
-			if (ident.name == ident.name.table.names._super) {
-				return;
-			}
-		}
-		super.visitApply(tree);
 	}
 }

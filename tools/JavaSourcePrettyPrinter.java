@@ -1,3 +1,5 @@
+package tools;
+
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.*;
@@ -85,105 +87,38 @@ public class JavaSourcePrettyPrinter extends com.sun.tools.javac.tree.Pretty {
 	}
 
 	@Override
-	public void visitVarDef(JCVariableDecl variableDeclaration) {
+	public void visitVarDef(com.sun.tools.javac.tree.JCTree.JCVariableDecl variableDeclaration) {
 		// FIXME: hacky workaround to get rid of "/*missing*/" printed instead of "var"
-		if (variableDeclaration.declaredUsingVar()) {
-			try {
-				super.printDocComment(variableDeclaration);
-				super.printAnnotations(variableDeclaration.mods.annotations);
-				super.visitModifiers(variableDeclaration.mods);
-				print("var ");
-				print(variableDeclaration.name);
-				if (variableDeclaration.init != null) {
-					print(" = ");
-					print(variableDeclaration.init);
-					print(";");
+		if (variableDeclaration.isImplicitlyTyped()) {
+			variableDeclaration.vartype = new com.sun.tools.javac.tree.JCTree.JCExpression() {
+				@Override
+				public com.sun.tools.javac.tree.JCTree.Tag getTag() {
+					return null;
 				}
-			} catch (IOException e) {
-				throw new Error("something failed while pretty printing: " + e);
-			}
-		} else {
-			super.visitVarDef(variableDeclaration);
-		}
-	}
 
-	@Override
-	public void visitForLoop(JCForLoop forLoop) {
-		// FIXME: hacky workaround to get rid of "/*missing*/" printed instead of "var"
-		try {
-			print("for (");
-			boolean first = true;
-			for (JCStatement statement : forLoop.init) {
-				if (!first) print(", ");
-				if (statement instanceof JCVariableDecl variableDeclaration) {
-					if (first) {
-						if (variableDeclaration.declaredUsingVar()) {
-							print("var");
-						} else {
-							print(variableDeclaration.getType());
+				@Override
+				public void accept(com.sun.tools.javac.tree.JCTree.Visitor visitor) {
+					if (visitor instanceof com.sun.tools.javac.tree.Pretty prettyPrinter) {
+						try {
+							prettyPrinter.print("var");
+						} catch (java.io.IOException e) {
+							throw new Error("something failed while pretty printing: " + e);
 						}
-						print(" ");
 					}
-					print(variableDeclaration.getName());
-					if (variableDeclaration.init != null) {
-						print(" = ");
-						print(variableDeclaration.init);
-					}
-				} else {
-					print(((JCExpressionStatement) statement).expr);
 				}
-				first = false;
-			}
-			print("; ");
-			if (forLoop.cond != null) print(forLoop.cond);
-			print("; ");
-			first = true;
-			for (JCExpressionStatement statement : forLoop.step) {
-				if (!first) print(", ");
-				first = false;
-				print(statement.expr);
-			}
-			print(") ");
-			if (forLoop.body instanceof JCAssert body) super.visitAssert(body);
-			else if (forLoop.body instanceof JCBlock body) super.visitBlock(body);
-			else if (forLoop.body instanceof JCBreak body) super.visitBreak(body);
-			else if (forLoop.body instanceof JCCase body) super.visitCase(body);
-			else if (forLoop.body instanceof JCClassDecl body) super.visitClassDef(body);
-			else if (forLoop.body instanceof JCContinue body) super.visitContinue(body);
-			else if (forLoop.body instanceof JCDoWhileLoop body) super.visitDoLoop(body);
-			else if (forLoop.body instanceof JCEnhancedForLoop body) super.visitForeachLoop(body);
-			else if (forLoop.body instanceof JCExpressionStatement body) super.visitExec(body);
-			else if (forLoop.body instanceof JCForLoop body) super.visitForLoop(body);
-			else if (forLoop.body instanceof JCIf body) super.visitIf(body);
-			else if (forLoop.body instanceof JCLabeledStatement body) super.visitLabelled(body);
-			else if (forLoop.body instanceof JCReturn body) super.visitReturn(body);
-			else if (forLoop.body instanceof JCSkip body) super.visitSkip(body);
-			else if (forLoop.body instanceof JCSwitch body) super.visitSwitch(body);
-			else if (forLoop.body instanceof JCSynchronized body) super.visitSynchronized(body);
-			else if (forLoop.body instanceof JCThrow body) super.visitThrow(body);
-			else if (forLoop.body instanceof JCTry body) super.visitTry(body);
-			else if (forLoop.body instanceof JCVariableDecl body) super.visitVarDef(body);
-			else if (forLoop.body instanceof JCWhileLoop body) super.visitWhileLoop(body);
-			else if (forLoop.body instanceof JCYield body) super.visitYield(body);
-			else print(forLoop.body); // FIXME: missing anything else here? try best effort if so...
-		} catch (IOException e) {
-			throw new Error("something failed while pretty printing: " + e);
-		}
-	}
 
-	@Override
-	public void visitTypeTest(JCTree.JCInstanceOf instanceOfExp) {
-		// FIXME: hacky workaround to get rid of "/*missing*/" printed instead of "var"
-		try {
-			String s = instanceOfExp.toString();
-			if (s.contains("/*missing*/")) {
-				print(s.replace("/*missing*/", "var"));
-			} else {
-				super.visitTypeTest(instanceOfExp);
-			}
-		} catch (IOException e) {
-			throw new Error("something failed while pretty printing: " + e);
+				@Override
+				public com.sun.source.tree.Tree.Kind getKind() {
+					return null;
+				}
+
+				@Override
+				public <R, D> R accept(com.sun.source.tree.TreeVisitor<R, D> treeVisitor, D d) {
+					return null;
+				}
+			};
 		}
+		super.visitVarDef(variableDeclaration);
 	}
 
 	@Override
