@@ -47,38 +47,42 @@ for t in tests/*; do
 			if grep -qF "IGNORE_FOR_PTC" "$testpath"; then
 				: # Skip
 			else
-				testname=$(basename "$testpath")
-				destpath="$testdir/$testname"
-				procerr=$(mktemp)
-				javac $JAVAMODULEEXPORTS $JAVAMODULEOPENS -cp lib/junitpoints.jar -proc:only -processor tools.ptc.PublicTestCleaner "$testpath" \
-						> "$destpath" 2>"$procerr"
-				if [ $? -eq 0 ]; then
-					currentdir=$(pwd)
-					comperr=$(mktemp)
-					cd "$testdir"
-					javac -cp ".:$currentdir/lib/junit.jar" "$testname" >"$comperr" 2>&1
+				if grep -q "^@SecretClass" "$testpath"; then
+					: # Skip
+				else
+					testname=$(basename "$testpath")
+					destpath="$testdir/$testname"
+					procerr=$(mktemp)
+					javac $JAVAMODULEEXPORTS $JAVAMODULEOPENS -cp lib/junitpoints.jar -proc:only -processor tools.ptc.PublicTestCleaner "$testpath" \
+							> "$destpath" 2>"$procerr"
 					if [ $? -eq 0 ]; then
-						echo -n -e "."
-						successes=$(($successes+1))
+						currentdir=$(pwd)
+						comperr=$(mktemp)
+						cd "$testdir"
+						javac -cp ".:$currentdir/lib/junit.jar" "$testname" >"$comperr" 2>&1
+						if [ $? -eq 0 ]; then
+							echo -n -e "."
+							successes=$(($successes+1))
+						else
+							echo -n -e "E"
+							failures=$(($failures+1))
+							echo "* $testpath" >> "$failoutput"
+							cat "$comperr" >> "$failoutput"
+						fi
+						cd "$currentdir"
+						rm -f "$comperr"
 					else
 						echo -n -e "E"
 						failures=$(($failures+1))
 						echo "* $testpath" >> "$failoutput"
-						cat "$comperr" >> "$failoutput"
+						cat "$procerr" >> "$failoutput"
 					fi
-					cd "$currentdir"
-					rm -f "$comperr"
-				else
-					echo -n -e "E"
-					failures=$(($failures+1))
-					echo "* $testpath" >> "$failoutput"
-					cat "$procerr" >> "$failoutput"
-				fi
 
-				# Cleanup test files and class files
-				rm -f "$procerr"
-				rm -f "$destpath"
-				rm -f "$testdir"/*.class
+					# Cleanup test files and class files
+					rm -f "$procerr"
+					rm -f "$destpath"
+					rm -f "$testdir"/*.class
+				fi
 			fi
 		done
 
