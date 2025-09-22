@@ -158,10 +158,6 @@ public abstract class JUnitWithPoints {
 
 		@Override
 		protected final void failed(Throwable throwable, Description description) {
-			// reset security manager
-			try {
-				System.setSecurityManager(null);
-			} catch (final SecurityException e) { /* Ignore */ }
 			long executionTime = System.currentTimeMillis() - startTime;
 			Points pointsAnnotation = description.getAnnotation(Points.class);
 			String exID = pointsAnnotation.exID();
@@ -188,7 +184,7 @@ public abstract class JUnitWithPoints {
 				final InitializeOnce initOnce = f.getAnnotation(InitializeOnce.class);
 				if (initOnce != null) {
 					final Statement oldStmt = result;
-					// we need a named class here to allow it in the security manager
+					// in former times: we needed a named class here to allow it in the security manager
 					class InitOnceStatement extends Statement {
 						@Override
 						public void evaluate() throws Throwable {
@@ -237,7 +233,6 @@ public abstract class JUnitWithPoints {
 		private static PrintStream saveOut;
 		private static PrintStream saveErr;
 		private static boolean isSecretClass = false;
-		private List<String> safeCallerList;
 
 		@Override
 		public final Statement apply(Statement base, Description description) {
@@ -247,13 +242,6 @@ public abstract class JUnitWithPoints {
 			// fill data structures
 			for (Ex exercise : exercisesAnnotation.value()) {
 				reportHashMap.put(exercise.exID(), new ArrayList<>());
-			}
-			// obtain a list of safe callers (i.e., callers that are known to contain no malicious code)
-			final SafeCallers safeCallerAnnotation = description.getAnnotation(SafeCallers.class);
-			if (safeCallerAnnotation == null) {
-				this.safeCallerList = Collections.emptyList();
-			} else {
-				this.safeCallerList = Arrays.asList(safeCallerAnnotation.value());
 			}
 			// start the real JUnit test
 			return super.apply(base, description);
@@ -326,10 +314,6 @@ public abstract class JUnitWithPoints {
 					}
 				}));
 				System.setErr(System.out);
-				// Install security manager
-				try {
-					System.setSecurityManager(new TesterSecurityManager(this.safeCallerList));
-				} catch (final SecurityException e) { /* Ignore */ }
 			}
 		}
 	}

@@ -73,7 +73,7 @@ public class FullQualifier extends AbstractProcessor {
 					case "After", "Before", "Ignore", "FixMethodOrder", "Rule", "ClassRule", "Test" -> print("org.junit.");
 					case "RunWith" -> print("org.junit.runner.");
 					case "Parameters" -> print("org.junit.runners.Parameterized.");
-					case "CompareInterface", "Ex", "Exercises", "Forbidden", "InitializeOnce", "NotForbidden", "Points", "Replace", "SafeCallers", "SecretClass" -> print("tester.annotations.");
+					case "CompareInterface", "Ex", "Exercises", "Forbidden", "InitializeOnce", "NotForbidden", "Points", "Replace", "SecretClass" -> print("tester.annotations.");
 				}
 				printExpr(tree.annotationType);
 				print("(");

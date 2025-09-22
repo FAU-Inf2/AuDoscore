@@ -67,10 +67,10 @@ prepare: updategitrev lib/junitpoints.jar
 updategitrev:
 	git rev-parse HEAD > GITREV
 
-SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/annotations/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java tester/annotations/Ex.java tester/annotations/Points.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/NotForbidden.java tester/annotations/SafeCallers.java tools/jsondiff/JSONDiff.java FullQualifier.java tools/sep/SingleExecutionPreparer.java CheckAnnotation.java tools/SingleMethodRunner.java tools/ic/InterfaceComparator.java tools/ptc/PublicTestCleaner.java tester/TesterSecurityManager.java tester/annotations/InitializeOnce.java
+SRCJUNITPOINTSJAR := JUnitWithPoints.java tester/annotations/Replace.java JUnitPointsMerger.java tester/ReadReplace.java ReadForbidden.java ReplaceMixer.java tester/annotations/Ex.java tester/annotations/Points.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/NotForbidden.java tools/jsondiff/JSONDiff.java FullQualifier.java tools/sep/SingleExecutionPreparer.java CheckAnnotation.java tools/SingleMethodRunner.java tools/ic/InterfaceComparator.java tools/ptc/PublicTestCleaner.java tester/annotations/InitializeOnce.java
 
 lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
-	javac -source 21 -target 21 $(JAVAMODULEEXPORTS) -encoding UTF-8 -d build -cp $(LIBJUNIT):$(LIBJSONSIMPLE):. $(SRCJUNITPOINTSJAR)
+	javac -source 25 -target 25 $(JAVAMODULEEXPORTS) -encoding UTF-8 -d build -cp $(LIBJUNIT):$(LIBJSONSIMPLE):. $(SRCJUNITPOINTSJAR)
 	jar cvf $(LIBJUNITPOINTS) -C build .
 
 
@@ -114,7 +114,7 @@ compile-stage2: miniclean
 		java -cp $(LIBJUNIT):$(LIBJUNITPOINTS):. -Dpub=$(TEST) CheckAnnotation $(SECRETTEST) ; \
 		echo "make run-stage1" > single_execution.sh ;\
 		echo "echo \",\" 1>&2" >> single_execution.sh;	\
-		java -cp $(LIBJUNITPOINTS):$(LIBJUNIT):. tools.sep.SingleExecutionPreparer "$(LIBJSONSIMPLE):$(LIBJUNIT):$(LIBHAMCREST):$(LIBJUNITPOINTS):." "-Djson=yes -Djava.security.manager=\"allow\" -Dpub=$(TEST)" $(SECRETTEST) >> single_execution.sh; \
+		java -cp $(LIBJUNITPOINTS):$(LIBJUNIT):. tools.sep.SingleExecutionPreparer "$(LIBJSONSIMPLE):$(LIBJUNIT):$(LIBHAMCREST):$(LIBJUNITPOINTS):." "-Djson=yes -Dpub=$(TEST)" $(SECRETTEST) >> single_execution.sh; \
 	else \
 		set -e ; \
 		echo "echo \"]\" 1>&2" >> loop.sh ; \
@@ -151,7 +151,7 @@ run-stage0:
 	echo "alles gut"
 
 run-stage1:
-	java -XX:-OmitStackTraceInFastThrow -Xmx1024m -cp $(LIBJSONSIMPLE):$(LIBJUNIT):$(LIBHAMCREST):$(LIBJUNITPOINTS):. -Djson=yes -Djava.security.manager="allow" org.junit.runner.JUnitCore $(TEST) || echo
+	java -XX:-OmitStackTraceInFastThrow -Xmx1024m -cp $(LIBJSONSIMPLE):$(LIBJUNIT):$(LIBHAMCREST):$(LIBJUNITPOINTS):. -Djson=yes org.junit.runner.JUnitCore $(TEST) || echo
 
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2

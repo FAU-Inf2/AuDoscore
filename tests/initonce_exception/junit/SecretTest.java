@@ -9,7 +9,6 @@ import org.junit.Test;
 import tester.annotations.*;
 
 @SecretClass
-@SafeCallers({ "SecretTest" })
 public class SecretTest {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints
