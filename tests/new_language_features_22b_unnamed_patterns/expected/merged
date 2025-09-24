@@ -1,0 +1,11 @@
+Score: 23.5
+
+UnnamedPatterns (23.5 points):
+✗   0.00 | PublicTest "toTest_unnamed_patterns__elide_just_name": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<21>)
+✗   0.00 | PublicTest "toTest_unnamed_patterns__elide_type_patterns": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<21>)
+✗   0.00 | PublicTest "toTest_unnamed_patterns__switch_expressions": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<21>)
+✗   0.00 | PublicTest "toTest_unnamed_patterns__switch_expressions_multiple_patterns": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<21>)
+✓   5.89 | SecretTest "toTest_unnamed_patterns__elide_just_name": Should pass in "replaced" because with @Replace now.
+✓   5.89 | SecretTest "toTest_unnamed_patterns__elide_type_patterns": Should pass in "replaced" because with @Replace now.
+✓   5.89 | SecretTest "toTest_unnamed_patterns__switch_expressions": Should pass in "replaced" because with @Replace now.
+✓   5.89 | SecretTest "toTest_unnamed_patterns__switch_expressions_multiple_patterns": Should pass in "replaced" because with @Replace now.

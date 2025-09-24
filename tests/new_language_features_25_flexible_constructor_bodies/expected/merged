@@ -1,0 +1,9 @@
+Score: 31.0
+
+Flexible_Constructor_Bodies (31.0 points):
+✗   0.00 | PublicTest: Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<21>)
+✗   0.00 | PublicTest: Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<21>)
+✓   7.85 | PublicTest: Should pass in "vanilla".
+✓   7.85 | SecretTest: Should pass in "replaced" because with @Replace now.
+✓   7.85 | SecretTest: Should pass in "replaced" because with @Replace now.
+✓   7.85 | PublicTest: Should pass in "replaced".

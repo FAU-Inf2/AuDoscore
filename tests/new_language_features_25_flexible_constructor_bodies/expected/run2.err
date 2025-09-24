@@ -1,0 +1,112 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "Flexible_Constructor_Bodies",
+                    "tests": [
+                        {
+                            "desc": "PublicTest: Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<21>)",
+                            "fromSecret": false,
+                            "id": "pubTest__nested_classes",
+                            "success": false
+                        },
+                        {
+                            "desc": "PublicTest: Should pass in \"vanilla\".",
+                            "fromSecret": false,
+                            "id": "pubTest__record",
+                            "success": true
+                        },
+                        {
+                            "desc": "PublicTest: Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<21>)",
+                            "fromSecret": false,
+                            "id": "pubTest__initialize_fields_before_super_invocation",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Flexible_Constructor_Bodies",
+                    "tests": [
+                        {
+                            "desc": "SecretTest: Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<21>)",
+                            "fromSecret": true,
+                            "id": "secTest__initialize_fields_before_super_invocation",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Flexible_Constructor_Bodies",
+                    "tests": [
+                        {
+                            "desc": "SecretTest: Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<21>)",
+                            "fromSecret": true,
+                            "id": "secTest__nested_classes",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Flexible_Constructor_Bodies",
+                    "tests": [
+                        {
+                            "desc": "PublicTest: Should pass in \"replaced\".",
+                            "fromSecret": true,
+                            "id": "secTest__record",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "Flexible_Constructor_Bodies",
+                    "tests": [
+                        {
+                            "desc": "SecretTest: Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest__initialize_fields_before_super_invocation",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Flexible_Constructor_Bodies",
+                    "tests": [
+                        {
+                            "desc": "SecretTest: Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest__nested_classes",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

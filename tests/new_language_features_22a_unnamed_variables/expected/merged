@@ -1,0 +1,15 @@
+Score: 23.5
+
+UnnamedVariables (23.5 points):
+✗   0.00 | PublicTest "toTest_unnamed_variables__basic_for_loop": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<21>)
+✗   0.00 | PublicTest "toTest_unnamed_variables__enhanced_for_loop": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<21>)
+✗   0.00 | PublicTest "toTest_unnamed_variables__exception_parameter_of_catch_block": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<21>)
+✗   0.00 | PublicTest "toTest_unnamed_variables__formal_parameter_of_lambda_expression": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<21>)
+✗   0.00 | PublicTest "toTest_unnamed_variables__try_with_resources": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<21>)
+✗   0.00 | PublicTest "toTest_unnamed_variables__var_declaration_in_block": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<21>)
+✓   3.93 | SecretTest "toTest_unnamed_variables__basic_for_loop": Should pass in "replaced" because with @Replace now.
+✓   3.93 | SecretTest "toTest_unnamed_variables__enhanced_for_loop": Should pass in "replaced" because with @Replace now.
+✓   3.93 | SecretTest "toTest_unnamed_variables__exception_parameter_of_catch_block": Should pass in "replaced" because with @Replace now.
+✓   3.93 | SecretTest "toTest_unnamed_variables__formal_parameter_of_lambda_expression": Should pass in "replaced" because with @Replace now.
+✓   3.93 | SecretTest "toTest_unnamed_variables__try_with_resources": Should pass in "replaced" because with @Replace now.
+✓   3.93 | SecretTest "toTest_unnamed_variables__var_declaration_in_block": Should pass in "replaced" because with @Replace now.
