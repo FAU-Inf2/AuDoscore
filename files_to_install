@@ -2,9 +2,7 @@
 ./lib/hamcrest-core.jar
 ./lib/json-simple-1.1.1.jar
 ./lib/junitpoints.jar
-./tools/detect_junit.sh
 ./Makefile
 ./test.sh
-./obfuscate
 ./install.sh
 ./files_to_install

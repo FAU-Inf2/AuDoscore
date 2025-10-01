@@ -26,7 +26,10 @@ public class SingleExecutionPreparer {
 						System.out.println("echo \",\" 1>&2");
 					}
 					String methodName = method.getName();
-					System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m -cp " + cp + dParameter + " tools.SingleMethodRunner " + className + " " + methodName);
+					System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m" //
+							+ " -cp " + cp //
+							+ " " + dParameter //
+							+ " tools.SingleMethodRunner " + className + " " + methodName);
 					counter++;
 				}
 			}
@@ -35,7 +38,7 @@ public class SingleExecutionPreparer {
 		}
 	}
 
-	public static void main(String[] args) {
+	static void main(String[] args) {
 		String cp;
 		String className;
 		String dParameter;
@@ -46,10 +49,10 @@ public class SingleExecutionPreparer {
 		if (args.length == 2) {
 			cp = args[0];
 			className = args[1];
-			dParameter = " ";
+			dParameter = "";
 		} else {
 			cp = args[0];
-			dParameter = " " + args[1] + " ";
+			dParameter = args[1];
 			className = args[2];
 		}
 		writeOutSingleTestExecution(cp, dParameter, className);

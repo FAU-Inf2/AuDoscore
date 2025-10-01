@@ -113,7 +113,7 @@ public class JSONDiff {
 	 *
 	 * @param args contains the paths to the files which contains the JSONStrings
 	 */
-	public static void main(String[] args) {
+	static void main(String[] args) {
 		if (args == null || args.length != 2) {
 			usage();
 			return;

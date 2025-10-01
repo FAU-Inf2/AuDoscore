@@ -302,15 +302,14 @@ public class InterfaceComparator {
 		return compareInterfaceAnnotation.value();
 	}
 
-	public static void main(String[] args) {
+	static void main(String[] args) {
 		if (args == null) {
 			System.err.println("Usage: java tools.ic.InterfaceComparator JUnitTest");
 			System.exit(-1);
 		}
 		String cwd = System.getProperty("user.dir");
-		String pathToCleanroom = cwd + "/cleanroom/";
-		try (URLClassLoader cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL(), new File(cwd).toURI().toURL()}); //
-			 URLClassLoader studentLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()})) {
+		try (URLClassLoader cleanroomLoader = new URLClassLoader(new URL[]{new File(cwd, "cleanroom").toURI().toURL(), new File(cwd, "interfaces").toURI().toURL()}); //
+			 URLClassLoader studentLoader = new URLClassLoader(new URL[]{new File(cwd, "student").toURI().toURL(), new File(cwd, "interfaces").toURI().toURL(), new File(cwd, "junit").toURI().toURL()})) {
 			// extract content from @CompareInterface Annotation
 			String[] annotationValue = extractValueFromUnitTest(args[0], studentLoader);
 			valuesToMap(annotationValue);

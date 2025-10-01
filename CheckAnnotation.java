@@ -13,8 +13,7 @@ public class CheckAnnotation {
 
 	// checks if given class exists in cleanroom
 	private static Class<?> getCleanroomClass(String name) {
-		String pathToCleanroom = cwd + "/cleanroom/";
-		try (URLClassLoader cleanroomLoader = new URLClassLoader(new URL[]{new File(pathToCleanroom).toURI().toURL(), new File(cwd).toURI().toURL()})) {
+		try (URLClassLoader cleanroomLoader = new URLClassLoader(new URL[]{new File(cwd, "cleanroom").toURI().toURL()})) {
 			try {
 				return cleanroomLoader.loadClass(name);
 			} catch (ClassNotFoundException classNotFoundException) {
@@ -42,7 +41,7 @@ public class CheckAnnotation {
 		}
 		final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
 		for (Ex exercise : exercisesAnnotation.value()) {
-			if (exercise.exID().trim().length() == 0) {
+			if (exercise.exID().trim().isEmpty()) {
 				throw new AnnotationFormatError("ERROR - found @Exercises annotation with empty exercise name and following points: [" + exercise.points() + "]");
 			} else if (exercise.points() <= 0) {
 				throw new AnnotationFormatError("ERROR - found @Exercises annotation with illegal points value: [" + exercise.exID() + "]");
@@ -101,7 +100,7 @@ public class CheckAnnotation {
 				throw new AnnotationFormatError("ERROR - found test case without @Points annotation [" + description.getDisplayName() + "]");
 			} else if (!isSecretClass && replaceAnnotation != null) {
 				throw new AnnotationFormatError("ERROR - found test case with @Replace in a public test class: [" + description.getDisplayName() + "]");
-			} else if (pointsAnnotation.exID().trim().length() == 0) {
+			} else if (pointsAnnotation.exID().trim().isEmpty()) {
 				throw new AnnotationFormatError("ERROR - found test case with empty exercise id in @Points annotation: [" + description.getDisplayName() + "]");
 			} else if (!exerciseHashMap.containsKey(pointsAnnotation.exID())) {
 				throw new AnnotationFormatError("ERROR - found test case with non-declared exercise id in @Points annotation: [" + description.getDisplayName() + "]");
@@ -180,13 +179,13 @@ public class CheckAnnotation {
 		}
 	}
 
-	public static void main(String[] args) {
-		try (URLClassLoader unitLoader = new URLClassLoader(new URL[]{new File(cwd).toURI().toURL()})) {
+	static void main(String[] args) {
+		try (URLClassLoader unitLoader = new URLClassLoader(new URL[]{new File(cwd, "junit").toURI().toURL()})) {
 			Class<?> clazz;
 			try {
 				clazz = unitLoader.loadClass(args[0]);
 			} catch (ClassNotFoundException classNotFoundException) {
-				throw new IllegalArgumentException("ERROR - Class [" + classNotFoundException.getMessage() + "] specified in @CompareInterface does not exist");
+				throw new IllegalArgumentException("ERROR - Class [" + classNotFoundException.getMessage() + "] (test case) does not exist");
 			}
 			Description description = Description.createSuiteDescription(clazz);
 			Exercises exercisesAnnotation = JUnitWithPoints.PointsSummary.getExercisesAnnotation(description);

@@ -11,8 +11,8 @@ import org.junit.runners.model.*;
 
 import org.json.simple.*;
 
-import tester.*;
 import tester.annotations.*;
+import tools.ReadReplace;
 
 // rules helpers to shorten code
 final class PointsLogger extends JUnitWithPoints.PointsLogger {
@@ -122,7 +122,7 @@ public abstract class JUnitWithPoints {
 		// FIXME: is that still necessary with single execution?
 		protected boolean isIgnoredCase(Description description) {
 			String doReplace = System.getProperty("replace");
-			if ((doReplace != null && !doReplace.equals(""))) {
+			if ((doReplace != null && !doReplace.isEmpty())) {
 				String replacementSet = ReadReplace.getCanonicalReplacement(description);
 				return !doReplace.equals(replacementSet);
 			}
@@ -132,7 +132,7 @@ public abstract class JUnitWithPoints {
 		// test methods are skipped during single test method execution
 		protected boolean isSkippedCase(Description description) {
 			String methodToBeExecuted = System.getProperty("method");
-			if ((methodToBeExecuted != null && !methodToBeExecuted.equals(""))) {
+			if ((methodToBeExecuted != null && !methodToBeExecuted.isEmpty())) {
 				String method = getShortDisplayName(description);
 				return !method.equals(methodToBeExecuted);
 			}
@@ -207,7 +207,8 @@ public abstract class JUnitWithPoints {
 									try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(initFile))) {
 										out.writeObject(result);
 									} catch (final IOException e) {
-										assert initFile.delete(); // clean up
+										boolean cleanedUp = initFile.delete(); // clean up
+										assert cleanedUp;
 									}
 								} catch (final NoSuchMethodException e) {
 									// should be checked by CheckAnnotations

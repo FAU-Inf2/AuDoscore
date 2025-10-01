@@ -1,16 +1,22 @@
-package tester;
+package tools;
 
 import tester.annotations.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.*;
 import java.lang.reflect.*;
 import java.lang.annotation.*;
 import org.junit.runner.*;
 
 public class ReadReplace {
+	private static final String cwd = System.getProperty("user.dir");
+
 	// usage:
 	// 1) ReadReplace <secret test class>
 	// 2) ReadReplace --loop -p <public test class> <secret test class>
-	public static void main(String[] args) throws Exception {
+	static void main(String[] args) throws Exception {
 		if (args.length < 1) {
 			System.err.println("missing argument: secret test class name or option --loop");
 			System.exit(-1);
@@ -35,29 +41,38 @@ public class ReadReplace {
 		if (compilerArgs == null) {
 			compilerArgs = "";
 		}
-		Class<?> secretTestClass = ClassLoader.getSystemClassLoader().loadClass(secretTestClassName);
-		LinkedHashSet<String> compileInstructions = new LinkedHashSet<>();
-		for (Method testCaseMethod : getMethodsSorted(secretTestClass)) {
-			if (testCaseMethod.isAnnotationPresent(Replace.class)) {
-				Replace r = testCaseMethod.getAnnotation(Replace.class);
-				if (canProcess(r)) {
-					Map<String, SortedSet<String>> methodsMap = getMap(r);
-					for (Map.Entry<String, SortedSet<String>> entry : methodsMap.entrySet()) {
-						final StringBuilder replacedSourceFolderNameSB = new StringBuilder(entry.getKey());
-						if (entry.getValue().size() == 0) {
-							continue;
+		try (URLClassLoader unitLoader = new URLClassLoader(new URL[]{new File(cwd, "junit").toURI().toURL()})) {
+			Class<?> secretTestClass = unitLoader.loadClass(secretTestClassName);
+			LinkedHashSet<String> compileInstructions = new LinkedHashSet<>();
+			for (Method testCaseMethod : getMethodsSorted(secretTestClass)) {
+				if (testCaseMethod.isAnnotationPresent(Replace.class)) {
+					Replace r = testCaseMethod.getAnnotation(Replace.class);
+					if (canProcess(r)) {
+						Map<String, SortedSet<String>> methodsMap = getMap(r);
+						for (Map.Entry<String, SortedSet<String>> entry : methodsMap.entrySet()) {
+							final StringBuilder replacedSourceFolderNameSB = new StringBuilder(entry.getKey());
+							if (entry.getValue().isEmpty()) {
+								continue;
+							}
+							for (String method : entry.getValue()) {
+								replacedSourceFolderNameSB.append('#').append(method.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>"));
+							}
+							final String replacedSourceFolderName = replacedSourceFolderNameSB.toString();
+							compileInstructions.add("mkdir -p " + replacedSourceFolderName + ";" //
+									+ " javac " + compilerArgs + " -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar" //
+									+ " -Areplaces=" + replacedSourceFolderName //
+									+ " -proc:only -processor tools.ReplaceMixer" //
+									+ " cleanroom/" + entry.getKey() + ".java student/" + entry.getKey() + ".java > " + replacedSourceFolderName + "/" + entry.getKey() + ".java;" //
+									+ " javac " + compilerArgs + " -cp ./interfaces/ -d " + replacedSourceFolderName + " -sourcepath ./" + replacedSourceFolderName + " " + replacedSourceFolderName + "/" + entry.getKey() + ".java;");
 						}
-						for (String method : entry.getValue()) {
-							replacedSourceFolderNameSB.append('#').append(method.replaceAll("<", "\\\\<").replaceAll(">", "\\\\>"));
-						}
-						final String replacedSourceFolderName = replacedSourceFolderNameSB.toString();
-						compileInstructions.add("mkdir -p " + replacedSourceFolderName + "; " + "javac " + compilerArgs + " -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=" + replacedSourceFolderName + " -proc:only -processor ReplaceMixer cleanroom/" + entry.getKey() + ".java " + entry.getKey() + ".java > " + replacedSourceFolderName + "/" + entry.getKey() + ".java; " + "javac " + compilerArgs + " -cp . -d " + replacedSourceFolderName + " -sourcepath " + replacedSourceFolderName + " " + replacedSourceFolderName + "/" + entry.getKey() + ".java;");
 					}
 				}
 			}
-		}
-		for (String compileInstruction : compileInstructions) {
-			System.out.println(compileInstruction);
+			for (String compileInstruction : compileInstructions) {
+				System.out.println(compileInstruction);
+			}
+		} catch (IOException malformedURLException) {
+			throw new Error("Error " + malformedURLException.getMessage());
 		}
 	}
 
@@ -96,9 +111,9 @@ public class ReadReplace {
 				mMethsMap.put(className, new TreeSet<>());
 			}
 			final SortedSet<String> methods = mMethsMap.get(className);
-			try {
+			try (URLClassLoader cleanroomLoader = new URLClassLoader(new URL[]{new File(cwd, "interfaces").toURI().toURL(), new File(cwd, "cleanroom").toURI().toURL()})) {
 				boolean foundMatch = false;
-				for (Method method : Class.forName(className).getDeclaredMethods()) {
+				for (Method method : cleanroomLoader.loadClass(className).getDeclaredMethods()) {
 					if (method.getName().matches(regex)) {
 						methods.add(method.getName());
 						foundMatch = true;
@@ -111,7 +126,7 @@ public class ReadReplace {
 				if (!foundMatch) {
 					throw new AnnotationFormatError("ERROR - Cannot replace unknown method: " + regex);
 				}
-			} catch (ClassNotFoundException e) {
+			} catch (ClassNotFoundException | IOException e) {
 				throw new AnnotationFormatError("ERROR - Cannot replace unknown class: " + className);
 			}
 		}
@@ -236,20 +251,24 @@ public class ReadReplace {
 
 	private static void generateSecretTestRunLoopScript(String secretTestClassName, String publicTestClassName) throws ClassNotFoundException {
 		LinkedHashMap<String, List<String>> replacementMap = new LinkedHashMap<>();
-		Class<?> secretTestClass = ClassLoader.getSystemClassLoader().loadClass(secretTestClassName);
-		for (Method testCaseMethod : getMethodsSorted(secretTestClass)) {
-			if (testCaseMethod.isAnnotationPresent(Replace.class)) {
-				Replace r = testCaseMethod.getAnnotation(Replace.class);
-				if (canProcess(r)) {
-					String cr = getCanonicalReplacement(r);
-					List<String> methods = replacementMap.get(cr);
-					if (methods == null) {
-						methods = new ArrayList<>();
+		try (URLClassLoader unitLoader = new URLClassLoader(new URL[]{new File(cwd, "junit").toURI().toURL()})) {
+			Class<?> secretTestClass = unitLoader.loadClass(secretTestClassName);
+			for (Method testCaseMethod : getMethodsSorted(secretTestClass)) {
+				if (testCaseMethod.isAnnotationPresent(Replace.class)) {
+					Replace r = testCaseMethod.getAnnotation(Replace.class);
+					if (canProcess(r)) {
+						String cr = getCanonicalReplacement(r);
+						List<String> methods = replacementMap.get(cr);
+						if (methods == null) {
+							methods = new ArrayList<>();
+						}
+						methods.add(testCaseMethod.getName());
+						replacementMap.put(cr, methods);
 					}
-					methods.add(testCaseMethod.getName());
-					replacementMap.put(cr, methods);
 				}
 			}
+		} catch (IOException malformedURLException) {
+			throw new Error("Error " + malformedURLException.getMessage());
 		}
 		boolean needSep = false;
 		for (Map.Entry<String, List<String>> pair : replacementMap.entrySet()) {
@@ -268,7 +287,10 @@ public class ReadReplace {
 				} else {
 					System.out.println("echo \",\" 1>&2");
 				}
-				System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + classpath + ":. -Dpub=" + publicTestClassName + " -Djson=yes tools.SingleMethodRunner " + secretTestClassName + " " + method);
+				System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m" //
+						+ " -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + classpath + ":junit:interfaces" //
+						+ " -Dpub=" + publicTestClassName //
+						+ " -Djson=yes tools.SingleMethodRunner " + secretTestClassName + " " + method);
 			}
 		}
 	}
