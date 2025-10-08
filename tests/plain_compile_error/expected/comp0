@@ -1,6 +1,6 @@
-javac  ToTest.java
-ToTest.java:3: Fehler: ';' erwartet
+javac  -sourcepath interfaces student/*.java
+student/ToTest.java:3: Fehler: ';' erwartet
 		return 42
 		         ^
 1 Fehler
-make: *** [Makefile:81: compile-stage0] Fehler 1
+make: *** [Makefile:65: compile-stage0] Fehler 1

@@ -1,3 +1,3 @@
-javac  ToTest.java
-Hinweis: ToTest.java verwendet nicht geprüfte oder unsichere Vorgänge.
+javac  -sourcepath interfaces student/*.java
+Hinweis: student/ToTest.java verwendet nicht geprüfte oder unsichere Vorgänge.
 Hinweis: Wiederholen Sie die Kompilierung mit -Xlint:unchecked, um Details zu erhalten.

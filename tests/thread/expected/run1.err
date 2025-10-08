@@ -1,1 +1,15 @@
-{"exercises":[{"name":"Threads","tests":[{"desc":"test","fromSecret":false,"id":"test","success":true}]}]}
+{
+    "exercises": [
+        {
+            "name": "Threads",
+            "tests": [
+                {
+                    "desc": "test",
+                    "fromSecret": false,
+                    "id": "test",
+                    "success": true
+                }
+            ]
+        }
+    ]
+}

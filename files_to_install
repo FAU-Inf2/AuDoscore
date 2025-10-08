@@ -5,4 +5,5 @@
 ./Makefile
 ./test.sh
 ./install.sh
+./obfuscate
 ./files_to_install

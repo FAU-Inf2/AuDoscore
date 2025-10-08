@@ -271,7 +271,7 @@ public class JUnitPointsMerger {
 
 	@SuppressWarnings("unchecked")
 	private static JSONObject recursiveMergeJArray(JSONArray raw) {
-		if (raw.size() < 1) {
+		if (raw.isEmpty()) {
 			return new JSONObject();
 		}
 		if (raw.size() == 1) {

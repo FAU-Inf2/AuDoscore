@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import tester.annotations.Ex;
 import tester.annotations.Exercises;
+import tester.annotations.Forbidden;
 import tester.annotations.Points;
 
 @Exercises({ @Ex(exID = "ForbiddenInArray", points = 2.0) })

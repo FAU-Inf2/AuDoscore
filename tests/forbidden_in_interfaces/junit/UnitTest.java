@@ -1,3 +1,5 @@
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import tester.annotations.*;
 

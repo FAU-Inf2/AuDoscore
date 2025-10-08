@@ -17,18 +17,22 @@ public class ForbiddenUseSearcher {
 	}
 
 	private static final String[] DEFAULT_NOT_FORBIDDEN = {//
-			"java.lang.Object**", "java.lang.(Boolean**|Byte**|Character**|Double**|Float**|Integer**|Long**|Short**)", // wrapper
+			"java.lang.Object**", "java.lang.(Boolean**|Byte**|Character**|Double**|Float**|Integer**|Long**|Short**|Number**)", // wrapper
 			"java.lang.(String|StringBuffer|StringBuilder).**", //
-			"java.lang.(Enum|Record).**", //
+			"java.lang.(Comparable)**", //
+			"java.lang.(Enum|Record)**", //
 			"java.lang.(Math|StrictMath).**", //
-			"java.lang.(IllegalArgumentException|IndexOutOfBoundsException|NullPointerException|NumberFormatException|Throwable).**", //
+			"java.lang.(Exception|Throwable).**", //
+			"java.lang.(ArrayIndexOutOfBoundsException|AssertionError|IllegalArgumentException|IllegalStateException|IndexOutOfBoundsException).**", //
+			"java.lang.(MatchException|NullPointerException|NumberFormatException|RuntimeException).**", //
 			"java.lang.ScopedValue.**", //
 			"java.lang.System.(arraycopy|currentTimeMillis|nanoTime).**", //
-			"java.lang.(Thread|ThreadLocal).**", //
+			"java.lang.(Thread|ThreadLocal)**", //
 			"java.io.PrintStream.print*", // for System.[out|err].println
 			"java.io.(StringReader|StringWriter).**", //
 			"java.math.**", //
 			"java.util.**", //
+			"java.lang.Class.desiredAssertionStatus**", //
 	};
 
 	public static void search(String rootDir, String pubTestName) {
@@ -38,6 +42,9 @@ public class ForbiddenUseSearcher {
 			List<Finding> findings = new LinkedList<>();
 			for (Path studentClassFile : studentClassFiles.toList()) {
 				ClassModel cm = ClassFile.of().parse(Files.readAllBytes(studentClassFile));
+				cm.superclass().map(superClass -> superClass.asInternalName().replace('/', '.')) //
+						.filter(usedName -> isForbidden(testAnnotations, usedName)) //
+						.ifPresent(usedName -> findings.add(new Finding(FindingType.EXTENDS, studentClassFile, -1, usedName)));
 				int lineNumber = 0;
 				for (MethodModel mm : cm.methods()) {
 					for (CodeElement codeElement : mm.code().map(CompoundElement::elementList).orElse(List.of())) {
@@ -45,8 +52,26 @@ public class ForbiddenUseSearcher {
 							lineNumber = ln.line();
 						} else if (codeElement instanceof InvokeInstruction i) {
 							String usedName = i.owner().asInternalName().replace('/', '.') + "." + i.name().stringValue() + "(" + i.type().stringValue() + ")";
-							if ((usedName.startsWith("java.") || usedName.startsWith("jdk.")) && isForbidden(testAnnotations, usedName)) {
-								findings.add(new Finding(studentClassFile, lineNumber, usedName));
+							if (isForbidden(testAnnotations, usedName)) {
+								findings.add(new Finding(FindingType.INVOKES, studentClassFile, lineNumber, usedName));
+							}
+						} else if (codeElement instanceof NewMultiArrayInstruction i) {
+							String usedName = i.arrayType().asInternalName().replace('/', '.');
+							while (usedName.startsWith("[")) {
+								usedName = usedName.substring(1);
+							}
+							usedName = usedName.substring(1); // type of base type: "[[I" for int[][] or "[[L" for object[][]...
+							if (isForbidden(testAnnotations, usedName)) {
+								findings.add(new Finding(FindingType.ARRAY_TYPE, studentClassFile, lineNumber, usedName));
+							}
+						} else if (codeElement instanceof NewReferenceArrayInstruction i) {
+							String usedName = i.componentType().asInternalName().replace('/', '.');
+							while (usedName.startsWith("[")) {
+								usedName = usedName.substring(1);
+							}
+							usedName = usedName.substring(1); // type of base type: "[[I" for int[][] or "[[L" for object[][]...
+							if (isForbidden(testAnnotations, usedName)) {
+								findings.add(new Finding(FindingType.ARRAY_TYPE, studentClassFile, lineNumber, usedName));
 							}
 						}
 					}
@@ -68,10 +93,18 @@ public class ForbiddenUseSearcher {
 	private record TestAnnotations(List<Forbidden> forbidden, List<NotForbidden> notForbidden) {
 	}
 
-	private record Finding(Path studentClassFile, int lineNumber, String usedName) {
+	private enum FindingType {
+		EXTENDS, INVOKES, ARRAY_TYPE
+	}
+
+	private record Finding(FindingType findingType, Path studentClassFile, int lineNumber, String usedName) {
 		@Override
 		public String toString() {
-			return "# " + studentClassFile.getFileName().toString() + ":" + lineNumber + ": " + usedName;
+			return switch (findingType) {
+				case EXTENDS -> "# " + studentClassFile.getFileName().toString() + ": extends " + usedName;
+				case INVOKES -> "# " + studentClassFile.getFileName().toString() + ":" + lineNumber + ": invokes " + usedName;
+				case ARRAY_TYPE -> "# " + studentClassFile.getFileName().toString() + ":" + lineNumber + ": array of " + usedName;
+			};
 		}
 	}
 
@@ -120,8 +153,10 @@ public class ForbiddenUseSearcher {
 	}
 
 	private static boolean isForbidden(TestAnnotations testAnnotations, String usedName) {
-		return (!matchesForbiddenOrNotForbidden(Forbidden.Type.WILDCARD, DEFAULT_NOT_FORBIDDEN, usedName) //
-				|| testAnnotations.forbidden.stream().anyMatch(f -> matchesForbiddenOrNotForbidden(f.type(), f.value(), usedName))) //
+		return ( //
+				((usedName.startsWith("java.") || usedName.startsWith("javax.") || usedName.startsWith("jdk.") || usedName.startsWith("com.") || usedName.startsWith("org.")) //
+						&& !matchesForbiddenOrNotForbidden(Forbidden.Type.WILDCARD, DEFAULT_NOT_FORBIDDEN, usedName)) //
+						|| testAnnotations.forbidden.stream().anyMatch(f -> matchesForbiddenOrNotForbidden(f.type(), f.value(), usedName))) //
 				&& testAnnotations.notForbidden.stream().noneMatch(f -> matchesForbiddenOrNotForbidden(f.type(), f.value(), usedName));
 	}
 }

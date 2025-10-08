@@ -1,4 +1,9 @@
-Hinweis: ToTest.java verwendet nicht geprüfte oder unsichere Vorgänge.
+Hinweis: student/ToTest.java verwendet nicht geprüfte oder unsichere Vorgänge.
 Hinweis: Wiederholen Sie die Kompilierung mit -Xlint:unchecked, um Details zu erhalten.
-      18: invokevirtual #21                 // Method java/lang/reflect/Method.getName:
-make: *** [Makefile:88: compile-stage1] Fehler 1
+Hinweis: student/ToTest.java verwendet nicht geprüfte oder unsichere Vorgänge.
+Hinweis: Wiederholen Sie die Kompilierung mit -Xlint:unchecked, um Details zu erhalten.
+FOUND FORBIDDEN CODE:
+# ToTest.class:4: invokes java.lang.Class.forName((Ljava/lang/String;)Ljava/lang/Class;)
+# ToTest.class:6: invokes java.lang.Class.getDeclaredMethod((Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;)
+# ToTest.class:7: invokes java.lang.reflect.Method.getName(()Ljava/lang/String;)
+make: *** [Makefile:72: compile-stage1] Fehler 1

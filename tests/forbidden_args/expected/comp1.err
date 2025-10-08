@@ -1,2 +1,3 @@
-       2: invokestatic  #9                  // Method java/lang/Integer.parseInt:
-make: *** [Makefile:90: compile-stage1] Fehler 1
+FOUND FORBIDDEN CODE:
+# ToTest.class:3: invokes java.lang.Integer.parseInt((Ljava/lang/String;)I)
+make: *** [Makefile:72: compile-stage1] Fehler 1

@@ -1,1 +1,1 @@
-javac ToTest.java	
+javac  -sourcepath interfaces student/*.java

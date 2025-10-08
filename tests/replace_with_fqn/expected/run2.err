@@ -3,12 +3,12 @@
         {
             "exercises": [
                 {
-                    "name": "AnonClassReplace",
+                    "name": "FQN",
                     "tests": [
                         {
-                            "desc": "testPublic",
+                            "desc": "test",
                             "fromSecret": false,
-                            "id": "testPublic",
+                            "id": "test",
                             "success": true
                         }
                     ]
@@ -18,14 +18,13 @@
         {
             "exercises": [
                 {
-                    "name": "AnonClassReplace",
+                    "name": "FQN",
                     "tests": [
                         {
-                            "desc": "testSecret",
-                            "error": "NullPointerException(Cannot invoke \"java.util.Iterator.next()\" because the return value of \"ToTest.foo()\" is null): SecretTest.testSecret(line 22)",
+                            "desc": "testSec",
                             "fromSecret": true,
-                            "id": "testSecret",
-                            "success": false
+                            "id": "testSec",
+                            "success": true
                         }
                     ]
                 }
@@ -36,12 +35,12 @@
         {
             "exercises": [
                 {
-                    "name": "AnonClassReplace",
+                    "name": "FQN",
                     "tests": [
                         {
-                            "desc": "testSecret",
+                            "desc": "testSec",
                             "fromSecret": true,
-                            "id": "testSecret",
+                            "id": "testSec",
                             "success": true
                         }
                     ]

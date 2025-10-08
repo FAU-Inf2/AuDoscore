@@ -1,2 +1,3 @@
-       0: invokestatic  #7                  // Method java/util/Collections.emptyList:
-make: *** [Makefile:90: compile-stage1] Fehler 1
+FOUND FORBIDDEN CODE:
+# ToTest.class:5: invokes java.util.Collections.emptyList(()Ljava/util/List;)
+make: *** [Makefile:72: compile-stage1] Fehler 1

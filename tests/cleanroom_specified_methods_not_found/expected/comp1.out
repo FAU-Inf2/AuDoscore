@@ -1,9 +1,5 @@
-make[1]: Entering directory '/home/sitowert/AuDoscore/tests/cleanroom_specified_methods_not_found/test.11343'
 rm -f *.class */*.class
-javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor tools.bomacon.BonusMalusConverter UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; javac -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac cleanroom/*.java;
-make[2]: Entering directory '/home/sitowert/AuDoscore/tests/cleanroom_specified_methods_not_found/test.11343'
-javac -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
-make[2]: Leaving directory '/home/sitowert/AuDoscore/tests/cleanroom_specified_methods_not_found/test.11343'
-java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
-Makefile:61: recipe for target 'compile-stage1' failed
-make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/cleanroom_specified_methods_not_found/test.11343'
+javac  -sourcepath interfaces student/*.java
+javac -Xprefer:source  -sourcepath interfaces:cleanroom -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar cleanroom/*.java
+javac -Xprefer:source  -sourcepath interfaces:junit:student -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar junit/UnitTest.java
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit:interfaces:student CheckAnnotation UnitTest

@@ -9,7 +9,7 @@ Exception in thread "main" java.lang.ExceptionInInitializerError
 	at tools.SingleMethodRunner.main(SingleMethodRunner.java:14)
 Caused by: java.lang.NullPointerException
 	at ToTest.<init>(ToTest.java:3)
-	at SecretTest.<clinit>(SecretTest.java:15)
+	at SecretTest.<clinit>(SecretTest.java:12)
 	... 4 more
-make: *** [Makefile:159: run-stage2] Fehler 1
+make: *** [Makefile:132: run-stage2] Fehler 1
 Above JSON is broken

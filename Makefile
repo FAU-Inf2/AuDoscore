@@ -64,9 +64,10 @@ lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 compile-stage0:
 	javac $(COMPILER_ARGS) -sourcepath $(interfacesDirName) $(sutDirName)/*.java
 
-compile-stage1: miniclean
-	javac $(COMPILER_ARGS) -sourcepath $(interfacesDirName):$(sutDirName) -cp $(LIBALL) $(junitDirName)/$(PUBLICTESTSOURCE)
-	java -cp $(LIBALL) CheckAnnotation $(PUBLICTEST)
+compile-stage1: miniclean compile-stage0
+	javac -Xprefer:source $(COMPILER_ARGS) -sourcepath $(interfacesDirName):$(cleanroomDirName) -cp $(LIBALL) $(cleanroomDirName)/*.java
+	javac -Xprefer:source $(COMPILER_ARGS) -sourcepath $(interfacesDirName):$(junitDirName):$(sutDirName) -cp $(LIBALL) $(junitDirName)/$(PUBLICTESTSOURCE)
+	java -cp $(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName) CheckAnnotation $(PUBLICTEST)
 	java -cp $(LIBALL) tools.ForbiddenUseSearcher $(PUBLICTEST) > forbidden.out
 	if [ -s forbidden.out ]; then \
 		cat forbidden.out 1>&2 ; \
@@ -81,17 +82,18 @@ compile-stage2: miniclean
 	if [ "x$(SECRETTEST)" != "x" ]; then \
 		set -e ; \
 		make compile-stage2-secret ; \
-		java -cp $(LIBALL):./$(junitDirName) -Dpub=$(PUBLICTEST) CheckAnnotation $(SECRETTEST) ; \
+		java -cp $(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName) -Dpub=$(PUBLICTEST) CheckAnnotation $(SECRETTEST) ; \
 		echo "echo \",\" 1>&2" >> single_execution.sh;	\
-		java -cp $(LIBALL):./$(junitDirName) tools.sep.SingleExecutionPreparer "$(LIBALL):$(interfacesDirName):$(sutDirName):$(junitDirName)" "-Djson=yes -Dpub=$(PUBLICTEST)" $(SECRETTEST) >> single_execution.sh; \
+		java -cp $(LIBALL):$(junitDirName) tools.sep.SingleExecutionPreparer "$(LIBALL):$(interfacesDirName):$(sutDirName):$(junitDirName)" "-Djson=yes -Dpub=$(PUBLICTEST)" $(SECRETTEST) >> single_execution.sh; \
 	else \
 		set -e ; \
 		echo "echo \"]\" 1>&2" >> loop.sh ; \
 	fi
 
 compile-stage2-secret:
-	javac $(COMPILER_ARGS) -sourcepath ./$(interfacesDirName)/:./$(junitDirName):./$(cleanroomDirName)/ -cp $(LIBALL) ./junit/$(SECRETTESTSOURCE)
-	javac $(COMPILER_ARGS) -sourcepath ./$(interfacesDirName)/:./$(junitDirName):./$(sutDirName)/ -cp $(LIBALL) ./junit/$(SECRETTESTSOURCE)
+	./obfuscate
+	javac -Xprefer:source $(COMPILER_ARGS) -sourcepath $(interfacesDirName):$(cleanroomDirName) -cp $(LIBALL) $(cleanroomDirName)/*.java
+	javac -Xprefer:source $(COMPILER_ARGS) -sourcepath $(interfacesDirName):$(junitDirName):$(sutDirName) -cp $(LIBALL) $(junitDirName)/$(SECRETTESTSOURCE)
 	for i in $(cleanroomDirName)/*.java; do \
 		cp $$i $${i}.bak; \
 		/bin/echo -e "package cleanroom;\n" > $$i ; \
@@ -122,7 +124,7 @@ run-stage0:
 
 run-stage1:
 	java -XX:-OmitStackTraceInFastThrow -Xmx1024m \
-		-cp $(LIBJUNIT):$(LIBHAMCREST):$(LIBJUNITPOINTS):$(LIBJSONSIMPLE):./$(interfacesDirName)/:./$(junitDirName):./$(sutDirName)/ \
+		-cp $(LIBALL):$(interfacesDirName):$(junitDirName):$(sutDirName) \
 		-Djson=yes org.junit.runner.JUnitCore $(PUBLICTEST) || echo
 
 run-stage2:

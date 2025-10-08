@@ -1,4 +1,4 @@
 Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - found PointsLogger but @Rule annotation is missing
-	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:136)
-	at CheckAnnotation.main(CheckAnnotation.java:193)
-make: *** [Makefile:85: compile-stage1] Fehler 1
+	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:135)
+	at CheckAnnotation.main(CheckAnnotation.java:192)
+make: *** [Makefile:70: compile-stage1] Fehler 1

@@ -1,6 +1,5 @@
 import java.io.FileWriter;
 import java.io.IOException;
-import java.security.AccessControlException;
 
 public class ToTest {
 	public static int pub() {
@@ -10,8 +9,6 @@ public class ToTest {
 			fw.append("public class SecretTest extends JUnitWithPoints { }\n");
 		} catch (final IOException e) {
 			// Ignore
-		} catch (final AccessControlException e) {
-			throw new AccessControlException("cannot exploit :'(");
 		}
 		return 42;
 	}

@@ -1,69 +1,54 @@
 rm -f *.class */*.class
 make compile-stage1
-make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.86162“ wird betreten
+make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.311831“ wird betreten
 rm -f *.class */*.class
-javac --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier UnitTest.java > UnitTest.java.tmp ; mv UnitTest.java.tmp UnitTest.java ; make -B UnitTest.class; javac  cleanroom/*.java;
-make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.86162“ wird betreten
-javac  -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. UnitTest.java ToTest.java 
-make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.86162“ wird verlassen
-java -cp lib/junit.jar:lib/junitpoints.jar:. CheckAnnotation UnitTest
-java -cp lib/junitpoints.jar:. ReadForbidden UnitTest > forbidden
-chmod +x forbidden
-if [ "xSecretTest" != "x" ]; then \
-	STUDENTCLASSES=$(find . -maxdepth 1 -iname "*.class" -a \! \( -name "UnitTest*" -o -name "SecretTest*" \) ); \
-else \
-	STUDENTCLASSES=$(find . -maxdepth 1 -iname "*.class" -a \! -name "UnitTest*"); \
-fi; \
-if [ "x" != "x" ]; then \
-	STUDENTCLASSES=$(echo "$STUDENTCLASSES" | grep -vE "$(echo "" | sed 's/\.java/(\\\$[^.]*)?\.class/g' | tr " " "|")"); \
-fi; \
-for i in $STUDENTCLASSES; do \
-	rm -f javap.out; \
-	javap -p -c $i > javap.out; \
-	sed -i -e 's/(.*//' javap.out; \
-	! ( cat javap.out | ./forbidden 1>&2 ) || exit 1; \
-done
-rm forbidden
+javac  -sourcepath interfaces student/*.java
+javac -Xprefer:source  -sourcepath interfaces:cleanroom -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar cleanroom/*.java
+javac -Xprefer:source  -sourcepath interfaces:junit:student -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar junit/UnitTest.java
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit:interfaces:student CheckAnnotation UnitTest
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tools.ForbiddenUseSearcher UnitTest > forbidden.out
+if [ -s forbidden.out ]; then \
+	cat forbidden.out 1>&2 ; \
+	exit 1 ; \
+fi
 make run-comparer
-make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.86162“ wird betreten
+make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.311831“ wird betreten
 java -cp lib/junitpoints.jar tools.ic.InterfaceComparator UnitTest
-make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.86162“ wird verlassen
-make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.86162“ wird verlassen
+make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.311831“ wird verlassen
+make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.311831“ wird verlassen
 echo "echo \"[\" 1>&2" > loop.sh
+echo "make run-stage1" > single_execution.sh
 if [ "xSecretTest" != "x" ]; then \
 	set -e ; \
 	make compile-stage2-secret ; \
-	java -cp lib/junit.jar:lib/junitpoints.jar:. -Dpub=UnitTest CheckAnnotation SecretTest ; \
-	echo "make run-stage1" > single_execution.sh ;\
+	java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit:interfaces:student -Dpub=UnitTest CheckAnnotation SecretTest ; \
 	echo "echo \",\" 1>&2" >> single_execution.sh;	\
-	java -cp lib/junitpoints.jar:lib/junit.jar:. tools.sep.SingleExecutionPreparer "lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:." "-Djson=yes -Dpub=UnitTest" SecretTest >> single_execution.sh; \
+	java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit tools.sep.SingleExecutionPreparer "lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:interfaces:student:junit" "-Djson=yes -Dpub=UnitTest" SecretTest >> single_execution.sh; \
 else \
 	set -e ; \
 	echo "echo \"]\" 1>&2" >> loop.sh ; \
-	echo "make run-stage1" > single_execution.sh ; \
 fi
-make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.86162“ wird betreten
+make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.311831“ wird betreten
 ./obfuscate
-javac --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp lib/junit.jar:lib/junitpoints.jar -proc:only -processor FullQualifier SecretTest.java > SecretTest.java.tmp ; mv SecretTest.java.tmp SecretTest.java ; make -B SecretTest.class; javac  cleanroom/*.java;
-make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.86162“ wird betreten
-javac  -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/junitpoints.jar:. SecretTest.java ToTest.java 
-make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.86162“ wird verlassen
+javac -Xprefer:source  -sourcepath interfaces:cleanroom -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar cleanroom/*.java
+javac -Xprefer:source  -sourcepath interfaces:junit:student -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar junit/SecretTest.java
 for i in cleanroom/*.java; do \
 	cp $i ${i}.bak; \
-	/bin/echo -e "package cleanroom;" > $i ; \
+	/bin/echo -e "package cleanroom;\n" > $i ; \
 	cat ${i}.bak >> $i; \
 done
-COMPILER_ARGS=" -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED" java -cp lib/junitpoints.jar:lib/junit.jar:. tester.ReadReplace SecretTest > compile2.sh
+COMPILER_ARGS=" -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED" \
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tools.ReadReplace SecretTest > compile2.sh
 if [ "x" != "x" ]; then \
 	set -e ; \
 	for i in ; do \
 		/bin/echo -e "package cleanroom;\n" > cleanroom/$i; \
-		cat $i >> cleanroom/$i; \
+		cat interfaces/$i >> cleanroom/$i; \
 	done; \
 fi
 /bin/dash -ex ./compile2.sh
 + mkdir -p ToTest#toTest2
-+ javac -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#toTest2 -proc:only -processor ReplaceMixer cleanroom/ToTest.java ToTest.java
++ javac -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -Xprefer:source -cp lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#toTest2 -proc:only -processor tools.ReplaceMixer cleanroom/ToTest.java student/ToTest.java
 class ToTest ispub true
 class ToTest, true, 0, true
 class ToTest ispub true
@@ -71,13 +56,13 @@ duplicate method: <init>: [], taken from student
 duplicate method: toTest: [], taken from student
 duplicate method: toTest2: [], taken from cleanroom
 class ToTest, false, 0, true
-+ javac -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp . -d ToTest#toTest2 -sourcepath ToTest#toTest2 ToTest#toTest2/ToTest.java
++ javac -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp interfaces:student -d ToTest#toTest2 -sourcepath ToTest#toTest2 ToTest#toTest2/ToTest.java
 ToTest#toTest2/ToTest.java:13: Fehler: Symbol nicht gefunden
         return doesnotexistinstudicode;
                ^
   Symbol: Variable doesnotexistinstudicode
   Ort: Klasse ToTest
 1 Fehler
-make[1]: *** [Makefile:130: compile-stage2-secret] Fehler 1
-make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.86162“ wird verlassen
-make: *** [Makefile:111: compile-stage2] Fehler 2
+make[1]: *** [Makefile:100: compile-stage2-secret] Fehler 1
+make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.311831“ wird verlassen
+make: *** [Makefile:82: compile-stage2] Fehler 2

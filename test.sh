@@ -1,5 +1,11 @@
 #!/bin/bash
 
+LIBJUNITPOINTS=lib/junitpoints.jar
+LIBJUNIT=lib/junit.jar
+LIBHAMCREST=lib/hamcrest-core.jar
+LIBJSONSIMPLE=lib/json-simple-1.1.1.jar
+LIBALL=$LIBJUNITPOINTS:$LIBJUNIT:$LIBHAMCREST:$LIBJSONSIMPLE
+
 callerDir=${PWD}
 scriptFile=$(readlink -f $0)
 scriptDir=$(dirname $scriptFile)
@@ -301,9 +307,9 @@ function testIt {
 
 	info "- merging"
 	if [ "x$secTestFile" != "x" ]; then
-		( java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar:$junitDirName $replace_error -Dpub=$pubTestFile -Dsecret=$secTestFile JUnitPointsMerger run2.err merged ) > merge 2>&1
+		( java -cp $LIBALL:$interfacesDirName:$junitDirName:$sutDirName $replace_error -Dpub=$pubTestFile -Dsecret=$secTestFile JUnitPointsMerger run2.err merged ) > merge 2>&1
 	else
-		( java -cp lib/junitpoints.jar:lib/json-simple-1.1.1.jar:$junitDirName $replace_error -Dpub=$pubTestFile JUnitPointsMerger run2.err merged ) > merge 2>&1
+		( java -cp $LIBALL:$interfacesDirName:$junitDirName:$sutDirName $replace_error -Dpub=$pubTestFile JUnitPointsMerger run2.err merged ) > merge 2>&1
 	fi
 	checkExit $? "\ninternal error\n" merge
 	cat merged

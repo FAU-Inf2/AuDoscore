@@ -1,0 +1,8 @@
+FOUND FORBIDDEN CODE:
+# ToTest.class:6: invokes java.io.FileWriter.<init>((Ljava/lang/String;)V)
+# ToTest.class:6: invokes java.io.FileWriter.close(()V)
+# ToTest.class:7: invokes java.io.FileWriter.append((Ljava/lang/CharSequence;)Ljava/io/Writer;)
+# ToTest.class:8: invokes java.io.FileWriter.append((Ljava/lang/CharSequence;)Ljava/io/Writer;)
+# ToTest.class:9: invokes java.io.FileWriter.append((Ljava/lang/CharSequence;)Ljava/io/Writer;)
+# ToTest.class:10: invokes java.io.FileWriter.close(()V)
+make: *** [Makefile:72: compile-stage1] Fehler 1

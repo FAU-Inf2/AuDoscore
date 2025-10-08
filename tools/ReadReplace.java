@@ -59,11 +59,12 @@ public class ReadReplace {
 							}
 							final String replacedSourceFolderName = replacedSourceFolderNameSB.toString();
 							compileInstructions.add("mkdir -p " + replacedSourceFolderName + ";" //
-									+ " javac " + compilerArgs + " -Xprefer:source -cp .:lib/junit.jar:lib/junitpoints.jar" //
+									+ " javac " + compilerArgs + " -Xprefer:source -cp lib/junit.jar:lib/junitpoints.jar" //
 									+ " -Areplaces=" + replacedSourceFolderName //
 									+ " -proc:only -processor tools.ReplaceMixer" //
 									+ " cleanroom/" + entry.getKey() + ".java student/" + entry.getKey() + ".java > " + replacedSourceFolderName + "/" + entry.getKey() + ".java;" //
-									+ " javac " + compilerArgs + " -cp ./interfaces/ -d " + replacedSourceFolderName + " -sourcepath ./" + replacedSourceFolderName + " " + replacedSourceFolderName + "/" + entry.getKey() + ".java;");
+									+ " javac " + compilerArgs + " -cp interfaces:student -d " + replacedSourceFolderName //
+									+ " -sourcepath " + replacedSourceFolderName + " " + replacedSourceFolderName + "/" + entry.getKey() + ".java;");
 						}
 					}
 				}
@@ -136,9 +137,9 @@ public class ReadReplace {
 	private static Class<?> getClassFromDescriptor(final String[] descParts) {
 		final String[] classParts = new String[descParts.length - 1];
 		System.arraycopy(descParts, 0, classParts, 0, classParts.length);
-		try {
-			return Class.forName(String.join(".", classParts));
-		} catch (final ClassNotFoundException e) {
+		try (URLClassLoader studentLoader = new URLClassLoader(new URL[]{new File(cwd, "interfaces").toURI().toURL(), new File(cwd, "student").toURI().toURL()})) {
+			return studentLoader.loadClass(String.join(".", classParts));
+		} catch (final ClassNotFoundException | IOException e) {
 			throw new AnnotationFormatError("ERROR - Class '" + String.join(".", classParts) + "' does not exist");
 		}
 	}
@@ -199,9 +200,9 @@ public class ReadReplace {
 				return void.class;
 			}
 			default -> {
-				try {
-					return Class.forName(desc);
-				} catch (final ClassNotFoundException e) {
+				try (URLClassLoader studentLoader = new URLClassLoader(new URL[]{new File(cwd, "interfaces").toURI().toURL(), new File(cwd, "student").toURI().toURL()})) {
+					return studentLoader.loadClass(desc);
+				} catch (final ClassNotFoundException | IOException e) {
 					throw new AnnotationFormatError("ERROR - Invalid type descriptor: " + desc);
 				}
 			}
@@ -288,7 +289,7 @@ public class ReadReplace {
 					System.out.println("echo \",\" 1>&2");
 				}
 				System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m" //
-						+ " -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + classpath + ":junit:interfaces" //
+						+ " -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + classpath + ":junit:interfaces:student" //
 						+ " -Dpub=" + publicTestClassName //
 						+ " -Djson=yes tools.SingleMethodRunner " + secretTestClassName + " " + method);
 			}

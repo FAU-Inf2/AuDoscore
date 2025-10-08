@@ -13,7 +13,7 @@ import tester.annotations.Points;
 @Exercises({ @Ex(exID = "FbWildcard", points = 42.0)})
 @Forbidden({"java.util"})
 @NotForbidden(
-	value = {"java.util.*List"},
+	value = {"java.util.**List"},
 	type = Forbidden.Type.WILDCARD
 )
 public class UnitTest {

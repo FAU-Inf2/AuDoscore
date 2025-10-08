@@ -21,10 +21,26 @@
                     "name": "Test1",
                     "tests": [
                         {
-                            "desc": "testSecret",
+                            "desc": "testSecret_with_replace_passes",
                             "error": "AssertionError(expected:<1> but was:<0>)",
                             "fromSecret": true,
-                            "id": "testSecret",
+                            "id": "testSecret_with_replace_passes",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Test1",
+                    "tests": [
+                        {
+                            "desc": "testSecret_without_replace_fails",
+                            "error": "AssertionError(expected:<1> but was:<0>)",
+                            "fromSecret": true,
+                            "id": "testSecret_without_replace_fails",
                             "success": false
                         }
                     ]
@@ -39,9 +55,9 @@
                     "name": "Test1",
                     "tests": [
                         {
-                            "desc": "testSecret",
+                            "desc": "testSecret_with_replace_passes",
                             "fromSecret": true,
-                            "id": "testSecret",
+                            "id": "testSecret_with_replace_passes",
                             "success": true
                         }
                     ]

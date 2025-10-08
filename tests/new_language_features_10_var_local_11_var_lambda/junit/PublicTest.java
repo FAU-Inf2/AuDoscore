@@ -4,6 +4,7 @@ import tester.annotations.*;
 import java.util.*;
 
 @Exercises({@Ex(exID = "Lambda", points = 47.11)})
+@NotForbidden(value = {"java.io.PrintWriter.**"}, type = Forbidden.Type.WILDCARD)
 public class PublicTest {
 	@Rule
 	public final PointsLogger pointsLogger = new PointsLogger();

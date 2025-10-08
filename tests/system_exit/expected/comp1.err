@@ -1,2 +1,3 @@
-       1: invokestatic  #7                  // Method java/lang/System.exit:
-make: *** [Makefile:90: compile-stage1] Fehler 1
+FOUND FORBIDDEN CODE:
+# ToTest.class:6: invokes java.lang.System.exit((I)V)
+make: *** [Makefile:72: compile-stage1] Fehler 1

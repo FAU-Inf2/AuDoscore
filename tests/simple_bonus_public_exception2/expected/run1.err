@@ -5,7 +5,7 @@
             "tests": [
                 {
                     "desc": "test",
-                    "error": "NullPointerException(Cannot invoke \"java.lang.Integer.equals(Object)\" because the return value of \"ToTest.toTest()\" is null): UnitTest.test(line 23)",
+                    "error": "NullPointerException(Cannot invoke \"java.lang.Integer.equals(Object)\" because the return value of \"ToTest.toTest()\" is null): UnitTest.test(line 24)",
                     "fromSecret": false,
                     "id": "test",
                     "success": false

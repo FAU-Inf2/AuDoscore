@@ -1,2 +1,3 @@
-       4: invokestatic  #7                  // Method java/lang/Math.max:
-make: *** [Makefile:90: compile-stage1] Fehler 1
+FOUND FORBIDDEN CODE:
+# ToTest.class:3: invokes java.lang.Math.max((II)I)
+make: *** [Makefile:72: compile-stage1] Fehler 1

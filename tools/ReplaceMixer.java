@@ -16,7 +16,7 @@ import com.sun.tools.javac.tree.JCTree.*;
 
 @SupportedAnnotationTypes("*")
 @SupportedOptions("replaces")
-@SupportedSourceVersion(SourceVersion.RELEASE_21)
+@SupportedSourceVersion(SourceVersion.RELEASE_25)
 public class ReplaceMixer extends AbstractProcessor {
 	public static final String CLEAN_PREFIX = "__clean";
 	private Trees trees;

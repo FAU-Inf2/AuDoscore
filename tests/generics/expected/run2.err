@@ -1,15 +1,81 @@
-{ "vanilla" : 
-[
-{"exercises":[{"name":"Generics","tests":[{"desc":"test","fromSecret":false,"id":"test","success":true}]}]}
-,
-{"exercises":[{"name":"Generics","tests":[{"desc":"test1","fromSecret":true,"id":"test1","success":true}]}]}
-,
-{"exercises":[{"name":"Generics","tests":[{"desc":"test2","fromSecret":true,"id":"test2","success":true}]}]}
-]
-, "replaced" : 
-[
-{"exercises":[{"name":"Generics","tests":[{"desc":"test1","fromSecret":true,"id":"test1","success":true}]}]}
-,
-{"exercises":[{"name":"Generics","tests":[{"desc":"test2","fromSecret":true,"id":"test2","success":true}]}]}
-]
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "Generics",
+                    "tests": [
+                        {
+                            "desc": "test",
+                            "fromSecret": false,
+                            "id": "test",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Generics",
+                    "tests": [
+                        {
+                            "desc": "test1",
+                            "fromSecret": true,
+                            "id": "test1",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Generics",
+                    "tests": [
+                        {
+                            "desc": "test2",
+                            "fromSecret": true,
+                            "id": "test2",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "Generics",
+                    "tests": [
+                        {
+                            "desc": "test1",
+                            "fromSecret": true,
+                            "id": "test1",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Generics",
+                    "tests": [
+                        {
+                            "desc": "test2",
+                            "fromSecret": true,
+                            "id": "test2",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }
