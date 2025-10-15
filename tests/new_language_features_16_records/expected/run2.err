@@ -117,10 +117,9 @@
                     "tests": [
                         {
                             "desc": "SecretTest \"regular\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<-624>)",
                             "fromSecret": true,
                             "id": "secTest_regular",
-                            "success": false
+                            "success": true
                         }
                     ]
                 }

@@ -1,0 +1,16 @@
+{
+    "exercises": [
+        {
+            "name": "Interface Private Methods",
+            "tests": [
+                {
+                    "desc": "PublicTest \"default method\": Should fail in \"vanilla\" because without @Replace.",
+                    "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<24>)",
+                    "fromSecret": false,
+                    "id": "pubTest",
+                    "success": false
+                }
+            ]
+        }
+    ]
+}

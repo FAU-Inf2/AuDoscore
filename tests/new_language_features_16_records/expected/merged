@@ -1,9 +1,9 @@
-Score: 23.55
+Score: 23.5
 
-Lambda (15.5 points):
+Lambda (23.5 points):
 ✗   0.00 | PublicTest "member": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<708> but was:<10958>)
 ✗   0.00 | PublicTest "member_anonymous_inner": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<708> but was:<84>)
 ✗   0.00 | PublicTest "regular": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<708> but was:<-624>)
-✓   7.85 | SecretTest "regular": Should pass in "replaced" because with @Replace now.
 ✓   7.85 | SecretTest "member": Should pass in "replaced" because with @Replace now.
 ✓   7.85 | SecretTest "member_anonymous_inner": Should pass in "replaced" because with @Replace now.
+✓   7.85 | SecretTest "regular": Should pass in "replaced" because with @Replace now.

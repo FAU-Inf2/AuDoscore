@@ -3,12 +3,12 @@
         {
             "exercises": [
                 {
-                    "name": "RepRefClass",
+                    "name": "GA4.6a",
                     "tests": [
                         {
                             "desc": "empty dummy test",
                             "fromSecret": false,
-                            "id": "test22",
+                            "id": "test2",
                             "success": true
                         }
                     ]
@@ -18,11 +18,11 @@
         {
             "exercises": [
                 {
-                    "name": "RepRefClass",
+                    "name": "GA4.6a",
                     "tests": [
                         {
                             "desc": "test",
-                            "error": "AssertionError(Should return 42 expected:<42> but was:<-1>)",
+                            "error": "AssertionError(Should return 42 expected:<42> but was:<23>)",
                             "fromSecret": true,
                             "id": "test",
                             "success": false
@@ -36,13 +36,14 @@
         {
             "exercises": [
                 {
-                    "name": "RepRefClass",
+                    "name": "GA4.6a",
                     "tests": [
                         {
                             "desc": "test",
+                            "error": "NoSuchFieldError(Class ToTest does not have member field 'int variable'): ToTest.toTest(line 5)",
                             "fromSecret": true,
                             "id": "test",
-                            "success": true
+                            "success": false
                         }
                     ]
                 }

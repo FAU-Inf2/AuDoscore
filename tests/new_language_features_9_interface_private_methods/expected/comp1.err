@@ -1,5 +1,0 @@
-ERROR - Method public static int IToTest.toTest_static()[IToTest] does not match or does not exist in student code
-Exception in thread "main" java.lang.Error
-	at tools.ic.InterfaceComparator.main(InterfaceComparator.java:335)
-make[1]: *** [Makefile:119: run-comparer] Fehler 1
-make: *** [Makefile:73: compile-stage1] Fehler 2

@@ -293,7 +293,10 @@ function testIt {
 
 	info "- testing"
 	( make run-stage2 ) > run2.out 2> run2.err
-
+	ec=$?
+	if grep -q "java.lang.NoSuchFieldError:" "run2.out"; then
+		checkExit 1 "\ninternal error\n" run2.out
+	fi
 	if [ $? -ne 0 ]; then
 		err "failed, stdout:"
 		cat run2.out

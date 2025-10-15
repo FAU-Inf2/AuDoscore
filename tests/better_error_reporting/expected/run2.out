@@ -1,0 +1,42 @@
+echo "{ \"vanilla\" : " 1>&2
+echo "[" 1>&2
+/bin/dash ./single_execution.sh
+make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.217109“ wird betreten
+java -XX:-OmitStackTraceInFastThrow -Xmx1024m \
+	-cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:interfaces:junit:student \
+	-Djson=yes org.junit.runner.JUnitCore UnitTest || echo
+JUnit version 4.13.2
+.
+Time: xxx
+
+OK (1 test)
+
+make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.217109“ wird verlassen
+.E
+Time: xxx
+There was 1 failure:
+1) test2(SecretTest)
+java.lang.AssertionError: Should return 23 expected:<23> but was:<42>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:647)
+	at SecretTest.test2(SecretTest.java:25)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+echo "]" 1>&2
+echo ", \"replaced\" : " 1>&2
+/bin/dash ./loop.sh
+.E
+Time: xxx
+There was 1 failure:
+1) test2(SecretTest)
+java.lang.NoSuchFieldError: Class ToTest does not have member field 'int doesnotexistinstudicode'
+	at ToTest.toTest2(ToTest.java:7)
+	at SecretTest.test2(SecretTest.java:25)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+echo "}" 1>&2

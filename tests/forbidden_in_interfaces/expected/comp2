@@ -1,10 +1,7 @@
-rm -f *.class */*.class
-make compile-stage1
-make[1]: Verzeichnis „/audoscore/tests/forbidden_in_interfaces/test.65651“ wird betreten
-rm -f *.class */*.class
-javac  -sourcepath interfaces student/*.java
-javac -Xprefer:source  -sourcepath interfaces:cleanroom -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar cleanroom/*.java
-javac -Xprefer:source  -sourcepath interfaces:junit:student -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar junit/UnitTest.java
+rm -rf *.class
+javac  -Xprefer:source -sourcepath interfaces student/*.java
+javac  -Xprefer:source -sourcepath interfaces cleanroom/*.java
+javac  -Xprefer:source -sourcepath interfaces:junit:student -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar junit/UnitTest.java
 java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit:interfaces:student CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tools.ForbiddenUseSearcher UnitTest > forbidden.out
 if [ -s forbidden.out ]; then \
@@ -12,10 +9,9 @@ if [ -s forbidden.out ]; then \
 	exit 1 ; \
 fi
 make run-comparer
-make[2]: Verzeichnis „/audoscore/tests/forbidden_in_interfaces/test.65651“ wird betreten
-java -cp lib/junitpoints.jar tools.ic.InterfaceComparator UnitTest
-make[2]: Verzeichnis „/audoscore/tests/forbidden_in_interfaces/test.65651“ wird verlassen
-make[1]: Verzeichnis „/audoscore/tests/forbidden_in_interfaces/test.65651“ wird verlassen
+make[1]: Verzeichnis „/audoscore/tests/forbidden_in_interfaces/test.292618“ wird betreten
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tools.ic.InterfaceComparator UnitTest
+make[1]: Verzeichnis „/audoscore/tests/forbidden_in_interfaces/test.292618“ wird verlassen
 echo "echo \"[\" 1>&2" > loop.sh
 echo "make run-stage1" > single_execution.sh
 if [ "x" != "x" ]; then \
@@ -23,7 +19,7 @@ if [ "x" != "x" ]; then \
 	make compile-stage2-secret ; \
 	java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit:interfaces:student -Dpub=UnitTest CheckAnnotation  ; \
 	echo "echo \",\" 1>&2" >> single_execution.sh;	\
-	java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit tools.sep.SingleExecutionPreparer "lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:interfaces:student:junit" "-Djson=yes -Dpub=UnitTest"  >> single_execution.sh; \
+	java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit tools.sep.SingleExecutionPreparer "lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:interfaces:junit:student" "-Djson=yes -Dpub=UnitTest"  >> single_execution.sh; \
 else \
 	set -e ; \
 	echo "echo \"]\" 1>&2" >> loop.sh ; \

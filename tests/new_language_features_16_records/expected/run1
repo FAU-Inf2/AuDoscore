@@ -1,0 +1,31 @@
+java -XX:-OmitStackTraceInFastThrow -Xmx1024m \
+	-cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:interfaces:junit:student \
+	-Djson=yes org.junit.runner.JUnitCore PublicTest || echo
+JUnit version 4.13.2
+.E.E.E
+Time: xxx
+There were 3 failures:
+1) pubTest_regular(PublicTest)
+java.lang.AssertionError: Should fail in "vanilla" because without @Replace. expected:<708> but was:<-624>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:647)
+	at PublicTest.pubTest_regular(PublicTest.java:15)
+2) pubTest_member(PublicTest)
+java.lang.AssertionError: Should fail in "vanilla" because without @Replace. expected:<708> but was:<10958>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:647)
+	at PublicTest.pubTest_member(PublicTest.java:21)
+3) pubTest_member_anonymous_inner(PublicTest)
+java.lang.AssertionError: Should fail in "vanilla" because without @Replace. expected:<708> but was:<84>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:647)
+	at PublicTest.pubTest_member_anonymous_inner(PublicTest.java:27)
+
+FAILURES!!!
+Tests run: 3,  Failures: 3
+
+
+{"exercises":[{"name":"Lambda","tests":[{"desc":"PublicTest \"regular\": Should fail in \"vanilla\" because without @Replace.","error":"AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<-624>)","fromSecret":false,"id":"pubTest_regular","success":false},{"desc":"PublicTest \"member\": Should fail in \"vanilla\" because without @Replace.","error":"AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<10958>)","fromSecret":false,"id":"pubTest_member","success":false},{"desc":"PublicTest \"member_anonymous_inner\": Should fail in \"vanilla\" because without @Replace.","error":"AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<84>)","fromSecret":false,"id":"pubTest_member_anonymous_inner","success":false}]}]}

@@ -14,7 +14,7 @@ public class SecretTest {
 	@Replace("ToTest.toTest")
 	public void secTest() {
 		assertEquals("Should pass in \"replaced\" because with @Replace now.", PublicTest.expected(), ToTest.toTest());
-		assertEquals("Should pass in \"replaced\" because with @Replace now", PublicTest.expected(), ToTest.toTest());
+		assertEquals("Should pass in \"replaced\" because with @Replace now.", PublicTest.expected(), ToTest.toTest());
 	}
 
 	@Test(timeout = 200)

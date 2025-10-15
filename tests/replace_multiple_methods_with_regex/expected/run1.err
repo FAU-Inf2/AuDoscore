@@ -1,0 +1,16 @@
+{
+    "exercises": [
+        {
+            "name": "ReplaceMultipleWithRegex",
+            "tests": [
+                {
+                    "desc": "PublicTest: Should fail in \"vanilla\" because without @Replace.",
+                    "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<84> but was:<0>)",
+                    "fromSecret": false,
+                    "id": "pubTest",
+                    "success": false
+                }
+            ]
+        }
+    ]
+}

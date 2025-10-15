@@ -2,7 +2,6 @@
 
 # FIXME: this is a dirty workaround for NOrberts exercise
 mkdir -p cleanroom
-touch cleanroom/ThisDummyFileWillNeverBeSubmitted.java
 
 if [ -n "$AUDOSCORE_SECURITY_TOKEN" ]; then
 	export TOKEN=${AUDOSCORE_SECURITY_TOKEN}

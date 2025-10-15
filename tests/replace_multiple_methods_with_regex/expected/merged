@@ -1,0 +1,5 @@
+Score: 0.5
+
+ReplaceMultipleWithRegex (0.5 points):
+✗   0.00 | PublicTest: Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<84> but was:<0>)
+✓   0.91 | SecretTest: Should pass in "replaced" because with @Replace now.

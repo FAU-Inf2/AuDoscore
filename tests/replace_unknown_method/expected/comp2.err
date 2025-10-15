@@ -1,2 +1,2 @@
-java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tools.ReadReplace SecretTest > compile2.sh
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tools.ReplaceManager SecretTest
 Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - Cannot replace unknown method: doesnotexist

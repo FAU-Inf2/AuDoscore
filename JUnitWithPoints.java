@@ -12,7 +12,7 @@ import org.junit.runners.model.*;
 import org.json.simple.*;
 
 import tester.annotations.*;
-import tools.ReadReplace;
+import tools.ReplaceManager;
 
 // rules helpers to shorten code
 final class PointsLogger extends JUnitWithPoints.PointsLogger {
@@ -123,7 +123,7 @@ public abstract class JUnitWithPoints {
 		protected boolean isIgnoredCase(Description description) {
 			String doReplace = System.getProperty("replace");
 			if ((doReplace != null && !doReplace.isEmpty())) {
-				String replacementSet = ReadReplace.getCanonicalReplacement(description);
+				String replacementSet = ReplaceManager.getCanonicalReplacement(description);
 				return !doReplace.equals(replacementSet);
 			}
 			return false;

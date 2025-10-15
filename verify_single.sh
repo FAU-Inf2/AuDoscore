@@ -13,6 +13,7 @@ for i in `find expected/ -type f`; do
 	if [[ -r "$testfile" ]]; then
 		sed -i -e 's/Exception(test timed out after \([^ ]*\) milliseconds): [^"]*/TimeoutException after \1 ms/g' $testfile
 		sed -i -e 's/StackOverflowError(): [^"]*/StackOverflowError()/g' $testfile
+		sed -i -e 's/^Time: [0-9]*\.[0-9]*$/Time: xxx/g' $testfile
 		if [[ "$i" == expected/run*.err ]] && [[ -s "$testfile" ]]; then
 			# pretty print as json before diffing (if size > 0)
 			cat $testfile | python -m json.tool > ${testfile}.new

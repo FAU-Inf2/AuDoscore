@@ -1,7 +1,7 @@
-rm -f *.class */*.class
-javac  -sourcepath interfaces student/*.java
-javac -Xprefer:source  -sourcepath interfaces:cleanroom -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar cleanroom/*.java
-javac -Xprefer:source  -sourcepath interfaces:junit:student -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar junit/UnitTest.java
+rm -rf *.class
+javac  -Xprefer:source -sourcepath interfaces student/*.java
+javac  -Xprefer:source -sourcepath interfaces cleanroom/*.java
+javac  -Xprefer:source -sourcepath interfaces:junit:student -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar junit/UnitTest.java
 java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit:interfaces:student CheckAnnotation UnitTest
 java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tools.ForbiddenUseSearcher UnitTest > forbidden.out
 if [ -s forbidden.out ]; then \
@@ -9,6 +9,6 @@ if [ -s forbidden.out ]; then \
 	exit 1 ; \
 fi
 make run-comparer
-make[1]: Verzeichnis „/audoscore/tests/method_ref_replace/test.156822“ wird betreten
-java -cp lib/junitpoints.jar tools.ic.InterfaceComparator UnitTest
-make[1]: Verzeichnis „/audoscore/tests/method_ref_replace/test.156822“ wird verlassen
+make[1]: Verzeichnis „/audoscore/tests/method_ref_replace/test.294502“ wird betreten
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tools.ic.InterfaceComparator UnitTest
+make[1]: Verzeichnis „/audoscore/tests/method_ref_replace/test.294502“ wird verlassen

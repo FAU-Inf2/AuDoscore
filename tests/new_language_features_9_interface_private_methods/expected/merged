@@ -1,0 +1,5 @@
+Score: 21.0
+
+Interface Private Methods (21.0 points):
+✗   0.00 | PublicTest "default method": Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<42> but was:<24>)
+✓  21.00 | SecretTest "default method": Should pass in "replaced" because with @Replace now.

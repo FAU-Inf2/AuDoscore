@@ -1,0 +1,53 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "Interface Private Methods",
+                    "tests": [
+                        {
+                            "desc": "PublicTest \"default method\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<24>)",
+                            "fromSecret": false,
+                            "id": "pubTest",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Interface Private Methods",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"default method\": Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<24>)",
+                            "fromSecret": true,
+                            "id": "secTest",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "Interface Private Methods",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"default method\": Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

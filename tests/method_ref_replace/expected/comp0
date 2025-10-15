@@ -1,1 +1,1 @@
-javac ToTest.java	
+javac  -Xprefer:source -sourcepath interfaces student/*.java
