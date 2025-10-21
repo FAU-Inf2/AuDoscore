@@ -1,0 +1,7 @@
+Score: 23.5
+
+Lambda (23.5 points):
+✗   0.00 | PublicTest: Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<4> but was:<6>)
+✗   0.00 | PublicTest: Should fail in "vanilla" because without @Replace. | AssertionError(Should fail in "vanilla" because without @Replace. expected:<6> but was:<4>)
+✓  11.78 | secTest_toTest_getSome: Should pass in "replaced" because with @Replace now.
+✓  11.78 | secTest_toTest_getSome_int: Should pass in "replaced" because with @Replace now.

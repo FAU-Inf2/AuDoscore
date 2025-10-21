@@ -279,7 +279,13 @@ public class ReplaceManager {
 				} else {
 					System.out.println("echo \",\" 1>&2");
 				}
-				System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m" //
+				System.out.println("javac" // recompile SecretTest to cope with boxing, if student and cleanroom have different signatures
+						+ " -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + classpath + ":junit:interfaces:student" //
+						+ " -d " + classpath //
+						+ " -sourcepath junit" //
+						+ " junit/" + secretTestClassName + ".java");
+				System.out.println("java" // execute specific test case
+						+ " -XX:-OmitStackTraceInFastThrow -Xmx1024m" //
 						+ " -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + classpath + ":junit:interfaces:student" //
 						+ " -Dpub=" + publicTestClassName //
 						+ " -Djson=yes tools.SingleMethodRunner " + secretTestClassName + " " + suitableTestCaseMethod);

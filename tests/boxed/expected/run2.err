@@ -1,0 +1,269 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "pubTest_no_op",
+                            "fromSecret": false,
+                            "id": "pubTest_no_op",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_boolean: Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now.)",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_boolean",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_byte: Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<8> but was:<15>)",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_byte",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_char: Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<8> but was:<15>)",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_char",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_double: Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<8.0> but was:<15.0>)",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_double",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_float: Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<8.0> but was:<15.0>)",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_float",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_int: Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<8> but was:<15>)",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_int",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_long: Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<8> but was:<15>)",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_long",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_short: Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<8> but was:<15>)",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_short",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_boolean: Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_boolean",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_byte: Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_byte",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_char: Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_char",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_double: Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_double",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_float: Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_float",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_int: Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_int",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_long: Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_long",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Boxed",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_short: Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_short",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

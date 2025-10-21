@@ -6,14 +6,15 @@ import tester.annotations.Ex;
 import tester.annotations.Exercises;
 import tester.annotations.Points;
 
-@Exercises({ @Ex(exID = "Boxed", points = 1)})
-public class UnitTest {
+@Exercises({@Ex(exID = "Boxed", points = 1)})
+public class PublicTest {
 	@Rule
 	public final PointsLogger pointsLogger = new PointsLogger();
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=200)
+	@Test(timeout = 200)
 	@Points(exID = "Boxed", bonus = 1)
-	public void testEmpty() { }
+	public void pubTest_no_op() {
+	}
 }

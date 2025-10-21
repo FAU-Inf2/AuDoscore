@@ -1,0 +1,91 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "PublicTest: Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<14> but was:<4>)",
+                            "fromSecret": false,
+                            "id": "pubTest_toTest_getSome",
+                            "success": false
+                        },
+                        {
+                            "desc": "PublicTest: Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<14> but was:<6>)",
+                            "fromSecret": false,
+                            "id": "pubTest_toTest_getSome_int",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_getSome: Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<14> but was:<4>)",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_getSome",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_getSome_int: Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<14> but was:<6>)",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_getSome_int",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_getSome: Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_getSome",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Lambda",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_getSome_int: Should pass in \"replaced\" because with @Replace now.",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_getSome_int",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

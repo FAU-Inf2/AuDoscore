@@ -1,7 +1,6 @@
 import static org.junit.Assert.*;
 import org.junit.*;
 import tester.annotations.*;
-import java.util.*;
 
 @Exercises({@Ex(exID = "Lambda", points = 47.11)})
 public class PublicTest {
@@ -12,17 +11,13 @@ public class PublicTest {
 
 	@Test(timeout = 200)
 	@Points(exID = "Lambda", bonus = 0.815, comment = "PublicTest: Should fail in \"vanilla\" because without @Replace.")
-	public void pubTest() {
-		assertEquals("Should fail in \"vanilla\" because without @Replace.", PublicTest.expected(), ToTest.toTest());
+	public void pubTest_toTest_getSome() {
+		assertEquals("Should fail in \"vanilla\" because without @Replace.", 2 + 3 + 4 + 5, ToTest.toTest_getSome());
 	}
 
-	protected static int expected() {
-		List<Integer> ints = new ArrayList<>(ToTest.DIGITS);
-		ints.removeIf(x -> x % 2 == 0);
-		int sum = 0;
-		for (int i : ints) {
-			sum += i;
-		}
-		return sum;
+	@Test(timeout = 200)
+	@Points(exID = "Lambda", bonus = 0.815, comment = "PublicTest: Should fail in \"vanilla\" because without @Replace.")
+	public void pubTest_toTest_getSome_int() {
+		assertEquals("Should fail in \"vanilla\" because without @Replace.", 2 + 3 + 4 + 5, new ToTest().toTest_getSome_int(666));
 	}
 }

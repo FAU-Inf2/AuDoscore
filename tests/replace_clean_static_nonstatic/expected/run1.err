@@ -1,0 +1,15 @@
+{
+    "exercises": [
+        {
+            "name": "clean_vars",
+            "tests": [
+                {
+                    "desc": "empty dummy test",
+                    "fromSecret": false,
+                    "id": "pubTest",
+                    "success": true
+                }
+            ]
+        }
+    ]
+}

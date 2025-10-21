@@ -1,0 +1,145 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "clean_vars",
+                    "tests": [
+                        {
+                            "desc": "empty dummy test",
+                            "fromSecret": false,
+                            "id": "pubTest",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "clean_vars",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_protected_static_var_C",
+                            "error": "AssertionError(Should return 42 expected:<42> but was:<0>)",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_protected_static_var_C",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "clean_vars",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_protected_static_var_D",
+                            "error": "AssertionError(Should return 42 expected:<42> but was:<0>)",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_protected_static_var_D",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "clean_vars",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_public_nonstatic_var_B",
+                            "error": "AssertionError(Should return 42 expected:<42> but was:<0>)",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_public_nonstatic_var_B",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "clean_vars",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_public_static_var_A",
+                            "error": "AssertionError(Should return 42 expected:<42> but was:<0>)",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_public_static_var_A",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "clean_vars",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_protected_static_var_C",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_protected_static_var_C",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "clean_vars",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_public_nonstatic_var_B",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_public_nonstatic_var_B",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "clean_vars",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_protected_static_var_D",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_protected_static_var_D",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "clean_vars",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_public_static_var_A",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_public_static_var_A",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

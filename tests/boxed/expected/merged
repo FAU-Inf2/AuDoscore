@@ -1,0 +1,12 @@
+Score: 1.0
+
+Boxed (1.0 points):
+✓   0.11 | pubTest_no_op
+✓   0.11 | secTest_toTest_boolean: Should pass in "replaced" because with @Replace now.
+✓   0.11 | secTest_toTest_byte: Should pass in "replaced" because with @Replace now.
+✓   0.11 | secTest_toTest_char: Should pass in "replaced" because with @Replace now.
+✓   0.11 | secTest_toTest_double: Should pass in "replaced" because with @Replace now.
+✓   0.11 | secTest_toTest_float: Should pass in "replaced" because with @Replace now.
+✓   0.11 | secTest_toTest_int: Should pass in "replaced" because with @Replace now.
+✓   0.11 | secTest_toTest_long: Should pass in "replaced" because with @Replace now.
+✓   0.11 | secTest_toTest_short: Should pass in "replaced" because with @Replace now.

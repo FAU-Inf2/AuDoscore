@@ -1,0 +1,15 @@
+{
+    "exercises": [
+        {
+            "name": "Boxed",
+            "tests": [
+                {
+                    "desc": "pubTest_no_op",
+                    "fromSecret": false,
+                    "id": "pubTest_no_op",
+                    "success": true
+                }
+            ]
+        }
+    ]
+}

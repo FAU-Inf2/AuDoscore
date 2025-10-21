@@ -10,6 +10,8 @@ callerDir=${PWD}
 scriptFile=$(readlink -f $0)
 scriptDir=$(dirname $scriptFile)
 
+COMPILER_ARGS="$COMPILER_ARGS -g -parameters"
+
 interfacesDirName="interfaces"
 cleanroomDirName="cleanroom"
 junitDirName="junit"
@@ -356,7 +358,7 @@ if [ "$#" -eq 0 ]; then
 	systemUnderTestDirs=""
 	scanSystemUnderTest
 else
-	info "scanning system under test (SUT) - useing args from commandline"
+	info "scanning system under test (SUT) - using args from commandline"
 	systemUnderTestDirCnt=$#
 	systemUnderTestDirs=$@
 fi
