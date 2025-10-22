@@ -1,15 +1,15 @@
+package tester.tools;
+
 import java.io.*;
 import java.lang.reflect.*;
 import java.nio.charset.*;
 import java.nio.file.*;
 import java.util.*;
-
 import org.json.simple.*;
 import org.json.simple.parser.*;
-
 import tester.annotations.*;
 
-public class JUnitPointsMerger {
+public class PointsMerger {
 	private static final class SingleReport {
 		boolean success;
 		String description;
@@ -275,7 +275,7 @@ public class JUnitPointsMerger {
 			return new JSONObject();
 		}
 		if (raw.size() == 1) {
-			return (JSONObject) raw.get(0);
+			return (JSONObject) raw.getFirst();
 		}
 		if (raw.size() == 2) {
 			return baseMergeJArray((JSONObject) raw.get(0), (JSONObject) raw.get(1));
@@ -341,7 +341,7 @@ public class JUnitPointsMerger {
 		return replaced;
 	}
 
-	public static void main(String[] args) throws Exception {
+	static void main(String[] args) throws Exception {
 		String inputFile = (args.length == 2) ? args[0] : "result.json";
 		String outputFile = (args.length == 2) ? args[1] : "mergedcomment.txt";
 		JSONParser parser = new JSONParser();

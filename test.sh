@@ -312,9 +312,9 @@ function testIt {
 
 	info "- merging"
 	if [ "x$secTestFile" != "x" ]; then
-		( java -cp $LIBALL:$interfacesDirName:$junitDirName:$sutDirName $replace_error -Dpub=$pubTestFile -Dsecret=$secTestFile JUnitPointsMerger run2.err merged ) > merge 2>&1
+		( java -cp $LIBALL:$interfacesDirName:$junitDirName:$sutDirName $replace_error -Dpub=$pubTestFile -Dsecret=$secTestFile tester.tools.PointsMerger run2.err merged ) > merge 2>&1
 	else
-		( java -cp $LIBALL:$interfacesDirName:$junitDirName:$sutDirName $replace_error -Dpub=$pubTestFile JUnitPointsMerger run2.err merged ) > merge 2>&1
+		( java -cp $LIBALL:$interfacesDirName:$junitDirName:$sutDirName $replace_error -Dpub=$pubTestFile tester.tools.PointsMerger run2.err merged ) > merge 2>&1
 	fi
 	checkExit $? "\ninternal error\n" merge
 	cat merged

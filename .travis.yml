@@ -1,5 +1,5 @@
 sudo: required
-dist: jammy
+dist: trixie
 addons:
   apt:
     packages:
@@ -7,6 +7,6 @@ addons:
       - parallel
 language: java
 jdk:
-  - openjdk17
-  - oraclejdk17
+  - openjdk25
+  - oraclejdk25
 script: make verify

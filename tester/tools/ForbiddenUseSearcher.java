@@ -1,4 +1,4 @@
-package tools;
+package tester.tools;
 
 import java.io.IOException;
 import java.lang.classfile.*;

@@ -1,7 +1,6 @@
-package tools.ic;
+package tester.tools;
 
 import tester.annotations.CompareInterface;
-
 import java.util.*;
 import java.lang.reflect.*;
 import java.net.*;
@@ -304,7 +303,7 @@ public class InterfaceComparator {
 
 	static void main(String[] args) {
 		if (args == null) {
-			System.err.println("Usage: java tools.ic.InterfaceComparator JUnitTest");
+			System.err.println("Usage: java tester.tools.InterfaceComparator JUnitTest");
 			System.exit(-1);
 		}
 		String cwd = System.getProperty("user.dir");

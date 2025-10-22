@@ -32,7 +32,7 @@ build:
 
 prepare: lib/junitpoints.jar
 
-SRCJUNITPOINTSJAR := JUnitWithPoints.java JUnitPointsMerger.java CheckAnnotation.java tester/annotations/CompareInterface.java tester/annotations/Ex.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/InitializeOnce.java tester/annotations/NotForbidden.java tester/annotations/Points.java tester/annotations/Replace.java tester/annotations/SecretClass.java tools/ForbiddenUseSearcher.java tools/ReplaceManager.java tools/ReplaceMixer.java tools/SingleMethodRunner.java tools/ic/InterfaceComparator.java tools/jsondiff/JSONDiff.java tools/sep/SingleExecutionPreparer.java
+SRCJUNITPOINTSJAR := JUnitWithPoints.java CheckAnnotation.java tester/annotations/CompareInterface.java tester/annotations/Ex.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/InitializeOnce.java tester/annotations/NotForbidden.java tester/annotations/Points.java tester/annotations/Replace.java tester/annotations/SecretClass.java tester/tools/ForbiddenUseSearcher.java tester/tools/InterfaceComparator.java tester/tools/PointsMerger.java tester/tools/ReplaceManager.java tester/tools/ReplaceMixer.java tester/tools/SingleExecutionPreparer.java tester/tools/SingleMethodRunner.java tools/DiffJSON.java
 
 lib/junitpoints.jar: build $(SRCJUNITPOINTSJAR)
 	javac -source 25 -target 25 -encoding UTF-8 -d build -cp $(LIBJUNIT):$(LIBHAMCREST):$(LIBJSONSIMPLE):. $(SRCJUNITPOINTSJAR)
@@ -46,7 +46,7 @@ compile-stage1: miniclean compile-stage0
 	javac $(COMPILER_ARGS) -Xprefer:source -sourcepath $(interfacesDirName) $(cleanroomDirName)/*.java
 	javac $(COMPILER_ARGS) -Xprefer:source -sourcepath $(interfacesDirName):$(junitDirName):$(sutDirName) -cp $(LIBALL) $(junitDirName)/$(PUBLICTESTSOURCE)
 	java -cp $(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName) CheckAnnotation $(PUBLICTEST)
-	java -cp $(LIBALL) tools.ForbiddenUseSearcher $(PUBLICTEST) > forbidden.out
+	java -cp $(LIBALL) tester.tools.ForbiddenUseSearcher $(PUBLICTEST) > forbidden.out
 	if [ -s forbidden.out ]; then \
 		cat forbidden.out 1>&2 ; \
 		exit 1 ; \
@@ -61,7 +61,7 @@ compile-stage2: miniclean compile-stage1
 		make compile-stage2-secret ; \
 		java -cp $(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName) -Dpub=$(PUBLICTEST) CheckAnnotation $(SECRETTEST) ; \
 		echo "echo \",\" 1>&2" >> single_execution.sh;	\
-		java -cp $(LIBALL):$(junitDirName) tools.sep.SingleExecutionPreparer "$(LIBALL):$(interfacesDirName):$(junitDirName):$(sutDirName)" "-Djson=yes -Dpub=$(PUBLICTEST)" $(SECRETTEST) >> single_execution.sh; \
+		java -cp $(LIBALL):$(junitDirName) tester.tools.SingleExecutionPreparer "$(LIBALL):$(interfacesDirName):$(junitDirName):$(sutDirName)" "-Djson=yes -Dpub=$(PUBLICTEST)" $(SECRETTEST) >> single_execution.sh; \
 	else \
 		set -e ; \
 		echo "echo \"]\" 1>&2" >> loop.sh ; \
@@ -71,15 +71,15 @@ compile-stage2-secret:
 	./obfuscate
 	javac $(COMPILER_ARGS) -Xprefer:source -sourcepath $(interfacesDirName) $(cleanroomDirName)/*.java
 	javac $(COMPILER_ARGS) -Xprefer:source -sourcepath $(interfacesDirName):$(junitDirName):$(sutDirName) -cp $(LIBALL) $(junitDirName)/$(SECRETTESTSOURCE)
-	java -cp $(LIBALL) tools.ReplaceManager $(SECRETTEST)
-	java -cp $(LIBALL) tools.ReplaceManager --loop $(PUBLICTEST) $(SECRETTEST) >> loop.sh
+	java -cp $(LIBALL) tester.tools.ReplaceManager $(SECRETTEST)
+	java -cp $(LIBALL) tester.tools.ReplaceManager --loop $(PUBLICTEST) $(SECRETTEST) >> loop.sh
 	echo "echo \"]\" 1>&2" >> loop.sh
 
 compile: compile-stage$(STAGE)
 
 
 run-comparer:
-	java -cp $(LIBALL) tools.ic.InterfaceComparator $(PUBLICTEST)
+	java -cp $(LIBALL) tester.tools.InterfaceComparator $(PUBLICTEST)
 
 run-stage0:
 	echo "alles gut"

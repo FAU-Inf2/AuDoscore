@@ -1,9 +1,8 @@
 *~
 *.sw?
 
-test.latest
-GITREV
 build/
 lib/junitpoints.jar
+
+test.latest
 tests/*/test.*
-disabled_tests/*/test.*

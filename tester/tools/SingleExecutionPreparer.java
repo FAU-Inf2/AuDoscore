@@ -1,4 +1,4 @@
-package tools.sep;
+package tester.tools;
 
 import java.util.*;
 import java.lang.reflect.*;
@@ -29,7 +29,7 @@ public class SingleExecutionPreparer {
 					System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m" //
 							+ " -cp " + cp //
 							+ " " + dParameter //
-							+ " tools.SingleMethodRunner " + className + " " + methodName);
+							+ " tester.tools.SingleMethodRunner " + className + " " + methodName);
 					counter++;
 				}
 			}

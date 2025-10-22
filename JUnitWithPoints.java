@@ -12,7 +12,7 @@ import org.junit.runners.model.*;
 import org.json.simple.*;
 
 import tester.annotations.*;
-import tools.ReplaceManager;
+import tester.tools.ReplaceManager;
 
 // rules helpers to shorten code
 final class PointsLogger extends JUnitWithPoints.PointsLogger {
@@ -143,7 +143,11 @@ public abstract class JUnitWithPoints {
 		public final Statement apply(Statement base, Description description) {
 			if (isIgnoredCase(description) || isSkippedCase(description)) {
 				// don't execute these test methods
-				base = new SkipStatement();
+				base = new Statement() { // "SkipStatement"
+					public void evaluate() {
+						Assume.assumeNotNull(null, null); // must "fail" in order to "force" jUnit to ignore this test
+					}
+				};
 			} else {
 				// handle potential @InitializeOnce
 				base = performInitializeOnce(base, description);
@@ -317,12 +321,5 @@ public abstract class JUnitWithPoints {
 				System.setErr(System.out);
 			}
 		}
-	}
-}
-
-// helper class to skip test methods
-class SkipStatement extends Statement {
-	public void evaluate() {
-		Assume.assumeNotNull(null, null); // must "fail" in order to "force" jUnit to ignore this test
 	}
 }

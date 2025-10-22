@@ -1,4 +1,4 @@
-package tools;
+package tester.tools;
 
 import tester.annotations.*;
 import java.io.File;
@@ -50,16 +50,17 @@ public class ReplaceManager {
 						for (Map.Entry<String, SortedSet<String>> entry : methodsMap.entrySet()) {
 							String classToReplace = entry.getKey();
 							SortedSet<String> methodsToReplace = entry.getValue();
-							final StringBuilder replacedFolderNameSB = new StringBuilder(classToReplace);
 							if (methodsToReplace.isEmpty()) {
 								continue;
 							}
+							final StringBuilder replacedFolderNameSB = new StringBuilder(classToReplace);
 							for (String methodToReplace : methodsToReplace) {
 								replacedFolderNameSB.append('#').append(methodToReplace);
 							}
-							File mixedPath = new File(cwd, replacedFolderNameSB.toString());
+							String replacedFolderName = replacedFolderNameSB.toString();
+							File mixedPath = new File(cwd, replacedFolderName);
 							if (!mixedPath.exists() && !mixedPath.mkdir()) {
-								throw new AnnotationFormatError("ERROR - Cannot create mixed folder: " + replacedFolderNameSB);
+								throw new AnnotationFormatError("ERROR - Cannot create mixed folder: " + replacedFolderName);
 							}
 							ReplaceMixer.replace(classToReplace, methodsToReplace, cleanroom, student, mixedPath.toPath());
 						}
@@ -164,42 +165,24 @@ public class ReplaceManager {
 			final Class<?> componentType = getTypeFromDescriptor(desc.substring(0, desc.length() - 2));
 			return Array.newInstance(componentType, 0).getClass();
 		}
-		switch (desc) {
-			case "byte" -> {
-				return byte.class;
-			}
-			case "boolean" -> {
-				return boolean.class;
-			}
-			case "char" -> {
-				return char.class;
-			}
-			case "double" -> {
-				return double.class;
-			}
-			case "float" -> {
-				return float.class;
-			}
-			case "int" -> {
-				return int.class;
-			}
-			case "long" -> {
-				return long.class;
-			}
-			case "short" -> {
-				return short.class;
-			}
-			case "void" -> {
-				return void.class;
-			}
+		return switch (desc) {
+			case "byte" -> byte.class;
+			case "boolean" -> boolean.class;
+			case "char" -> char.class;
+			case "double" -> double.class;
+			case "float" -> float.class;
+			case "int" -> int.class;
+			case "long" -> long.class;
+			case "short" -> short.class;
+			case "void" -> void.class;
 			default -> {
 				try (URLClassLoader studentLoader = new URLClassLoader(new URL[]{new File(cwd, "interfaces").toURI().toURL(), new File(cwd, "student").toURI().toURL()})) {
-					return studentLoader.loadClass(desc);
+					yield studentLoader.loadClass(desc);
 				} catch (final ClassNotFoundException | IOException e) {
 					throw new AnnotationFormatError("ERROR - Invalid type descriptor: " + desc);
 				}
 			}
-		}
+		};
 	}
 
 	private static boolean canProcess(final Replace replace) {
@@ -271,7 +254,7 @@ public class ReplaceManager {
 			}
 			String canonicalReplacement = pair.getKey();
 			List<String> suitableTestCaseMethods = pair.getValue();
-			String classpath = canonicalReplacement.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
+			String replacedFolderName = canonicalReplacement.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
 			boolean first = true;
 			for (String suitableTestCaseMethod : suitableTestCaseMethods) {
 				if (first) {
@@ -280,15 +263,15 @@ public class ReplaceManager {
 					System.out.println("echo \",\" 1>&2");
 				}
 				System.out.println("javac" // recompile SecretTest to cope with boxing, if student and cleanroom have different signatures
-						+ " -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + classpath + ":junit:interfaces:student" //
-						+ " -d " + classpath //
+						+ " -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + replacedFolderName + ":junit:interfaces:student" //
+						+ " -d " + replacedFolderName //
 						+ " -sourcepath junit" //
 						+ " junit/" + secretTestClassName + ".java");
 				System.out.println("java" // execute specific test case
 						+ " -XX:-OmitStackTraceInFastThrow -Xmx1024m" //
-						+ " -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + classpath + ":junit:interfaces:student" //
+						+ " -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + replacedFolderName + ":junit:interfaces:student" //
 						+ " -Dpub=" + publicTestClassName //
-						+ " -Djson=yes tools.SingleMethodRunner " + secretTestClassName + " " + suitableTestCaseMethod);
+						+ " -Djson=yes tester.tools.SingleMethodRunner " + secretTestClassName + " " + suitableTestCaseMethod);
 			}
 		}
 	}

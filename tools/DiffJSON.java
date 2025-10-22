@@ -1,4 +1,4 @@
-package tools.jsondiff;
+package tools;
 
 import java.io.*;
 import java.nio.file.*;
@@ -11,12 +11,12 @@ import org.json.simple.parser.*;
  * @author Cuong Bui <cuong.bui@fau.de>
  * @since 2014-10-31
  */
-public class JSONDiff {
+public class DiffJSON {
 	/**
 	 * Prints the usage message
 	 */
 	private static void usage() {
-		System.out.println("Usage: java JSONDiff pathToFirstJsonFile pathToSecondJsonFile");
+		System.out.println("Usage: java DiffJSON pathToFirstJsonFile pathToSecondJsonFile");
 		System.exit(-1);
 	}
 

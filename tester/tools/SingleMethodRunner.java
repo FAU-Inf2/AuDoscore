@@ -1,12 +1,12 @@
-package tools;
+package tester.tools;
 
 import org.junit.internal.*;
 import org.junit.runner.*;
 
 public class SingleMethodRunner {
-	public static void main(String... args) throws ClassNotFoundException {
+	static void main(String... args) throws ClassNotFoundException {
 		if (args.length != 2) {
-			System.err.println("Usage: class method FIXME");
+			System.err.println("Usage: class method");
 			return;
 		}
 		String clazz = args[0];
