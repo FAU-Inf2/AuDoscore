@@ -6,7 +6,7 @@ import tester.annotations.Ex;
 import tester.annotations.Exercises;
 import tester.annotations.Points;
 
-@Exercises({ @Ex(exID = "InitOnce_Exception", points = 1.0)})
+@Exercises({@Ex(exID = "InitOnce_Exception", points = 1.0)})
 public class UnitTest {
 	// instead of explicitly coding the following rules here,
 	// your test class can also just extend the class JUnitWithPoints
@@ -15,7 +15,8 @@ public class UnitTest {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=200)
+	@Test(timeout = 200)
 	@Points(exID = "InitOnce_Exception", bonus = 0.1)
-	public void test() { }
+	public void test() {
+	}
 }

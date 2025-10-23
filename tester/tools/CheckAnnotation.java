@@ -1,3 +1,5 @@
+package tester.tools;
+
 import org.junit.*;
 import org.junit.runner.*;
 import tester.annotations.*;
@@ -126,7 +128,7 @@ public class CheckAnnotation {
 		boolean hasRule = false;
 		boolean hasClassRule = false;
 		for (Field f : clazz.getFields()) {
-			if (JUnitWithPoints.PointsLogger.class.isAssignableFrom(f.getType())) {
+			if (JUnitWithPointsImpl.PointsLogger.class.isAssignableFrom(f.getType())) {
 				if (hasRule) {
 					throw new AnnotationFormatError("ERROR - found PointsLogger twice; what are you trying to do?");
 				}
@@ -136,7 +138,7 @@ public class CheckAnnotation {
 				}
 				hasRule = true;
 			}
-			if (JUnitWithPoints.PointsSummary.class.isAssignableFrom(f.getType())) {
+			if (JUnitWithPointsImpl.PointsSummary.class.isAssignableFrom(f.getType())) {
 				if (hasClassRule) {
 					throw new AnnotationFormatError("ERROR - found PointsSummary twice; what are you trying to do?");
 				}
@@ -188,7 +190,7 @@ public class CheckAnnotation {
 				throw new IllegalArgumentException("ERROR - Class [" + classNotFoundException.getMessage() + "] (test case) does not exist");
 			}
 			Description description = Description.createSuiteDescription(clazz);
-			Exercises exercisesAnnotation = JUnitWithPoints.PointsSummary.getExercisesAnnotation(description);
+			Exercises exercisesAnnotation = JUnitWithPointsImpl.PointsSummary.getExercisesAnnotation(description);
 			checkAnnotations(description, exercisesAnnotation);
 		} catch (IOException malformedURLException) {
 			throw new Error("Error " + malformedURLException.getMessage());

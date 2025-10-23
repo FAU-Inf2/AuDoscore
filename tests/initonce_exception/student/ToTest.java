@@ -3,4 +3,3 @@ public class ToTest {
 		throw new NullPointerException();
 	}
 }
-

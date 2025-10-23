@@ -3,4 +3,3 @@ public class ToTest {
 		return 10;
 	}
 }
-

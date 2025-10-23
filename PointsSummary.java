@@ -16,12 +16,8 @@
  *     </li>
  * </ul>
  *
+ * @see JUnitWithPoints
  * @see PointsLogger
- * @see PointsSummary
  */
-public class JUnitWithPoints {
-	@org.junit.Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@org.junit.ClassRule
-	public static final PointsSummary pointsSummary = new PointsSummary();
+public final class PointsSummary extends tester.tools.JUnitWithPointsImpl.PointsSummary {
 }

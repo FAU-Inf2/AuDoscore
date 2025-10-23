@@ -1,11 +1,8 @@
 import static org.junit.Assert.assertTrue;
 
-import java.lang.management.ManagementFactory;
-
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-
 import tester.annotations.*;
 
 @SecretClass
@@ -24,7 +21,7 @@ public class SecretTest {
 		return ToTest.get();
 	}
 
-	@Test(timeout=500)
+	@Test(timeout = 500)
 	@Points(exID = "InitOnce_Exception", bonus = 1.0)
 	public void testSecret() {
 		assertTrue(value == 10);

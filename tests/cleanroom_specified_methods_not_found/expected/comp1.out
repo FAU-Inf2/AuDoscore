@@ -2,4 +2,4 @@ rm -rf *.class
 javac  -Xprefer:source -sourcepath interfaces student/*.java
 javac  -Xprefer:source -sourcepath interfaces cleanroom/*.java
 javac  -Xprefer:source -sourcepath interfaces:junit:student -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar junit/UnitTest.java
-java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit:interfaces:student CheckAnnotation UnitTest
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit:interfaces:student tester.tools.CheckAnnotation UnitTest

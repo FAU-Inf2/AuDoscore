@@ -1,4 +1,4 @@
 Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - found test case without 'timeout' in @Test annotation: [UnitTest]
-	at CheckAnnotation.checkAnnotations(CheckAnnotation.java:94)
-	at CheckAnnotation.main(CheckAnnotation.java:192)
-make: *** [Makefile:70: compile-stage1] Fehler 1
+	at tester.tools.CheckAnnotation.checkAnnotations(CheckAnnotation.java:96)
+	at tester.tools.CheckAnnotation.main(CheckAnnotation.java:194)
+make: *** [Makefile:51: compile-stage1] Fehler 1
