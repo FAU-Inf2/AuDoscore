@@ -217,7 +217,7 @@ function testIt {
 	cd "$testDir" > /dev/null 2> /dev/null
 
 	info "- copy/install test infrastructure"
-	${scriptDir}/install.sh > /dev/null 2> /dev/null || die "failed"
+	${scriptDir}/tools/install.sh > /dev/null 2> /dev/null || die "failed"
 
 	info "- write var.mk"
 	echo "interfacesDirName = ${interfacesDirName}" > var.mk

@@ -1,0 +1,9 @@
+./lib/junit.jar
+./lib/hamcrest-core.jar
+./lib/json-simple-1.1.1.jar
+./lib/junitpoints.jar
+./tools/files_to_install
+./tools/install.sh
+./tools/obfuscate.sh
+./Makefile
+./test.sh
