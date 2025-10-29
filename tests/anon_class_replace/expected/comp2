@@ -1,68 +1,33 @@
-rm -f *.class */*.class
-make compile-stage1
-make[1]: Verzeichnis „/audoscore/tests/anon_class_replace/test.313225“ wird betreten
-rm -f *.class */*.class
-javac  -sourcepath interfaces student/*.java
-javac -Xprefer:source  -sourcepath interfaces:cleanroom -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar cleanroom/*.java
-javac -Xprefer:source  -sourcepath interfaces:junit:student -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar junit/UnitTest.java
-java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit:interfaces:student CheckAnnotation UnitTest
-java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tools.ForbiddenUseSearcher UnitTest > forbidden.out
+make[1]: Verzeichnis „/audoscore/tests/anon_class_replace/test.88304“ wird betreten
+rm -rf *.class
+javac  -Xprefer:source -sourcepath interfaces student/*.java
+javac  -Xprefer:source -sourcepath interfaces cleanroom/*.java
+javac  -Xprefer:source -sourcepath interfaces:junit:student -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar junit/PublicTest.java
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit:interfaces:student tester.tools.CheckAnnotation PublicTest
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tester.tools.ForbiddenUseSearcher PublicTest > forbidden.out
 if [ -s forbidden.out ]; then \
 	cat forbidden.out 1>&2 ; \
 	exit 1 ; \
 fi
 make run-comparer
-make[2]: Verzeichnis „/audoscore/tests/anon_class_replace/test.313225“ wird betreten
-java -cp lib/junitpoints.jar tools.ic.InterfaceComparator UnitTest
-make[2]: Verzeichnis „/audoscore/tests/anon_class_replace/test.313225“ wird verlassen
-make[1]: Verzeichnis „/audoscore/tests/anon_class_replace/test.313225“ wird verlassen
+make[2]: Verzeichnis „/audoscore/tests/anon_class_replace/test.88304“ wird betreten
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tester.tools.InterfaceComparator PublicTest
+make[2]: Verzeichnis „/audoscore/tests/anon_class_replace/test.88304“ wird verlassen
 echo "echo \"[\" 1>&2" > loop.sh
 echo "make run-stage1" > single_execution.sh
+set -e ; \
 if [ "xSecretTest" != "x" ]; then \
-	set -e ; \
 	make compile-stage2-secret ; \
-	java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit:interfaces:student -Dpub=UnitTest CheckAnnotation SecretTest ; \
+	java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit:interfaces:student -Dpub=PublicTest tester.tools.CheckAnnotation SecretTest ; \
 	echo "echo \",\" 1>&2" >> single_execution.sh;	\
-	java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit tools.sep.SingleExecutionPreparer "lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:interfaces:student:junit" "-Djson=yes -Dpub=UnitTest" SecretTest >> single_execution.sh; \
-else \
-	set -e ; \
-	echo "echo \"]\" 1>&2" >> loop.sh ; \
-fi
-make[1]: Verzeichnis „/audoscore/tests/anon_class_replace/test.313225“ wird betreten
-./obfuscate
-javac -Xprefer:source  -sourcepath interfaces:cleanroom -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar cleanroom/*.java
-javac -Xprefer:source  -sourcepath interfaces:junit:student -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar junit/SecretTest.java
-for i in cleanroom/*.java; do \
-	cp $i ${i}.bak; \
-	/bin/echo -e "package cleanroom;\n" > $i ; \
-	cat ${i}.bak >> $i; \
-done
-COMPILER_ARGS=" -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED" \
-java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tools.ReadReplace SecretTest > compile2.sh
-if [ "x" != "x" ]; then \
-	set -e ; \
-	for i in ; do \
-		/bin/echo -e "package cleanroom;\n" > cleanroom/$i; \
-		cat interfaces/$i >> cleanroom/$i; \
-	done; \
-fi
-/bin/dash -ex ./compile2.sh
-+ mkdir -p ToTest#foo
-+ javac -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -Xprefer:source -cp lib/junit.jar:lib/junitpoints.jar -Areplaces=ToTest#foo -proc:only -processor tools.ReplaceMixer cleanroom/ToTest.java student/ToTest.java
-class ToTest ispub true
-class  ispub false
-found inner class: 
-class Dummy ispub false
-found inner class: Dummy
-class Dummy, true, 2, false
-class , true, 1, true
-class ToTest, true, 0, true
-class ToTest ispub true
-duplicate method: <init>: [], taken from student
-duplicate method: foo: [], taken from cleanroom
-class ToTest, false, 0, true
-+ javac -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED -cp interfaces:student -d ToTest#foo -sourcepath ToTest#foo ToTest#foo/ToTest.java
-COMPILER_ARGS=" -J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED" \
-java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tools.ReadReplace --loop -p UnitTest SecretTest >> loop.sh
+	java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit tester.tools.SingleExecutionPreparer "lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:interfaces:junit:student" "-Djson=yes -Dpub=PublicTest" SecretTest >> single_execution.sh; \
+fi ; \
 echo "echo \"]\" 1>&2" >> loop.sh
-make[1]: Verzeichnis „/audoscore/tests/anon_class_replace/test.313225“ wird verlassen
+make[2]: Verzeichnis „/audoscore/tests/anon_class_replace/test.88304“ wird betreten
+./tools/obfuscate.sh
+javac  -Xprefer:source -sourcepath interfaces cleanroom/*.java
+javac  -Xprefer:source -sourcepath interfaces:junit:student -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar junit/SecretTest.java
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tester.tools.ReplaceManager SecretTest
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tester.tools.ReplaceManager --loop PublicTest SecretTest >> loop.sh
+make[2]: Verzeichnis „/audoscore/tests/anon_class_replace/test.88304“ wird verlassen
+make[1]: Verzeichnis „/audoscore/tests/anon_class_replace/test.88304“ wird verlassen

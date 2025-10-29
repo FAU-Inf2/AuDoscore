@@ -15,18 +15,6 @@ public class ToTest {
 	}
 
 	// ========== more complex ==========
-	public static class A {
-	}
-
-	public static class B extends A {
-	}
-
-	public static class C extends B {
-		int getSome() {
-			return 42;
-		}
-	}
-
 	public static int toTest_moreComplex() {
 		return getSome_moreComplex(new C());
 	}

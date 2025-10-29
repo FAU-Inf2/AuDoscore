@@ -6,4 +6,3 @@ public class ToTest {
 		return null;
 	}
 }
-

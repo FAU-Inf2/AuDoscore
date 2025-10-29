@@ -6,9 +6,9 @@
                     "name": "AnonClassReplace",
                     "tests": [
                         {
-                            "desc": "testPublic",
+                            "desc": "pubTest_no_op",
                             "fromSecret": false,
-                            "id": "testPublic",
+                            "id": "pubTest_no_op",
                             "success": true
                         }
                     ]
@@ -21,10 +21,10 @@
                     "name": "AnonClassReplace",
                     "tests": [
                         {
-                            "desc": "testSecret",
-                            "error": "NullPointerException(Cannot invoke \"java.util.Iterator.next()\" because the return value of \"ToTest.foo()\" is null): SecretTest.testSecret(line 22)",
+                            "desc": "secTest",
+                            "error": "NullPointerException(Cannot invoke \"java.util.Iterator.next()\" because the return value of \"ToTest.foo()\" is null): SecretTest.secTest(line 22)",
                             "fromSecret": true,
-                            "id": "testSecret",
+                            "id": "secTest",
                             "success": false
                         }
                     ]
@@ -39,9 +39,9 @@
                     "name": "AnonClassReplace",
                     "tests": [
                         {
-                            "desc": "testSecret",
+                            "desc": "secTest",
                             "fromSecret": true,
-                            "id": "testSecret",
+                            "id": "secTest",
                             "success": true
                         }
                     ]

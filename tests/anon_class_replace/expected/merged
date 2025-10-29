@@ -1,5 +1,5 @@
-Score: 12.5
+Score: 2.0
 
-AnonClassReplace (12.5 points):
-✓   0.03 | testPublic
-✓  12.47 | testSecret
+AnonClassReplace (2.0 points):
+✓   1.00 | pubTest_no_op
+✓   1.00 | secTest

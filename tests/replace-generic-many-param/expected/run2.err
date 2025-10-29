@@ -1,0 +1,114 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "ReplaceGeneric",
+                    "tests": [
+                        {
+                            "desc": "pubTest_no_op",
+                            "fromSecret": false,
+                            "id": "pubTest_no_op",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "ReplaceGeneric",
+                    "tests": [
+                        {
+                            "desc": "Should fail in \"vanilla\" and pass in \"replaced\".",
+                            "error": "AssertionError(Should fail in \"vanilla\" and pass in \"replaced\".)",
+                            "fromSecret": true,
+                            "id": "secTest_getAlpha",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "ReplaceGeneric",
+                    "tests": [
+                        {
+                            "desc": "Should fail in \"vanilla\" and pass in \"replaced\".",
+                            "error": "AssertionError(Should fail in \"vanilla\" and pass in \"replaced\".)",
+                            "fromSecret": true,
+                            "id": "secTest_getBeta",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "ReplaceGeneric",
+                    "tests": [
+                        {
+                            "desc": "Should fail in \"vanilla\" and pass in \"replaced\".",
+                            "error": "AssertionError(Should fail in \"vanilla\" and pass in \"replaced\".)",
+                            "fromSecret": true,
+                            "id": "secTest_getGamma",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "ReplaceGeneric",
+                    "tests": [
+                        {
+                            "desc": "Should fail in \"vanilla\" and pass in \"replaced\".",
+                            "fromSecret": true,
+                            "id": "secTest_getAlpha",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "ReplaceGeneric",
+                    "tests": [
+                        {
+                            "desc": "Should fail in \"vanilla\" and pass in \"replaced\".",
+                            "fromSecret": true,
+                            "id": "secTest_getBeta",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "ReplaceGeneric",
+                    "tests": [
+                        {
+                            "desc": "Should fail in \"vanilla\" and pass in \"replaced\".",
+                            "fromSecret": true,
+                            "id": "secTest_getGamma",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,7 +1,6 @@
 import java.util.Comparator;
 
 public class ToTest {
-
 	private static Comparator<Integer> __clean_comp = new Comparator<Integer>() {
 		@Override
 		public int compare(final Integer o1, final Integer o2) {
@@ -13,4 +12,3 @@ public class ToTest {
 		return __clean_comp.compare(a, b);
 	}
 }
-

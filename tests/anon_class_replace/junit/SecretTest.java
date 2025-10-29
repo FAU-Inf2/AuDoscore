@@ -15,11 +15,10 @@ public class SecretTest {
 	@ClassRule
 	public final static PointsSummary pointsSummary = new PointsSummary();
 
-	@Test(timeout=200)
-	@Points(exID = "AnonClassReplace", bonus = 47.11)
+	@Test(timeout = 200)
+	@Points(exID = "AnonClassReplace", bonus = 1)
 	@Replace({"ToTest.foo"})
-	public void testSecret() {
+	public void secTest() {
 		assertEquals("Should return 42", 42, ToTest.foo().next().intValue());
 	}
 }
-

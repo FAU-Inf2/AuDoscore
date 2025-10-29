@@ -6,9 +6,9 @@
                     "name": "AnonClassReplace2",
                     "tests": [
                         {
-                            "desc": "testPublic",
+                            "desc": "pubTest_no_op",
                             "fromSecret": false,
-                            "id": "testPublic",
+                            "id": "pubTest_no_op",
                             "success": true
                         }
                     ]
@@ -21,10 +21,10 @@
                     "name": "AnonClassReplace2",
                     "tests": [
                         {
-                            "desc": "testSecret",
+                            "desc": "secTest",
                             "error": "AssertionError(Should return 0 expected:<0> but was:<42>)",
                             "fromSecret": true,
-                            "id": "testSecret",
+                            "id": "secTest",
                             "success": false
                         }
                     ]
@@ -39,9 +39,9 @@
                     "name": "AnonClassReplace2",
                     "tests": [
                         {
-                            "desc": "testSecret",
+                            "desc": "secTest",
                             "fromSecret": true,
-                            "id": "testSecret",
+                            "id": "secTest",
                             "success": true
                         }
                     ]

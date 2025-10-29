@@ -331,7 +331,7 @@ fi
 replace_error=""
 if [ "x$1" == "x--replace-error" ]; then
 	replace_error="-DreplaceError=true"
-	echo "fooo"
+	echo -e "\033[1;33mINFO: option --replace-error is set.\033[0m"
 	shift
 fi
 

@@ -1,0 +1,7 @@
+Score: 2.0
+
+ReplaceGeneric (2.0 points):
+✓   0.50 | pubTest_no_op
+✓   0.50 | Should fail in "vanilla" and pass in "replaced".
+✓   0.50 | Should fail in "vanilla" and pass in "replaced".
+✓   0.50 | Should fail in "vanilla" and pass in "replaced".

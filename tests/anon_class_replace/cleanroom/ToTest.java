@@ -3,7 +3,7 @@ import java.util.Iterator;
 public class ToTest {
 
 	public static Iterator<Integer> foo() {
-		return new Iterator<Integer>() {
+		return new Iterator<>() {
 			class Dummy {
 				public int VALUE = 42;
 			}
@@ -20,4 +20,3 @@ public class ToTest {
 		};
 	}
 }
-
