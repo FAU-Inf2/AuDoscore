@@ -69,7 +69,6 @@ compile-stage2: miniclean compile-stage1
 	echo "echo \"]\" 1>&2" >> loop.sh
 
 compile-stage2-secret:
-	./tools/obfuscate.sh
 	javac $(COMPILER_ARGS) -Xprefer:source -sourcepath $(interfacesDirName) $(cleanroomDirName)/*.java
 	javac $(COMPILER_ARGS) -Xprefer:source -sourcepath $(interfacesDirName):$(junitDirName):$(sutDirName) -cp $(LIBALL) $(junitDirName)/$(SECRETTESTSOURCE)
 	java -cp $(LIBALL) tester.tools.ReplaceManager $(SECRETTEST)
@@ -80,6 +79,7 @@ compile: compile-stage$(STAGE)
 
 run-comparer:
 	java -cp $(LIBALL) tester.tools.InterfaceComparator $(PUBLICTEST)
+
 
 run-stage0:
 	echo "alles gut"

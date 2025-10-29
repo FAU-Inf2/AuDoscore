@@ -1,4 +1,4 @@
-make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.368114“ wird betreten
+make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.393422“ wird betreten
 rm -rf *.class
 javac  -Xprefer:source -sourcepath interfaces student/*.java
 javac  -Xprefer:source -sourcepath interfaces cleanroom/*.java
@@ -10,9 +10,9 @@ if [ -s forbidden.out ]; then \
 	exit 1 ; \
 fi
 make run-comparer
-make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.368114“ wird betreten
+make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.393422“ wird betreten
 java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tester.tools.InterfaceComparator UnitTest
-make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.368114“ wird verlassen
+make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.393422“ wird verlassen
 echo "echo \"[\" 1>&2" > loop.sh
 echo "make run-stage1" > single_execution.sh
 set -e ; \
@@ -23,11 +23,10 @@ if [ "xSecretTest" != "x" ]; then \
 	java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit tester.tools.SingleExecutionPreparer "lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:interfaces:junit:student" "-Djson=yes -Dpub=UnitTest" SecretTest >> single_execution.sh; \
 fi ; \
 echo "echo \"]\" 1>&2" >> loop.sh
-make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.368114“ wird betreten
-./tools/obfuscate.sh
+make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.393422“ wird betreten
 javac  -Xprefer:source -sourcepath interfaces cleanroom/*.java
 javac  -Xprefer:source -sourcepath interfaces:junit:student -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar junit/SecretTest.java
 java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tester.tools.ReplaceManager SecretTest
 java -cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar tester.tools.ReplaceManager --loop UnitTest SecretTest >> loop.sh
-make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.368114“ wird verlassen
-make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.368114“ wird verlassen
+make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.393422“ wird verlassen
+make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.393422“ wird verlassen

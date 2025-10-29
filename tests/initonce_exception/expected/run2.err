@@ -1,10 +1,36 @@
-{ "vanilla" : 
-[
-{"exercises":[{"name":"InitOnce_Exception","tests":[{"desc":"test","fromSecret":false,"id":"test","success":true}]}]}
-,
-{"exercises":[{"name":"InitOnce_Exception","tests":[{"desc":"testSecret","error":"AssertionError(java.lang.NullPointerException)","fromSecret":true,"id":"testSecret","success":false}]}]}
-]
-, "replaced" : 
-[
-]
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "InitOnce_Exception",
+                    "tests": [
+                        {
+                            "desc": "test",
+                            "fromSecret": false,
+                            "id": "test",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "InitOnce_Exception",
+                    "tests": [
+                        {
+                            "desc": "testSecret",
+                            "error": "AssertionError(java.lang.NullPointerException)",
+                            "fromSecret": true,
+                            "id": "testSecret",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": []
 }

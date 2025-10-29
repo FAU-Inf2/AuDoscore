@@ -2,7 +2,5 @@ Student + Cleanroom:
 - DON'T make anything final or private (unless you know what you are doing)
 
 Cleanroom:
-- DON'T use inner or sibling classes (unless you know what you are doing)
-  -> they are *NOT* copied to mixed classes
-- DON'T use anonymous classes (unless you know what you are doing)
+- DON'T use sibling classes (unless you know what you are doing)
   -> they are *NOT* copied to mixed classes

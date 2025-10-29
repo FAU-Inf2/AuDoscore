@@ -4,6 +4,5 @@
 ./lib/junitpoints.jar
 ./tools/files_to_install
 ./tools/install.sh
-./tools/obfuscate.sh
 ./Makefile
 ./test.sh

@@ -1,5 +1,4 @@
 {
-    "replaced": [],
     "vanilla": [
         {
             "exercises": [
@@ -28,6 +27,21 @@
                             "desc": "public_d",
                             "fromSecret": false,
                             "id": "public_d",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "Weite Felder - createAndFill",
+                    "tests": [
+                        {
+                            "desc": "secret_a",
+                            "fromSecret": true,
+                            "id": "secret_a",
                             "success": true
                         }
                     ]
@@ -70,21 +84,6 @@
                     "name": "Weite Felder - createAndFill",
                     "tests": [
                         {
-                            "desc": "secret_a",
-                            "fromSecret": true,
-                            "id": "secret_a",
-                            "success": true
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "exercises": [
-                {
-                    "name": "Weite Felder - createAndFill",
-                    "tests": [
-                        {
                             "desc": "secret_d",
                             "fromSecret": true,
                             "id": "secret_d",
@@ -94,5 +93,6 @@
                 }
             ]
         }
-    ]
+    ],
+    "replaced": []
 }

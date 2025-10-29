@@ -33,15 +33,15 @@ public class ReplaceMixer {
 						.map(InnerClassInfo::innerClass).map(ClassEntry::name).map(Utf8Entry::stringValue) //
 						.forEach(cleanroomInnerClassesNames::add);
 			}
-			// "obfuscate" (i.e. rename) inner classes of all cleanroom code:
+			// "obfuscate" (i.e. rename) inner classes and "__clean..."-fields of all cleanroom code:
 			for (Path cleanroomClassFile : cleanroomClassFiles) {
 				var cleanroomClassName = ClassFile.of().parse(cleanroomClassFile).thisClass().name().stringValue();
 				var cleanroomClassObfuscatedBytes = new ByteArrayOutputStream();
 				cleanroomClassesObfuscated.put(cleanroomClassFile, cleanroomClassObfuscatedBytes);
 				try (var inFile = new DataInputStream(new FileInputStream(cleanroomClassFile.toFile())); var outByteArray = new DataOutputStream(cleanroomClassObfuscatedBytes)) {
-					InnerClassRenamer.obfuscateByteCode(cleanroomInnerClassesNames, inFile, outByteArray);
+					ConstantPoolRenamer.obfuscateByteCode(cleanroomInnerClassesNames, inFile, outByteArray);
 					if (cleanroomInnerClassesNames.contains(cleanroomClassName)) { // emit ONLY inner classes to mixed folder:
-						var newCleanroomClassName = InnerClassRenamer.obfuscateString(cleanroomInnerClassesNames, cleanroomClassFile.toFile().getName());
+						var newCleanroomClassName = ConstantPoolRenamer.obfuscateString(cleanroomInnerClassesNames, cleanroomClassFile.toFile().getName());
 						var mixedFile = FileSystems.getDefault().getPath(mixedPath.toString(), newCleanroomClassName);
 						try (var outFile = new FileOutputStream(mixedFile.toFile())) {
 							outFile.write(cleanroomClassObfuscatedBytes.toByteArray());
@@ -140,10 +140,12 @@ public class ReplaceMixer {
 		}
 	}
 
-	private static class InnerClassRenamer {
+	private static class ConstantPoolRenamer {
 		private static String obfuscateString(Set<String> cleanroomInnerClassNames, String name) {
 			String newName = name;
 			if (cleanroomInnerClassNames.contains(name)) { // it's a plain type
+				newName = name + AUDOSCORE_SECURITY_TOKEN;
+			} else if (name.startsWith("__clean")) { // it's a "__clean..."-field
 				newName = name + AUDOSCORE_SECURITY_TOKEN;
 			} else if (name.endsWith(".class")) { // it's a class file name
 				String fileName = name.substring(0, name.length() - 6);

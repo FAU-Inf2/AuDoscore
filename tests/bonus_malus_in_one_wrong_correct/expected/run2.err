@@ -1,5 +1,4 @@
 {
-    "replaced": [],
     "vanilla": [
         {
             "exercises": [
@@ -23,5 +22,6 @@
                 }
             ]
         }
-    ]
+    ],
+    "replaced": []
 }

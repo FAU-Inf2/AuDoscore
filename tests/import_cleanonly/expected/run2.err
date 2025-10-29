@@ -1,21 +1,4 @@
 {
-    "replaced": [
-        {
-            "exercises": [
-                {
-                    "name": "GA4.6a",
-                    "tests": [
-                        {
-                            "desc": "test",
-                            "fromSecret": true,
-                            "id": "test",
-                            "success": true
-                        }
-                    ]
-                }
-            ]
-        }
-    ],
     "vanilla": [
         {
             "exercises": [
@@ -38,10 +21,11 @@
                     "name": "GA4.6a",
                     "tests": [
                         {
-                            "desc": "test2",
+                            "desc": "test",
+                            "error": "AssertionError(Should return 42 expected:<42> but was:<56>)",
                             "fromSecret": true,
-                            "id": "test2",
-                            "success": true
+                            "id": "test",
+                            "success": false
                         }
                     ]
                 }
@@ -53,11 +37,27 @@
                     "name": "GA4.6a",
                     "tests": [
                         {
+                            "desc": "test2",
+                            "fromSecret": true,
+                            "id": "test2",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "GA4.6a",
+                    "tests": [
+                        {
                             "desc": "test",
-                            "error": "AssertionError(Should return 42 expected:<42> but was:<56>)",
                             "fromSecret": true,
                             "id": "test",
-                            "success": false
+                            "success": true
                         }
                     ]
                 }

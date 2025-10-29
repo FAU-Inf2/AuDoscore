@@ -1,12 +1,51 @@
-{ "vanilla" : 
-[
-{"exercises":[{"name":"InitOnce_Really_Once","tests":[{"desc":"test","fromSecret":false,"id":"test","success":true}]}]}
-,
-{"exercises":[{"name":"InitOnce_Really_Once","tests":[{"desc":"testSecret1","fromSecret":true,"id":"testSecret1","success":true}]}]}
-,
-{"exercises":[{"name":"InitOnce_Really_Once","tests":[{"desc":"testSecret2","error":"AssertionError()","fromSecret":true,"id":"testSecret2","success":false}]}]}
-]
-, "replaced" : 
-[
-]
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "InitOnce_Really_Once",
+                    "tests": [
+                        {
+                            "desc": "test",
+                            "fromSecret": false,
+                            "id": "test",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "InitOnce_Really_Once",
+                    "tests": [
+                        {
+                            "desc": "testSecret1",
+                            "fromSecret": true,
+                            "id": "testSecret1",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "InitOnce_Really_Once",
+                    "tests": [
+                        {
+                            "desc": "testSecret2",
+                            "error": "AssertionError()",
+                            "fromSecret": true,
+                            "id": "testSecret2",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": []
 }
