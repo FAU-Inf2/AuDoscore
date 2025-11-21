@@ -2,7 +2,7 @@
 *.sw?
 
 build/
-lib/junitpoints.jar
+lib/
 
 test.latest
 tests/*/test.*

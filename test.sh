@@ -2,9 +2,8 @@
 
 LIBJUNITPOINTS=lib/junitpoints.jar
 LIBJUNIT=lib/junit.jar
-LIBHAMCREST=lib/hamcrest-core.jar
-LIBJSONSIMPLE=lib/json-simple-1.1.1.jar
-LIBALL=$LIBJUNITPOINTS:$LIBJUNIT:$LIBHAMCREST:$LIBJSONSIMPLE
+LIBJSONSIMPLE=lib/json-simple.jar
+LIBALL=$LIBJUNITPOINTS:$LIBJUNIT:$LIBJSONSIMPLE
 
 callerDir=${PWD}
 scriptFile=$(readlink -f $0)

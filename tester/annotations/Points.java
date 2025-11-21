@@ -1,14 +1,14 @@
 package tester.annotations;
 
-import java.lang.annotation.*;
-
 /**
- * Use this annotation to define the effect of a test method.
+ * Use this annotation to mark a test case method for grading and define its effect.
  * The effect can be positive (bonus) or negative (malus), but not both at the same time.
  */
-@Inherited
-@Target(java.lang.annotation.ElementType.METHOD)
-@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@java.lang.annotation.Inherited
+@java.lang.annotation.Target(java.lang.annotation.ElementType.METHOD)
+@java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@org.junit.jupiter.api.Test
+@org.junit.jupiter.api.Timeout(value = 1000, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
 public @interface Points {
 	/**
 	 * The unique identifier of the exercise this test method belongs to.
