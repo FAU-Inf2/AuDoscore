@@ -259,16 +259,16 @@ function testIt {
 
 	info "- testing"	
 	( make run-stage1 ) > run1.out 2> run1.err
-	ec=$?
+	ec=$(cat run1.exit)
 	cat run1.out run1.err > run1
-	checkExit $ec "\ninternal error\n" run1
-	cat run1.out | grep -v "^$$" | grep -v "^make" | tail -2 | grep "OK ("
-	if [ $? -ne 0 ]; then
+	if [ $ec -eq 0 ]; then
+		info "\nstudent result: ✔\n";
+	elif [ $ec -eq 1 ]; then
 		err "failed:"
 		cat run1
 		err "\nstudent result: !\n";
 	else
-		info "\nstudent result: ✔\n";
+		checkExit $ec "\ninternal error\n" run1
 	fi
 
 	info "\nstage2 (run twice: with secret test and weaving)"

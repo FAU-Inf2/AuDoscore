@@ -10,7 +10,7 @@ import java.lang.reflect.*;
 import org.json.simple.*;
 import tester.annotations.*;
 
-public class JUnitWithPoints implements ExecutionCondition, BeforeAllCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback, TestWatcher, AfterAllCallback {
+public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback, TestWatcher, AfterAllCallback {
 	static {
 		// set locale explicitly to avoid differences in reading/writing floats
 		Locale.setDefault(Locale.US);
@@ -85,12 +85,6 @@ public class JUnitWithPoints implements ExecutionCondition, BeforeAllCallback, B
 			}
 			return jsonTest;
 		}
-	}
-
-	@Override
-	public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {
-		// TODO: this might replace the SingleMethodRunner...
-		return ConditionEvaluationResult.enabled(null);
 	}
 
 	private static PrintStream saveOut;

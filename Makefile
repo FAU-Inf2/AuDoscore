@@ -17,19 +17,24 @@ clean: miniclean
 	rm -rf build
 	rm -f $(LIBJUNITPOINTS)
 
+maxiclean: clean
+	rm -rf lib
+
 
 miniclean:
 	rm -rf *.class
 
 SRCJUNITPOINTSJAR := \
 	tester/annotations/CompareInterface.java tester/annotations/Ex.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/InitializeOnce.java tester/annotations/NotForbidden.java tester/annotations/Points.java tester/annotations/Replace.java tester/annotations/SecretClass.java \
-	tester/tools/CheckAnnotation.java tester/tools/ForbiddenUseSearcher.java tester/tools/InterfaceComparator.java tester/tools/JUnitWithPoints.java tester/tools/PointsMerger.java tester/tools/ReplaceManager.java tester/tools/ReplaceMixer.java tester/tools/SingleExecutionPreparer.java tester/tools/SingleMethodRunner.java \
+	tester/tools/CheckAnnotation.java tester/tools/ForbiddenUseSearcher.java tester/tools/InterfaceComparator.java tester/tools/JUnitWithPoints.java tester/tools/PointsMerger.java tester/tools/ReplaceManager.java tester/tools/ReplaceMixer.java tester/tools/SingleExecutionPreparer.java \
 	tools/DiffJSON.java
 
 $(LIBJUNIT):
+	mkdir -p lib/
 	wget -O $(LIBJUNIT) https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/6.0.1/junit-platform-console-standalone-6.0.1.jar
 
 $(LIBJSONSIMPLE):
+	mkdir -p lib/
 	wget -O $(LIBJSONSIMPLE) https://repo1.maven.org/maven2/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar
 
 $(LIBJUNITPOINTS): $(LIBJUNIT) $(LIBJSONSIMPLE) $(SRCJUNITPOINTSJAR)
@@ -91,7 +96,7 @@ run-stage0:
 run-stage1:
 	java -XX:-OmitStackTraceInFastThrow -Xmx1024m \
 		-cp $(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName) \
-		-Djson=yes org.junit.runner.JUnitCore $(PUBLICTEST) || echo
+		-Djson=yes org.junit.platform.console.ConsoleLauncher execute --disable-banner --fail-if-no-tests -c $(PUBLICTEST); echo $$? > run1.exit
 
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2

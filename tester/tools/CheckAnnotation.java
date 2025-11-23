@@ -1,13 +1,13 @@
 package tester.tools;
 
 import org.junit.jupiter.api.*;
-import tester.annotations.*;
 import java.io.*;
 import java.lang.annotation.*;
 import java.lang.reflect.*;
 import java.util.*;
 import java.net.*;
 import java.util.concurrent.TimeUnit;
+import tester.annotations.*;
 
 public class CheckAnnotation {
 	public static final int MAX_TIMEOUT_MS = 60_000;

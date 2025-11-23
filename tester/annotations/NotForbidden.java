@@ -1,16 +1,14 @@
 package tester.annotations;
 
-import java.lang.annotation.*;
-
 /**
  * The inverse of {@link tester.annotations.Forbidden}.
  * Takes precedence over {@link tester.annotations.Forbidden}.
  *
  * @see tester.annotations.Forbidden
  */
-@Inherited
-@Target(java.lang.annotation.ElementType.TYPE)
-@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@java.lang.annotation.Inherited
+@java.lang.annotation.Target(java.lang.annotation.ElementType.TYPE)
+@java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 public @interface NotForbidden {
 	String[] value();
 

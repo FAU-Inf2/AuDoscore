@@ -63,14 +63,14 @@ public class PointsMerger {
 		if (fromSecret) {
 			// test method originated from a secret test
 			try {
-				final Method method = secret.getMethod(id);
+				final Method method = secret.getDeclaredMethod(id);
 				points = method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException noSuchMethodException) {
 				throw new Error("WARNING - Method " + id + " was not found in secret test class " + secret.getName());
 			}
 		} else {
 			try {
-				final Method method = pub.getMethod(id);
+				final Method method = pub.getDeclaredMethod(id);
 				points = method.getAnnotation(Points.class);
 			} catch (NoSuchMethodException noSuchMethodException) {
 				throw new Error("WARNING - Method " + id + " was not found in public test class " + pub.getName());
@@ -234,7 +234,7 @@ public class PointsMerger {
 					bonusPerExHashMap.put(exercise.exID(), 0.0);
 				}
 				// get sum of bonus
-				for (Method method : pub.getMethods()) {
+				for (Method method : pub.getDeclaredMethods()) {
 					if (method.isAnnotationPresent(Points.class)) {
 						Points points = method.getAnnotation(Points.class);
 						if (points.bonus() != -1) {
@@ -253,7 +253,7 @@ public class PointsMerger {
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			try {
 				secret = cl.loadClass(System.getProperty("secret"));
-				for (Method method : secret.getMethods()) {
+				for (Method method : secret.getDeclaredMethods()) {
 					if (method.isAnnotationPresent(Points.class)) {
 						Points points = method.getAnnotation(Points.class);
 						if (points.bonus() != -1) {

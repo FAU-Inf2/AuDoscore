@@ -1,16 +1,14 @@
 package tester.annotations;
 
-import java.lang.annotation.*;
-
 /**
  * This annotation can be used to specify forbidden API fields/methods.
  * Put this annotation to the public test case.
  *
  * @see tester.annotations.NotForbidden
  */
-@Inherited
-@Target(java.lang.annotation.ElementType.TYPE)
-@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@java.lang.annotation.Inherited
+@java.lang.annotation.Target(java.lang.annotation.ElementType.TYPE)
+@java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 public @interface Forbidden {
 
 	/**

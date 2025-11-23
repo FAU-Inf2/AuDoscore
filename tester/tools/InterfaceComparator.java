@@ -1,10 +1,10 @@
 package tester.tools;
 
-import tester.annotations.CompareInterface;
 import java.util.*;
 import java.lang.reflect.*;
 import java.net.*;
 import java.io.*;
+import tester.annotations.CompareInterface;
 
 public class InterfaceComparator {
 	private static boolean error = false;

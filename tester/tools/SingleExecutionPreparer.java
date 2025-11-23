@@ -2,7 +2,7 @@ package tester.tools;
 
 import java.util.*;
 import java.lang.reflect.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SingleExecutionPreparer {
 	private static void usage() {
@@ -11,7 +11,7 @@ public class SingleExecutionPreparer {
 	}
 
 	public static Method[] getMethodsSorted(final Class<?> cls) {
-		final Method[] methods = cls.getMethods();
+		final Method[] methods = cls.getDeclaredMethods();
 		Arrays.sort(methods, Comparator.comparing(Method::getName));
 		return methods;
 	}
@@ -29,7 +29,8 @@ public class SingleExecutionPreparer {
 					System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m" //
 							+ " -cp " + cp //
 							+ " " + dParameter //
-							+ " tester.tools.SingleMethodRunner " + className + " " + methodName);
+							+ " org.junit.platform.console.ConsoleLauncher execute --disable-banner --fail-if-no-tests" //
+							+ " -m " + className + "#" + methodName);
 					counter++;
 				}
 			}

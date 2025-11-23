@@ -9,11 +9,8 @@ import java.nio.file.Path;
 import java.util.*;
 import java.lang.reflect.*;
 import java.lang.annotation.*;
-import org.junit.runner.*;
 
 public class ReplaceManager {
-	private static final String cwd = System.getProperty("user.dir");
-
 	// usage:
 	// 1) ReplaceManager <secret test class>
 	// 2) ReplaceManager --loop <public test class> <secret test class>
@@ -29,13 +26,7 @@ public class ReplaceManager {
 		}
 	}
 
-	public static String getCanonicalReplacement(Description description) {
-		if (description.getAnnotation(Replace.class) != null) {
-			Replace r = description.getAnnotation(Replace.class);
-			return getCanonicalReplacement(r);
-		}
-		return "";
-	}
+	private static final String cwd = System.getProperty("user.dir");
 
 	private static void generateSecretTestReplacements(String secretTestClassName) throws ClassNotFoundException {
 		Path cleanroom = new File(cwd, "cleanroom").toPath();
@@ -73,7 +64,7 @@ public class ReplaceManager {
 	}
 
 	private static Method[] getMethodsSorted(final Class<?> clazz) {
-		final Method[] methods = clazz.getMethods();
+		final Method[] methods = clazz.getDeclaredMethods();
 		Arrays.sort(methods, Comparator.comparing(Method::getName));
 		return methods;
 	}
@@ -263,15 +254,16 @@ public class ReplaceManager {
 					System.out.println("echo \",\" 1>&2");
 				}
 				System.out.println("javac" // recompile SecretTest to cope with boxing, if student and cleanroom have different signatures
-						+ " -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + replacedFolderName + ":junit:interfaces:student" //
+						+ " -cp lib/junit.jar:lib/json-simple.jar:lib/junitpoints.jar:" + replacedFolderName + ":junit:interfaces:student" //
 						+ " -d " + replacedFolderName //
 						+ " -sourcepath junit" //
 						+ " junit/" + secretTestClassName + ".java");
 				System.out.println("java" // execute specific test case
 						+ " -XX:-OmitStackTraceInFastThrow -Xmx1024m" //
-						+ " -cp lib/json-simple-1.1.1.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/junitpoints.jar:" + replacedFolderName + ":junit:interfaces:student" //
+						+ " -cp lib/junit.jar:lib/json-simple.jar:lib/junitpoints.jar:" + replacedFolderName + ":junit:interfaces:student" //
 						+ " -Dpub=" + publicTestClassName //
-						+ " -Djson=yes tester.tools.SingleMethodRunner " + secretTestClassName + " " + suitableTestCaseMethod);
+						+ " -Djson=yes org.junit.platform.console.ConsoleLauncher execute --disable-banner --fail-if-no-tests" //
+						+ " -m " + secretTestClassName + "#" + suitableTestCaseMethod);
 			}
 		}
 	}

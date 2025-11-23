@@ -1,7 +1,5 @@
 package tester.annotations;
 
-import java.lang.annotation.*;
-
 /**
  * A test annotated with this annotation enforces a consistent interface.
  * It is possible to specify fields, methods, or classes by their respective fully qualified name.
@@ -9,9 +7,9 @@ import java.lang.annotation.*;
  * that are equivalent to the definitions in the cleanroom code.
  * If a class is given, the respective student's class must contain public fields and methods matching the definitions in the cleanroom class.
  */
-@Inherited
-@Target(java.lang.annotation.ElementType.TYPE)
-@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@java.lang.annotation.Inherited
+@java.lang.annotation.Target(java.lang.annotation.ElementType.TYPE)
+@java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 public @interface CompareInterface {
 	/**
 	 * An array containing the field names, method names, or class names that are used during comparison.

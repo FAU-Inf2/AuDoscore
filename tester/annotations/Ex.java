@@ -1,13 +1,11 @@
 package tester.annotations;
 
-import java.lang.annotation.*;
-
 /**
  * A single exercise definition.
  */
-@Inherited
-@Target(java.lang.annotation.ElementType.TYPE)
-@Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@java.lang.annotation.Inherited
+@java.lang.annotation.Target(java.lang.annotation.ElementType.TYPE)
+@java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 public @interface Ex {
 	/**
 	 * The unique identifier for the exercise. This is used to match individual test methods to exercises.

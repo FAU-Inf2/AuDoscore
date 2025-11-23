@@ -1,7 +1,5 @@
 package tester.annotations;
 
-import java.lang.annotation.*;
-
 /**
  * Used to mark the possibility of method replacements.
  * This means, that this test is executed twice.
@@ -12,8 +10,9 @@ import java.lang.annotation.*;
  * </ol>
  * This annotation applies to a single test method in the secret test class only.
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
+@java.lang.annotation.Inherited
+@java.lang.annotation.Target(java.lang.annotation.ElementType.METHOD)
+@java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 public @interface Replace {
 	/**
 	 * The names of the methods to replace. These must be fully qualified names.
