@@ -1,12 +1,18 @@
 {
     "exercises": [
         {
-            "name": "GA4.6a",
+            "name": "JUnit6",
             "tests": [
                 {
-                    "desc": "test",
+                    "desc": "comment:pubTest_toTest_helper",
                     "fromSecret": false,
-                    "id": "test",
+                    "id": "pubTest_toTest_helper",
+                    "success": true
+                },
+                {
+                    "desc": "comment:pubTest_toTest_alpha",
+                    "fromSecret": false,
+                    "id": "pubTest_toTest_alpha",
                     "success": true
                 }
             ]

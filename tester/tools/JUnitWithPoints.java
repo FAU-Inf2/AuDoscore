@@ -1,16 +1,19 @@
 package tester.tools;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.*;
-import java.nio.charset.*;
-import java.util.*;
+import org.junit.platform.engine.discovery.DiscoverySelectors;
+import org.junit.platform.engine.support.descriptor.MethodSource;
+import org.junit.platform.launcher.*;
+import org.junit.platform.launcher.core.*;
 import java.io.*;
-import java.lang.annotation.*;
-import java.lang.reflect.*;
+import java.lang.reflect.Method;
+import java.util.*;
 import org.json.simple.*;
 import tester.annotations.*;
 
-public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback, TestWatcher, AfterAllCallback {
+public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCallback, TestWatcher, AfterAllCallback {
 	static {
 		// set locale explicitly to avoid differences in reading/writing floats
 		Locale.setDefault(Locale.US);
@@ -24,7 +27,6 @@ public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCa
 		ExtensionContext context;
 		Throwable throwable;
 		Points points;
-		boolean skipped;
 		long executionTime;
 
 		private ReportEntry(ExtensionContext context, Points points, Throwable throwable, long executionTime) {
@@ -32,13 +34,6 @@ public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCa
 			this.throwable = throwable;
 			this.points = points;
 			this.executionTime = executionTime;
-			this.skipped = false;
-		}
-
-		// we did skip this test method
-		private ReportEntry(ExtensionContext context) {
-			this.context = context;
-			this.skipped = true;
 		}
 
 		// get sensible part/line of stack trace
@@ -78,7 +73,10 @@ public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCa
 			jsonTest.put("desc", getComment(points.comment(), context));
 			if (System.getenv("AUDOSCORETIMINGS") != null) {
 				jsonTest.put("executionTimeInMS", executionTime);
-				jsonTest.put("timeout", context.getElement().map(e -> e.getAnnotation(Timeout.class)).map(t -> t.value() + t.unit().toString()).orElse("unknown"));
+				jsonTest.put("timeout", context.getElement() //
+						.map(e -> e.getAnnotation(Timeout.class)) //
+						.or(() -> Optional.of(Points.class.getAnnotation(Timeout.class))) //
+						.map(t -> java.util.concurrent.TimeUnit.MILLISECONDS.convert(t.value(), t.unit())).orElse(0L));
 			}
 			if (!success) {
 				jsonTest.put("error", throwable.getClass().getSimpleName() + "(" + ((throwable.getLocalizedMessage() != null) ? throwable.getLocalizedMessage() : "") + ")" + getStackTrace());
@@ -87,10 +85,9 @@ public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCa
 		}
 	}
 
-	private static PrintStream saveOut;
-	private static PrintStream saveErr;
-	private static boolean isSecretClass = false;
-	private long startTime = 0;
+	private static PrintStream saveOut, saveErr;
+	private static boolean isSecretClass;
+	private long startTime;
 
 	@Override
 	public void beforeAll(ExtensionContext context) {
@@ -103,11 +100,12 @@ public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCa
 		}
 		// reset states
 		reportHashMap.clear();
+		context.getTestClass().filter(tc -> tc.isAnnotationPresent(Exercises.class)).ifPresent(tc -> isSecretClass = false);
+		context.getTestClass().filter(tc -> tc.isAnnotationPresent(SecretClass.class)).ifPresent(tc -> isSecretClass = true);
 		// fill data structures
-		Exercises exercisesAnnotation = getExercisesAnnotation(context.getTestClass().orElse(null));
-		for (Ex exercise : exercisesAnnotation.value()) {
-			reportHashMap.put(exercise.exID(), new ArrayList<>());
-		}
+		getExercisesAnnotation(context.getTestClass().orElse(null)).map(Exercises::value).ifPresent(exercises -> {
+			for (Ex exercise : exercises) reportHashMap.put(exercise.exID(), new ArrayList<>());
+		});
 	}
 
 	@Override
@@ -116,31 +114,28 @@ public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCa
 		startTime = System.currentTimeMillis();
 	}
 
-	@Override
-	public void afterTestExecution(ExtensionContext context) {
-	}
-
-	public void testResult(ExtensionContext context, Throwable cause) {
+	private void processTestResult(ExtensionContext context, Throwable cause) {
 		long executionTime = System.currentTimeMillis() - startTime;
-		Points pointsAnnotation = context.getElement().map(m -> m.getAnnotation(Points.class)).orElse(null);
-		String exID = pointsAnnotation.exID();
-		reportHashMap.get(exID).add(new ReportEntry(context, pointsAnnotation, cause, executionTime));
+		context.getElement() //
+				.filter(m -> m.isAnnotationPresent(Points.class)) //
+				.map(m -> m.getAnnotation(Points.class)) //
+				.ifPresent(pointsAnnotation -> //
+						reportHashMap.get(pointsAnnotation.exID()).add(new ReportEntry(context, pointsAnnotation, cause, executionTime)));
 	}
 
 	@Override
 	public void testSuccessful(ExtensionContext context) {
-		testResult(context, null);
+		processTestResult(context, null);
 	}
 
 	@Override
 	public void testFailed(ExtensionContext context, Throwable cause) {
-		testResult(context, cause);
+		processTestResult(context, cause);
 	}
 
 	@Override
 	public void testAborted(ExtensionContext context, Throwable cause) {
-		// TODO: Timeout?
-		testResult(context, cause);
+		processTestResult(context, cause);
 	}
 
 	@Override
@@ -153,12 +148,10 @@ public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCa
 				JSONArray jsonTests = new JSONArray();
 				// loop over all results for that exercise
 				for (ReportEntry reportEntry : exerciseResults.getValue()) {
-					if (!reportEntry.skipped) {
-						JSONObject reportJSON = reportEntry.toJSON();
-						// mark test method regarding origin
-						reportJSON.put("fromSecret", isSecretClass);
-						jsonTests.add(new TreeMap<String, Object>(reportJSON));
-					}
+					JSONObject reportJSON = reportEntry.toJSON();
+					// mark test method regarding origin
+					reportJSON.put("fromSecret", isSecretClass);
+					jsonTests.add(new TreeMap<String, Object>(reportJSON));
 				}
 				// collect result
 				JSONObject jsonExercise = new JSONObject();
@@ -169,7 +162,7 @@ public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCa
 			// add results to root node and write to stderr
 			JSONObject jsonSummary = new JSONObject();
 			jsonSummary.put("exercises", jsonExercises);
-			saveErr = new PrintStream(saveErr, true, StandardCharsets.UTF_8);
+			saveErr = new PrintStream(saveErr, true, java.nio.charset.StandardCharsets.UTF_8);
 			saveErr.println(jsonSummary);
 		}
 	}
@@ -184,27 +177,46 @@ public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCa
 		return orig.substring(0, ix);
 	}
 
-	// returns public test class (if specified)
-	static Class<?> getPublicTestClass() {
+	// returns public test class if specified as system property
+	private static Class<?> getPublicTestClass() {
 		String pubClassName = System.getProperty("pub");
-		if (pubClassName == null) {
-			return null;
-		}
 		try {
-			return ClassLoader.getSystemClassLoader().loadClass(pubClassName);
+			return (pubClassName == null) ? null : ClassLoader.getSystemClassLoader().loadClass(pubClassName);
 		} catch (ClassNotFoundException e) {
-			throw new AnnotationFormatError("ERROR - pub class specified, but not found [" + pubClassName + "]");
+			throw new java.lang.annotation.AnnotationFormatError("ERROR - pub class specified, but not found [" + pubClassName + "]");
 		}
 	}
 
-	// returns @Exercises annotation of public test class (if specified) or current class (otherwise)
-	static Exercises getExercisesAnnotation(Class<?> testClass) {
+	// returns @Exercises annotation of public test class (if specified) or current class - if annotation is present
+	static Optional<Exercises> getExercisesAnnotation(Class<?> currentTestClass) {
 		Class<?> publicTestClass = getPublicTestClass();
-		if (publicTestClass == null) {
-			return testClass.getAnnotation(Exercises.class);
+		if (publicTestClass != null && publicTestClass.isAnnotationPresent(Exercises.class)) {
+			return Optional.of(publicTestClass.getAnnotation(Exercises.class));
+		} else if (currentTestClass != null && currentTestClass.isAnnotationPresent(Exercises.class)) {
+			return Optional.of(currentTestClass.getAnnotation(Exercises.class));
 		} else {
-			isSecretClass = true;
-			return publicTestClass.getAnnotation(Exercises.class);
+			return Optional.empty();
 		}
+	}
+
+	static List<Method> getTestMethodsSorted(Class<?> testClass) {
+		List<Method> testMethods = new LinkedList<>();
+		if (testClass == null) return testMethods;
+		LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.discoveryRequest() //
+				.selectors(DiscoverySelectors.selectClass(testClass)) //
+				.build();
+		TestPlan testPlan = LauncherFactory.create().discover(request);
+		testPlan.accept(new TestPlan.Visitor() {
+			@Override
+			public void visit(TestIdentifier testIdentifier) {
+				testIdentifier.getSource().ifPresent(ts -> {
+					if (ts instanceof MethodSource ms && !ms.getJavaMethod().isAnnotationPresent(Disabled.class)) {
+						testMethods.add(ms.getJavaMethod());
+					}
+				});
+			}
+		});
+		testMethods.sort(Comparator.comparing(Method::getName));
+		return testMethods;
 	}
 }

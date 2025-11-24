@@ -3,12 +3,48 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "JUnit6",
                     "tests": [
                         {
-                            "desc": "test",
+                            "desc": "comment:pubTest_toTest_helper",
                             "fromSecret": false,
-                            "id": "test",
+                            "id": "pubTest_toTest_helper",
+                            "success": true
+                        },
+                        {
+                            "desc": "comment:pubTest_toTest_alpha",
+                            "fromSecret": false,
+                            "id": "pubTest_toTest_alpha",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "JUnit6",
+                    "tests": [
+                        {
+                            "desc": "comment:secTest_toTest_alpha",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_alpha",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "JUnit6",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_beta",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_beta",
                             "success": true
                         }
                     ]
@@ -16,5 +52,36 @@
             ]
         }
     ],
-    "replaced": []
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "JUnit6",
+                    "tests": [
+                        {
+                            "desc": "comment:secTest_toTest_alpha",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_alpha",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "JUnit6",
+                    "tests": [
+                        {
+                            "desc": "secTest_toTest_beta",
+                            "fromSecret": true,
+                            "id": "secTest_toTest_beta",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }

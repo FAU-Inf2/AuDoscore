@@ -13,39 +13,30 @@ public class CheckAnnotation {
 	public static final int MAX_TIMEOUT_MS = 60_000;
 	private static final String cwd = System.getProperty("user.dir");
 
-	// checks if given class exists in cleanroom
-	private static Class<?> getCleanroomClass(String name) {
-		try (URLClassLoader cleanroomLoader = new URLClassLoader(new URL[]{new File(cwd, "cleanroom").toURI().toURL()})) {
+	static void main(String[] args) {
+		try (URLClassLoader unitLoader = new URLClassLoader(new URL[]{new File(cwd, "junit").toURI().toURL()})) {
+			Class<?> testClass;
 			try {
-				return cleanroomLoader.loadClass(name);
+				testClass = unitLoader.loadClass(args[0]);
 			} catch (ClassNotFoundException classNotFoundException) {
-				throw new IllegalArgumentException("ERROR - Class [" + classNotFoundException.getMessage() + "] specified in @CompareInterface does not exist in cleanroom");
+				throw new IllegalArgumentException("ERROR - Test class [" + args[0] + "] does not exist");
 			}
-		} catch (IOException exception) {
-			throw new Error("Error - " + exception.getMessage());
+			checkAnnotations(testClass);
+		} catch (IOException malformedURLException) {
+			throw new Error("Error " + malformedURLException.getMessage());
 		}
-	}
-
-	private static Method getMethod(Class<?> cleanroomClass, String methodName) {
-		for (Method cleanroomMethod : cleanroomClass.getDeclaredMethods()) {
-			if (cleanroomMethod.getName().equals(methodName)) {
-				return cleanroomMethod;
-			}
-		}
-		return null;
 	}
 
 	// checks (almost) all annotation conditions
-	public static void checkAnnotations(Class<?> testClass) {
+	private static void checkAnnotations(Class<?> testClass) {
 		// check annotations on class level
-		Class<?> pubTestClass = JUnitWithPoints.getPublicTestClass(); // get PubTest if declared (testClass is SecTest in this case)
-		String pubTestOrElseCurrentTestName = pubTestClass != null ? pubTestClass.getName() : testClass.getName();
-		Exercises exercisesAnnotation = JUnitWithPoints.getExercisesAnnotation(testClass);
-		if (exercisesAnnotation == null || exercisesAnnotation.value().length == 0) {
-			throw new AnnotationFormatError("ERROR - did not find valid @Exercises declaration: [" + pubTestOrElseCurrentTestName + "]");
+		// check Exercises/Ex annotations in public test if provided
+		Optional<Exercises> exercisesAnnotation = JUnitWithPoints.getExercisesAnnotation(testClass);
+		if (exercisesAnnotation.isEmpty() || exercisesAnnotation.get().value().length == 0) {
+			throw new AnnotationFormatError("ERROR - did not find valid @Exercises declaration: [" + testClass.getName() + "]");
 		}
 		final HashMap<String, Ex> exerciseHashMap = new HashMap<>();
-		for (Ex exercise : exercisesAnnotation.value()) {
+		for (Ex exercise : exercisesAnnotation.get().value()) {
 			if (exercise.exID().trim().isEmpty()) {
 				throw new AnnotationFormatError("ERROR - found @Exercises annotation with empty exercise name and following points: [" + exercise.points() + "]");
 			} else if (exercise.points() <= 0) {
@@ -89,17 +80,17 @@ public class CheckAnnotation {
 		long timeoutSum = 0;
 		HashSet<String> usedExercises = new HashSet<>();
 		HashSet<String> bonusExercises = new HashSet<>();
-		for (Method m : testClass.getDeclaredMethods()) {
-			String testMethodName = testClass.getName() + "." + m.getName();
-			Test testAnnotation = m.getAnnotation(Test.class);
-			Points pointsAnnotation = m.getAnnotation(Points.class);
+		for (Method testMethod : JUnitWithPoints.getTestMethodsSorted(testClass)) {
+			String testMethodName = testClass.getName() + "." + testMethod.getName();
+			Test testAnnotation = testMethod.getAnnotation(Test.class);
+			Points pointsAnnotation = testMethod.getAnnotation(Points.class);
 			System.out.println(testMethodName);
 			if (testAnnotation != null && pointsAnnotation == null) {
 				throw new AnnotationFormatError("ERROR - found test case with @Test but no @Points annotation: [" + testMethodName + "]");
 			} else if (pointsAnnotation == null) {
 				continue;
 			}
-			Timeout timeout = m.getAnnotation(Timeout.class);
+			Timeout timeout = testMethod.getAnnotation(Timeout.class);
 			if (timeout == null) {
 				timeout = Points.class.getAnnotation(Timeout.class);
 			}
@@ -107,7 +98,7 @@ public class CheckAnnotation {
 				throw new AnnotationFormatError("ERROR - found test case without 'timeout' in @Test or @Points annotation: [" + testMethodName + "]");
 			}
 			timeoutSum += TimeUnit.MILLISECONDS.convert(timeout.value(), timeout.unit());
-			Replace replaceAnnotation = m.getAnnotation(Replace.class);
+			Replace replaceAnnotation = testMethod.getAnnotation(Replace.class);
 			if (!isSecretClass && replaceAnnotation != null) {
 				throw new AnnotationFormatError("ERROR - found test case with @Replace in a public test class: [" + testMethodName + "]");
 			} else if (pointsAnnotation.exID().trim().isEmpty()) {
@@ -124,10 +115,10 @@ public class CheckAnnotation {
 			usedExercises.add(pointsAnnotation.exID());
 		}
 		if (!isSecretClass && usedExercises.size() != exerciseHashMap.size()) {
-			throw new AnnotationFormatError("ERROR - found @Ex declaration without corresponding test method: [" + pubTestOrElseCurrentTestName + "]");
+			throw new AnnotationFormatError("ERROR - found @Ex declaration without corresponding test method: [" + testClass.getName() + "]");
 		}
 		if (!isSecretClass && bonusExercises.size() != exerciseHashMap.size()) {
-			throw new AnnotationFormatError("ERROR - found @Ex declaration without test method with bonus values: [" + pubTestOrElseCurrentTestName + "]");
+			throw new AnnotationFormatError("ERROR - found @Ex declaration without test method with bonus values: [" + testClass.getName() + "]");
 		}
 		if (timeoutSum > MAX_TIMEOUT_MS) {
 			throw new AnnotationFormatError("ERROR - total timeout sum is too high, please reduce to max. " + MAX_TIMEOUT_MS + "ms: [" + timeoutSum + "ms]");
@@ -158,17 +149,25 @@ public class CheckAnnotation {
 		}
 	}
 
-	static void main(String[] args) {
-		try (URLClassLoader unitLoader = new URLClassLoader(new URL[]{new File(cwd, "junit").toURI().toURL()})) {
-			Class<?> testClass;
+	// checks if given class exists in cleanroom
+	private static Class<?> getCleanroomClass(String name) {
+		try (URLClassLoader cleanroomLoader = new URLClassLoader(new URL[]{new File(cwd, "cleanroom").toURI().toURL()})) {
 			try {
-				testClass = unitLoader.loadClass(args[0]);
+				return cleanroomLoader.loadClass(name);
 			} catch (ClassNotFoundException classNotFoundException) {
-				throw new IllegalArgumentException("ERROR - Test class [" + args[0] + "] does not exist");
+				throw new IllegalArgumentException("ERROR - Class [" + classNotFoundException.getMessage() + "] specified in @CompareInterface does not exist in cleanroom");
 			}
-			checkAnnotations(testClass);
-		} catch (IOException malformedURLException) {
-			throw new Error("Error " + malformedURLException.getMessage());
+		} catch (IOException exception) {
+			throw new Error("Error - " + exception.getMessage());
 		}
+	}
+
+	private static Method getMethod(Class<?> cleanroomClass, String methodName) {
+		for (Method cleanroomMethod : cleanroomClass.getDeclaredMethods()) {
+			if (cleanroomMethod.getName().equals(methodName)) {
+				return cleanroomMethod;
+			}
+		}
+		return null;
 	}
 }

@@ -60,22 +60,20 @@ public class PointsMerger {
 	// extract points annotation from either secret or public class and calculate the point
 	private static double getLocalPoint(Boolean success, String id, Boolean fromSecret) {
 		Points points;
+		final Method method;
 		if (fromSecret) {
 			// test method originated from a secret test
-			try {
-				final Method method = secret.getDeclaredMethod(id);
-				points = method.getAnnotation(Points.class);
-			} catch (NoSuchMethodException noSuchMethodException) {
+			method = JUnitWithPoints.getTestMethodsSorted(secret).stream().filter(m -> m.getName().equals(id)).findFirst().orElse(null);
+			if (method == null) {
 				throw new Error("WARNING - Method " + id + " was not found in secret test class " + secret.getName());
 			}
 		} else {
-			try {
-				final Method method = pub.getDeclaredMethod(id);
-				points = method.getAnnotation(Points.class);
-			} catch (NoSuchMethodException noSuchMethodException) {
+			method = JUnitWithPoints.getTestMethodsSorted(pub).stream().filter(m -> m.getName().equals(id)).findFirst().orElse(null);
+			if (method == null) {
 				throw new Error("WARNING - Method " + id + " was not found in public test class " + pub.getName());
 			}
 		}
+		points = method.getAnnotation(Points.class);
 		double score = 0;
 		if (points.bonus() != -1 && success) {
 			score = getPoints(points.bonus(), exerciseHashMap.get(points.exID()).points(), bonusPerExHashMap.get(points.exID()));
@@ -224,9 +222,8 @@ public class PointsMerger {
 		// get the public class name via -D param
 		if (System.getProperty("pub") != null) {
 			// load public test
-			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			try {
-				pub = cl.loadClass(System.getProperty("pub"));
+				pub = ClassLoader.getSystemClassLoader().loadClass(System.getProperty("pub"));
 				exercisesAnnotation = pub.getAnnotation(Exercises.class);
 				for (Ex exercise : exercisesAnnotation.value()) {
 					// save Exercises in HashMap
@@ -234,7 +231,7 @@ public class PointsMerger {
 					bonusPerExHashMap.put(exercise.exID(), 0.0);
 				}
 				// get sum of bonus
-				for (Method method : pub.getDeclaredMethods()) {
+				for (Method method : JUnitWithPoints.getTestMethodsSorted(pub)) {
 					if (method.isAnnotationPresent(Points.class)) {
 						Points points = method.getAnnotation(Points.class);
 						if (points.bonus() != -1) {
@@ -250,10 +247,9 @@ public class PointsMerger {
 		}
 		if (System.getProperty("secret") != null) {
 			// load secret test
-			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			try {
-				secret = cl.loadClass(System.getProperty("secret"));
-				for (Method method : secret.getDeclaredMethods()) {
+				secret = ClassLoader.getSystemClassLoader().loadClass(System.getProperty("secret"));
+				for (Method method : JUnitWithPoints.getTestMethodsSorted(secret)) {
 					if (method.isAnnotationPresent(Points.class)) {
 						Points points = method.getAnnotation(Points.class);
 						if (points.bonus() != -1) {

@@ -29,7 +29,7 @@ for i in `find expected/ -type f`; do
 		ec=$?
 		if [[ $ec -ne 0 ]] && [[ "$i" == expected/run*.err ]]; then
 			# in case of JSON, try to parse and compare as JSON
-			java -cp $rootDir/lib/junitpoints.jar:$rootDir/lib/json-simple-1.1.1.jar tools.DiffJSON $i $testfile
+			java -cp $rootDir/lib/junitpoints.jar:$rootDir/lib/json-simple.jar tools.DiffJSON $i $testfile
 			ec=$?
 			if [[ -n "$REBUILD" ]]; then
 				# in case of JSON, store pretty printed version
