@@ -101,10 +101,10 @@ run-stage1:
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2
 	echo "[" 1>&2
-	$(SHELL) ./single_execution.sh
+	$(SHELL) ./single_execution.sh; echo $$? >> run2.exit
 	echo "]" 1>&2
 	echo ", \"replaced\" : " 1>&2
-	$(SHELL) ./loop.sh
+	$(SHELL) ./loop.sh; echo $$? >> run2.exit
 	echo "}" 1>&2
 
 run: run-stage$(STAGE)

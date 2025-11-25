@@ -263,7 +263,9 @@ public class ReplaceManager {
 						+ " -cp lib/junit.jar:lib/json-simple.jar:lib/junitpoints.jar:" + replacedFolderName + ":junit:interfaces:student" //
 						+ " -Dpub=" + publicTestClassName //
 						+ " -Djson=yes org.junit.platform.console.ConsoleLauncher execute --disable-banner --fail-if-no-tests" //
-						+ " -m " + secretTestClassName + "#" + suitableTestCaseMethod);
+						+ " -m " + secretTestClassName + "#" + suitableTestCaseMethod //
+						+ " ; echo $? >> run2.exit" //
+				);
 			}
 		}
 	}

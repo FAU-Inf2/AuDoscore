@@ -146,7 +146,7 @@ function scanJunit {
 		for entry in "$junitDirName"/*; do
 			files+=("$entry")
 		done
-		file_count=$(ls -1 $junitDirName| grep -v ^1 | wc -l)
+		file_count=$(ls -1 $junitDirName | grep -v ^1 | wc -l)
 		if [ "${file_count}" == "1" ]; then
 			pubTestFile=$(basename ${files[0]})
 		elif [ "${file_count}" == "2" ]; then
@@ -280,8 +280,8 @@ function testIt {
 
 	info "- testing"
 	( make run-stage2 ) > run2.out 2> run2.err
-	ec=$?
-	if [ $ec -ne 0 ]; then
+	ec=$(cat run2.exit | grep -v 0 | grep -v 1)
+	if [ "$ec" != "" ]; then
 		err "failed, stdout:"
 		cat run2.out
 		err "failed, stderr:"

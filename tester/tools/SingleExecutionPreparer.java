@@ -35,7 +35,9 @@ public class SingleExecutionPreparer {
 							+ " -cp " + classpath //
 							+ " " + dParameters //
 							+ " org.junit.platform.console.ConsoleLauncher execute --disable-banner --fail-if-no-tests" //
-							+ " -m " + testClassName + "#" + method.getName());
+							+ " -m " + testClassName + "#" + method.getName() //
+							+ " ; echo $? >> run2.exit" //
+					);
 					counter++;
 				}
 			}

@@ -84,7 +84,6 @@ public class CheckAnnotation {
 			String testMethodName = testClass.getName() + "." + testMethod.getName();
 			Test testAnnotation = testMethod.getAnnotation(Test.class);
 			Points pointsAnnotation = testMethod.getAnnotation(Points.class);
-			System.out.println(testMethodName);
 			if (testAnnotation != null && pointsAnnotation == null) {
 				throw new AnnotationFormatError("ERROR - found test case with @Test but no @Points annotation: [" + testMethodName + "]");
 			} else if (pointsAnnotation == null) {

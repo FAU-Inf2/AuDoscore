@@ -22,7 +22,7 @@
                     "tests": [
                         {
                             "desc": "secTest",
-                            "error": "NullPointerException(Cannot invoke \"java.util.Iterator.next()\" because the return value of \"ToTest.foo()\" is null): SecretTest.secTest(line 22)",
+                            "error": "NullPointerException(Cannot invoke \"java.util.Iterator.next()\" because the return value of \"ToTest.foo()\" is null): SecretTest.secTest(line 12)",
                             "fromSecret": true,
                             "id": "secTest",
                             "success": false
