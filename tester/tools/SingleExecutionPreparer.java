@@ -34,7 +34,7 @@ public class SingleExecutionPreparer {
 					System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m" //
 							+ " -cp " + classpath //
 							+ " " + dParameters //
-							+ " org.junit.platform.console.ConsoleLauncher execute --disable-banner --fail-if-no-tests" //
+							+ " org.junit.platform.console.ConsoleLauncher execute --disable-banner --details=none --fail-if-no-tests" //
 							+ " -m " + testClassName + "#" + method.getName() //
 							+ " ; echo $? >> run2.exit" //
 					);

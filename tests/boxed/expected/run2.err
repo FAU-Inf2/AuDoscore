@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "pubTest_no_op",
@@ -18,11 +18,11 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_boolean: Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now.)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <false> but was: <true>)",
                             "fromSecret": true,
                             "id": "secTest_toTest_boolean",
                             "success": false
@@ -34,11 +34,11 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_byte: Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<8> but was:<15>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <8> but was: <15>)",
                             "fromSecret": true,
                             "id": "secTest_toTest_byte",
                             "success": false
@@ -50,11 +50,11 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_char: Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<8> but was:<15>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <8> but was: <15>)",
                             "fromSecret": true,
                             "id": "secTest_toTest_char",
                             "success": false
@@ -66,11 +66,11 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_double: Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<8.0> but was:<15.0>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <8.0> but was: <15.0>)",
                             "fromSecret": true,
                             "id": "secTest_toTest_double",
                             "success": false
@@ -82,11 +82,11 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_float: Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<8.0> but was:<15.0>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <8.0> but was: <15.0>)",
                             "fromSecret": true,
                             "id": "secTest_toTest_float",
                             "success": false
@@ -98,11 +98,11 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_int: Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<8> but was:<15>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <8> but was: <15>)",
                             "fromSecret": true,
                             "id": "secTest_toTest_int",
                             "success": false
@@ -114,11 +114,11 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_long: Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<8> but was:<15>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <8> but was: <15>)",
                             "fromSecret": true,
                             "id": "secTest_toTest_long",
                             "success": false
@@ -130,11 +130,11 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_short: Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<8> but was:<15>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <8> but was: <15>)",
                             "fromSecret": true,
                             "id": "secTest_toTest_short",
                             "success": false
@@ -148,7 +148,7 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_boolean: Should pass in \"replaced\" because with @Replace now.",
@@ -163,7 +163,7 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_byte: Should pass in \"replaced\" because with @Replace now.",
@@ -178,7 +178,7 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_char: Should pass in \"replaced\" because with @Replace now.",
@@ -193,7 +193,7 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_double: Should pass in \"replaced\" because with @Replace now.",
@@ -208,7 +208,7 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_float: Should pass in \"replaced\" because with @Replace now.",
@@ -223,7 +223,7 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_int: Should pass in \"replaced\" because with @Replace now.",
@@ -238,7 +238,7 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_long: Should pass in \"replaced\" because with @Replace now.",
@@ -253,7 +253,7 @@
         {
             "exercises": [
                 {
-                    "name": "Boxed",
+                    "name": "boxed",
                     "tests": [
                         {
                             "desc": "secTest_toTest_short: Should pass in \"replaced\" because with @Replace now.",

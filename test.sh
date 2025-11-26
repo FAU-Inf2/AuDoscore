@@ -288,6 +288,9 @@ function testIt {
 		cat run2.err
 		die "\ninternal error\n";
 	fi
+	if grep -q "java.lang.NoSuchFieldError:" "run2.out"; then
+		checkExit 1 "\ninternal error\n" run2.out
+	fi
 
 	info "  json:"
 	cat run2.err

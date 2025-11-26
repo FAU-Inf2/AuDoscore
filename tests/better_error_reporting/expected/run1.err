@@ -1,7 +1,7 @@
 {
     "exercises": [
         {
-            "name": "GA4.6a",
+            "name": "better_error_reporting",
             "tests": [
                 {
                     "desc": "test",

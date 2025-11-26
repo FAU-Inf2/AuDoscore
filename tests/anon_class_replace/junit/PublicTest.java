@@ -1,10 +1,8 @@
-import tester.annotations.Ex;
-import tester.annotations.Exercises;
-import tester.annotations.Points;
+import tester.annotations.*;
 
-@Exercises({@Ex(exID = "AnonClassReplace", points = 2)})
+@Exercises({@Ex(exID = "anon_class_replace", points = 2)})
 public class PublicTest {
-	@Points(exID = "AnonClassReplace", bonus = 1)
+	@Points(exID = "anon_class_replace", bonus = 1)
 	public void pubTest_no_op() {
 	}
 }

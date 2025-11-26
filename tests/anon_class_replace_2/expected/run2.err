@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "AnonClassReplace2",
+                    "name": "anon_class_replace_2",
                     "tests": [
                         {
                             "desc": "pubTest_no_op",
@@ -18,11 +18,11 @@
         {
             "exercises": [
                 {
-                    "name": "AnonClassReplace2",
+                    "name": "anon_class_replace_2",
                     "tests": [
                         {
                             "desc": "secTest",
-                            "error": "AssertionError(Should return 0 expected:<0> but was:<42>)",
+                            "error": "AssertionFailedError(Should return 0 ==> expected: <0> but was: <42>)",
                             "fromSecret": true,
                             "id": "secTest",
                             "success": false
@@ -36,7 +36,7 @@
         {
             "exercises": [
                 {
-                    "name": "AnonClassReplace2",
+                    "name": "anon_class_replace_2",
                     "tests": [
                         {
                             "desc": "secTest",

@@ -1,3 +1,3 @@
-make[1]: Entering directory '/home/sitowert/AuDoscore/tests/classes/test.19689'
-javac ToTest.java	
-make[1]: Leaving directory '/home/sitowert/AuDoscore/tests/classes/test.19689'
+make[1]: Verzeichnis „/AuDoscore/tests/classes/test.26822“ wird betreten
+javac  -Xprefer:source -sourcepath interfaces student/*.java
+make[1]: Verzeichnis „/AuDoscore/tests/classes/test.26822“ wird verlassen

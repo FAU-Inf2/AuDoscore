@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "bonus_malus_correct",
                     "tests": [
                         {
                             "desc": "test",

@@ -1,6 +1,6 @@
 Score: 1.0
 
-Boxed (1.0 points):
+boxed (1.0 points):
 ✓   0.11 | pubTest_no_op
 ✓   0.11 | secTest_toTest_boolean: Should pass in "replaced" because with @Replace now.
 ✓   0.11 | secTest_toTest_byte: Should pass in "replaced" because with @Replace now.

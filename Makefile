@@ -96,7 +96,7 @@ run-stage0:
 run-stage1:
 	java -XX:-OmitStackTraceInFastThrow -Xmx1024m \
 		-cp $(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName) \
-		-Djson=yes org.junit.platform.console.ConsoleLauncher execute --disable-banner --fail-if-no-tests -c $(PUBLICTEST); echo $$? > run1.exit
+		-Djson=yes org.junit.platform.console.ConsoleLauncher execute --disable-banner --details=none --fail-if-no-tests -c $(PUBLICTEST); echo $$? > run1.exit
 
 run-stage2:
 	echo "{ \"vanilla\" : " 1>&2

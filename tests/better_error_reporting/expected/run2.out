@@ -1,44 +1,62 @@
-make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.214918“ wird betreten
+make[1]: Verzeichnis „/AuDoscore/tests/better_error_reporting/test.7842“ wird betreten
 echo "{ \"vanilla\" : " 1>&2
 echo "[" 1>&2
-/bin/dash ./single_execution.sh
-make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.214918“ wird betreten
+/bin/dash ./single_execution.sh; echo $? >> run2.exit
+make[2]: Verzeichnis „/AuDoscore/tests/better_error_reporting/test.7842“ wird betreten
 java -XX:-OmitStackTraceInFastThrow -Xmx1024m \
-	-cp lib/junitpoints.jar:lib/junit.jar:lib/hamcrest-core.jar:lib/json-simple-1.1.1.jar:junit:interfaces:student \
-	-Djson=yes org.junit.runner.JUnitCore UnitTest || echo
-JUnit version 4.13.2
-.
-Time: xxx
+	-cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar:junit:interfaces:student \
+	-Djson=yes org.junit.platform.console.ConsoleLauncher execute --disable-banner --details=none --fail-if-no-tests -c UnitTest; echo $? > run1.exit
+make[2]: Verzeichnis „/AuDoscore/tests/better_error_reporting/test.7842“ wird verlassen
 
-OK (1 test)
+Failures (1):
+  JUnit Jupiter:SecretTest:test2()
+    MethodSource [className = 'SecretTest', methodName = 'test2', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: Should return 23 ==> expected: <23> but was: <42>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:590)
+       SecretTest.test2(SecretTest.java:9)
 
-make[2]: Verzeichnis „/audoscore/tests/better_error_reporting/test.214918“ wird verlassen
-.E
-Time: xxx
-There was 1 failure:
-1) test2(SecretTest)
-java.lang.AssertionError: Should return 23 expected:<23> but was:<42>
-	at org.junit.Assert.fail(Assert.java:89)
-	at org.junit.Assert.failNotEquals(Assert.java:835)
-	at org.junit.Assert.assertEquals(Assert.java:647)
-	at SecretTest.test2(SecretTest.java:25)
-
-FAILURES!!!
-Tests run: 1,  Failures: 1
+Test run finished after XXX ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         1 tests found           ]
+[         0 tests skipped         ]
+[         1 tests started         ]
+[         0 tests aborted         ]
+[         0 tests successful      ]
+[         1 tests failed          ]
 
 echo "]" 1>&2
 echo ", \"replaced\" : " 1>&2
-/bin/dash ./loop.sh
-.E
-Time: xxx
-There was 1 failure:
-1) test2(SecretTest)
-java.lang.NoSuchFieldError: Class ToTest does not have member field 'int doesnotexistinstudicode'
-	at ToTest.toTest2(ToTest.java:7)
-	at SecretTest.test2(SecretTest.java:25)
+/bin/dash ./loop.sh; echo $? >> run2.exit
 
-FAILURES!!!
-Tests run: 1,  Failures: 1
+Failures (1):
+  JUnit Jupiter:SecretTest:test2()
+    MethodSource [className = 'SecretTest', methodName = 'test2', methodParameterTypes = '']
+    => java.lang.NoSuchFieldError: Class ToTest does not have member field 'int doesnotexistinstudicode'
+       ToTest.toTest2(ToTest.java:9)
+       SecretTest.test2(SecretTest.java:9)
+
+Test run finished after XXX ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         1 tests found           ]
+[         0 tests skipped         ]
+[         1 tests started         ]
+[         0 tests aborted         ]
+[         0 tests successful      ]
+[         1 tests failed          ]
 
 echo "}" 1>&2
-make[1]: Verzeichnis „/audoscore/tests/better_error_reporting/test.214918“ wird verlassen
+make[1]: Verzeichnis „/AuDoscore/tests/better_error_reporting/test.7842“ wird verlassen

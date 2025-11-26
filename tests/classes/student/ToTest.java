@@ -1,44 +1,59 @@
 public class ToTest {
 	public static int toTest() {
-		return Exercises.foo();
+		return CompareInterface.compareInterface();
 	}
 }
+
+class CompareInterface {
+	public static int compareInterface() {
+		return Exercises.exercises();
+	}
+}
+
 class Exercises {
-	public static int foo() {
-		return new Ex().foo();
+	public static int exercises() {
+		return new Ex().ex();
 	}
 }
+
 class Ex {
-	public int foo() {
-		return new Bonus(42).bar();
+	public int ex() {
+		return Forbidden.forbidden(42);
 	}
 }
-class Bonus {
-	int bonus;
-	Bonus(int bonus) {
-		this.bonus = bonus;
-	}
-	public int bar() {
-		return Malus.bar(-bonus);
-	}
-}
-class Malus {
-	public static int bar(int malus) {
-		return Forbidden.forbid(-malus);
-	}
-}
+
 class Forbidden {
-	public static int forbid(int x) {
-		return NotForbidden.minusOne() * (-x) + SecretCase.nothing();
+	public static int forbidden(int x) {
+		return new InitializeOnce().initializeOnce();
 	}
 }
+
+class InitializeOnce {
+	public int initializeOnce() {
+		return NotForbidden.notForbidden();
+	}
+}
+
 class NotForbidden {
-	public static int minusOne() {
-		return -1;
+	public static int notForbidden() {
+		return new Points().points();
 	}
 }
+
+class Points {
+	public int points() {
+		return new Replace().replace();
+	}
+}
+
+class Replace {
+	public int replace() {
+		return SecretCase.secretCase();
+	}
+}
+
 class SecretCase {
-	public static int nothing() {
-		return 0;
+	public static int secretCase() {
+		return 42;
 	}
 }
