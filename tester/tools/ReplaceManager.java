@@ -1,16 +1,14 @@
 package tester.tools;
 
 import tester.annotations.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.io.*;
+import java.net.*;
 import java.nio.file.Path;
 import java.util.*;
 import java.lang.reflect.*;
 import java.lang.annotation.*;
 
-public class ReplaceManager {
+public final class ReplaceManager {
 	// usage:
 	// 1) ReplaceManager <secret test class>
 	// 2) ReplaceManager --loop <public test class> <secret test class>
@@ -238,34 +236,29 @@ public class ReplaceManager {
 		}
 		boolean needSep = false;
 		for (Map.Entry<String, List<String>> pair : replacementMap.entrySet()) {
-			if (needSep) {
-				System.out.println("echo \",\" 1>&2");
-			} else {
-				needSep = true;
-			}
+			if (needSep) System.out.println("echo \",\" >> run2.err");
+			else needSep = true;
 			String canonicalReplacement = pair.getKey();
 			List<String> suitableTestCaseMethods = pair.getValue();
 			String replacedFolderName = canonicalReplacement.substring(1).replaceAll("@", ":").replaceAll("<", "\\\\<").replaceAll(">", "\\\\>");
 			boolean first = true;
 			for (String suitableTestCaseMethod : suitableTestCaseMethods) {
-				if (first) {
-					first = false;
-				} else {
-					System.out.println("echo \",\" 1>&2");
-				}
 				System.out.println("javac" // recompile SecretTest to cope with boxing, if student and cleanroom have different signatures
 						+ " -cp lib/junit.jar:lib/json-simple.jar:lib/junitpoints.jar:" + replacedFolderName + ":junit:interfaces:student" //
 						+ " -d " + replacedFolderName //
 						+ " -sourcepath junit" //
 						+ " junit/" + secretTestClassName + ".java");
-				System.out.println("java" // execute specific test case
-						+ " -XX:-OmitStackTraceInFastThrow -Xmx1024m" //
+				System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m -Djson=yes" //
 						+ " -cp lib/junit.jar:lib/json-simple.jar:lib/junitpoints.jar:" + replacedFolderName + ":junit:interfaces:student" //
 						+ " -Dpub=" + publicTestClassName //
-						+ " -Djson=yes org.junit.platform.console.ConsoleLauncher execute --disable-banner --details=none --fail-if-no-tests" //
+						+ " org.junit.platform.console.ConsoleLauncher execute" //
+						+ " --disable-banner --details=none --fail-if-no-tests --reports-dir=reports" //
 						+ " -m " + secretTestClassName + "#" + suitableTestCaseMethod //
-						+ " ; echo $? >> run2.exit" //
+						+ " 1>/dev/null 2>/dev/null; echo $? >> run2.exit" //
 				);
+				if (first) first = false;
+				else System.out.println("echo \",\" >> run2.err");
+				System.out.println("for gradeFile in `find ./reports/ -name run.grade -type f`; do cat $gradeFile >> run2.err; rm $gradeFile; done");
 			}
 		}
 	}

@@ -9,4 +9,3 @@ class Exploit {
 		return Integer.parseInt("0");
 	}
 }
-

@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "forbidden_math_notforbidden_max",
                     "tests": [
                         {
                             "desc": "test",

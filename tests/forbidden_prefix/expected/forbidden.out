@@ -1,0 +1,2 @@
+FOUND FORBIDDEN CODE:
+# ToTest.class:3: invokes java.lang.Integer.parseInt((Ljava/lang/String;)I)

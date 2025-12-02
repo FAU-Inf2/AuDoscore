@@ -1,0 +1,6 @@
+Score: 1.0
+
+replace_generic_static (1.0 points):
+✓   0.05 | pubTest
+✓   0.48 | secTest_test_A
+✓   0.48 | secTest_test_B

@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "Test1",
+                    "name": "cleanroom_packaging",
                     "tests": [
                         {
                             "desc": "testPublic",
@@ -18,11 +18,11 @@
         {
             "exercises": [
                 {
-                    "name": "Test1",
+                    "name": "cleanroom_packaging",
                     "tests": [
                         {
                             "desc": "testSecret_with_replace_passes",
-                            "error": "AssertionError(expected:<1> but was:<0>)",
+                            "error": "AssertionFailedError(expected: <1> but was: <0>)",
                             "fromSecret": true,
                             "id": "testSecret_with_replace_passes",
                             "success": false
@@ -34,11 +34,11 @@
         {
             "exercises": [
                 {
-                    "name": "Test1",
+                    "name": "cleanroom_packaging",
                     "tests": [
                         {
                             "desc": "testSecret_without_replace_fails",
-                            "error": "AssertionError(expected:<1> but was:<0>)",
+                            "error": "AssertionFailedError(expected: <1> but was: <0>)",
                             "fromSecret": true,
                             "id": "testSecret_without_replace_fails",
                             "success": false
@@ -52,7 +52,7 @@
         {
             "exercises": [
                 {
-                    "name": "Test1",
+                    "name": "cleanroom_packaging",
                     "tests": [
                         {
                             "desc": "testSecret_with_replace_passes",

@@ -1,0 +1,20 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "forbidden_in_test",
+                    "tests": [
+                        {
+                            "desc": "test",
+                            "fromSecret": false,
+                            "id": "test",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": []
+}

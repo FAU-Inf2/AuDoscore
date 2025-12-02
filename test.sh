@@ -15,6 +15,7 @@ interfacesDirName="interfaces"
 cleanroomDirName="cleanroom"
 junitDirName="junit"
 sutDirName="student"
+overallResultFileName="overall.exit"
 
 function info {
 	echo -e "\033[1;34m$1\033[0m"
@@ -45,14 +46,45 @@ function die {
 	cleanExit -1
 }
 
+function checkContinue {
+	exitcode=$1; shift
+	msg=$1; shift
+	file=$1; shift
+	echo -e "${file}: ok" ${msg} >> ${overallResultFileName}
+	if [ ${exitcode} -eq 0 ]; then
+		info "${msg}"
+	elif [ ${exitcode} -eq 1 ]; then
+		err "failed:"
+		cat ${file}
+		err "${msg}"
+	fi
+}
+
 function checkExit {
 	exitcode=$1; shift
 	msg=$1; shift
 	file=$1; shift
 	if [ ${exitcode} -ne 0 ]; then
+		echo -e "${file}:" ${msg} >> ${overallResultFileName}
 		err "failed:"
 		cat ${file}
 		die "${msg}"
+	else
+		echo -e "${file}: ok" >> ${overallResultFileName}
+	fi
+}
+
+function checkAnnotationFormatError {
+	file=$1; shift
+	egrep -q "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" $file
+	if [ $? -eq 0 ]; then
+		err "test case format wrong:"
+		cat $file
+		err "\nSummary:\n";
+		cat $file | egrep -B1 "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" | sed -e 's/.*ERROR - /ERROR - /'
+		errorFile=$(basename $file .out).err
+		cat $file | egrep -B1 "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" >> $errorFile
+		die "\ninternal error\n";
 	fi
 }
 
@@ -86,21 +118,6 @@ function checkTestFiles {
 		err "ERROR - Found NO @SecretClass in both test files"
 		cleanExit
 	fi
-}
-
-function checkAnnotationFormatError {
-	file=$1; shift
-	egrep -q "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" $file
-	if [ $? -eq 0 ]; then
-		err "test case format wrong:"
-		cat $file
-		err "\nSummary:\n";
-		cat $file | egrep -B1 "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" | sed -e 's/.*ERROR - /ERROR - /'
-		errorFile=$(basename $file .out).err
-		cat $file | egrep -B1 "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" >> $errorFile
-		die "\ninternal error\n";
-	fi
-
 }
 
 function scanCleanroom {
@@ -215,38 +232,37 @@ function testIt {
 
 	if [ "x${interfaces}" != "x" ]; then
 		info "copy interfaces"
-		mkdir "$testDir"/"$interfacesDirName" || die "failed to create test sub-dir $testDir/$interfacesDirName"
-		if [ -r ../"$interfacesDirName" ]; then
-			pushd ../"$interfacesDirName" > /dev/null || die "failed"
-			cp ${interfaces} "${testDir}"/"$interfacesDirName"/ || die "failed"
+		mkdir ${testDir}/${interfacesDirName} || die "failed to create test sub-dir ${testDir}/${interfacesDirName}"
+		if [ -r ../${interfacesDirName} ]; then
+			pushd ../${interfacesDirName} > /dev/null || die "failed to chdir to ${interfacesDirName}"
+			cp ${interfaces} ${testDir}/${interfacesDirName}/ || die "failed to copy interfaces"
 			popd > /dev/null
 		fi
 	fi
 
 	info "copy system under test (SUT)"
-	mkdir "$testDir"/$sutDirName || die "failed to create test sub-dir $testDir/$sutDirName"
-	pushd ../${systemUnderTestDir} > /dev/null || die "failed"
-	cp ${studentSource} "${testDir}"/$sutDirName/ || die "failed"
+	mkdir ${testDir}/${sutDirName} || die "failed to create test sub-dir ${testDir}/${sutDirName}"
+	pushd ../${systemUnderTestDir} > /dev/null || die "failed to chdir to ${systemUnderTestDir}"
+	cp ${studentSource} ${testDir}/${sutDirName}/ || die "failed to copy system under test (SUT)"
 	popd > /dev/null
 
 	info "\nstage0 (compile interfaces and SUT only)"
 	info "- compiling"
 	( make compile-stage0 ) > comp0 2>&1
-	ec=$?
-	checkExit $ec "\nstudent result: ☠\n" comp0
+	checkExit $? "\nstudent result: ☠\n" comp0
 
 	info "\ncopy cleanroom"
-	mkdir "$testDir"/"$cleanroomDirName" || die "failed to create test sub-dir $testDir/$cleanroomDirName"
-	pushd ../"$cleanroomDirName" > /dev/null || die "failed"
-	cp ${studentSource} "${testDir}"/"$cleanroomDirName" || die "failed"
+	mkdir ${testDir}/${cleanroomDirName} || die "failed to create test sub-dir ${testDir}/${cleanroomDirName}"
+	pushd ../${cleanroomDirName} > /dev/null || die "failed to chdir to ${cleanroomDirName}"
+	cp ${studentSource} ${testDir}/${cleanroomDirName} || die "failed to copy cleanroom"
 	popd > /dev/null
 
 	info "copy junit tests"
-	mkdir "$testDir"/"$junitDirName" || die "failed to create test sub-dir $testDir/$junitDirName"
-	pushd ../"$junitDirName" > /dev/null || die "failed"
-	cp ${pubTestFile} "${testDir}"/"$junitDirName"/ || die "failed"
+	mkdir ${testDir}/${junitDirName} || die "failed to create test sub-dir ${testDir}/${junitDirName}"
+	pushd ../${junitDirName} > /dev/null || die "failed to chdir to ${junitDirName}"
+	cp ${pubTestFile} ${testDir}/${junitDirName}/ || die "failed to copy pubTest"
 	if [ "x$secTestFile" != "x" ]; then
-		cp ${secTestFile} "${testDir}"/"$junitDirName"/ || die "failed"
+		cp ${secTestFile} ${testDir}/${junitDirName}/ || die "failed to copy secTest"
 	fi
 	popd > /dev/null
 
@@ -258,15 +274,14 @@ function testIt {
 	checkExit $ec "\nstudent result: ✘\n" comp1.err
 
 	info "- testing"	
-	( make run-stage1 ) > run1.out 2> run1.err
+	( make run-stage1 ) > run1 2>&1
 	ec=$(cat run1.exit)
-	cat run1.out run1.err > run1
+	for gradeFile in `find ./reports/ -name run.grade -type f`; do cat $gradeFile >> run1.err; rm $gradeFile; done
+	cat run1.err >> run1
 	if [ $ec -eq 0 ]; then
-		info "\nstudent result: ✔\n";
+		checkContinue 0 "\nstudent result: ✔\n" run1
 	elif [ $ec -eq 1 ]; then
-		err "failed:"
-		cat run1
-		err "\nstudent result: !\n";
+		checkContinue 1 "\nstudent result: !\n" run1
 	else
 		checkExit $ec "\ninternal error\n" run1
 	fi
@@ -279,18 +294,19 @@ function testIt {
 	checkExit $ec "\ninternal error\n" comp2
 
 	info "- testing"
-	( make run-stage2 ) > run2.out 2> run2.err
+	( make run-stage2 ) > run2 2>&1
 	ec=$(cat run2.exit | grep -v 0 | grep -v 1)
+	cat run2.err >> run2
 	if [ "$ec" != "" ]; then
-		err "failed, stdout:"
-		cat run2.out
-		err "failed, stderr:"
-		cat run2.err
-		die "\ninternal error\n";
+		checkExit 1 "\ninternal error\n" run2
 	fi
-	if grep -q "java.lang.NoSuchFieldError:" "run2.out"; then
-		checkExit 1 "\ninternal error\n" run2.out
-	fi
+	for error in "\\\",\\\"error\\\":\\\"NoSuchFieldError(Class " "\\\",\\\"error\\\":\\\"ExceptionInInitializerError(): " ; do
+		grep -q "$error" run2
+		if [ $? -eq 0 ] ; then
+			checkExit 1 "\ninternal error\n" run2
+		fi
+	done
+	checkContinue 2 "\nstudent result: ?\n" run2
 
 	info "  json:"
 	cat run2.err

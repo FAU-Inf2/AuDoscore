@@ -1,1 +1,0 @@
-javac  -Xprefer:source -sourcepath interfaces student/*.java

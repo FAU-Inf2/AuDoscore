@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "ConditionalReplace",
+                    "name": "conditional_replace",
                     "tests": [
                         {
                             "desc": "testEmpty",
@@ -18,11 +18,11 @@
         {
             "exercises": [
                 {
-                    "name": "ConditionalReplace",
+                    "name": "conditional_replace",
                     "tests": [
                         {
                             "desc": "testSecret",
-                            "error": "AssertionError()",
+                            "error": "AssertionFailedError(expected: <true> but was: <false>)",
                             "fromSecret": true,
                             "id": "testSecret",
                             "success": false

@@ -23,4 +23,3 @@ public class ToTest {
 		return resultBuilder.toString();
 	}
 }
-

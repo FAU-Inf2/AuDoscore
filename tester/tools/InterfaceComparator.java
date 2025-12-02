@@ -6,7 +6,7 @@ import java.net.*;
 import java.io.*;
 import tester.annotations.CompareInterface;
 
-public class InterfaceComparator {
+public final class InterfaceComparator {
 	private static boolean error = false;
 	private static HashMap<String, HashMap<String, Boolean>> checkMap = null;
 

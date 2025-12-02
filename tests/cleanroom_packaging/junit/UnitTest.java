@@ -1,20 +1,11 @@
-import org.junit.*;
+import static org.junit.jupiter.api.Assertions.*;
 import tester.annotations.*;
 
-import static org.junit.Assert.*;
-
-@Exercises({ @Ex(exID = "Test1", points = 42) })
+@Exercises({@Ex(exID = "cleanroom_packaging", points = 42)})
 public class UnitTest {
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout = 300)
-	@Points(exID = "Test1", bonus = 1)
+	@Points(exID = "cleanroom_packaging", bonus = 1)
 	public void testPublic() {
 		Z[] b = new Foo().getBars();
 		assertEquals(2, b.length);
 	}
 }
-

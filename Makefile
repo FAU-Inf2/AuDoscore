@@ -1,3 +1,5 @@
+MAKEFLAGS += --no-print-directory
+
 LIBJUNITPOINTS=lib/junitpoints.jar
 LIBJUNIT=lib/junit.jar
 LIBJSONSIMPLE=lib/json-simple.jar
@@ -67,19 +69,14 @@ compile-stage1: miniclean compile-stage0
 	make run-comparer
 
 compile-stage2: miniclean compile-stage1
-	echo "echo \"[\" 1>&2" > loop.sh
-	echo "make run-stage1" > single_execution.sh
-	set -e ; \
 	if [ "x$(SECRETTEST)" != "x" ]; then \
 		make compile-stage2-secret ; \
-		echo "echo \",\" 1>&2" >> single_execution.sh ; \
-		java -cp $(LIBALL):$(junitDirName) tester.tools.SingleExecutionPreparer "$(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName)" "-Djson=yes -Dpub=$(PUBLICTEST)" $(SECRETTEST) >> single_execution.sh ; \
 	fi
-	echo "echo \"]\" 1>&2" >> loop.sh
 
 compile-stage2-secret:
 	javac $(COMPILER_ARGS) -Xprefer:source -sourcepath $(junitDirName):$(interfacesDirName):$(sutDirName) -cp $(LIBALL) $(junitDirName)/$(SECRETTESTSOURCE)
 	java -cp $(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName) -Dpub=$(PUBLICTEST) tester.tools.CheckAnnotation $(SECRETTEST)
+	java -cp $(LIBALL) tester.tools.SingleExecutionPreparer "$(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName)" "-Djson=yes -Dpub=$(PUBLICTEST)" $(SECRETTEST) >> single_execution.sh
 	java -cp $(LIBALL) tester.tools.ReplaceManager $(SECRETTEST)
 	java -cp $(LIBALL) tester.tools.ReplaceManager --loop $(PUBLICTEST) $(SECRETTEST) >> loop.sh
 
@@ -94,18 +91,30 @@ run-stage0:
 	echo "alles gut"
 
 run-stage1:
-	java -XX:-OmitStackTraceInFastThrow -Xmx1024m \
+	@java -XX:-OmitStackTraceInFastThrow -Xmx1024m -Djson=yes \
 		-cp $(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName) \
-		-Djson=yes org.junit.platform.console.ConsoleLauncher execute --disable-banner --details=none --fail-if-no-tests -c $(PUBLICTEST); echo $$? > run1.exit
+		org.junit.platform.console.ConsoleLauncher execute \
+		--disable-banner --details=none --fail-if-no-tests --reports-dir=reports \
+		-c $(PUBLICTEST) \
+		1>/dev/null 2>/dev/null; echo $$? > run1.exit
 
 run-stage2:
-	echo "{ \"vanilla\" : " 1>&2
-	echo "[" 1>&2
-	$(SHELL) ./single_execution.sh; echo $$? >> run2.exit
-	echo "]" 1>&2
-	echo ", \"replaced\" : " 1>&2
-	$(SHELL) ./loop.sh; echo $$? >> run2.exit
-	echo "}" 1>&2
+	echo "{ \"vanilla\" : " > run2.err
+	echo "[" >> run2.err
+	cat run1.exit >> run2.exit
+	cat run1.err >> run2.err
+	echo "" >> run2.err
+	if [ -s single_execution.sh ]; then \
+		$(SHELL) ./single_execution.sh; echo $$? >> run2.exit; \
+	fi
+	echo "]" >> run2.err
+	echo ", \"replaced\" : " >> run2.err
+	echo "[" >> run2.err
+	if [ -s loop.sh ]; then \
+		$(SHELL) ./loop.sh; echo $$? >> run2.exit; \
+	fi
+	echo "]" >> run2.err
+	echo "}" >> run2.err
 
 run: run-stage$(STAGE)
 

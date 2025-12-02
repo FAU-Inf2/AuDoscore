@@ -2,7 +2,7 @@ public class ToTest {
 	int[] field;
 
 	public ToTest(final int x) {
-		this.field = new int[] { x };
+		this.field = new int[]{x};
 	}
 
 	public int replace() {
@@ -13,4 +13,3 @@ public class ToTest {
 		return this.replace() == 42;
 	}
 }
-

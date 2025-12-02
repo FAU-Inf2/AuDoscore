@@ -9,7 +9,11 @@ import org.json.simple.*;
 import org.json.simple.parser.*;
 import tester.annotations.*;
 
-public class PointsMerger {
+public final class PointsMerger {
+	static {
+		Locale.setDefault(Locale.US);
+	}
+
 	private static final class SingleReport {
 		boolean success;
 		String description;
@@ -20,11 +24,9 @@ public class PointsMerger {
 		public int compare(SingleReport r1, SingleReport r2) {
 			if (r1 == null && r2 == null) {
 				return 0;
-			}
-			if (r1 == null) {
+			} else if (r1 == null) {
 				return -1;
-			}
-			if (r2 == null) {
+			} else if (r2 == null) {
 				return 1;
 			}
 			boolean t1 = r1.success;
@@ -40,10 +42,6 @@ public class PointsMerger {
 			}
 			return -1;
 		}
-	}
-
-	static {
-		Locale.setDefault(Locale.US);
 	}
 
 	private static String summary = "";
@@ -85,15 +83,15 @@ public class PointsMerger {
 	}
 
 	private static String getFormattedErrorString(String error) {
-		if (error.length() <= 1000 || !error.startsWith("ComparisonFailure")) {
+		if (error.length() <= 1000 || !error.startsWith("AssertionFailedError")) {
 			return error;
 		}
-		// we have a very long ComparisonFailure -> try to "compress" it
-		final int expectedPos = error.indexOf("expected:<");
+		// we have a very long AssertionFailedError -> try to "compress" it
+		final int expectedPos = error.indexOf("expected: <");
 		if (expectedPos < 0) {
 			return error; // unexpected error format
 		}
-		final int butWasPos = error.indexOf("> but was:<", expectedPos);
+		final int butWasPos = error.indexOf("> but was: <", expectedPos);
 		if (butWasPos < 0) {
 			return error; // unexpected error format
 		}

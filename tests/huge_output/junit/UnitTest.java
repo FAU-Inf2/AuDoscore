@@ -1,16 +1,8 @@
-import static org.junit.Assert.assertEquals;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import tester.annotations.*;
 
-@Exercises({ @Ex(exID = "HugeOutput", points = 3) })
+@Exercises({@Ex(exID = "huge_output", points = 3)})
 public class UnitTest {
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
-
 	private static String getExpected() {
 		final StringBuilder resultBuilder = new StringBuilder();
 		for (int i = 0; i < 0x1000; ++i) {
@@ -19,22 +11,18 @@ public class UnitTest {
 		return resultBuilder.toString();
 	}
 
-	@Test(timeout = 1000)
-	@Points(exID = "HugeOutput", bonus = 1)
+	@Points(exID = "huge_output", bonus = 1)
 	public void testFoo() {
-		assertEquals("foo() is wrong!", getExpected(), ToTest.foo());
+		assertEquals(getExpected(), ToTest.foo(), "foo() is wrong!");
 	}
 
-	@Test(timeout = 1000)
-	@Points(exID = "HugeOutput", bonus = 1)
+	@Points(exID = "huge_output", bonus = 1)
 	public void testBar() {
-		assertEquals("bar() is wrong!", "a", ToTest.bar());
+		assertEquals("a", ToTest.bar(), "bar() is wrong!");
 	}
 
-	@Test(timeout = 1000)
-	@Points(exID = "HugeOutput", bonus = 1)
+	@Points(exID = "huge_output", bonus = 1)
 	public void testBaz() {
-		assertEquals("baz() is wrong!", getExpected(), ToTest.baz());
+		assertEquals(getExpected(), ToTest.baz(), "baz() is wrong!");
 	}
 }
-

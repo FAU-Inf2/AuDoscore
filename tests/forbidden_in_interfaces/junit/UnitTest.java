@@ -1,20 +1,10 @@
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
 import tester.annotations.*;
 
-@Exercises({ @Ex(exID = "ForbiddenInInterface", points = 12.5)})
+@Exercises({@Ex(exID = "forbidden_in_interfaces", points = 1)})
 public class UnitTest {
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout=500)
-	@Points(exID = "ForbiddenInInterface", bonus = 47.11)
+	@Points(exID = "forbidden_in_interfaces", bonus = 1)
 	public void test() {
 		Super x = new ToTest();
 		x.test();
 	}
 }
-

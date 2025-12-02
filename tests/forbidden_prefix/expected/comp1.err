@@ -1,0 +1,3 @@
+FOUND FORBIDDEN CODE:
+# ToTest.class:3: invokes java.lang.Integer.parseInt((Ljava/lang/String;)I)
+make[1]: *** [Makefile:64: compile-stage1] Fehler 1

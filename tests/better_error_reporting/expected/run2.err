@@ -1,0 +1,53 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "better_error_reporting",
+                    "tests": [
+                        {
+                            "desc": "test",
+                            "fromSecret": false,
+                            "id": "test",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "better_error_reporting",
+                    "tests": [
+                        {
+                            "desc": "test2",
+                            "error": "AssertionFailedError(Should return 23 ==> expected: <23> but was: <42>)",
+                            "fromSecret": true,
+                            "id": "test2",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "better_error_reporting",
+                    "tests": [
+                        {
+                            "desc": "test2",
+                            "error": "NoSuchFieldError(Class ToTest does not have member field 'int doesnotexistinstudicode'): ToTest.toTest2(line 9)",
+                            "fromSecret": true,
+                            "id": "test2",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

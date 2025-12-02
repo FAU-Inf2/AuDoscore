@@ -10,7 +10,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ReplaceMixer {
+public final class ReplaceMixer {
 	public static void replace(String classToReplace, SortedSet<String> methodsToReplace, Path cleanroomPath, Path studentPath, Path mixedPath) {
 		try (var cleanroomClassFilesStream = Files.find(cleanroomPath, 42, (p, a) -> a.isRegularFile() && p.toString().endsWith(".class")); //
 			 var studentClassFilesStream = Files.find(studentPath, 42, (p, a) -> a.isRegularFile() && p.toString().endsWith(".class"))) {

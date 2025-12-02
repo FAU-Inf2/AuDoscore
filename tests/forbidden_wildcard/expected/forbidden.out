@@ -1,0 +1,2 @@
+FOUND FORBIDDEN CODE:
+# ToTest.class:6: invokes java.util.Collections.emptyList(()Ljava/util/List;)

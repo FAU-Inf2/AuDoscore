@@ -1,15 +1,11 @@
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import tester.annotations.*;
 
-@Exercises({ @Ex(exID = "ForbiddenInOtherClass", points = 1.0) })
-@Forbidden({ "java.lang.Integer" })
-public class UnitTest extends JUnitWithPoints {
-	@Test(timeout = 500)
-	@Points(exID = "ForbiddenInOtherClass", bonus = 1.0)
+@Exercises({@Ex(exID = "forbidden_in_other_class", points = 1.0)})
+@Forbidden({"java.lang.Integer"})
+public class UnitTest {
+	@Points(exID = "forbidden_in_other_class", bonus = 1.0)
 	public void test() {
 		assertEquals(0, ToTest.test());
 	}
 }
-

@@ -1,0 +1,81 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "replace_generic_static",
+                    "tests": [
+                        {
+                            "desc": "pubTest",
+                            "fromSecret": false,
+                            "id": "pubTest",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "replace_generic_static",
+                    "tests": [
+                        {
+                            "desc": "secTest_test_A",
+                            "fromSecret": true,
+                            "id": "secTest_test_A",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "replace_generic_static",
+                    "tests": [
+                        {
+                            "desc": "secTest_test_B",
+                            "fromSecret": true,
+                            "id": "secTest_test_B",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "replace_generic_static",
+                    "tests": [
+                        {
+                            "desc": "secTest_test_A",
+                            "fromSecret": true,
+                            "id": "secTest_test_A",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "replace_generic_static",
+                    "tests": [
+                        {
+                            "desc": "secTest_test_B",
+                            "fromSecret": true,
+                            "id": "secTest_test_B",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

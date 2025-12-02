@@ -1,15 +1,36 @@
-{ "vanilla" : 
-[
-{"exercises":[{"name":"clinit bug","tests":[{"desc":"test","fromSecret":false,"id":"test","success":true}]}]}
-,
-Exception in thread "main" java.lang.ExceptionInInitializerError
-	at java.base/java.lang.Class.forName0(Native Method)
-	at java.base/java.lang.Class.forName(Class.java:467)
-	at java.base/java.lang.Class.forName(Class.java:458)
-	at tester.tools.SingleMethodRunner.main(SingleMethodRunner.java:14)
-Caused by: java.lang.NullPointerException
-	at ToTest.<init>(ToTest.java:3)
-	at SecretTest.<clinit>(SecretTest.java:12)
-	... 4 more
-make: *** [Makefile:95: run-stage2] Fehler 1
-Above JSON is broken
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "exception_in_clinit",
+                    "tests": [
+                        {
+                            "desc": "test",
+                            "fromSecret": false,
+                            "id": "test",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "exception_in_clinit",
+                    "tests": [
+                        {
+                            "desc": "test2",
+                            "error": "ExceptionInInitializerError(): java.util.ArrayList.forEach(line 1604)",
+                            "fromSecret": true,
+                            "id": "test2",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": []
+}

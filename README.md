@@ -23,14 +23,13 @@ Available Annotations
 
 Remarks on `Forbidden.Type.WILDCARD`:
 -----
-- `Type.WILDCARD` can be used with Scala-Regex-like patterns:
-  - Scala-Regex "delegates to the java.util.regex package of the Java Platform."
+- `Type.WILDCARD` can be used with Java-Regex-like patterns:
   - "See the documentation for java.util.regex.Pattern for details about the regular expression syntax for pattern strings."
 - **but with following SPECIAL treatments:**
   - `.` (regex: "any character") is escaped to `\.` (literally: e.g. `org.junit.Test`) - so no need to escape in `@Forbidden`/`@NotForbidden`
-  - `$` (regex: "end of a line") is escaped to `\$` (literally: e.g. companion `LazyList$`) - so no need to escape in `@Forbidden`/`@NotForbidden`
-  - `X*Y` (regex: "X, zero or more times") is replaced by `X[^.\$]*Y` (matching any character except `.` or `$`: e.g. `List*` matches `List`,`ListMap`,`ListSet` - **but not** `List.map`,`List$.empty`,...!)
-  + `**` is replaced by `.*` (regex: "any character" + "zero or more times": e.g. `List**` matches `List`,`ListMap`,...`List.map`,...,`List$.empty`,`List$.apply`,...)
+  - `$` (regex: "end of a line") is escaped to `\$` (literally: e.g. nested class `Foo$Bar`) - so no need to escape in `@Forbidden`/`@NotForbidden`
+  - `X*Y` (regex: "X, zero or more times") is replaced by `X[^.\$]*Y` (matching any character except `.` or `$`: e.g. `Hash*` matches `Hashtable`,`HashMap`,`HashSet` - **but not** `HashMap.newHashMap`,`HashMap.keySet`,...!)
+  + `**` is replaced by `.*` (regex: "any character" + "zero or more times": e.g. `Hash**` matches `Hashtable`,`HashMap`,`HashSet`,...,`HashMap.newHashMap`,`HashMap.keySet`,...)
 - Consider the specialties above when declaring your own regex patterns in `@Forbidden`/`@NotForbidden`!
 
 

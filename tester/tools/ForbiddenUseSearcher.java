@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import tester.annotations.Forbidden;
 import tester.annotations.NotForbidden;
 
-public class ForbiddenUseSearcher {
+public final class ForbiddenUseSearcher {
 	static void main(String[] args) {
 		var rootDir = System.getProperty("user.dir");
 		search(rootDir, args[0]);
@@ -35,7 +35,7 @@ public class ForbiddenUseSearcher {
 			"java.lang.Class.desiredAssertionStatus**", //
 	};
 
-	public static void search(String rootDir, String pubTestName) {
+	private static void search(String rootDir, String pubTestName) {
 		var testAnnotations = getTestAnnotations(rootDir, pubTestName);
 		var studentClassDir = FileSystems.getDefault().getPath(rootDir, "student");
 		try (var studentClassFiles = Files.walk(studentClassDir, 1).filter(f -> f.toString().endsWith(".class"))) {

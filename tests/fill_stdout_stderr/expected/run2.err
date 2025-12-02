@@ -1,0 +1,28 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "fill_stdout_stderr",
+                    "tests": [
+                        {
+                            "desc": "stderr",
+                            "error": "TimeoutException(stderr() timed out after 1000 milliseconds)",
+                            "fromSecret": false,
+                            "id": "stderr",
+                            "success": false
+                        },
+                        {
+                            "desc": "stdout",
+                            "error": "TimeoutException(stdout() timed out after 1000 milliseconds)",
+                            "fromSecret": false,
+                            "id": "stdout",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": []
+}

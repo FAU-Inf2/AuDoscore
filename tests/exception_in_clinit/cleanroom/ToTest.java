@@ -1,3 +1,4 @@
 public class ToTest {
-	public ToTest(Object o) {}
+	public ToTest(Object o) {
+	}
 }

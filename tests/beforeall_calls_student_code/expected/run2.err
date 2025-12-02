@@ -1,0 +1,20 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "@BeforeAll_calls_student_code",
+                    "tests": [
+                        {
+                            "desc": "test",
+                            "fromSecret": false,
+                            "id": "test",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": []
+}

@@ -1,0 +1,20 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "compare_interface_generic",
+                    "tests": [
+                        {
+                            "desc": "testEmpty",
+                            "fromSecret": false,
+                            "id": "testEmpty",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": []
+}

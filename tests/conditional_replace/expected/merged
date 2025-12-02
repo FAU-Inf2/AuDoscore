@@ -1,0 +1,5 @@
+Score: 0.5
+
+conditional_replace (0.5 points):
+✗   0.00 | testSecret | AssertionFailedError(expected: <true> but was: <false>)
+✓   0.50 | testEmpty

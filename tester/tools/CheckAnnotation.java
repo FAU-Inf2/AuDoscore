@@ -9,7 +9,7 @@ import java.net.*;
 import java.util.concurrent.TimeUnit;
 import tester.annotations.*;
 
-public class CheckAnnotation {
+public final class CheckAnnotation {
 	public static final int MAX_TIMEOUT_MS = 60_000;
 	private static final String cwd = System.getProperty("user.dir");
 

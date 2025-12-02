@@ -7,13 +7,14 @@ import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.engine.support.descriptor.MethodSource;
 import org.junit.platform.launcher.*;
 import org.junit.platform.launcher.core.*;
+import org.opentest4j.AssertionFailedError;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.util.*;
 import org.json.simple.*;
 import tester.annotations.*;
 
-public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCallback, TestWatcher, AfterAllCallback {
+public final class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCallback, TestWatcher, AfterAllCallback {
 	static {
 		// set locale explicitly to avoid differences in reading/writing floats
 		Locale.setDefault(Locale.US);
@@ -38,20 +39,15 @@ public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCa
 
 		// get sensible part/line of stack trace
 		private String getStackTrace() {
-			if (throwable == null || throwable instanceof AssertionError) {
+			if (throwable instanceof AssertionFailedError) { // null or something thrown by JUnit6-Assertions
 				return "";
 			}
-			StackTraceElement[] st = throwable.getStackTrace();
-			if (st.length == 0) {
-				return "";
-			}
-			StackTraceElement ste = st[0]; // TODO: maybe search for student code here
-			int i = 1;
-			while (ste.getClassName().indexOf('.') >= 0 && i < st.length) {
-				ste = st[i];
-				i++;
-			}
-			return ": " + ste.getClassName() + "." + ste.getMethodName() + "(line " + ste.getLineNumber() + ")";
+			// TODO: class from package cannot be student code, but might be from interfaces or junit!
+			return Arrays.stream(throwable.getStackTrace()) //
+					.filter(ste -> !ste.getClassName().contains(".")) // class is from a package
+					.findFirst() //
+					.map(ste -> ": " + ste.getClassName() + "." + ste.getMethodName() + "(line " + ste.getLineNumber() + ")") //
+					.orElse("");
 		}
 
 		// determine comment for students
@@ -85,19 +81,14 @@ public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCa
 		}
 	}
 
-	private static PrintStream saveOut, saveErr;
 	private static boolean isSecretClass;
 	private long startTime;
 
 	@Override
 	public void beforeAll(ExtensionContext context) {
 		// disable stdout/stderr to avoid timeouts due to large debugging outputs
-		if (saveOut == null) {
-			saveOut = System.out;
-			saveErr = System.err;
-			System.setOut(new PrintStream(OutputStream.nullOutputStream()));
-			System.setErr(System.out);
-		}
+		System.setOut(new PrintStream(OutputStream.nullOutputStream()));
+		System.setErr(System.out);
 		// reset states
 		reportHashMap.clear();
 		context.getTestClass().filter(tc -> tc.isAnnotationPresent(Exercises.class)).ifPresent(tc -> isSecretClass = false);
@@ -159,11 +150,11 @@ public class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecutionCa
 				jsonExercise.put("tests", jsonTests);
 				jsonExercises.add(new TreeMap<String, Object>(jsonExercise));
 			}
-			// add results to root node and write to stderr
+			// add results to root node
 			JSONObject jsonSummary = new JSONObject();
 			jsonSummary.put("exercises", jsonExercises);
-			saveErr = new PrintStream(saveErr, true, java.nio.charset.StandardCharsets.UTF_8);
-			saveErr.println(jsonSummary);
+			// add grading results to test report
+			context.publishFile("run.grade", org.junit.jupiter.api.MediaType.APPLICATION_JSON, path -> java.nio.file.Files.writeString(path, jsonSummary.toJSONString()));
 		}
 	}
 

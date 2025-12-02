@@ -1,0 +1,4 @@
+FOUND FORBIDDEN CODE:
+# ToTest.class: extends javax.swing.JFrame
+# ToTest.class:3: invokes javax.swing.JFrame.<init>(()V)
+make[1]: *** [Makefile:64: compile-stage1] Fehler 1

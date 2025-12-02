@@ -1,3 +1,0 @@
-make[1]: Verzeichnis „/AuDoscore/tests/classes/test.26822“ wird betreten
-javac  -Xprefer:source -sourcepath interfaces student/*.java
-make[1]: Verzeichnis „/AuDoscore/tests/classes/test.26822“ wird verlassen

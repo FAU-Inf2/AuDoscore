@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "ForbiddenInInterface",
+                    "name": "forbidden_in_interfaces",
                     "tests": [
                         {
                             "desc": "test",

@@ -1,0 +1,20 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "forbidden_math_max_but_not_min",
+                    "tests": [
+                        {
+                            "desc": "test",
+                            "fromSecret": false,
+                            "id": "test",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": []
+}
