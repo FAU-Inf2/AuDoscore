@@ -3,12 +3,12 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "import_cleanonly",
                     "tests": [
                         {
                             "desc": "empty dummy test",
                             "fromSecret": false,
-                            "id": "test4",
+                            "id": "test_noOp",
                             "success": true
                         }
                     ]
@@ -18,11 +18,11 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "import_cleanonly",
                     "tests": [
                         {
                             "desc": "test",
-                            "error": "AssertionError(Should return 42 expected:<42> but was:<56>)",
+                            "error": "AssertionFailedError(Should return 42 ==> expected: <42> but was: <56>)",
                             "fromSecret": true,
                             "id": "test",
                             "success": false
@@ -34,7 +34,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "import_cleanonly",
                     "tests": [
                         {
                             "desc": "test2",
@@ -45,18 +45,49 @@
                     ]
                 }
             ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "import_cleanonly",
+                    "tests": [
+                        {
+                            "desc": "test3",
+                            "error": "AssertionFailedError(Should return 3 ==> expected: <3> but was: <4>)",
+                            "fromSecret": true,
+                            "id": "test3",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "replaced": [
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "import_cleanonly",
                     "tests": [
                         {
                             "desc": "test",
                             "fromSecret": true,
                             "id": "test",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "import_cleanonly",
+                    "tests": [
+                        {
+                            "desc": "test3",
+                            "fromSecret": true,
+                            "id": "test3",
                             "success": true
                         }
                     ]

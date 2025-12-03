@@ -1,5 +1,5 @@
 public class ToTest {
-	public static int get() {
-		return 10;
+	public static int toTest() {
+		return 42;
 	}
 }

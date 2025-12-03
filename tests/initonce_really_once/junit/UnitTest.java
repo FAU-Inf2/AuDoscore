@@ -1,21 +1,10 @@
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import tester.annotations.*;
 
-import tester.annotations.Ex;
-import tester.annotations.Exercises;
-import tester.annotations.Points;
-
-@Exercises({ @Ex(exID = "InitOnce_Really_Once", points = 1.0)})
+@Exercises({@Ex(exID = "initonce_really_once", points = 1.0)})
 public class UnitTest {
-	// instead of explicitly coding the following rules here,
-	// your test class can also just extend the class JUnitWithPoints
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout=200)
-	@Points(exID = "InitOnce_Really_Once", bonus = 0.1)
-	public void test() { }
+	@Points(exID = "initonce_really_once", bonus = 0.1)
+	public void pubTest() {
+		assertEquals(42, ToTest.toTest());
+	}
 }

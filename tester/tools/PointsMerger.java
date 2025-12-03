@@ -83,44 +83,58 @@ public final class PointsMerger {
 	}
 
 	private static String getFormattedErrorString(String error) {
-		if (error.length() <= 1000 || !error.startsWith("AssertionFailedError")) {
+		if (error.length() <= 666 || !error.startsWith("AssertionFailedError")) {
 			return error;
 		}
 		// we have a very long AssertionFailedError -> try to "compress" it
-		final int expectedPos = error.indexOf("expected: <");
-		if (expectedPos < 0) {
-			return error; // unexpected error format
+		String markerExpected = "==> expected: <", markerButWas = "> but was: <";
+		int expectedStartPos = error.indexOf(markerExpected);
+		if (expectedStartPos < 0) return error; // unexpected error format
+		else {
+			expectedStartPos += markerExpected.length();
 		}
-		final int butWasPos = error.indexOf("> but was: <", expectedPos);
-		if (butWasPos < 0) {
-			return error; // unexpected error format
+		int expectedEndPos = error.indexOf(markerButWas, expectedStartPos);
+		if (expectedEndPos < 0) return error; // unexpected error format
+		int butWasStartPos = expectedEndPos + markerButWas.length();
+		int butWasEndPos = error.length() - 2; // ends with ">"
+		int firstDiff = 0;
+		while (expectedStartPos + firstDiff < expectedEndPos && butWasStartPos + firstDiff < butWasEndPos //
+				&& error.charAt(expectedStartPos + firstDiff) == error.charAt(butWasStartPos + firstDiff)) {
+			firstDiff++;
 		}
-		final int expectedDiffStart = error.indexOf('[', expectedPos);
-		final int expectedDiffEnd = expectedDiffStart < 0 ? -1 : error.lastIndexOf(']', butWasPos);
-		final int butWasDiffStart = error.indexOf('[', butWasPos);
-		final int butWasDiffEnd = butWasDiffStart < 0 ? -1 : error.lastIndexOf(']');
-		final StringBuilder resultBuilder = new StringBuilder();
-		// expected:
-		if (expectedDiffEnd > expectedPos) {
-			if (expectedDiffEnd - expectedDiffStart > 50) {
-				resultBuilder.append(error, 0, expectedDiffStart + 11).append(">...<").append(error, expectedDiffEnd - 10, butWasPos);
-			} else {
-				resultBuilder.append(error, 0, butWasPos);
-			}
+		final StringBuilder resultBuilderExpected = new StringBuilder(), resultBuilderButWas = new StringBuilder();
+		// before firstDiff:
+		if (firstDiff > 42) {
+			resultBuilderExpected.append(error, expectedStartPos, expectedStartPos + 10) //
+					.append("...{").append(firstDiff - 20).append(".chars.omitted}...") //
+					.append(error, expectedStartPos + firstDiff - 10, expectedStartPos + firstDiff);
+			resultBuilderButWas.append(error, butWasStartPos, butWasStartPos + 10) //
+					.append("...{").append(firstDiff - 20).append(".chars.omitted}...") //
+					.append(error, butWasStartPos + firstDiff - 10, butWasStartPos + firstDiff);
 		} else {
-			resultBuilder.append(error, 0, butWasPos);
+			resultBuilderExpected.append(error, expectedStartPos, expectedStartPos + firstDiff);
+			resultBuilderButWas.append(error, butWasStartPos, butWasStartPos + firstDiff);
 		}
-		// but was:
-		if (butWasDiffEnd > butWasPos) {
-			if (butWasDiffEnd - butWasDiffStart > 50) {
-				resultBuilder.append(error, butWasPos, butWasDiffStart + 11).append(">...<").append(error.substring(butWasDiffEnd - 10));
-			} else {
-				resultBuilder.append(error.substring(butWasPos));
-			}
+		// start of firstDiff:
+		resultBuilderExpected.append("[");
+		resultBuilderButWas.append("[");
+		// after firstDiff:
+		if (expectedEndPos - (expectedStartPos + firstDiff) > 42) {
+			resultBuilderExpected.append(error, expectedStartPos + firstDiff, expectedStartPos + firstDiff + 10) //
+					.append("...{").append(expectedEndPos - (expectedStartPos + firstDiff) - 20).append(".chars.omitted}...") //
+					.append(error, expectedEndPos - 10, expectedEndPos);
 		} else {
-			resultBuilder.append(error.substring(butWasPos));
+			resultBuilderExpected.append(error, expectedStartPos + firstDiff, expectedEndPos);
 		}
-		return resultBuilder.toString();
+		if (butWasEndPos - (butWasStartPos + firstDiff) > 42) {
+			resultBuilderButWas.append(error, butWasStartPos + firstDiff, butWasStartPos + firstDiff + 10) //
+					.append("...{").append(butWasEndPos - (butWasStartPos + firstDiff) - 20).append(".chars.omitted}...") //
+					.append(error, butWasEndPos - 10, butWasEndPos);
+		} else {
+			resultBuilderButWas.append(error, butWasStartPos + firstDiff, butWasEndPos);
+		}
+		// put it all together:
+		return error.substring(0, expectedStartPos) + resultBuilderExpected + "]" + markerButWas + resultBuilderButWas + "]>";
 	}
 
 	private static void merge(ArrayList<JSONObject> replacedExercises, JSONObject vanillaExercise) { // merges two exercises

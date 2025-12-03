@@ -5,4 +5,3 @@ public class ToTest {
 		return new Scanner("42").nextInt();
 	}
 }
-

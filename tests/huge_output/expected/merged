@@ -1,6 +1,22 @@
-Score: 0.0
+Score: 1.0
 
-HugeOutput (0.0 points):
-✗   0.00 | testBar | ComparisonFailure(bar() is wrong! expected:<a[]> but was:<a[bcdefghijk>...<wxyzabcdef]>)
-✗   0.00 | testBaz | ComparisonFailure(baz() is wrong! expected:<...yzabcdefghijklmnopqr[stuvwxyzab>...<pqrstuvwxy]zabcdefghijklmnopqrs...> but was:<...yzabcdefghijklmnopqr[0000000000>...<0000000000]zabcdefghijklmnopqrs...>)
-✗   0.00 | testFoo | ComparisonFailure(foo() is wrong! expected:<[abcdefghij>...<efghijklmn]> but was:<[f]>)
+huge_output (1.0 points):
+✗   0.00 | test_ALIEN_NORMAL | AssertionFailedError(ALIEN vs. NORMAL failed! ==> expected: <abcdefghij...{180.chars.omitted}...ijklmnopqr[0000000000...{780.chars.omitted}...cdefghijkl]> but was: <abcdefghij...{180.chars.omitted}...ijklmnopqr[stuvwxyzab...{780.chars.omitted}...cdefghijkl]>
+✗   0.00 | test_EMPTY_NORMAL | AssertionFailedError(EMPTY vs. NORMAL failed! ==> expected: <[]> but was: <[abcdefghij...{980.chars.omitted}...cdefghijkl]>
+✗   0.00 | test_LONGER_NORMAL | AssertionFailedError(LONGER vs. NORMAL failed! ==> expected: <abcdefghij...{980.chars.omitted}...cdefghijkl[mnopqrstuv...{214.chars.omitted}...cdefghijkl]> but was: <abcdefghij...{980.chars.omitted}...cdefghijkl[]>
+✗   0.00 | test_NORMAL_ALIEN | AssertionFailedError(NORMAL vs. ALIEN failed! ==> expected: <abcdefghij...{180.chars.omitted}...ijklmnopqr[stuvwxyzab...{780.chars.omitted}...cdefghijkl]> but was: <abcdefghij...{180.chars.omitted}...ijklmnopqr[0000000000...{780.chars.omitted}...cdefghijkl]>
+✗   0.00 | test_NORMAL_EMPTY | AssertionFailedError(NORMAL vs. EMPTY failed! ==> expected: <[abcdefghij...{980.chars.omitted}...cdefghijkl]> but was: <[]>
+✗   0.00 | test_NORMAL_LONGER | AssertionFailedError(NORMAL vs. LONGER failed! ==> expected: <abcdefghij...{980.chars.omitted}...cdefghijkl[]> but was: <abcdefghij...{980.chars.omitted}...cdefghijkl[mnopqrstuv...{214.chars.omitted}...cdefghijkl]>
+✗   0.00 | test_NORMAL_PREFIX1 | AssertionFailedError(NORMAL vs. PREFIX1 failed! ==> expected: <a[bcdefghijk...{979.chars.omitted}...cdefghijkl]> but was: <a[]>
+✗   0.00 | test_NORMAL_PREFIX2 | AssertionFailedError(NORMAL vs. PREFIX2 failed! ==> expected: <ab[cdefghijkl...{978.chars.omitted}...cdefghijkl]> but was: <ab[]>
+✗   0.00 | test_NORMAL_PREFIX3 | AssertionFailedError(NORMAL vs. PREFIX3 failed! ==> expected: <abc[defghijklm...{977.chars.omitted}...cdefghijkl]> but was: <abc[]>
+✗   0.00 | test_PREFIX1_NORMAL | AssertionFailedError(PREFIX1 vs. NORMAL failed! ==> expected: <a[]> but was: <a[bcdefghijk...{979.chars.omitted}...cdefghijkl]>
+✗   0.00 | test_PREFIX2_NORMAL | AssertionFailedError(PREFIX2 vs. NORMAL failed! ==> expected: <ab[]> but was: <ab[cdefghijkl...{978.chars.omitted}...cdefghijkl]>
+✗   0.00 | test_PREFIX3_NORMAL | AssertionFailedError(PREFIX3 vs. NORMAL failed! ==> expected: <abc[]> but was: <abc[defghijklm...{977.chars.omitted}...cdefghijkl]>
+✗   0.00 | test__EMPTY__PREFIX1 | AssertionFailedError(EMPTY vs. PREFIX1 failed! ==> expected: <> but was: <a>)
+✗   0.00 | test__EMPTY__PREFIX2 | AssertionFailedError(EMPTY vs. PREFIX2 failed! ==> expected: <> but was: <ab>)
+✗   0.00 | test__EMPTY__PREFIX3 | AssertionFailedError(EMPTY vs. PREFIX3 failed! ==> expected: <> but was: <abc>)
+✗   0.00 | test__PREFIX1__EMPTY | AssertionFailedError(PREFIX1 vs. EMPTY failed! ==> expected: <a> but was: <>)
+✗   0.00 | test__PREFIX2__EMPTY | AssertionFailedError(PREFIX2 vs. EMPTY failed! ==> expected: <ab> but was: <>)
+✗   0.00 | test__PREFIX3__EMPTY | AssertionFailedError(PREFIX3 vs. EMPTY failed! ==> expected: <abc> but was: <>)
+✓   1.00 | test__EMPTY__toTest

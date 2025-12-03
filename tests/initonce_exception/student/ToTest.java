@@ -1,5 +1,5 @@
 public class ToTest {
-	public static int get() {
+	public static int toTest() {
 		throw new NullPointerException();
 	}
 }
