@@ -3,3 +3,8 @@ comp1.err: ok
 run1: ok 
 student result: ✔
 
+comp2: ok
+run2: ok 
+student result: ?
+
+merge: ok

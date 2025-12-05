@@ -101,7 +101,6 @@ public final class JUnitWithPoints implements BeforeAllCallback, BeforeTestExecu
 
 	@Override
 	public void beforeTestExecution(ExtensionContext context) {
-		// TODO: handle potential @InitializeOnce!
 		startTime = System.currentTimeMillis();
 	}
 

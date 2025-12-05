@@ -3,12 +3,12 @@
         {
             "exercises": [
                 {
-                    "name": "InitOnce_Exception",
+                    "name": "initonce_exception",
                     "tests": [
                         {
-                            "desc": "test",
+                            "desc": "pubTest_noOp",
                             "fromSecret": false,
-                            "id": "test",
+                            "id": "pubTest_noOp",
                             "success": true
                         }
                     ]
@@ -18,13 +18,13 @@
         {
             "exercises": [
                 {
-                    "name": "InitOnce_Exception",
+                    "name": "initonce_exception",
                     "tests": [
                         {
-                            "desc": "testSecret",
-                            "error": "AssertionError(java.lang.NullPointerException)",
+                            "desc": "secTest",
+                            "error": "AssertionFailedError(java.lang.NullPointerException)",
                             "fromSecret": true,
-                            "id": "testSecret",
+                            "id": "secTest",
                             "success": false
                         }
                     ]

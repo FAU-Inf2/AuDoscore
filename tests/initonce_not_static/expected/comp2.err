@@ -1,2 +1,0 @@
-java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar:junit:interfaces:student -Dpub=UnitTest tester.tools.CheckAnnotation SecretTest
-Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - @InitializeOnce requires a static method

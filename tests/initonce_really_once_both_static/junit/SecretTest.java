@@ -25,13 +25,13 @@ public class SecretTest {
 
 	// One of the tests below *must* fail
 
-	@Points(exID = "initonce_really_once", bonus = 1.0)
+	@Points(exID = "initonce_really_once_both_static", bonus = 1.0)
 	public void secTest_1() {
-		assertEquals(pid, getPid());
+		assertTrue(pid == getPid(), "Either this or the other secTest must fail - but NOT both!");
 	}
 
-	@Points(exID = "initonce_really_once", bonus = 1.0)
+	@Points(exID = "initonce_really_once_both_static", bonus = 1.0)
 	public void secTest_2() {
-		assertEquals(pid, getPid());
+		assertTrue(pid == getPid(), "Either this or the other secTest must fail - but NOT both!");
 	}
 }

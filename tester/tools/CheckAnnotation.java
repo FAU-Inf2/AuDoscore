@@ -126,18 +126,12 @@ public final class CheckAnnotation {
 		for (final Field f : testClass.getDeclaredFields()) {
 			final InitializeOnce initOnce = f.getAnnotation(InitializeOnce.class);
 			if (initOnce != null) {
-				if ((f.getModifiers() & Modifier.STATIC) == 0) {
-					throw new AnnotationFormatError("ERROR - @InitializeOnce requires a static field");
-				}
 				if (!f.getType().isPrimitive() && !java.io.Serializable.class.isAssignableFrom(f.getType())) {
 					throw new AnnotationFormatError("ERROR - @InitializeOnce requires Serializable type");
 				}
 				// search given method
 				try {
 					final Method method = testClass.getDeclaredMethod(initOnce.value());
-					if ((method.getModifiers() & Modifier.STATIC) == 0) {
-						throw new AnnotationFormatError("ERROR - @InitializeOnce requires a static method");
-					}
 					if (!f.getType().isAssignableFrom(method.getReturnType())) {
 						throw new AnnotationFormatError("ERROR - cannot assign result of @InitializeOnce");
 					}

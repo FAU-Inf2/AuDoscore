@@ -3,12 +3,12 @@
         {
             "exercises": [
                 {
-                    "name": "InitOnce_Really_Once",
+                    "name": "initonce_really_once_field_nonstatic",
                     "tests": [
                         {
-                            "desc": "test",
+                            "desc": "pubTest",
                             "fromSecret": false,
-                            "id": "test",
+                            "id": "pubTest",
                             "success": true
                         }
                     ]
@@ -18,12 +18,12 @@
         {
             "exercises": [
                 {
-                    "name": "InitOnce_Really_Once",
+                    "name": "initonce_really_once_field_nonstatic",
                     "tests": [
                         {
-                            "desc": "testSecret1",
+                            "desc": "secTest_1",
                             "fromSecret": true,
-                            "id": "testSecret1",
+                            "id": "secTest_1",
                             "success": true
                         }
                     ]
@@ -33,13 +33,13 @@
         {
             "exercises": [
                 {
-                    "name": "InitOnce_Really_Once",
+                    "name": "initonce_really_once_field_nonstatic",
                     "tests": [
                         {
-                            "desc": "testSecret2",
-                            "error": "AssertionError()",
+                            "desc": "secTest_2",
+                            "error": "AssertionFailedError(Either this or the other secTest must fail - but NOT both! ==> expected: <true> but was: <false>)",
                             "fromSecret": true,
-                            "id": "testSecret2",
+                            "id": "secTest_2",
                             "success": false
                         }
                     ]
