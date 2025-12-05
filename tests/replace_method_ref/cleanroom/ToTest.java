@@ -13,4 +13,3 @@ public class ToTest {
 		return 42;
 	}
 }
-

@@ -1,0 +1,83 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "initonce_really_once_two_vars",
+                    "tests": [
+                        {
+                            "desc": "pubTest",
+                            "fromSecret": false,
+                            "id": "pubTest",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "initonce_really_once_two_vars",
+                    "tests": [
+                        {
+                            "desc": "secTest_1",
+                            "fromSecret": true,
+                            "id": "secTest_1",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "initonce_really_once_two_vars",
+                    "tests": [
+                        {
+                            "desc": "secTest_2",
+                            "error": "AssertionFailedError(Exactly ONE of the secTest_* must succeed! ==> expected: <true> but was: <false>)",
+                            "fromSecret": true,
+                            "id": "secTest_2",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "initonce_really_once_two_vars",
+                    "tests": [
+                        {
+                            "desc": "secTest_3",
+                            "error": "AssertionFailedError(Exactly ONE of the secTest_* must succeed! ==> expected: <true> but was: <false>)",
+                            "fromSecret": true,
+                            "id": "secTest_3",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "initonce_really_once_two_vars",
+                    "tests": [
+                        {
+                            "desc": "secTest_4",
+                            "error": "AssertionFailedError(Exactly ONE of the secTest_* must succeed! ==> expected: <true> but was: <false>)",
+                            "fromSecret": true,
+                            "id": "secTest_4",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": []
+}

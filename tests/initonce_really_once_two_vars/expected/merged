@@ -1,0 +1,8 @@
+Score: 0.0
+
+initonce_really_once_two_vars (0.0 points):
+✗   0.00 | secTest_2 | AssertionFailedError(Exactly ONE of the secTest_* must succeed! ==> expected: <true> but was: <false>)
+✗   0.00 | secTest_3 | AssertionFailedError(Exactly ONE of the secTest_* must succeed! ==> expected: <true> but was: <false>)
+✗   0.00 | secTest_4 | AssertionFailedError(Exactly ONE of the secTest_* must succeed! ==> expected: <true> but was: <false>)
+✓   0.02 | pubTest
+✓   0.24 | secTest_1

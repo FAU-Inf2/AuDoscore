@@ -82,8 +82,7 @@ function checkAnnotationFormatError {
 		cat $file
 		err "\nSummary:\n";
 		cat $file | egrep -B1 "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" | sed -e 's/.*ERROR - /ERROR - /'
-		errorFile=$(basename $file .out).err
-		cat $file | egrep -B1 "^(Exception in thread \"main\" )?java.lang.annotation.AnnotationFormatError" >> $errorFile
+		echo -e "${file}: internal error" >> ${overallResultFileName}
 		die "\ninternal error\n";
 	fi
 }

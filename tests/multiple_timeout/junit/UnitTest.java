@@ -1,38 +1,31 @@
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Timeout;
+import tester.annotations.*;
+import java.util.concurrent.TimeUnit;
 
-import tester.annotations.Ex;
-import tester.annotations.Exercises;
-import tester.annotations.Points;
-
-@Exercises({ @Ex(exID = "GA4.6a", points = 12.5)})
+@Exercises({@Ex(exID = "multiple_timeout", points = 12.5)})
 public class UnitTest {
-	// instead of explicitly coding the following rules here,
-	// your test class can also just extend the class JUnitWithPoints
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout=10001)
-	@Points(exID = "GA4.6a", bonus = 47.11)
+	@Points(exID = "multiple_timeout", bonus = 47.11)
+	@Timeout(value = 10001, unit = TimeUnit.MILLISECONDS)
 	public void test() {
 	}
-	@Test(timeout=10000)
-	@Points(exID = "GA4.6a", bonus = 7.11)
+
+	@Timeout(value = 10) // default: SECONDS
+	@Points(exID = "multiple_timeout", bonus = 7.11)
 	public void test2() {
 	}
-	@Test(timeout=5000)
-	@Points(exID = "GA4.6a", bonus = 47)
+
+	@Points(exID = "multiple_timeout", bonus = 47)
+	@Timeout(value = 5) // default: SECONDS
 	public void test3() {
 	}
-	@Test(timeout=5000)
-	@Points(exID = "GA4.6a", bonus = 41)
+
+	@Timeout(value = 5) // default: SECONDS
+	@Points(exID = "multiple_timeout", bonus = 41)
 	public void test4() {
 	}
-	@Test(timeout=30000)
-	@Points(exID = "GA4.6a", bonus = 4)
+
+	@Points(exID = "multiple_timeout", bonus = 4)
+	@Timeout(value = 30) // default: SECONDS
 	public void test5() {
 	}
 }

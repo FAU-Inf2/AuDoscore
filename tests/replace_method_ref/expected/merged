@@ -1,0 +1,9 @@
+Score: 1.5
+
+replace_method_ref (1.5 points):
+✗   0.00 | secTest_baz | AssertionFailedError(baz() is wrong ==> expected: <42> but was: <21>)
+✓   0.00 | pubTest_bar_exists
+✓   0.00 | pubTest_baz_exists
+✓   0.00 | pubTest_foo_exists
+✓   0.50 | secTest_bar
+✓   1.00 | secTest_foo

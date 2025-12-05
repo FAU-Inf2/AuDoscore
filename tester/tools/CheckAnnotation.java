@@ -95,6 +95,8 @@ public final class CheckAnnotation {
 			}
 			if (timeout == null) {
 				throw new AnnotationFormatError("ERROR - found test case without 'timeout' in @Test or @Points annotation: [" + testMethodName + "]");
+			} else if (timeout.value() <= 0) {
+				throw new AnnotationFormatError("ERROR - found test case with 0 or negative 'timeout' in @Test or @Points annotation: [" + testMethodName + "]");
 			}
 			timeoutSum += TimeUnit.MILLISECONDS.convert(timeout.value(), timeout.unit());
 			Replace replaceAnnotation = testMethod.getAnnotation(Replace.class);

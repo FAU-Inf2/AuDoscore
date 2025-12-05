@@ -3,24 +3,24 @@
         {
             "exercises": [
                 {
-                    "name": "TestMethodRef",
+                    "name": "replace_method_ref",
                     "tests": [
                         {
-                            "desc": "testInterfaceBar",
+                            "desc": "pubTest_foo_exists",
                             "fromSecret": false,
-                            "id": "testInterfaceBar",
+                            "id": "pubTest_foo_exists",
                             "success": true
                         },
                         {
-                            "desc": "testInterfaceBaz",
+                            "desc": "pubTest_bar_exists",
                             "fromSecret": false,
-                            "id": "testInterfaceBaz",
+                            "id": "pubTest_bar_exists",
                             "success": true
                         },
                         {
-                            "desc": "testInterfaceFoo",
+                            "desc": "pubTest_baz_exists",
                             "fromSecret": false,
-                            "id": "testInterfaceFoo",
+                            "id": "pubTest_baz_exists",
                             "success": true
                         }
                     ]
@@ -30,12 +30,12 @@
         {
             "exercises": [
                 {
-                    "name": "TestMethodRef",
+                    "name": "replace_method_ref",
                     "tests": [
                         {
-                            "desc": "testBar",
+                            "desc": "secTest_bar",
                             "fromSecret": true,
-                            "id": "testBar",
+                            "id": "secTest_bar",
                             "success": true
                         }
                     ]
@@ -45,13 +45,13 @@
         {
             "exercises": [
                 {
-                    "name": "TestMethodRef",
+                    "name": "replace_method_ref",
                     "tests": [
                         {
-                            "desc": "testBaz",
-                            "error": "AssertionError(baz() is wrong expected:<42> but was:<21>)",
+                            "desc": "secTest_baz",
+                            "error": "AssertionFailedError(baz() is wrong ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
-                            "id": "testBaz",
+                            "id": "secTest_baz",
                             "success": false
                         }
                     ]
@@ -61,13 +61,13 @@
         {
             "exercises": [
                 {
-                    "name": "TestMethodRef",
+                    "name": "replace_method_ref",
                     "tests": [
                         {
-                            "desc": "testFoo",
-                            "error": "AssertionError(foo() is wrong expected:<42> but was:<21>)",
+                            "desc": "secTest_foo",
+                            "error": "AssertionFailedError(foo() is wrong ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
-                            "id": "testFoo",
+                            "id": "secTest_foo",
                             "success": false
                         }
                     ]
@@ -79,12 +79,12 @@
         {
             "exercises": [
                 {
-                    "name": "TestMethodRef",
+                    "name": "replace_method_ref",
                     "tests": [
                         {
-                            "desc": "testFoo",
+                            "desc": "secTest_foo",
                             "fromSecret": true,
-                            "id": "testFoo",
+                            "id": "secTest_foo",
                             "success": true
                         }
                     ]

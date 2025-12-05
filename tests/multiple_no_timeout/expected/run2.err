@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "multiple_no_timeout",
                     "tests": [
                         {
                             "desc": "test",
