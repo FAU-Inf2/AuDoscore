@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_8_interface_default_static",
                     "tests": [
                         {
                             "desc": "pubTest",
@@ -18,7 +18,7 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_8_interface_default_static",
                     "tests": [
                         {
                             "desc": "secTest",
@@ -35,7 +35,7 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_8_interface_default_static",
                     "tests": [
                         {
                             "desc": "secTest",

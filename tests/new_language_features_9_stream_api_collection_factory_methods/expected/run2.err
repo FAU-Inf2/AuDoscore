@@ -3,57 +3,41 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_9_stream_api_collection_factory_methods",
                     "tests": [
                         {
-                            "desc": "PublicTest \"toTest__Stream_iterate_with_condition\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<28> but was:<15>)",
+                            "desc": "PublicTest \"toTest__Set_of__stream_filter\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <28> but was: <15>)",
                             "fromSecret": false,
-                            "id": "pubTest__toTest__Stream_iterate_with_condition",
+                            "id": "pubTest__toTest__Set_of__stream_filter",
                             "success": false
                         },
                         {
-                            "desc": "PublicTest \"toTest__List_of__Stream_dropWhile\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<17> but was:<30>)",
+                            "desc": "PublicTest \"toTest__List_of__parallelStream_dropWhile\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <17> but was: <30>)",
                             "fromSecret": false,
-                            "id": "pubTest__toTest__List_of__Stream_dropWhile",
+                            "id": "pubTest__toTest__List_of__parallelStream_dropWhile",
                             "success": false
                         },
                         {
-                            "desc": "PublicTest \"toTest__Set_of__Stream_filter\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<28> but was:<15>)",
+                            "desc": "PublicTest \"toTest__List_of__stream_takeWhile\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <28> but was: <15>)",
                             "fromSecret": false,
-                            "id": "pubTest__toTest__Set_of__Stream_filter",
-                            "success": false
-                        },
-                        {
-                            "desc": "PublicTest \"toTest__List_of__Stream_takeWhile\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<28> but was:<15>)",
-                            "fromSecret": false,
-                            "id": "pubTest__toTest__List_of__Stream_takeWhile",
+                            "id": "pubTest__toTest__List_of__stream_takeWhile",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"toTest__Map_of\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<35> but was:<25>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <35> but was: <25>)",
                             "fromSecret": false,
                             "id": "pubTest__toTest__Map_of",
                             "success": false
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "exercises": [
-                {
-                    "name": "Lambda",
-                    "tests": [
+                        },
                         {
-                            "desc": "SecretTest \"toTest__List_of__Stream_dropWhile\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"vanilla\" because without @Replace. expected:<17> but was:<30>)",
-                            "fromSecret": true,
-                            "id": "secTest__toTest__List_of__Stream_dropWhile",
+                            "desc": "PublicTest \"toTest__stream_iterate_with_condition_parallel_reduce\": Should fail in \"vanilla\" because without @Replace.",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <28> but was: <15>)",
+                            "fromSecret": false,
+                            "id": "pubTest__toTest__stream_iterate_with_condition_parallel_reduce",
                             "success": false
                         }
                     ]
@@ -63,13 +47,13 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_9_stream_api_collection_factory_methods",
                     "tests": [
                         {
-                            "desc": "SecretTest \"toTest__List_of__Stream_takeWhile\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<28> but was:<15>)",
+                            "desc": "SecretTest \"toTest__List_of__parallelStream_dropWhile\": Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because without @Replace. ==> expected: <17> but was: <30>)",
                             "fromSecret": true,
-                            "id": "secTest__toTest__List_of__Stream_takeWhile",
+                            "id": "secTest__toTest__List_of__parallelStream_dropWhile",
                             "success": false
                         }
                     ]
@@ -79,11 +63,27 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_9_stream_api_collection_factory_methods",
                     "tests": [
                         {
-                            "desc": "SecretTest \"toTest__Map_of\": Should pass in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should pass in \"vanilla\" because without @Replace. expected:<35> but was:<25>)",
+                            "desc": "SecretTest \"toTest__List_of__stream_takeWhile\": Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <28> but was: <15>)",
+                            "fromSecret": true,
+                            "id": "secTest__toTest__List_of__stream_takeWhile",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "new_language_features_9_stream_api_collection_factory_methods",
+                    "tests": [
+                        {
+                            "desc": "SecretTest \"toTest__Map_of\": Should pass in \"replaced\" because without @Replace.",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because without @Replace. ==> expected: <35> but was: <25>)",
                             "fromSecret": true,
                             "id": "secTest__toTest__Map_of",
                             "success": false
@@ -95,13 +95,13 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_9_stream_api_collection_factory_methods",
                     "tests": [
                         {
-                            "desc": "SecretTest \"toTest__Set_of__Stream_filter\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<28> but was:<15>)",
+                            "desc": "SecretTest \"toTest__Set_of__stream_filter\": Should pass in \"replaced\" because with @Replace now.",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <28> but was: <15>)",
                             "fromSecret": true,
-                            "id": "secTest__toTest__Set_of__Stream_filter",
+                            "id": "secTest__toTest__Set_of__stream_filter",
                             "success": false
                         }
                     ]
@@ -111,13 +111,13 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_9_stream_api_collection_factory_methods",
                     "tests": [
                         {
-                            "desc": "SecretTest \"toTest__Stream_iterate_with_condition\": Should pass in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should pass in \"vanilla\" because without @Replace. expected:<28> but was:<15>)",
+                            "desc": "SecretTest \"toTest__stream_iterate_with_condition_parallel_reduce\": Should pass in \"replaced\" because without @Replace.",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because without @Replace. ==> expected: <28> but was: <15>)",
                             "fromSecret": true,
-                            "id": "secTest__toTest__Stream_iterate_with_condition",
+                            "id": "secTest__toTest__stream_iterate_with_condition_parallel_reduce",
                             "success": false
                         }
                     ]
@@ -129,12 +129,12 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_9_stream_api_collection_factory_methods",
                     "tests": [
                         {
-                            "desc": "SecretTest \"toTest__List_of__Stream_dropWhile\": Should pass in \"replaced\" because with @Replace now.",
+                            "desc": "SecretTest \"toTest__List_of__parallelStream_dropWhile\": Should pass in \"replaced\" because with @Replace now.",
                             "fromSecret": true,
-                            "id": "secTest__toTest__List_of__Stream_dropWhile",
+                            "id": "secTest__toTest__List_of__parallelStream_dropWhile",
                             "success": true
                         }
                     ]
@@ -144,12 +144,12 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_9_stream_api_collection_factory_methods",
                     "tests": [
                         {
-                            "desc": "SecretTest \"toTest__List_of__Stream_takeWhile\": Should pass in \"replaced\" because with @Replace now.",
+                            "desc": "SecretTest \"toTest__List_of__stream_takeWhile\": Should pass in \"replaced\" because with @Replace now.",
                             "fromSecret": true,
-                            "id": "secTest__toTest__List_of__Stream_takeWhile",
+                            "id": "secTest__toTest__List_of__stream_takeWhile",
                             "success": true
                         }
                     ]
@@ -159,10 +159,10 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_9_stream_api_collection_factory_methods",
                     "tests": [
                         {
-                            "desc": "SecretTest \"toTest__Map_of\": Should pass in \"vanilla\" because without @Replace.",
+                            "desc": "SecretTest \"toTest__Map_of\": Should pass in \"replaced\" because without @Replace.",
                             "fromSecret": true,
                             "id": "secTest__toTest__Map_of",
                             "success": true
@@ -174,12 +174,12 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_9_stream_api_collection_factory_methods",
                     "tests": [
                         {
-                            "desc": "SecretTest \"toTest__Set_of__Stream_filter\": Should pass in \"replaced\" because with @Replace now.",
+                            "desc": "SecretTest \"toTest__Set_of__stream_filter\": Should pass in \"replaced\" because with @Replace now.",
                             "fromSecret": true,
-                            "id": "secTest__toTest__Set_of__Stream_filter",
+                            "id": "secTest__toTest__Set_of__stream_filter",
                             "success": true
                         }
                     ]
@@ -189,12 +189,12 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_9_stream_api_collection_factory_methods",
                     "tests": [
                         {
-                            "desc": "SecretTest \"toTest__Stream_iterate_with_condition\": Should pass in \"vanilla\" because without @Replace.",
+                            "desc": "SecretTest \"toTest__stream_iterate_with_condition_parallel_reduce\": Should pass in \"replaced\" because without @Replace.",
                             "fromSecret": true,
-                            "id": "secTest__toTest__Stream_iterate_with_condition",
+                            "id": "secTest__toTest__stream_iterate_with_condition_parallel_reduce",
                             "success": true
                         }
                     ]

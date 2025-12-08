@@ -3,18 +3,18 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_16_pattern_matching_instanceof",
                     "tests": [
                         {
                             "desc": "PublicTest \"simple\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<4> but was:<5>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <4> but was: <5>)",
                             "fromSecret": false,
                             "id": "pubTest_simple",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"moreComplex\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<43>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <42> but was: <43>)",
                             "fromSecret": false,
                             "id": "pubTest_moreComplex",
                             "success": false
@@ -26,11 +26,11 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_16_pattern_matching_instanceof",
                     "tests": [
                         {
                             "desc": "SecretTest \"moreComplex\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<43>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <42> but was: <43>)",
                             "fromSecret": true,
                             "id": "secTest_moreComplex",
                             "success": false
@@ -42,11 +42,11 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_16_pattern_matching_instanceof",
                     "tests": [
                         {
                             "desc": "SecretTest \"simple\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<4> but was:<5>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <4> but was: <5>)",
                             "fromSecret": true,
                             "id": "secTest_simple",
                             "success": false
@@ -60,7 +60,7 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_16_pattern_matching_instanceof",
                     "tests": [
                         {
                             "desc": "SecretTest \"moreComplex\": Should pass in \"replaced\" because with @Replace now.",
@@ -75,7 +75,7 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_16_pattern_matching_instanceof",
                     "tests": [
                         {
                             "desc": "SecretTest \"simple\": Should pass in \"replaced\" because with @Replace now.",

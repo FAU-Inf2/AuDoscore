@@ -3,25 +3,25 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_16_records",
                     "tests": [
                         {
                             "desc": "PublicTest \"regular\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<-624>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <708> but was: <-624>)",
                             "fromSecret": false,
                             "id": "pubTest_regular",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"member\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<10958>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <708> but was: <10958>)",
                             "fromSecret": false,
                             "id": "pubTest_member",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"member_anonymous_inner\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<84>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <708> but was: <84>)",
                             "fromSecret": false,
                             "id": "pubTest_member_anonymous_inner",
                             "success": false
@@ -33,11 +33,11 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_16_records",
                     "tests": [
                         {
                             "desc": "SecretTest \"member\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<10958>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <708> but was: <10958>)",
                             "fromSecret": true,
                             "id": "secTest_member",
                             "success": false
@@ -49,11 +49,11 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_16_records",
                     "tests": [
                         {
                             "desc": "SecretTest \"member_anonymous_inner\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<84>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <708> but was: <84>)",
                             "fromSecret": true,
                             "id": "secTest_member_anonymous_inner",
                             "success": false
@@ -65,11 +65,11 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_16_records",
                     "tests": [
                         {
                             "desc": "SecretTest \"regular\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<708> but was:<-624>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <708> but was: <-624>)",
                             "fromSecret": true,
                             "id": "secTest_regular",
                             "success": false
@@ -83,7 +83,7 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_16_records",
                     "tests": [
                         {
                             "desc": "SecretTest \"member\": Should pass in \"replaced\" because with @Replace now.",
@@ -98,7 +98,7 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_16_records",
                     "tests": [
                         {
                             "desc": "SecretTest \"member_anonymous_inner\": Should pass in \"replaced\" because with @Replace now.",
@@ -113,7 +113,7 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_16_records",
                     "tests": [
                         {
                             "desc": "SecretTest \"regular\": Should pass in \"replaced\" because with @Replace now.",

@@ -1,18 +1,11 @@
-import static org.junit.Assert.*;
-import org.junit.*;
+import static org.junit.jupiter.api.Assertions.*;
 import tester.annotations.*;
 
 @SecretClass
 public class SecretTest {
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout = 200)
-	@Points(exID = "Lambda", bonus = 0.815)
+	@Points(exID = "new_language_features_8_interface_default_static", bonus = 0.815)
 	@Replace("ToTest.getSome_default") // TODO: @Replace gives "INTERNAL ERROR" if student does NOT also @Override this method!
 	public void secTest() {
-		assertEquals("Should return 42.", 42, new ToTest().toTest());
+		assertEquals(42, new ToTest().toTest(), "Should return 42.");
 	}
 }

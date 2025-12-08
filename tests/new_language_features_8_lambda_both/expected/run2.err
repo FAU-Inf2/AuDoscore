@@ -3,18 +3,18 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_8_lambda_both",
                     "tests": [
                         {
                             "desc": "PublicTest: Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<4> but was:<6>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <4> but was: <6>)",
                             "fromSecret": false,
                             "id": "pubTest_toTest_getSome",
                             "success": false
                         },
                         {
                             "desc": "PublicTest: Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<6> but was:<4>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <6> but was: <4>)",
                             "fromSecret": false,
                             "id": "pubTest_toTest_getSome_int",
                             "success": false
@@ -26,11 +26,11 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_8_lambda_both",
                     "tests": [
                         {
                             "desc": "secTest_toTest_getSome: Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<4> but was:<6>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <4> but was: <6>)",
                             "fromSecret": true,
                             "id": "secTest_toTest_getSome",
                             "success": false
@@ -42,11 +42,11 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_8_lambda_both",
                     "tests": [
                         {
                             "desc": "secTest_toTest_getSome_int: Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<6> but was:<4>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <6> but was: <4>)",
                             "fromSecret": true,
                             "id": "secTest_toTest_getSome_int",
                             "success": false
@@ -60,7 +60,7 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_8_lambda_both",
                     "tests": [
                         {
                             "desc": "secTest_toTest_getSome: Should pass in \"replaced\" because with @Replace now.",
@@ -75,7 +75,7 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_8_lambda_both",
                     "tests": [
                         {
                             "desc": "secTest_toTest_getSome_int: Should pass in \"replaced\" because with @Replace now.",

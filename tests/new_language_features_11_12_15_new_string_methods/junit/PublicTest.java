@@ -1,17 +1,10 @@
-import static org.junit.Assert.*;
-import org.junit.*;
+import static org.junit.jupiter.api.Assertions.*;
 import tester.annotations.*;
 
-@Exercises({@Ex(exID = "Lambda", points = 47.11)})
+@Exercises({@Ex(exID = "new_language_features_11_12_15_new_string_methods", points = 47.11)})
 public class PublicTest {
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout = 6666)
-	@Points(exID = "Lambda", bonus = 0.815, comment = "PublicTest: Should fail in \"vanilla\" because without @Replace.")
+	@Points(exID = "new_language_features_11_12_15_new_string_methods", bonus = 0.815, comment = "PublicTest: Should fail in \"vanilla\" because without @Replace.")
 	public void pubTest() {
-		assertEquals("Should fail in \"vanilla\" because without @Replace.", 0, ToTest.toTest());
+		assertEquals(0, ToTest.toTest(), "Should fail in \"vanilla\" because without @Replace.");
 	}
 }

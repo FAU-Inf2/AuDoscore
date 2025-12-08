@@ -2,18 +2,17 @@ import java.util.*;
 import java.util.stream.*;
 
 public class ToTest {
-	public static int toTest__List_of__Stream_takeWhile() {
+	public static int toTest__List_of__stream_takeWhile() {
 		List<Integer> l = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
-		// return l.parallelStream().takeWhile(x -> x <= 7).reduce(0, Integer::sum); // TODO: => java.security.AccessControlException: access denied ("java.lang.RuntimePermission" "enableContextClassLoaderOverride")
 		return l.stream().takeWhile(x -> x <= 5).reduce(0, Integer::sum);
 	}
 
-	public static int toTest__List_of__Stream_dropWhile() {
+	public static int toTest__List_of__parallelStream_dropWhile() {
 		List<Integer> l = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
-		return l.stream().dropWhile(x -> x <= 5).reduce(0, Integer::sum);
+		return l.parallelStream().dropWhile(x -> x <= 5).reduce(0, Integer::sum);
 	}
 
-	public static int toTest__Set_of__Stream_filter() {
+	public static int toTest__Set_of__stream_filter() {
 		Set<Integer> s = Set.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 		return s.stream().filter(x -> x <= 5).reduce(0, Integer::sum);
 	}
@@ -28,8 +27,8 @@ public class ToTest {
 		return sum;
 	}
 
-	public static int toTest__Stream_iterate_with_condition() {
+	public static int toTest__stream_iterate_with_condition_parallel_reduce() {
 		Stream<Integer> s = Stream.iterate(0, x -> x <= 5, x -> x + 1);
-		return s.reduce(0, Integer::sum);
+		return s.parallel().reduce(0, Integer::sum);
 	}
 }

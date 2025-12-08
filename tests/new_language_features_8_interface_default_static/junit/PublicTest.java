@@ -1,17 +1,10 @@
-import static org.junit.Assert.*;
-import org.junit.*;
+import static org.junit.jupiter.api.Assertions.*;
 import tester.annotations.*;
 
-@Exercises({@Ex(exID = "Lambda", points = 47.11)})
+@Exercises({@Ex(exID = "new_language_features_8_interface_default_static", points = 47.11)})
 public class PublicTest {
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout = 200)
-	@Points(exID = "Lambda", bonus = 0.815)
+	@Points(exID = "new_language_features_8_interface_default_static", bonus = 0.815)
 	public void pubTest() {
-		assertEquals("Should return 42.", 42, new ToTest().toTest());
+		assertEquals(42, new ToTest().toTest(), "Should return 42.");
 	}
 }

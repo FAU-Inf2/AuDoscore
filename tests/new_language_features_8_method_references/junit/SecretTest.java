@@ -1,25 +1,17 @@
-import static org.junit.Assert.*;
-import org.junit.*;
+import static org.junit.jupiter.api.Assertions.*;
 import tester.annotations.*;
 
 @SecretClass
 public class SecretTest {
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout = 200)
-	@Points(exID = "Lambda", bonus = 0.815, comment = "SecretTest \"static\": Should pass in \"replaced\" because with @Replace now.")
+	@Points(exID = "new_language_features_8_method_references", bonus = 0.815, comment = "SecretTest \"static\": Should pass in \"replaced\" because with @Replace now.")
 	@Replace("ToTest.get42_static")
 	public void secTest__static() {
-		assertEquals("Should pass in \"replaced\" because with @Replace now.", 42, ToTest.toTest_static());
+		assertEquals(42, ToTest.toTest_static(), "Should pass in \"replaced\" because with @Replace now.");
 	}
 
-	@Test(timeout = 200)
-	@Points(exID = "Lambda", bonus = 0.815, comment = "SecretTest \"non-static\": Should pass in \"replaced\" because with @Replace now.")
+	@Points(exID = "new_language_features_8_method_references", bonus = 0.815, comment = "SecretTest \"non-static\": Should pass in \"replaced\" because with @Replace now.")
 	@Replace("ToTest.get42")
 	public void secTest__nonstatic() {
-		assertEquals("Should pass in \"replaced\" because with @Replace now.", 42, new ToTest().toTest());
+		assertEquals(42, new ToTest().toTest(), "Should pass in \"replaced\" because with @Replace now.");
 	}
 }

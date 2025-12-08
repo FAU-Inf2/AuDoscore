@@ -1,23 +1,15 @@
-import static org.junit.Assert.*;
-import org.junit.*;
+import static org.junit.jupiter.api.Assertions.*;
 import tester.annotations.*;
 
-@Exercises({@Ex(exID = "Lambda", points = 47.11)})
+@Exercises({@Ex(exID = "new_language_features_8_method_references", points = 47.11)})
 public class PublicTest {
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout = 200)
-	@Points(exID = "Lambda", bonus = 0.815, comment = "PublicTest \"static\": Should fail in \"vanilla\" because without @Replace.")
+	@Points(exID = "new_language_features_8_method_references", bonus = 0.815, comment = "PublicTest \"static\": Should fail in \"vanilla\" because without @Replace.")
 	public void pubTest__static() {
-		assertEquals("Should fail in \"vanilla\" because without @Replace.", 42, ToTest.toTest_static());
+		assertEquals(42, ToTest.toTest_static(), "Should fail in \"vanilla\" because without @Replace.");
 	}
 
-	@Test(timeout = 200)
-	@Points(exID = "Lambda", bonus = 0.815, comment = "PublicTest \"non-static\": Should fail in \"vanilla\" because without @Replace.")
+	@Points(exID = "new_language_features_8_method_references", bonus = 0.815, comment = "PublicTest \"non-static\": Should fail in \"vanilla\" because without @Replace.")
 	public void pubTest__nonstatic() {
-		assertEquals("Should fail in \"vanilla\" because without @Replace.", 42, new ToTest().toTest());
+		assertEquals(42, new ToTest().toTest(), "Should fail in \"vanilla\" because without @Replace.");
 	}
 }

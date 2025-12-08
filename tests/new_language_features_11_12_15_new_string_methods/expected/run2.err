@@ -3,11 +3,11 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_11_12_15_new_string_methods",
                     "tests": [
                         {
                             "desc": "PublicTest: Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<0> but was:<42>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <0> but was: <42>)",
                             "fromSecret": false,
                             "id": "pubTest",
                             "success": false
@@ -19,11 +19,11 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_11_12_15_new_string_methods",
                     "tests": [
                         {
                             "desc": "SecretTest: Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<0> but was:<42>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <0> but was: <42>)",
                             "fromSecret": true,
                             "id": "secTest",
                             "success": false
@@ -37,7 +37,7 @@
         {
             "exercises": [
                 {
-                    "name": "Lambda",
+                    "name": "new_language_features_11_12_15_new_string_methods",
                     "tests": [
                         {
                             "desc": "SecretTest: Should pass in \"replaced\" because with @Replace now.",

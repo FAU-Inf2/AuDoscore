@@ -1,24 +1,16 @@
-import static org.junit.Assert.*;
-import org.junit.*;
+import static org.junit.jupiter.api.Assertions.*;
 import tester.annotations.*;
 
-@Exercises({@Ex(exID = "Lambda", points = 47.11)})
+@Exercises({@Ex(exID = "new_language_features_16_pattern_matching_instanceof", points = 47.11)})
 public class PublicTest {
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout = 200)
-	@Points(exID = "Lambda", bonus = 0.815, comment = "PublicTest \"simple\": Should fail in \"vanilla\" because without @Replace.")
+	@Points(exID = "new_language_features_16_pattern_matching_instanceof", bonus = 0.815, comment = "PublicTest \"simple\": Should fail in \"vanilla\" because without @Replace.")
 	public void pubTest_simple() {
-		assertEquals("Should fail in \"vanilla\" because without @Replace.", 4, ToTest.toTest_simple("Test"));
-		assertEquals("Should fail in \"vanilla\" because without @Replace.", 42, ToTest.toTest_simple(42));
+		assertEquals(4, ToTest.toTest_simple("Test"), "Should fail in \"vanilla\" because without @Replace.");
+		assertEquals(42, ToTest.toTest_simple(42), "Should fail in \"vanilla\" because without @Replace.");
 	}
 
-	@Test(timeout = 200)
-	@Points(exID = "Lambda", bonus = 0.815, comment = "PublicTest \"moreComplex\": Should fail in \"vanilla\" because without @Replace.")
+	@Points(exID = "new_language_features_16_pattern_matching_instanceof", bonus = 0.815, comment = "PublicTest \"moreComplex\": Should fail in \"vanilla\" because without @Replace.")
 	public void pubTest_moreComplex() {
-		assertEquals("Should fail in \"vanilla\" because without @Replace.", 42, ToTest.toTest_moreComplex());
+		assertEquals(42, ToTest.toTest_moreComplex(), "Should fail in \"vanilla\" because without @Replace.");
 	}
 }
