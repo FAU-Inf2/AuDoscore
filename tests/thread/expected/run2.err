@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "Threads",
+                    "name": "thread",
                     "tests": [
                         {
                             "desc": "test",

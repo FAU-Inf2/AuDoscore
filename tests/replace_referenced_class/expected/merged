@@ -1,5 +1,5 @@
 Score: 12.5
 
-RepRefClass (12.5 points):
-✓  12.47 | test
+replace_referenced_class (12.5 points):
 ✓   0.03 | empty dummy test
+✓  12.47 | test

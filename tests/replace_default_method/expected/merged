@@ -1,5 +1,5 @@
 Score: 2.0
 
-DefaultMethod (2.0 points):
-✓   0.00 | testEmpty
-✓   2.00 | testFoo
+replace_default_method (2.0 points):
+✓   0.00 | pubTest_no_op
+✓   2.00 | secTest_foo

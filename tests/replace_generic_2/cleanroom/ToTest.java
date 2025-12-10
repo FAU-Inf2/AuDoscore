@@ -1,4 +1,5 @@
 import java.util.List;
+
 public class ToTest<E> {
 	public E get(List<E> list) {
 		return get2(list);
@@ -9,4 +10,3 @@ public class ToTest<E> {
 		return E;
 	}
 }
-

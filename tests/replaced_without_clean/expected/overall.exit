@@ -1,0 +1,9 @@
+comp0: ok
+comp1.err: ok
+run1: ok 
+student result: ✔
+
+comp2: ok
+run2: 
+internal error
+

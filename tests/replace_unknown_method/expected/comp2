@@ -1,0 +1,25 @@
+rm -rf *.class
+javac  -Xprefer:source -sourcepath interfaces student/*.java
+javac  -Xprefer:source -sourcepath junit:interfaces:student -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar junit/UnitTest.java
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar:junit:interfaces:student tester.tools.CheckAnnotation UnitTest
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar tester.tools.ForbiddenUseSearcher UnitTest > forbidden.out
+if [ -s forbidden.out ]; then \
+	cat forbidden.out 1>&2 ; \
+	exit 1 ; \
+fi
+javac  -Xprefer:source -sourcepath interfaces cleanroom/*.java
+make run-comparer
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar tester.tools.InterfaceComparator UnitTest
+if [ "xSecretTest" != "x" ]; then \
+	make compile-stage2-secret ; \
+fi
+javac  -Xprefer:source -sourcepath junit:interfaces:student -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar junit/SecretTest.java
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar:junit:interfaces:student -Dpub=UnitTest tester.tools.CheckAnnotation SecretTest
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar tester.tools.SingleExecutionPreparer "lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar:junit:interfaces:student" "-Djson=yes -Dpub=UnitTest" SecretTest >> single_execution.sh
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar tester.tools.ReplaceManager SecretTest
+Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - Cannot replace unknown method: doesnotexist
+	at tester.tools.ReplaceManager.getMap(ReplaceManager.java:112)
+	at tester.tools.ReplaceManager.generateSecretTestReplacements(ReplaceManager.java:38)
+	at tester.tools.ReplaceManager.main(ReplaceManager.java:21)
+make[2]: *** [Makefile:80: compile-stage2-secret] Fehler 1
+make[1]: *** [Makefile:72: compile-stage2] Fehler 2

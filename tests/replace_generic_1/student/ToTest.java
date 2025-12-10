@@ -1,4 +1,5 @@
 import java.util.List;
+
 public class ToTest<Foo> {
 	public Foo get(List<Foo> list) {
 		return process(list.iterator().next());
@@ -8,4 +9,3 @@ public class ToTest<Foo> {
 		return null;
 	}
 }
-

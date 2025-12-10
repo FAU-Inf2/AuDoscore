@@ -1,7 +1,6 @@
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ToTest {
-	
 	private static final AtomicInteger val = new AtomicInteger();
 
 	private static class Inner extends Thread {
@@ -15,8 +14,8 @@ public class ToTest {
 		inner.start();
 		try {
 			inner.join();
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException e) {
+		}
 		return val.get();
 	}
 }
-

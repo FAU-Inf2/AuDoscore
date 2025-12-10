@@ -3,32 +3,32 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedPatterns",
+                    "name": "new_language_features_22b_unnamed_patterns",
                     "tests": [
                         {
                             "desc": "PublicTest \"toTest_unnamed_patterns__elide_type_patterns\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <42> but was: <21>)",
                             "fromSecret": false,
                             "id": "pubTest__toTest_unnamed_patterns__elide_type_patterns",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"toTest_unnamed_patterns__elide_just_name\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <42> but was: <21>)",
                             "fromSecret": false,
                             "id": "pubTest__toTest_unnamed_patterns__elide_just_name",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"toTest_unnamed_patterns__switch_expressions\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <42> but was: <21>)",
                             "fromSecret": false,
                             "id": "pubTest__toTest_unnamed_patterns__switch_expressions",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"toTest_unnamed_patterns__switch_expressions_multiple_patterns\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <42> but was: <21>)",
                             "fromSecret": false,
                             "id": "pubTest__toTest_unnamed_patterns__switch_expressions_multiple_patterns",
                             "success": false
@@ -40,11 +40,11 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedPatterns",
+                    "name": "new_language_features_22b_unnamed_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_patterns__elide_just_name\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "secTest__toTest_unnamed_patterns__elide_just_name",
                             "success": false
@@ -56,11 +56,11 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedPatterns",
+                    "name": "new_language_features_22b_unnamed_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_patterns__elide_type_patterns\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "secTest__toTest_unnamed_patterns__elide_type_patterns",
                             "success": false
@@ -72,11 +72,11 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedPatterns",
+                    "name": "new_language_features_22b_unnamed_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_patterns__switch_expressions\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "secTest__toTest_unnamed_patterns__switch_expressions",
                             "success": false
@@ -88,11 +88,11 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedPatterns",
+                    "name": "new_language_features_22b_unnamed_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_patterns__switch_expressions_multiple_patterns\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "secTest__toTest_unnamed_patterns__switch_expressions_multiple_patterns",
                             "success": false
@@ -106,7 +106,7 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedPatterns",
+                    "name": "new_language_features_22b_unnamed_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_patterns__elide_just_name\": Should pass in \"replaced\" because with @Replace now.",
@@ -121,7 +121,7 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedPatterns",
+                    "name": "new_language_features_22b_unnamed_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_patterns__elide_type_patterns\": Should pass in \"replaced\" because with @Replace now.",
@@ -136,7 +136,7 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedPatterns",
+                    "name": "new_language_features_22b_unnamed_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_patterns__switch_expressions\": Should pass in \"replaced\" because with @Replace now.",
@@ -151,7 +151,7 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedPatterns",
+                    "name": "new_language_features_22b_unnamed_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_patterns__switch_expressions_multiple_patterns\": Should pass in \"replaced\" because with @Replace now.",

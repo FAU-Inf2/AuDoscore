@@ -3,11 +3,11 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "simple_bonus_public_timeout",
                     "tests": [
                         {
                             "desc": "test",
-                            "error": "TestTimedOutTimeoutException after 200 ms",
+                            "error": "TimeoutException(test() timed out after 1000 milliseconds)",
                             "fromSecret": false,
                             "id": "test",
                             "success": false

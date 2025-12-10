@@ -3,12 +3,12 @@
         {
             "exercises": [
                 {
-                    "name": "ReplaceGeneric",
+                    "name": "replace_generic_1",
                     "tests": [
                         {
-                            "desc": "test",
+                            "desc": "pubTest_no_op",
                             "fromSecret": false,
-                            "id": "test",
+                            "id": "pubTest_no_op",
                             "success": true
                         }
                     ]
@@ -18,11 +18,11 @@
         {
             "exercises": [
                 {
-                    "name": "ReplaceGeneric",
+                    "name": "replace_generic_1",
                     "tests": [
                         {
                             "desc": "testFoo",
-                            "error": "AssertionError(expected:<1> but was:<null>)",
+                            "error": "AssertionFailedError(expected: <1> but was: <null>)",
                             "fromSecret": true,
                             "id": "testFoo",
                             "success": false
@@ -36,7 +36,7 @@
         {
             "exercises": [
                 {
-                    "name": "ReplaceGeneric",
+                    "name": "replace_generic_1",
                     "tests": [
                         {
                             "desc": "testFoo",

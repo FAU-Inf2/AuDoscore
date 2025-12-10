@@ -1,0 +1,51 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "replace_generic_4",
+                    "tests": [
+                        {
+                            "desc": "pubTest_no_op",
+                            "fromSecret": false,
+                            "id": "pubTest_no_op",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "replace_generic_4",
+                    "tests": [
+                        {
+                            "desc": "testFoo",
+                            "fromSecret": true,
+                            "id": "testFoo",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": [
+        {
+            "exercises": [
+                {
+                    "name": "replace_generic_4",
+                    "tests": [
+                        {
+                            "desc": "testFoo",
+                            "fromSecret": true,
+                            "id": "testFoo",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

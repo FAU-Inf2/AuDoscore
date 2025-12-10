@@ -7,4 +7,3 @@ public class ToTest {
 		return 23;
 	}
 }
-

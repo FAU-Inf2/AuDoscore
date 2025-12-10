@@ -1,0 +1,6 @@
+Score: 4.0
+
+replace_full_class (4.0 points):
+✗   0.00 | test | AssertionFailedError(Should return 42 ==> expected: <42> but was: <-1>) | AssertionFailedError(Should return 42 ==> expected: <42> but was: <-1>)
+✓   0.02 | empty dummy test
+✓   4.09 | test2

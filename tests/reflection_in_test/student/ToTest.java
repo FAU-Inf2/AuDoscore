@@ -3,6 +3,6 @@ public class ToTest {
 		return 42;
 	}
 
-	public void nothing() { }
+	public void nothing() {
+	}
 }
-

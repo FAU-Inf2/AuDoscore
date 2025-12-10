@@ -3,12 +3,12 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "replaced_without_clean",
                     "tests": [
                         {
                             "desc": "empty dummy test",
                             "fromSecret": false,
-                            "id": "test2",
+                            "id": "pubTest_no_op",
                             "success": true
                         }
                     ]
@@ -18,13 +18,13 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "replaced_without_clean",
                     "tests": [
                         {
-                            "desc": "test",
-                            "error": "AssertionError(Should return 42 expected:<42> but was:<23>)",
+                            "desc": "secTest",
+                            "error": "AssertionFailedError(Should return 42 ==> expected: <42> but was: <23>)",
                             "fromSecret": true,
-                            "id": "test",
+                            "id": "secTest",
                             "success": false
                         }
                     ]
@@ -36,13 +36,13 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "replaced_without_clean",
                     "tests": [
                         {
-                            "desc": "test",
+                            "desc": "secTest",
                             "error": "NoSuchFieldError(Class ToTest does not have member field 'int variable'): ToTest.toTest(line 5)",
                             "fromSecret": true,
-                            "id": "test",
+                            "id": "secTest",
                             "success": false
                         }
                     ]

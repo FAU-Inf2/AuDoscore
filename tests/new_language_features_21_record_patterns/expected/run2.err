@@ -3,67 +3,67 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "PublicTest \"generic\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<84> but was:<750>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <84> but was: <750>)",
                             "fromSecret": false,
                             "id": "pubTest_generic",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"simple_unapply_var\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<84> but was:<750>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <84> but was: <750>)",
                             "fromSecret": false,
                             "id": "pubTest_simple_unapply_var",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"nested_unapply_type\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<84> but was:<750>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <84> but was: <750>)",
                             "fromSecret": false,
                             "id": "pubTest_nested_unapply_type",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"simple_unapply_type\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<84> but was:<750>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <84> but was: <750>)",
                             "fromSecret": false,
                             "id": "pubTest_simple_unapply_type",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"generic_unapply_var\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<84> but was:<750>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <84> but was: <750>)",
                             "fromSecret": false,
                             "id": "pubTest_generic_unapply_var",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"nested_unapply_var\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<84> but was:<750>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <84> but was: <750>)",
                             "fromSecret": false,
                             "id": "pubTest_nested_unapply_var",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"simple\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<84> but was:<750>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <84> but was: <750>)",
                             "fromSecret": false,
                             "id": "pubTest_simple",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"simple_variable\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<84> but was:<750>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <84> but was: <750>)",
                             "fromSecret": false,
                             "id": "pubTest_simple_variable",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"generic_unapply_type\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<84> but was:<750>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <84> but was: <750>)",
                             "fromSecret": false,
                             "id": "pubTest_generic_unapply_type",
                             "success": false
@@ -75,11 +75,11 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"generic\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<84> but was:<750>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <84> but was: <750>)",
                             "fromSecret": true,
                             "id": "secTest_generic",
                             "success": false
@@ -91,11 +91,11 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"generic_unapply_type\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<84> but was:<750>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <84> but was: <750>)",
                             "fromSecret": true,
                             "id": "secTest_generic_unapply_type",
                             "success": false
@@ -107,11 +107,11 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"generic_unapply_var\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<84> but was:<750>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <84> but was: <750>)",
                             "fromSecret": true,
                             "id": "secTest_generic_unapply_var",
                             "success": false
@@ -123,11 +123,11 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"nested_unapply_type\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<708> but was:<1374>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <708> but was: <1374>)",
                             "fromSecret": true,
                             "id": "secTest_nested_unapply_type",
                             "success": false
@@ -139,11 +139,11 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"nested_unapply_var\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<708> but was:<1374>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <708> but was: <1374>)",
                             "fromSecret": true,
                             "id": "secTest_nested_unapply_var",
                             "success": false
@@ -155,11 +155,11 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"simple\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<708> but was:<1374>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <708> but was: <1374>)",
                             "fromSecret": true,
                             "id": "secTest_simple",
                             "success": false
@@ -171,11 +171,11 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"simple_unapply_type\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<708> but was:<1374>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <708> but was: <1374>)",
                             "fromSecret": true,
                             "id": "secTest_simple_unapply_type",
                             "success": false
@@ -187,11 +187,11 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"simple_unapply_var\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<708> but was:<1374>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <708> but was: <1374>)",
                             "fromSecret": true,
                             "id": "secTest_simple_unapply_var",
                             "success": false
@@ -203,11 +203,11 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"simple_variable\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<708> but was:<1374>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <708> but was: <1374>)",
                             "fromSecret": true,
                             "id": "secTest_simple_variable",
                             "success": false
@@ -221,7 +221,7 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"generic\": Should pass in \"replaced\" because with @Replace now.",
@@ -236,7 +236,7 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"generic_unapply_type\": Should pass in \"replaced\" because with @Replace now.",
@@ -251,7 +251,7 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"generic_unapply_var\": Should pass in \"replaced\" because with @Replace now.",
@@ -266,7 +266,7 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"nested_unapply_type\": Should pass in \"replaced\" because with @Replace now.",
@@ -281,7 +281,7 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"nested_unapply_var\": Should pass in \"replaced\" because with @Replace now.",
@@ -296,7 +296,7 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"simple\": Should pass in \"replaced\" because with @Replace now.",
@@ -311,7 +311,7 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"simple_unapply_type\": Should pass in \"replaced\" because with @Replace now.",
@@ -326,7 +326,7 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"simple_unapply_var\": Should pass in \"replaced\" because with @Replace now.",
@@ -341,7 +341,7 @@
         {
             "exercises": [
                 {
-                    "name": "Record Patterns",
+                    "name": "new_language_features_21_record_patterns",
                     "tests": [
                         {
                             "desc": "SecretTest \"simple_variable\": Should pass in \"replaced\" because with @Replace now.",

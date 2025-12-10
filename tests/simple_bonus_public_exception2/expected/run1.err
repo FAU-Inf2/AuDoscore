@@ -1,11 +1,11 @@
 {
     "exercises": [
         {
-            "name": "GA4.6a",
+            "name": "simple_bonus_public_exception2",
             "tests": [
                 {
                     "desc": "test",
-                    "error": "NullPointerException(Cannot invoke \"java.lang.Integer.equals(Object)\" because the return value of \"ToTest.toTest()\" is null): UnitTest.test(line 24)",
+                    "error": "NullPointerException(Cannot invoke \"java.lang.Integer.intValue()\" because the return value of \"ToTest.toTest()\" is null): UnitTest.test(line 9)",
                     "fromSecret": false,
                     "id": "test",
                     "success": false

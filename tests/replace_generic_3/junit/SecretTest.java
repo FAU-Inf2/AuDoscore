@@ -1,28 +1,12 @@
-import static org.junit.Assert.assertNotNull;
-
-import java.util.Collections;
-
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-
-import tester.annotations.Points;
-import tester.annotations.Replace;
-import tester.annotations.SecretClass;
+import static org.junit.jupiter.api.Assertions.*;
+import tester.annotations.*;
 
 @SecretClass
 public class SecretTest {
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public static final PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout=100)
-	@Points(exID = "ReplaceGeneric3", bonus = 1)
+	@Points(exID = "replace_generic_3", bonus = 1)
 	@Replace({"ToTest.test"})
 	public void testFoo() {
-		final ToTest<Integer> toTest = new ToTest<Integer>();
+		final ToTest<Integer> toTest = new ToTest<>();
 		assertNotNull(toTest.get());
 	}
 }
-

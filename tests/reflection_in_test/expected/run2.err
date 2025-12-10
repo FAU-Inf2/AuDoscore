@@ -1,0 +1,36 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "reflection_in_test",
+                    "tests": [
+                        {
+                            "desc": "test",
+                            "fromSecret": false,
+                            "id": "test",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "exercises": [
+                {
+                    "name": "reflection_in_test",
+                    "tests": [
+                        {
+                            "desc": "test",
+                            "error": "AssertionFailedError(Should return 1 ==> expected: <1> but was: <2>)",
+                            "fromSecret": true,
+                            "id": "test",
+                            "success": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": []
+}

@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "ReplaceGeneric",
+                    "name": "replace_generic_many_param",
                     "tests": [
                         {
                             "desc": "pubTest_no_op",
@@ -18,11 +18,11 @@
         {
             "exercises": [
                 {
-                    "name": "ReplaceGeneric",
+                    "name": "replace_generic_many_param",
                     "tests": [
                         {
                             "desc": "Should fail in \"vanilla\" and pass in \"replaced\".",
-                            "error": "AssertionError(Should fail in \"vanilla\" and pass in \"replaced\".)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" and pass in \"replaced\". ==> expected: not <null>)",
                             "fromSecret": true,
                             "id": "secTest_getAlpha",
                             "success": false
@@ -34,11 +34,11 @@
         {
             "exercises": [
                 {
-                    "name": "ReplaceGeneric",
+                    "name": "replace_generic_many_param",
                     "tests": [
                         {
                             "desc": "Should fail in \"vanilla\" and pass in \"replaced\".",
-                            "error": "AssertionError(Should fail in \"vanilla\" and pass in \"replaced\".)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" and pass in \"replaced\". ==> expected: not <null>)",
                             "fromSecret": true,
                             "id": "secTest_getBeta",
                             "success": false
@@ -50,11 +50,11 @@
         {
             "exercises": [
                 {
-                    "name": "ReplaceGeneric",
+                    "name": "replace_generic_many_param",
                     "tests": [
                         {
                             "desc": "Should fail in \"vanilla\" and pass in \"replaced\".",
-                            "error": "AssertionError(Should fail in \"vanilla\" and pass in \"replaced\".)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" and pass in \"replaced\". ==> expected: not <null>)",
                             "fromSecret": true,
                             "id": "secTest_getGamma",
                             "success": false
@@ -68,7 +68,7 @@
         {
             "exercises": [
                 {
-                    "name": "ReplaceGeneric",
+                    "name": "replace_generic_many_param",
                     "tests": [
                         {
                             "desc": "Should fail in \"vanilla\" and pass in \"replaced\".",
@@ -83,7 +83,7 @@
         {
             "exercises": [
                 {
-                    "name": "ReplaceGeneric",
+                    "name": "replace_generic_many_param",
                     "tests": [
                         {
                             "desc": "Should fail in \"vanilla\" and pass in \"replaced\".",
@@ -98,7 +98,7 @@
         {
             "exercises": [
                 {
-                    "name": "ReplaceGeneric",
+                    "name": "replace_generic_many_param",
                     "tests": [
                         {
                             "desc": "Should fail in \"vanilla\" and pass in \"replaced\".",

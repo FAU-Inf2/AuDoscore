@@ -1,27 +1,11 @@
-import static org.junit.Assert.assertEquals;
-
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-
-import tester.annotations.Points;
-import tester.annotations.Replace;
-import tester.annotations.SecretClass;
+import static org.junit.jupiter.api.Assertions.*;
+import tester.annotations.*;
 
 @SecretClass
 public class SecretTest {
-	// instead of explicitly coding the following rules here,
-	// your test class can also just extend the class JUnitWithPoints
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout=200)
-	@Points(exID = "RepRefClass", bonus = 47.11)
+	@Points(exID = "replace_referenced_class", bonus = 47.11)
 	@Replace({"ToReplace"})
 	public void test() {
-		assertEquals("Should return 42", 42, new ToTest().get());
+		assertEquals(42, new ToTest().get(), "Should return 42");
 	}
 }
-

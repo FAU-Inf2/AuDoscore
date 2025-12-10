@@ -1,5 +1,5 @@
 Score: 2.0
 
-ReplaceGeneric2 (2.0 points):
-✓   1.00 | test
+replace_generic_2 (2.0 points):
+✓   1.00 | pubTest_no_op
 ✓   1.00 | testFoo

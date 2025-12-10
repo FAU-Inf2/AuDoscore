@@ -1,15 +1,10 @@
-import org.junit.Test;
-import static org.junit.Assert.*;
-
+import static org.junit.jupiter.api.Assertions.*;
 import tester.annotations.*;
 
 @SecretClass
-public class SecretTest extends JUnitWithPoints {
-
-	@Points(exID = "test", bonus = 1)
-	@Test(timeout = 100)
-	public void b() {
+public class SecretTest {
+	@Points(exID = "timeout_secret", bonus = 1)
+	public void secTest() {
 		assertEquals(42, ToTest.test());
 	}
 }
-

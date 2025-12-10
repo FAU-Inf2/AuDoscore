@@ -3,11 +3,11 @@
         {
             "exercises": [
                 {
-                    "name": "Flexible_Constructor_Bodies",
+                    "name": "new_language_features_25_flexible_constructor_bodies",
                     "tests": [
                         {
                             "desc": "PublicTest: Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <42> but was: <21>)",
                             "fromSecret": false,
                             "id": "pubTest__nested_classes",
                             "success": false
@@ -20,7 +20,7 @@
                         },
                         {
                             "desc": "PublicTest: Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <42> but was: <21>)",
                             "fromSecret": false,
                             "id": "pubTest__initialize_fields_before_super_invocation",
                             "success": false
@@ -32,11 +32,11 @@
         {
             "exercises": [
                 {
-                    "name": "Flexible_Constructor_Bodies",
+                    "name": "new_language_features_25_flexible_constructor_bodies",
                     "tests": [
                         {
                             "desc": "SecretTest: Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "secTest__initialize_fields_before_super_invocation",
                             "success": false
@@ -48,11 +48,11 @@
         {
             "exercises": [
                 {
-                    "name": "Flexible_Constructor_Bodies",
+                    "name": "new_language_features_25_flexible_constructor_bodies",
                     "tests": [
                         {
                             "desc": "SecretTest: Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "secTest__nested_classes",
                             "success": false
@@ -64,7 +64,7 @@
         {
             "exercises": [
                 {
-                    "name": "Flexible_Constructor_Bodies",
+                    "name": "new_language_features_25_flexible_constructor_bodies",
                     "tests": [
                         {
                             "desc": "PublicTest: Should pass in \"replaced\".",
@@ -81,7 +81,7 @@
         {
             "exercises": [
                 {
-                    "name": "Flexible_Constructor_Bodies",
+                    "name": "new_language_features_25_flexible_constructor_bodies",
                     "tests": [
                         {
                             "desc": "SecretTest: Should pass in \"replaced\" because with @Replace now.",
@@ -96,7 +96,7 @@
         {
             "exercises": [
                 {
-                    "name": "Flexible_Constructor_Bodies",
+                    "name": "new_language_features_25_flexible_constructor_bodies",
                     "tests": [
                         {
                             "desc": "SecretTest: Should pass in \"replaced\" because with @Replace now.",

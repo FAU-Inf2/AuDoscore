@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "Weite Felder - createAndFill",
+                    "name": "public_fixmethodorder",
                     "tests": [
                         {
                             "desc": "public_a",

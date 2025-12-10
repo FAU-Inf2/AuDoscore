@@ -1,12 +1,12 @@
 {
     "exercises": [
         {
-            "name": "GA4.6a",
+            "name": "replaced_without_clean",
             "tests": [
                 {
                     "desc": "empty dummy test",
                     "fromSecret": false,
-                    "id": "test2",
+                    "id": "pubTest_no_op",
                     "success": true
                 }
             ]

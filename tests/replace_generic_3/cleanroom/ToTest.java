@@ -6,7 +6,6 @@ public class ToTest<E> {
 	}
 
 	public ArrayList<E> test() {
-		return new ArrayList<E>();
+		return new ArrayList<>();
 	}
 }
-

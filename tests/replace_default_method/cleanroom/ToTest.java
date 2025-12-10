@@ -3,4 +3,3 @@ public interface ToTest {
 		return 42;
 	}
 }
-

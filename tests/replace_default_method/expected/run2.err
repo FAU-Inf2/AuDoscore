@@ -3,12 +3,12 @@
         {
             "exercises": [
                 {
-                    "name": "DefaultMethod",
+                    "name": "replace_default_method",
                     "tests": [
                         {
-                            "desc": "testEmpty",
+                            "desc": "pubTest_no_op",
                             "fromSecret": false,
-                            "id": "testEmpty",
+                            "id": "pubTest_no_op",
                             "success": true
                         }
                     ]
@@ -18,13 +18,13 @@
         {
             "exercises": [
                 {
-                    "name": "DefaultMethod",
+                    "name": "replace_default_method",
                     "tests": [
                         {
-                            "desc": "testFoo",
-                            "error": "AssertionError(foo() is wrong expected:<42> but was:<21>)",
+                            "desc": "secTest_foo",
+                            "error": "AssertionFailedError(foo() is wrong ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
-                            "id": "testFoo",
+                            "id": "secTest_foo",
                             "success": false
                         }
                     ]
@@ -36,12 +36,12 @@
         {
             "exercises": [
                 {
-                    "name": "DefaultMethod",
+                    "name": "replace_default_method",
                     "tests": [
                         {
-                            "desc": "testFoo",
+                            "desc": "secTest_foo",
                             "fromSecret": true,
-                            "id": "testFoo",
+                            "id": "secTest_foo",
                             "success": true
                         }
                     ]

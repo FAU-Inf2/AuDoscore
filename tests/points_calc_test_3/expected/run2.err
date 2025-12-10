@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "points_calc_test_3",
                     "tests": [
                         {
                             "desc": "test10",
@@ -25,7 +25,7 @@
                         },
                         {
                             "desc": "test3",
-                            "error": "AssertionError(Should return 3 expected:<3> but was:<333>)",
+                            "error": "AssertionFailedError(Should return 3 ==> expected: <3> but was: <333>)",
                             "fromSecret": false,
                             "id": "test3",
                             "success": false
@@ -73,7 +73,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "points_calc_test_3",
                     "tests": [
                         {
                             "desc": "test11",
@@ -88,7 +88,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "points_calc_test_3",
                     "tests": [
                         {
                             "desc": "test12",
@@ -103,7 +103,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "points_calc_test_3",
                     "tests": [
                         {
                             "desc": "test13",
@@ -118,11 +118,11 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "points_calc_test_3",
                     "tests": [
                         {
                             "desc": "test14",
-                            "error": "AssertionError(Should return 14 expected:<14> but was:<11>)",
+                            "error": "AssertionFailedError(Should return 14 ==> expected: <14> but was: <11>)",
                             "fromSecret": true,
                             "id": "test14",
                             "success": false
@@ -134,11 +134,11 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "points_calc_test_3",
                     "tests": [
                         {
                             "desc": "test15",
-                            "error": "AssertionError(Should return 15 expected:<15> but was:<150>)",
+                            "error": "AssertionFailedError(Should return 15 ==> expected: <15> but was: <150>)",
                             "fromSecret": true,
                             "id": "test15",
                             "success": false
@@ -150,7 +150,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "points_calc_test_3",
                     "tests": [
                         {
                             "desc": "test16",
@@ -165,7 +165,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "points_calc_test_3",
                     "tests": [
                         {
                             "desc": "test17",
@@ -180,11 +180,11 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "points_calc_test_3",
                     "tests": [
                         {
                             "desc": "test18",
-                            "error": "AssertionError(Should return 18 expected:<18> but was:<188>)",
+                            "error": "AssertionFailedError(Should return 18 ==> expected: <18> but was: <188>)",
                             "fromSecret": true,
                             "id": "test18",
                             "success": false
@@ -196,7 +196,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "points_calc_test_3",
                     "tests": [
                         {
                             "desc": "test19",
@@ -211,7 +211,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "points_calc_test_3",
                     "tests": [
                         {
                             "desc": "test20",

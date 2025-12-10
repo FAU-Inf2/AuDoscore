@@ -30,7 +30,7 @@ public class ToTest {
 	// The header of a basic for statement
 	public int toTest_unnamed_variables__basic_for_loop() {
 		int count = 0;
-		for (int i = 0, _ = getRandomInt(); i < data.length; i++) { // <===== TODO: fails upon replacement (probably due to JavaPrettyPrinter?): becomes "for (int i = 0,  = getRandomInt(); ..." instead
+		for (int i = 0, _ = getRandomInt(); i < data.length; i++) {
 			count++;
 		}
 		System.out.println(count);
@@ -65,7 +65,7 @@ public class ToTest {
 
 	// A formal parameter of a lambda expression
 	public int toTest_unnamed_variables__formal_parameter_of_lambda_expression() {
-		java.util.stream.Stream<String> s = java.util.Arrays.stream(data).boxed().map(_ -> "Foo"); // <===== TODO: fails upon replacement (probably due to JavaPrettyPrinter?): becomes "...boxed().map(()->"Foo");" instead
+		java.util.stream.Stream<String> s = java.util.Arrays.stream(data).boxed().map(_ -> "Foo");
 		System.out.println(s.count());
 		return 42; // @Replace should replace wrong student code with expected code here
 	}

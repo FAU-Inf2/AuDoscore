@@ -1,6 +1,6 @@
 Score: 4.0
 
-clean_vars (4.0 points):
+replace_clean_static_nonstatic (4.0 points):
 ✓   0.00 | empty dummy test
 ✓   1.00 | secTest_toTest_protected_static_var_C
 ✓   1.00 | secTest_toTest_protected_static_var_D

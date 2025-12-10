@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "public_correct_secret_wrong",
                     "tests": [
                         {
                             "desc": "test",
@@ -18,11 +18,11 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "public_correct_secret_wrong",
                     "tests": [
                         {
                             "desc": "test2",
-                            "error": "AssertionError(Should return 23 expected:<23> but was:<42>)",
+                            "error": "AssertionFailedError(Should return 23 ==> expected: <23> but was: <42>)",
                             "fromSecret": true,
                             "id": "test2",
                             "success": false

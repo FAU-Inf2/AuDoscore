@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class ToTest<T extends Comparable> {
+public class ToTest<T extends Comparable<T>> {
 	T field;
 
 	public ToTest(T field) {
@@ -11,4 +11,3 @@ public class ToTest<T extends Comparable> {
 		return value.compareTo(field);
 	}
 }
-

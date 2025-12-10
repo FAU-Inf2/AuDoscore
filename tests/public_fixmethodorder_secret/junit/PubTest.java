@@ -1,45 +1,26 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import tester.annotations.*;
 
-import org.junit.ClassRule;
-import org.junit.FixMethodOrder;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
-
-import tester.annotations.Ex;
-import tester.annotations.Exercises;
-import tester.annotations.Points;
-
-@Exercises({ @Ex(exID = "Weite Felder - createAndFill", points = 5) })
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Exercises({@Ex(exID = "public_fixmethodorder_secret", points = 5)})
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.MethodName.class)
 public class PubTest {
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout = 666)
-	@Points(exID = "Weite Felder - createAndFill", bonus = 0.5)
-	public void public_a() {
-		assertEquals(0, Student.add(1));
-	}
-
-	@Test(timeout = 666)
-	@Points(exID = "Weite Felder - createAndFill", bonus = 1.5)
+	@Points(exID = "public_fixmethodorder_secret", bonus = 1.5)
 	public void public_b() {
 		assertEquals(1, Student.add(2));
 	}
 
-	@Test(timeout = 666)
-	@Points(exID = "Weite Felder - createAndFill", bonus = 9.4)
-	public void public_c() {
-		assertEquals(3, Student.add(39));
+	@Points(exID = "public_fixmethodorder_secret", bonus = 0.5)
+	public void public_a() {
+		assertEquals(0, Student.add(1));
 	}
 
-	@Test(timeout = 666)
-	@Points(exID = "Weite Felder - createAndFill", bonus = 0.4)
+	@Points(exID = "public_fixmethodorder_secret", bonus = 0.4)
 	public void public_d() {
 		assertEquals(42, Student.add(-5));
 	}
 
+	@Points(exID = "public_fixmethodorder_secret", bonus = 9.4)
+	public void public_c() {
+		assertEquals(3, Student.add(39));
+	}
 }

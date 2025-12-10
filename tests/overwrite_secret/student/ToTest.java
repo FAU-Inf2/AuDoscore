@@ -1,14 +1,12 @@
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public class ToTest {
 	public static int pub() {
-		try (final FileWriter fw = new FileWriter("SecretTest.java")) {
+		try (final FileWriter fw = new FileWriter(new File("junit", "SecretTest.java"))) {
 			fw.append("import tester.annotations.*;\n");
 			fw.append("@SecretClass\n");
-			fw.append("public class SecretTest extends JUnitWithPoints { }\n");
-		} catch (final IOException e) {
-			// Ignore
+			fw.append("public class SecretTest { }\n");
+		} catch (final IOException ignored) {
 		}
 		return 42;
 	}
@@ -17,4 +15,3 @@ public class ToTest {
 		return -1;
 	}
 }
-

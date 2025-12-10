@@ -11,4 +11,3 @@ public class ToTest<T extends Comparable> {
 		return value.compareTo(field);
 	}
 }
-

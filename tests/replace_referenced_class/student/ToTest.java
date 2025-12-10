@@ -5,4 +5,3 @@ public class ToTest {
 		return toReplace.get();
 	}
 }
-

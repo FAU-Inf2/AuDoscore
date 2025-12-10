@@ -1,0 +1,20 @@
+{
+    "vanilla": [
+        {
+            "exercises": [
+                {
+                    "name": "single_no_timeout",
+                    "tests": [
+                        {
+                            "desc": "pubTest_no_op",
+                            "fromSecret": false,
+                            "id": "pubTest_no_op",
+                            "success": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "replaced": []
+}

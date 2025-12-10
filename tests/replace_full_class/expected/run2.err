@@ -3,12 +3,12 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "replace_full_class",
                     "tests": [
                         {
                             "desc": "empty dummy test",
                             "fromSecret": false,
-                            "id": "test22",
+                            "id": "pubTest_no_op",
                             "success": true
                         }
                     ]
@@ -18,11 +18,11 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "replace_full_class",
                     "tests": [
                         {
                             "desc": "test",
-                            "error": "AssertionError(Should return 42 expected:<42> but was:<-1>)",
+                            "error": "AssertionFailedError(Should return 42 ==> expected: <42> but was: <-1>)",
                             "fromSecret": true,
                             "id": "test",
                             "success": false
@@ -34,11 +34,11 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "replace_full_class",
                     "tests": [
                         {
                             "desc": "test2",
-                            "error": "AssertionError(Should return 23*42 expected:<966> but was:<2>)",
+                            "error": "AssertionFailedError(Should return 23*42 ==> expected: <966> but was: <2>)",
                             "fromSecret": true,
                             "id": "test2",
                             "success": false
@@ -52,11 +52,11 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "replace_full_class",
                     "tests": [
                         {
                             "desc": "test",
-                            "error": "AssertionError(Should return 42 expected:<42> but was:<-1>)",
+                            "error": "AssertionFailedError(Should return 42 ==> expected: <42> but was: <-1>)",
                             "fromSecret": true,
                             "id": "test",
                             "success": false
@@ -68,7 +68,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "replace_full_class",
                     "tests": [
                         {
                             "desc": "test2",

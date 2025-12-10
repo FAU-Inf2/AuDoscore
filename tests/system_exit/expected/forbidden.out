@@ -1,0 +1,2 @@
+FOUND FORBIDDEN CODE:
+# ToTest.class:7: invokes java.lang.System.exit((I)V)

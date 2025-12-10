@@ -3,12 +3,12 @@
         {
             "exercises": [
                 {
-                    "name": "test",
+                    "name": "timeout_secret",
                     "tests": [
                         {
-                            "desc": "a",
+                            "desc": "pubTest_no_op",
                             "fromSecret": false,
-                            "id": "a",
+                            "id": "pubTest_no_op",
                             "success": true
                         }
                     ]
@@ -18,13 +18,13 @@
         {
             "exercises": [
                 {
-                    "name": "test",
+                    "name": "timeout_secret",
                     "tests": [
                         {
-                            "desc": "b",
-                            "error": "TestTimedOutTimeoutException after 100 ms",
+                            "desc": "secTest",
+                            "error": "TimeoutException(secTest() timed out after 1000 milliseconds)",
                             "fromSecret": true,
-                            "id": "b",
+                            "id": "secTest",
                             "success": false
                         }
                     ]

@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "simple_bonus_public_exception",
                     "tests": [
                         {
                             "desc": "test",

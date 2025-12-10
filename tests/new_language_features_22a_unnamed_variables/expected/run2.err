@@ -3,46 +3,46 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedVariables",
+                    "name": "new_language_features_22a_unnamed_variables/expected",
                     "tests": [
                         {
                             "desc": "PublicTest \"toTest_unnamed_variables__formal_parameter_of_lambda_expression\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <42> but was: <21>)",
                             "fromSecret": false,
                             "id": "pubTest__toTest_unnamed_variables__formal_parameter_of_lambda_expression",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"toTest_unnamed_variables__basic_for_loop\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <42> but was: <21>)",
                             "fromSecret": false,
                             "id": "pubTest__toTest_unnamed_variables__basic_for_loop",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"toTest_unnamed_variables__exception_parameter_of_catch_block\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <42> but was: <21>)",
                             "fromSecret": false,
                             "id": "pubTest__toTest_unnamed_variables__exception_parameter_of_catch_block",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"toTest_unnamed_variables__var_declaration_in_block\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <42> but was: <21>)",
                             "fromSecret": false,
                             "id": "pubTest__toTest_unnamed_variables__var_declaration_in_block",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"toTest_unnamed_variables__enhanced_for_loop\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <42> but was: <21>)",
                             "fromSecret": false,
                             "id": "pubTest__toTest_unnamed_variables__enhanced_for_loop",
                             "success": false
                         },
                         {
                             "desc": "PublicTest \"toTest_unnamed_variables__try_with_resources\": Should fail in \"vanilla\" because without @Replace.",
-                            "error": "AssertionError(Should fail in \"vanilla\" because without @Replace. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should fail in \"vanilla\" because without @Replace. ==> expected: <42> but was: <21>)",
                             "fromSecret": false,
                             "id": "pubTest__toTest_unnamed_variables__try_with_resources",
                             "success": false
@@ -54,11 +54,11 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedVariables",
+                    "name": "new_language_features_22a_unnamed_variables/expected",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_variables__basic_for_loop\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "secTest__toTest_unnamed_variables__basic_for_loop",
                             "success": false
@@ -70,11 +70,11 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedVariables",
+                    "name": "new_language_features_22a_unnamed_variables/expected",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_variables__enhanced_for_loop\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "secTest__toTest_unnamed_variables__enhanced_for_loop",
                             "success": false
@@ -86,11 +86,11 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedVariables",
+                    "name": "new_language_features_22a_unnamed_variables/expected",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_variables__exception_parameter_of_catch_block\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "secTest__toTest_unnamed_variables__exception_parameter_of_catch_block",
                             "success": false
@@ -102,11 +102,11 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedVariables",
+                    "name": "new_language_features_22a_unnamed_variables/expected",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_variables__formal_parameter_of_lambda_expression\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "secTest__toTest_unnamed_variables__formal_parameter_of_lambda_expression",
                             "success": false
@@ -118,11 +118,11 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedVariables",
+                    "name": "new_language_features_22a_unnamed_variables/expected",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_variables__try_with_resources\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "secTest__toTest_unnamed_variables__try_with_resources",
                             "success": false
@@ -134,11 +134,11 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedVariables",
+                    "name": "new_language_features_22a_unnamed_variables/expected",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_variables__var_declaration_in_block\": Should pass in \"replaced\" because with @Replace now.",
-                            "error": "AssertionError(Should pass in \"replaced\" because with @Replace now. expected:<42> but was:<21>)",
+                            "error": "AssertionFailedError(Should pass in \"replaced\" because with @Replace now. ==> expected: <42> but was: <21>)",
                             "fromSecret": true,
                             "id": "secTest__toTest_unnamed_variables__var_declaration_in_block",
                             "success": false
@@ -152,7 +152,7 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedVariables",
+                    "name": "new_language_features_22a_unnamed_variables/expected",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_variables__basic_for_loop\": Should pass in \"replaced\" because with @Replace now.",
@@ -167,7 +167,7 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedVariables",
+                    "name": "new_language_features_22a_unnamed_variables/expected",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_variables__enhanced_for_loop\": Should pass in \"replaced\" because with @Replace now.",
@@ -182,7 +182,7 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedVariables",
+                    "name": "new_language_features_22a_unnamed_variables/expected",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_variables__exception_parameter_of_catch_block\": Should pass in \"replaced\" because with @Replace now.",
@@ -197,7 +197,7 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedVariables",
+                    "name": "new_language_features_22a_unnamed_variables/expected",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_variables__formal_parameter_of_lambda_expression\": Should pass in \"replaced\" because with @Replace now.",
@@ -212,7 +212,7 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedVariables",
+                    "name": "new_language_features_22a_unnamed_variables/expected",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_variables__try_with_resources\": Should pass in \"replaced\" because with @Replace now.",
@@ -227,7 +227,7 @@
         {
             "exercises": [
                 {
-                    "name": "UnnamedVariables",
+                    "name": "new_language_features_22a_unnamed_variables/expected",
                     "tests": [
                         {
                             "desc": "SecretTest \"toTest_unnamed_variables__var_declaration_in_block\": Should pass in \"replaced\" because with @Replace now.",

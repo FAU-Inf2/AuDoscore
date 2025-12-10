@@ -3,5 +3,5 @@ ERROR - Method does not match with student counterpart:
 	 *   clean: public static double ToTest.toTest2()
 Exception in thread "main" java.lang.Error
 	at tester.tools.InterfaceComparator.main(InterfaceComparator.java:334)
-make[1]: *** [Makefile:82: run-comparer] Fehler 1
-make: *** [Makefile:51: compile-stage1] Fehler 2
+make[2]: *** [Makefile:87: run-comparer] Fehler 1
+make[1]: *** [Makefile:66: compile-stage1] Fehler 2

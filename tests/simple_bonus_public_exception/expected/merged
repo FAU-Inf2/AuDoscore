@@ -1,4 +1,4 @@
 Score: 0.0
 
-GA4.6a (0.0 points):
+simple_bonus_public_exception (0.0 points):
 ✗   0.00 | test | ArrayIndexOutOfBoundsException(aiob): ToTest.toTest(line 3)

@@ -3,12 +3,12 @@
         {
             "exercises": [
                 {
-                    "name": "FQN",
+                    "name": "replace_with_fqn",
                     "tests": [
                         {
-                            "desc": "test",
+                            "desc": "pubTest_no_op",
                             "fromSecret": false,
-                            "id": "test",
+                            "id": "pubTest_no_op",
                             "success": true
                         }
                     ]
@@ -18,12 +18,12 @@
         {
             "exercises": [
                 {
-                    "name": "FQN",
+                    "name": "replace_with_fqn",
                     "tests": [
                         {
-                            "desc": "testSec",
+                            "desc": "secTest",
                             "fromSecret": true,
-                            "id": "testSec",
+                            "id": "secTest",
                             "success": true
                         }
                     ]
@@ -35,12 +35,12 @@
         {
             "exercises": [
                 {
-                    "name": "FQN",
+                    "name": "replace_with_fqn",
                     "tests": [
                         {
-                            "desc": "testSec",
+                            "desc": "secTest",
                             "fromSecret": true,
-                            "id": "testSec",
+                            "id": "secTest",
                             "success": true
                         }
                     ]

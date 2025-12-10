@@ -3,7 +3,7 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "two_public_correct",
                     "tests": [
                         {
                             "desc": "test",

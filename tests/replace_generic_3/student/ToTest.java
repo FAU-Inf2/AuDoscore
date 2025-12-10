@@ -9,4 +9,3 @@ public class ToTest<Foo> {
 		return null;
 	}
 }
-

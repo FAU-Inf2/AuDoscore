@@ -1,28 +1,14 @@
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import tester.annotations.*;
 
 import java.util.Collections;
 
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-
-import tester.annotations.Points;
-import tester.annotations.Replace;
-import tester.annotations.SecretClass;
-
 @SecretClass
 public class SecretTest {
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public static final PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout=100)
-	@Points(exID = "ReplaceGeneric", bonus = 1)
+	@Points(exID = "replace_generic_1", bonus = 1)
 	@Replace({"ToTest.process"})
 	public void testFoo() {
-		final ToTest<Integer> toTest = new ToTest<Integer>();
+		final ToTest<Integer> toTest = new ToTest<>();
 		assertEquals(Integer.valueOf(1), toTest.get(Collections.singletonList(1)));
 	}
 }
-

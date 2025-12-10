@@ -9,4 +9,3 @@ public class ToReplace {
 		return -1;
 	}
 }
-

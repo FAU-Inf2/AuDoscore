@@ -1,18 +1,11 @@
-import static org.junit.Assert.*;
-import org.junit.*;
+import static org.junit.jupiter.api.Assertions.*;
 import tester.annotations.*;
 
 @SecretClass
 public class SecretTest {
-	@Rule
-	public final PointsLogger pointsLogger = new PointsLogger();
-	@ClassRule
-	public final static PointsSummary pointsSummary = new PointsSummary();
-
-	@Test(timeout = 200)
-	@Points(exID = "Module_Import_Declarations", bonus = 0.815, comment = "SecretTest: Should pass in \"replaced\" because with @Replace now.")
+	@Points(exID = "new_language_features_25_module_import_declarations", bonus = 0.815, comment = "SecretTest: Should pass in \"replaced\" because with @Replace now.")
 	@Replace("ToTest.toTest")
 	public void secTest() {
-		assertEquals("Should pass in \"replaced\" because with @Replace now.", 42, ToTest.toTest());
+		assertEquals(42, ToTest.toTest(), "Should pass in \"replaced\" because with @Replace now.");
 	}
 }

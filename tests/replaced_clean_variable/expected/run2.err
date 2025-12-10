@@ -3,12 +3,12 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "replaced_clean_variable",
                     "tests": [
                         {
                             "desc": "empty dummy test",
                             "fromSecret": false,
-                            "id": "test2",
+                            "id": "pubTest_no_op",
                             "success": true
                         }
                     ]
@@ -18,13 +18,13 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "replaced_clean_variable",
                     "tests": [
                         {
-                            "desc": "test",
-                            "error": "AssertionError(Should return 42 expected:<42> but was:<65>)",
+                            "desc": "secTest",
+                            "error": "AssertionFailedError(Should return 42 ==> expected: <42> but was: <65>)",
                             "fromSecret": true,
-                            "id": "test",
+                            "id": "secTest",
                             "success": false
                         }
                     ]
@@ -36,12 +36,12 @@
         {
             "exercises": [
                 {
-                    "name": "GA4.6a",
+                    "name": "replaced_clean_variable",
                     "tests": [
                         {
-                            "desc": "test",
+                            "desc": "secTest",
                             "fromSecret": true,
-                            "id": "test",
+                            "id": "secTest",
                             "success": true
                         }
                     ]
