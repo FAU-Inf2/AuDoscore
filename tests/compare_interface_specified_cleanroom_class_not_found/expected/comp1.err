@@ -1,5 +1,5 @@
 Exception in thread "main" java.lang.IllegalArgumentException: ERROR - Class [Foo] specified in @CompareInterface does not exist in cleanroom
-	at tester.tools.CheckAnnotation.getCleanroomClass(CheckAnnotation.java:157)
+	at tester.tools.CheckAnnotation.getCleanroomClass(CheckAnnotation.java:153)
 	at tester.tools.CheckAnnotation.checkAnnotations(CheckAnnotation.java:75)
 	at tester.tools.CheckAnnotation.main(CheckAnnotation.java:24)
 make[1]: *** [Makefile:62: compile-stage1] Fehler 1

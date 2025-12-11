@@ -299,7 +299,7 @@ function testIt {
 	if [ "$ec" != "" ]; then
 		checkExit 1 "\ninternal error\n" run2
 	fi
-	for error in "\\\",\\\"error\\\":\\\"NoSuchFieldError(Class " "\\\",\\\"error\\\":\\\"ExceptionInInitializerError(): " ; do
+	for error in "\\\",\\\"error\\\":\\\"NoSuchFieldError(Class " "\\\",\\\"error\\\":\\\"ExceptionInInitializerError()" ; do
 		grep -q "$error" run2
 		if [ $? -eq 0 ] ; then
 			checkExit 1 "\ninternal error\n" run2
