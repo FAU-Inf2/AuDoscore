@@ -26,7 +26,7 @@ maxiclean: clean
 miniclean:
 	rm -rf *.class
 
-SRCJUNITPOINTSJAR := \
+SRCJUNITPOINTSJARJAVA := \
 	tester/annotations/CompareInterface.java tester/annotations/Ex.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/InitializeOnce.java tester/annotations/NotForbidden.java tester/annotations/Points.java tester/annotations/Replace.java tester/annotations/SecretClass.java \
 	tester/tools/CheckAnnotation.java tester/tools/ForbiddenUseSearcher.java tester/tools/InitializeOnceHandler.java tester/tools/InterfaceComparator.java tester/tools/JUnitWithPoints.java tester/tools/PointsMerger.java tester/tools/ReplaceManager.java tester/tools/ReplaceMixer.java tester/tools/SingleExecutionPreparer.java \
 	tools/DiffJSON.java
@@ -39,8 +39,8 @@ $(LIBJSONSIMPLE):
 	mkdir -p lib/
 	wget -O $(LIBJSONSIMPLE) https://repo1.maven.org/maven2/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar
 
-$(LIBJUNITPOINTS): $(LIBJUNIT) $(LIBJSONSIMPLE) $(SRCJUNITPOINTSJAR)
-	javac -source 25 -target 25 -encoding UTF-8 -d build -cp $(LIBJUNIT):$(LIBJSONSIMPLE):. $(SRCJUNITPOINTSJAR)
+$(LIBJUNITPOINTS): $(LIBJUNIT) $(LIBJSONSIMPLE) $(SRCJUNITPOINTSJARJAVA)
+	javac -source 25 -target 25 -encoding UTF-8 -d build -cp $(LIBJUNIT):$(LIBJSONSIMPLE):. $(SRCJUNITPOINTSJARJAVA)
 	jar cvf $(LIBJUNITPOINTS) -C build .
 
 

@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/FAU-Inf2/AuDoscore.svg?branch=master)](https://travis-ci.org/FAU-Inf2/AuDoscore)
-
 What is AuDoscore?
 =======
 AuDoscore is an extension of JUnit that is used to evaluate Java programming exercises.
@@ -29,7 +27,7 @@ Remarks on `@Points`:
 
 Remarks on `@Forbidden.Type.WILDCARD`:
 -----
-- `Type.WILDCARD` can be used with Java-Regex-like patterns:
+- `Type.WILDCARD` can be used with regex-like patterns:
   - "See the documentation for java.util.regex.Pattern for details about the regular expression syntax for pattern strings."
 - **but with following SPECIAL treatments:**
   - `.` (regex: "any character") is escaped to `\.` (literally: e.g. `org.junit.jupiter.api.Test`) - so no need to escape in `@Forbidden`/`@NotForbidden`
