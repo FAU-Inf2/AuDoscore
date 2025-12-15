@@ -21,12 +21,18 @@ Available Annotations
 | `@CompareInterface` |    No    | class level                  | Array of String                                                                                                            | Checks if methods and fields of students have the same signature as their cleanroom counterparts. Possible Strings: "Classname.Methodname, "Classname.Fieldname", "Classname". If only the Classname is given all public methods/fields are checked.                                                                                   |
 | `@InitializeOnce`   |    No    | field                        | `value`: String                                                                                                            | At first execution, the method given as `value` is called and its result is stored in a temporary file. At subsequent executions, the annotated attribute is initialized using the precomputed result from the file. Note: `@InitializeOnce` can only be used in secret tests and the result of the given method must be serializable! |
 
-Remarks on `Forbidden.Type.WILDCARD`:
+Remarks on `@Points`:
+-----
+- Annotating a method with `@Points` automatically makes this method a JUnit test case with a default timeout of 1000ms.
+- There is no need to also add `@org.junit.jupiter.api.Test` or `@org.junit.jupiter.api.Timeout(...` to a grading method.
+- But if the default timeout does not fit your needs, you may annotate the test method with its own `@org.junit.jupiter.api.Timeout(...` which will override the default.
+
+Remarks on `@Forbidden.Type.WILDCARD`:
 -----
 - `Type.WILDCARD` can be used with Java-Regex-like patterns:
   - "See the documentation for java.util.regex.Pattern for details about the regular expression syntax for pattern strings."
 - **but with following SPECIAL treatments:**
-  - `.` (regex: "any character") is escaped to `\.` (literally: e.g. `org.junit.Test`) - so no need to escape in `@Forbidden`/`@NotForbidden`
+  - `.` (regex: "any character") is escaped to `\.` (literally: e.g. `org.junit.jupiter.api.Test`) - so no need to escape in `@Forbidden`/`@NotForbidden`
   - `$` (regex: "end of a line") is escaped to `\$` (literally: e.g. nested class `Foo$Bar`) - so no need to escape in `@Forbidden`/`@NotForbidden`
   - `X*Y` (regex: "X, zero or more times") is replaced by `X[^.\$]*Y` (matching any character except `.` or `$`: e.g. `Hash*` matches `Hashtable`,`HashMap`,`HashSet` - **but not** `HashMap.newHashMap`,`HashMap.keySet`,...!)
   + `**` is replaced by `.*` (regex: "any character" + "zero or more times": e.g. `Hash**` matches `Hashtable`,`HashMap`,`HashSet`,...,`HashMap.newHashMap`,`HashMap.keySet`,...)

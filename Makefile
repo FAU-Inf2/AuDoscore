@@ -28,7 +28,7 @@ miniclean:
 
 SRCJUNITPOINTSJAR := \
 	tester/annotations/CompareInterface.java tester/annotations/Ex.java tester/annotations/Exercises.java tester/annotations/Forbidden.java tester/annotations/InitializeOnce.java tester/annotations/NotForbidden.java tester/annotations/Points.java tester/annotations/Replace.java tester/annotations/SecretClass.java \
-	tester/tools/CheckAnnotation.java tester/tools/ForbiddenUseSearcher.java tester/tools/InterfaceComparator.java tester/tools/JUnitWithPoints.java tester/tools/PointsMerger.java tester/tools/ReplaceManager.java tester/tools/ReplaceMixer.java tester/tools/SingleExecutionPreparer.java \
+	tester/tools/CheckAnnotation.java tester/tools/ForbiddenUseSearcher.java tester/tools/InitializeOnceHandler.java tester/tools/InterfaceComparator.java tester/tools/JUnitWithPoints.java tester/tools/PointsMerger.java tester/tools/ReplaceManager.java tester/tools/ReplaceMixer.java tester/tools/SingleExecutionPreparer.java \
 	tools/DiffJSON.java
 
 $(LIBJUNIT):
@@ -127,9 +127,10 @@ help:
 	@echo 'Running test cases for grading is done through the test.sh shell script (see README for details).'
 	@echo '--------------------------------------------------------------------------'
 	@echo 'Developers/Users use this Makefile from the project root folder to make:'
-	@echo '- build:  freshly build the main library'
-	@echo '- verify: run all provided tests from the tests folder'
-	@echo '- clean:  remove all generated artifacts (including the main library!)'
+	@echo '- build:     freshly build the main library'
+	@echo '- verify:    run all provided tests from the tests folder'
+	@echo '- clean:     remove all generated artifacts (including the main grading library)'
+	@echo '- maxiclean: remove all generated and downloaded artifacts (including all libraries)'
 	@echo '--------------------------------------------------------------------------'
 	@echo 'Testers use this Makefile from one of the provided test folders to make:'
 	@echo '- test_run:     run the test in the current folder (keeping temporary execution folder)'
