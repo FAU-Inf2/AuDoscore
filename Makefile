@@ -55,17 +55,17 @@ ifneq ("$(wildcard /bin/dash)","")
 endif
 
 compile-stage0:
-	javac $(COMPILER_ARGS) -Xprefer:source -sourcepath $(interfacesDirName) $(sutDirName)/*.java
+	javac $(COMPILER_ARGS) -sourcepath $(interfacesDirName) $(sutDirName)/*.java
 
 compile-stage1: miniclean compile-stage0
-	javac $(COMPILER_ARGS) -Xprefer:source -sourcepath $(junitDirName):$(interfacesDirName):$(sutDirName) -cp $(LIBALL) $(junitDirName)/$(PUBLICTESTSOURCE)
+	javac $(COMPILER_ARGS) -sourcepath $(junitDirName):$(interfacesDirName):$(sutDirName) -cp $(LIBALL) $(junitDirName)/$(PUBLICTESTSOURCE)
 	java -cp $(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName) tester.tools.CheckAnnotation $(PUBLICTEST)
-	java -cp $(LIBALL) tester.tools.ForbiddenUseSearcher $(PUBLICTEST) > forbidden.out
+	java -cp $(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName) tester.tools.ForbiddenUseSearcher $(PUBLICTEST) > forbidden.out
 	if [ -s forbidden.out ]; then \
 		cat forbidden.out 1>&2 ; \
 		exit 1 ; \
 	fi
-	javac $(COMPILER_ARGS) -Xprefer:source -sourcepath $(interfacesDirName) $(cleanroomDirName)/*.java
+	javac $(COMPILER_ARGS) -sourcepath $(interfacesDirName) -d $(cleanroomDirName) $(cleanroomDirName)/*.java
 	make run-comparer
 
 compile-stage2: miniclean compile-stage1
@@ -74,9 +74,9 @@ compile-stage2: miniclean compile-stage1
 	fi
 
 compile-stage2-secret:
-	javac $(COMPILER_ARGS) -Xprefer:source -sourcepath $(junitDirName):$(interfacesDirName):$(sutDirName) -cp $(LIBALL) $(junitDirName)/$(SECRETTESTSOURCE)
+	javac $(COMPILER_ARGS) -sourcepath $(junitDirName):$(interfacesDirName):$(sutDirName) -cp $(LIBALL) $(junitDirName)/$(SECRETTESTSOURCE)
 	java -cp $(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName) -Dpub=$(PUBLICTEST) tester.tools.CheckAnnotation $(SECRETTEST)
-	java -cp $(LIBALL) tester.tools.SingleExecutionPreparer "$(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName)" "-Djson=yes -Dpub=$(PUBLICTEST)" $(SECRETTEST) >> single_execution.sh
+	java -cp $(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName) tester.tools.SingleExecutionPreparer "$(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName)" "-Djson=yes -Dpub=$(PUBLICTEST)" $(SECRETTEST) >> single_execution.sh
 	java -cp $(LIBALL) tester.tools.ReplaceManager $(SECRETTEST)
 	java -cp $(LIBALL) tester.tools.ReplaceManager --loop $(PUBLICTEST) $(SECRETTEST) >> loop.sh
 
