@@ -248,7 +248,8 @@ function testIt {
 	info "\nstage0 (compile interfaces and SUT only)"
 	info "- compiling"
 	( make compile-stage0 ) > comp0 2>&1
-	checkExit $? "\nstudent result: ☠\n" comp0
+	ec=$?
+	checkExit $ec "\nstudent result: ☠\n" comp0
 
 	info "\ncopy cleanroom"
 	mkdir ${testDir}/${cleanroomDirName} || die "failed to create test sub-dir ${testDir}/${cleanroomDirName}"
