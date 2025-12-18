@@ -39,7 +39,7 @@ $(LIBJSONSIMPLE):
 	mkdir -p lib/
 	wget -O $(LIBJSONSIMPLE) https://repo1.maven.org/maven2/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar
 
-$(LIBJUNITPOINTS): $(LIBJUNIT) $(LIBJSONSIMPLE) $(SRCJUNITPOINTSJARJAVA)
+$(LIBJUNITPOINTS): $(SRCJUNITPOINTSJARJAVA) $(LIBJUNIT) $(LIBJSONSIMPLE)
 	javac -source 25 -target 25 -encoding UTF-8 -d build -cp $(LIBJUNIT):$(LIBJSONSIMPLE):. $(SRCJUNITPOINTSJARJAVA)
 	jar cvf $(LIBJUNITPOINTS) -C build .
 

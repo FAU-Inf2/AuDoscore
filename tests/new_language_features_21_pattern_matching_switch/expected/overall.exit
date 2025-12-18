@@ -1,5 +1,5 @@
-TODO: THIS TEST MUST FAIL VERIFICATION!
-=> Compiler bug? Fix? Workaround (withput "-Xprefer:source")?
+TODO: THIS TEST IS KNOWN TO FAIL VERIFICATION!
+=> Compiler bug? Fix? Workaround?
 
 comp0: ok
 comp1.err: 

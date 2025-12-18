@@ -1,21 +1,21 @@
 rm -rf *.class
-javac  -Xprefer:source -sourcepath interfaces student/*.java
-javac  -Xprefer:source -sourcepath junit:interfaces:student -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar junit/UnitTest.java
+javac  -sourcepath interfaces student/*.java
+javac  -sourcepath junit:interfaces:student -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar junit/UnitTest.java
 java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar:junit:interfaces:student tester.tools.CheckAnnotation UnitTest
-java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar tester.tools.ForbiddenUseSearcher UnitTest > forbidden.out
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar:junit:interfaces:student tester.tools.ForbiddenUseSearcher UnitTest > forbidden.out
 if [ -s forbidden.out ]; then \
 	cat forbidden.out 1>&2 ; \
 	exit 1 ; \
 fi
-javac  -Xprefer:source -sourcepath interfaces cleanroom/*.java
+javac  -sourcepath interfaces -d cleanroom cleanroom/*.java
 make run-comparer
 java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar tester.tools.InterfaceComparator UnitTest
 if [ "xSecretTest" != "x" ]; then \
 	make compile-stage2-secret ; \
 fi
-javac  -Xprefer:source -sourcepath junit:interfaces:student -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar junit/SecretTest.java
+javac  -sourcepath junit:interfaces:student -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar junit/SecretTest.java
 java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar:junit:interfaces:student -Dpub=UnitTest tester.tools.CheckAnnotation SecretTest
-java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar tester.tools.SingleExecutionPreparer "lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar:junit:interfaces:student" "-Djson=yes -Dpub=UnitTest" SecretTest >> single_execution.sh
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar:junit:interfaces:student tester.tools.SingleExecutionPreparer "lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar:junit:interfaces:student" "-Djson=yes -Dpub=UnitTest" SecretTest >> single_execution.sh
 java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar tester.tools.ReplaceManager SecretTest
 Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - Cannot replace unknown class: UnkownClass
 	at tester.tools.ReplaceManager.getMap(ReplaceManager.java:115)
