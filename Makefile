@@ -77,8 +77,8 @@ compile-stage2-secret:
 	javac $(COMPILER_ARGS) -sourcepath $(junitDirName):$(interfacesDirName):$(sutDirName) -cp $(LIBALL) $(junitDirName)/$(SECRETTESTSOURCE)
 	java -cp $(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName) -Dpub=$(PUBLICTEST) tester.tools.CheckAnnotation $(SECRETTEST)
 	java -cp $(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName) tester.tools.SingleExecutionPreparer "$(LIBALL):$(junitDirName):$(interfacesDirName):$(sutDirName)" "-Djson=yes -Dpub=$(PUBLICTEST)" $(SECRETTEST) >> single_execution.sh
-	java -cp $(LIBALL) tester.tools.ReplaceManager $(SECRETTEST)
-	java -cp $(LIBALL) tester.tools.ReplaceManager --loop $(PUBLICTEST) $(SECRETTEST) >> loop.sh
+	java -cp $(LIBALL) -DruntimeLibs=$(LIBALL) tester.tools.ReplaceManager $(SECRETTEST)
+	java -cp $(LIBALL) -DruntimeLibs=$(LIBALL) tester.tools.ReplaceManager --loop $(PUBLICTEST) $(SECRETTEST) >> loop.sh
 
 compile: compile-stage$(STAGE)
 

@@ -16,10 +16,10 @@ fi
 javac  -sourcepath junit:interfaces:student -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar junit/SecretTest.java
 java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar:junit:interfaces:student -Dpub=UnitTest tester.tools.CheckAnnotation SecretTest
 java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar:junit:interfaces:student tester.tools.SingleExecutionPreparer "lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar:junit:interfaces:student" "-Djson=yes -Dpub=UnitTest" SecretTest >> single_execution.sh
-java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar tester.tools.ReplaceManager SecretTest
+java -cp lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar -DruntimeLibs=lib/junitpoints.jar:lib/junit.jar:lib/json-simple.jar tester.tools.ReplaceManager SecretTest
 Exception in thread "main" java.lang.annotation.AnnotationFormatError: ERROR - Cannot replace unknown method: doesnotexist
-	at tester.tools.ReplaceManager.getMap(ReplaceManager.java:112)
-	at tester.tools.ReplaceManager.generateSecretTestReplacements(ReplaceManager.java:38)
-	at tester.tools.ReplaceManager.main(ReplaceManager.java:21)
+	at tester.tools.ReplaceManager.getMap(ReplaceManager.java:110)
+	at tester.tools.ReplaceManager.generateSecretTestReplacements(ReplaceManager.java:36)
+	at tester.tools.ReplaceManager.main(ReplaceManager.java:20)
 make[2]: *** [Makefile:80: compile-stage2-secret] Fehler 1
 make[1]: *** [Makefile:72: compile-stage2] Fehler 2

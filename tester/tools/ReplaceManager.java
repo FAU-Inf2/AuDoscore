@@ -3,7 +3,6 @@ package tester.tools;
 import tester.annotations.*;
 import java.io.*;
 import java.net.*;
-import java.nio.file.Path;
 import java.util.*;
 import java.lang.reflect.*;
 import java.lang.annotation.*;
@@ -25,10 +24,9 @@ public final class ReplaceManager {
 	}
 
 	private static final String cwd = System.getProperty("user.dir");
+	private static final String runtimeLibs = System.getProperty("runtimeLibs");
 
 	private static void generateSecretTestReplacements(String secretTestClassName) throws ClassNotFoundException {
-		Path cleanroom = new File(cwd, "cleanroom").toPath();
-		Path student = new File(cwd, "student").toPath();
 		try (URLClassLoader unitLoader = new URLClassLoader(new URL[]{new File(cwd, "junit").toURI().toURL()})) {
 			Class<?> secretTestClass = unitLoader.loadClass(secretTestClassName);
 			for (Method testCaseMethod : getMethodsSorted(secretTestClass)) {
@@ -51,7 +49,7 @@ public final class ReplaceManager {
 							if (!mixedPath.exists() && !mixedPath.mkdir()) {
 								throw new AnnotationFormatError("ERROR - Cannot create mixed folder: " + replacedFolderName);
 							}
-							ReplaceMixer.replace(classToReplace, methodsToReplace, cleanroom, student, mixedPath.toPath());
+							ReplaceMixer.replace(classToReplace, methodsToReplace, new File(cwd, "cleanroom").toPath(), new File(cwd, "student").toPath(), mixedPath.toPath());
 						}
 					}
 				}
@@ -244,12 +242,12 @@ public final class ReplaceManager {
 			boolean first = true;
 			for (String suitableTestCaseMethod : suitableTestCaseMethods) {
 				System.out.println("javac" // recompile SecretTest to cope with boxing, if student and cleanroom have different signatures
-						+ " -cp lib/junit.jar:lib/json-simple.jar:lib/junitpoints.jar:" + replacedFolderName + ":junit:interfaces:student" //
+						+ " -cp " + runtimeLibs + ":" + replacedFolderName + ":junit:interfaces:student" //
 						+ " -d " + replacedFolderName //
 						+ " -sourcepath junit" //
 						+ " junit/" + secretTestClassName + ".java");
 				System.out.println("java -XX:-OmitStackTraceInFastThrow -Xmx1024m -Djson=yes" //
-						+ " -cp lib/junit.jar:lib/json-simple.jar:lib/junitpoints.jar:" + replacedFolderName + ":junit:interfaces:student" //
+						+ " -cp " + runtimeLibs + ":" + replacedFolderName + ":junit:interfaces:student" //
 						+ " -Dpub=" + publicTestClassName //
 						+ " org.junit.platform.console.ConsoleLauncher execute" //
 						+ " --disable-banner --details=none --fail-if-no-tests --reports-dir=reports" //

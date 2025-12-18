@@ -4,6 +4,8 @@ AuDoscore is an extension of JUnit that is used to evaluate Java programming exe
 
 We use AuDoscore in our algorithm and data structure course to automate evaluation of student homework submissions.
 
+The current version of AuDoscore has been tested with OpenJDK-25.0.1 and JUnit-6.0.1.
+
 Available Annotations
 =======
 
