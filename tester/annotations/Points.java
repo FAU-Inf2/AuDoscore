@@ -8,7 +8,7 @@ package tester.annotations;
 @java.lang.annotation.Target(java.lang.annotation.ElementType.METHOD)
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 @org.junit.jupiter.api.Test
-@org.junit.jupiter.api.Timeout(value = 1)
+@org.junit.jupiter.api.Timeout(value = 1, threadMode = org.junit.jupiter.api.Timeout.ThreadMode.SEPARATE_THREAD)
 public @interface Points {
 	/**
 	 * The unique identifier of the exercise this test method belongs to.

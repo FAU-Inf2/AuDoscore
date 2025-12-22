@@ -16,7 +16,7 @@ declare -a wholeLinePatterns=(
 function clean_file {
 	file=$1
 	if [[ $file == *.java || $file == *.scala ]];then
-		sed -i "s/@.*Exercises(.*/@org.junit.jupiter.api.Timeout(value = 1)/g" $file
+		sed -i "s/@.*Exercises(.*/@org.junit.jupiter.api.Timeout(value = 1, threadMode = org.junit.jupiter.api.Timeout.ThreadMode.SEPARATE_THREAD)/g" $file
 		sed -i "s/@.*Points(exID.*)$/@org.junit.jupiter.api.Test/g" $file
 		for i in "${wholeLinePatterns[@]}"; do
 			sed -i "/${i}/d" $file
