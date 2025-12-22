@@ -2,31 +2,24 @@
 
 declare -a wholeLinePatterns=(
 	"@.*CompareInterface(.*"
-	"@.*Exercises(.*" # includes @Ex
+	"new Ex(exID.*),$" "new Ex(exID.*)$"
+	"@.*Exercises(.*" # must be replaced with @Timeout first, not just deleted...
 	"@.*Forbidden(.*"
 	"@.*InitializeOnce(.*"
 	"@.*NotForbidden(.*"
-	"@.*Points(.*"
+	"@.*Points(.*" # must be replaced with @Test first, not just deleted...
 	"@.*Replace(.*"
 	"@.*SecretClass\$"
 	"import tester\..*"
-	"import org\.junit\.Rule" "import org\.junit\.ClassRule"
-	"@Rule" "@org\.junit\.Rule" "@ClassRule" "@org\.junit\.ClassRule"
-	"public final PointsLogger" "public final static PointsSummary" "public static final PointsSummary"
-)
-
-declare -a substringPatterns=(
-	"extends JUnitWithPoints"
 )
 
 function clean_file {
 	file=$1
 	if [[ $file == *.java || $file == *.scala ]];then
+		sed -i "s/@.*Exercises(.*/@org.junit.jupiter.api.Timeout(value = 1)/g" $file
+		sed -i "s/@.*Points(exID.*)$/@org.junit.jupiter.api.Test/g" $file
 		for i in "${wholeLinePatterns[@]}"; do
 			sed -i "/${i}/d" $file
-		done
-		for i in "${substringPatterns[@]}"; do
-			sed -i "s/${i}//g" $file
 		done
 	fi
 }
