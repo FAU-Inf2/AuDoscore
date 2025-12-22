@@ -1,5 +1,5 @@
 Score: 23.5
 
 timeout_secret (23.5 points):
-✗   0.00 | secTest | TimeoutException(secTest() timed out after 1000 milliseconds)
+✗   0.00 | secTest | TimeoutException(secTest() timed out after 1 second)
 ✓  23.56 | pubTest_no_op

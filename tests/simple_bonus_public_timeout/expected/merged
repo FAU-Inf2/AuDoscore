@@ -1,4 +1,4 @@
 Score: 0.0
 
 simple_bonus_public_timeout (0.0 points):
-✗   0.00 | test | TimeoutException(test() timed out after 1000 milliseconds)
+✗   0.00 | test | TimeoutException(test() timed out after 1 second)

@@ -1,5 +1,5 @@
 Score: 0.0
 
 fill_stdout_stderr (0.0 points):
-✗   0.00 | stderr | TimeoutException(stderr() timed out after 1000 milliseconds)
-✗   0.00 | stdout | TimeoutException(stdout() timed out after 1000 milliseconds)
+✗   0.00 | stderr | TimeoutException(stderr() timed out after 1 second)
+✗   0.00 | stdout | TimeoutException(stdout() timed out after 1 second)

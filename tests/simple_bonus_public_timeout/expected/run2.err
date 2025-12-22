@@ -7,7 +7,7 @@
                     "tests": [
                         {
                             "desc": "test",
-                            "error": "TimeoutException(test() timed out after 1000 milliseconds)",
+                            "error": "TimeoutException(test() timed out after 1 second)",
                             "fromSecret": false,
                             "id": "test",
                             "success": false

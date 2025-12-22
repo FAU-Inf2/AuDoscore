@@ -22,7 +22,7 @@
                     "tests": [
                         {
                             "desc": "secTest",
-                            "error": "TimeoutException(secTest() timed out after 1000 milliseconds)",
+                            "error": "TimeoutException(secTest() timed out after 1 second)",
                             "fromSecret": true,
                             "id": "secTest",
                             "success": false
