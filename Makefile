@@ -33,7 +33,7 @@ SRCJUNITPOINTSJARJAVA := \
 
 $(LIBJUNIT):
 	mkdir -p lib/
-	wget -O $(LIBJUNIT) https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/6.0.1/junit-platform-console-standalone-6.0.1.jar
+	wget -O $(LIBJUNIT) https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/6.0.2/junit-platform-console-standalone-6.0.2.jar
 
 $(LIBJSONSIMPLE):
 	mkdir -p lib/
